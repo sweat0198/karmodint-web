@@ -1,16 +1,16 @@
 # Graph Report - karmodint-web  (2026-08-04)
 
 ## Corpus Check
-- 51 files · ~247,657 words
+- 52 files · ~247,724 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 289 nodes · 238 edges · 53 communities (31 shown, 22 thin omitted)
+- 290 nodes · 238 edges · 54 communities (32 shown, 22 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `e11d509d`
+- Built from commit: `e147a2ee`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -72,7 +72,7 @@
 ## Surprising Connections (you probably didn't know these)
 - None detected - all connections are within the same source files.
 
-## Communities (53 total, 22 thin omitted)
+## Communities (54 total, 22 thin omitted)
 
 ### Community 0 - "Community 0"
 Cohesion: 0.06

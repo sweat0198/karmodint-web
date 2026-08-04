@@ -1,5 +1,5 @@
 <template>
-  <header class="sticky top-0 z-50 bg-[#121C2A] border-b border-[#E7BDB8]/30 shadow-md">
+  <header class="sticky top-0 z-50 bg-brand-navy border-b border-brand-rose-border/30 shadow-md">
     <div class="max-w-[1280px] mx-auto px-6 lg:px-12 py-4 flex items-center justify-between">
       <!-- Logo -->
       <NuxtLink to="/" class="flex items-center shrink-0">
@@ -15,28 +15,28 @@
         <NuxtLink 
           to="/" 
           class="text-base transition-colors py-1 relative"
-          :class="isProductsActive ? 'text-white font-bold border-b-2 border-[#E31E24] pb-[6px]' : 'text-[#BDC7D9] hover:text-white font-medium'"
+          :class="isProductsActive ? 'text-white font-bold border-b-2 border-brand-red pb-[6px]' : 'text-brand-slate-light hover:text-white font-medium'"
         >
           Products
         </NuxtLink>
         <NuxtLink 
           to="/about-contact" 
           class="text-base transition-colors py-1 relative"
-          :class="route.path === '/about-contact' ? 'text-white font-bold border-b-2 border-[#E31E24] pb-[6px]' : 'text-[#BDC7D9] hover:text-white font-medium'"
+          :class="route.path === '/about-contact' ? 'text-white font-bold border-b-2 border-brand-red pb-[6px]' : 'text-brand-slate-light hover:text-white font-medium'"
         >
           About Us
         </NuxtLink>
         <NuxtLink 
           to="/categories/portable-cabins" 
           class="text-base transition-colors py-1 relative"
-          :class="route.path.includes('/categories') ? 'text-white font-bold border-b-2 border-[#E31E24] pb-[6px]' : 'text-[#BDC7D9] hover:text-white font-medium'"
+          :class="route.path.includes('/categories') ? 'text-white font-bold border-b-2 border-brand-red pb-[6px]' : 'text-brand-slate-light hover:text-white font-medium'"
         >
           Gallery
         </NuxtLink>
         <NuxtLink 
           to="/about-contact#contact" 
           class="text-base transition-colors py-1 relative"
-          :class="route.hash === '#contact' ? 'text-white font-bold border-b-2 border-[#E31E24] pb-[6px]' : 'text-[#BDC7D9] hover:text-white font-medium'"
+          :class="route.hash === '#contact' ? 'text-white font-bold border-b-2 border-brand-red pb-[6px]' : 'text-brand-slate-light hover:text-white font-medium'"
         >
           Contact Us
         </NuxtLink>
@@ -46,12 +46,12 @@
       <div class="hidden md:flex items-center gap-4">
         <NuxtLink 
           to="/quote" 
-          class="bg-[#E31E24] hover:bg-[#c9181d] text-white font-semibold text-xs tracking-[0.6px] uppercase px-6 py-3 rounded-[2px] transition-colors inline-flex items-center gap-2 shadow-sm"
+          class="bg-brand-red hover:bg-brand-red-hover text-white font-semibold text-xs tracking-[0.6px] uppercase px-6 py-3 rounded-[2px] transition-colors inline-flex items-center gap-2 shadow-sm"
         >
           <span>REQUEST CALLBACK</span>
           <span 
             v-if="quoteStore.totalItemsCount > 0" 
-            class="ml-1 px-2 py-0.5 text-xs bg-white text-[#E31E24] font-bold rounded-full"
+            class="ml-1 px-2 py-0.5 text-xs bg-white text-brand-red font-bold rounded-full"
           >
             {{ quoteStore.totalItemsCount }}
           </span>
@@ -61,7 +61,7 @@
       <!-- Mobile Menu Toggle Button -->
       <button 
         @click="isMobileMenuOpen = !isMobileMenuOpen"
-        class="md:hidden text-[#BDC7D9] hover:text-white p-2 focus:outline-none"
+        class="md:hidden text-brand-slate-light hover:text-white p-2 focus:outline-none"
         aria-label="Toggle Navigation Menu"
       >
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -86,33 +86,33 @@
     <!-- Mobile Navigation Drawer -->
     <div 
       v-if="isMobileMenuOpen" 
-      class="md:hidden bg-[#121C2A] border-t border-[#E7BDB8]/20 px-6 py-4 space-y-4"
+      class="md:hidden bg-brand-navy border-t border-brand-rose-border/20 px-6 py-4 space-y-4"
     >
       <NuxtLink 
         to="/" 
         @click="isMobileMenuOpen = false"
-        class="block text-base font-medium text-[#BDC7D9] hover:text-white"
+        class="block text-base font-medium text-brand-slate-light hover:text-white"
       >
         Products
       </NuxtLink>
       <NuxtLink 
         to="/about-contact" 
         @click="isMobileMenuOpen = false"
-        class="block text-base font-medium text-[#BDC7D9] hover:text-white"
+        class="block text-base font-medium text-brand-slate-light hover:text-white"
       >
         About Us
       </NuxtLink>
       <NuxtLink 
         to="/categories/portable-cabins" 
         @click="isMobileMenuOpen = false"
-        class="block text-base font-medium text-[#BDC7D9] hover:text-white"
+        class="block text-base font-medium text-brand-slate-light hover:text-white"
       >
         Gallery
       </NuxtLink>
       <NuxtLink 
         to="/about-contact" 
         @click="isMobileMenuOpen = false"
-        class="block text-base font-medium text-[#BDC7D9] hover:text-white"
+        class="block text-base font-medium text-brand-slate-light hover:text-white"
       >
         Contact Us
       </NuxtLink>
@@ -121,12 +121,12 @@
         <NuxtLink 
           to="/quote" 
           @click="isMobileMenuOpen = false"
-          class="w-full bg-[#E31E24] hover:bg-[#c9181d] text-white font-semibold text-xs tracking-[0.6px] uppercase px-6 py-3 rounded-[2px] transition-colors flex items-center justify-center gap-2"
+          class="w-full bg-brand-red hover:bg-brand-red-hover text-white font-semibold text-xs tracking-[0.6px] uppercase px-6 py-3 rounded-[2px] transition-colors flex items-center justify-center gap-2"
         >
           <span>REQUEST CALLBACK</span>
           <span 
             v-if="quoteStore.totalItemsCount > 0" 
-            class="px-2 py-0.5 text-xs bg-white text-[#E31E24] font-bold rounded-full"
+            class="px-2 py-0.5 text-xs bg-white text-brand-red font-bold rounded-full"
           >
             {{ quoteStore.totalItemsCount }}
           </span>

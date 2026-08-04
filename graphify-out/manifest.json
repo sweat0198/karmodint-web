@@ -4,6 +4,11 @@
     "ast_hash": "3dcafb3fdecdb93a2be5b8d338bf407e",
     "semantic_hash": ""
   },
+  "/Users/enesfurkanornek/Documents/projects/karmodint-web/tailwind.config.js": {
+    "mtime": 1785861025.3904202,
+    "ast_hash": "946dd67839db424947d3bf7b28e4abb4",
+    "semantic_hash": ""
+  },
   "/Users/enesfurkanornek/Documents/projects/karmodint-web/package.json": {
     "mtime": 1785859491.05977,
     "ast_hash": "43c1e40bf44a8a533fc6d598b5f651c3",
@@ -45,28 +50,28 @@
     "semantic_hash": ""
   },
   "/Users/enesfurkanornek/Documents/projects/karmodint-web/components/AppHeader.vue": {
-    "mtime": 1785859798.3389003,
-    "ast_hash": "266946859435fd2cbfe3472b1d5843f2",
+    "mtime": 1785860944.1362863,
+    "ast_hash": "97c38a89753f31dfc0d6d7447ccd9a30",
     "semantic_hash": ""
   },
   "/Users/enesfurkanornek/Documents/projects/karmodint-web/components/ProductCatalogSection.vue": {
-    "mtime": 1785860466.5798757,
-    "ast_hash": "8f51c1a98fc149933adb124d6f549fe7",
+    "mtime": 1785860935.1421077,
+    "ast_hash": "cdc8441fa286426b4d9e09f79e52ea2a",
     "semantic_hash": ""
   },
   "/Users/enesfurkanornek/Documents/projects/karmodint-web/components/AppFooter.vue": {
-    "mtime": 1785860097.9425921,
-    "ast_hash": "b779d2f18cb6847165013fd11b58d589",
+    "mtime": 1785860955.3151436,
+    "ast_hash": "f0ee3b00a5f650de849871fb0b3bebd5",
     "semantic_hash": ""
   },
   "/Users/enesfurkanornek/Documents/projects/karmodint-web/components/HeroSection.vue": {
-    "mtime": 1785860744.9207458,
-    "ast_hash": "47cd22d5ac7faa63ae254d8ab6cb033a",
+    "mtime": 1785860965.1378393,
+    "ast_hash": "d3626cbd82b99eba49576dbd13ea687f",
     "semantic_hash": ""
   },
   "/Users/enesfurkanornek/Documents/projects/karmodint-web/components/ContactSection.vue": {
-    "mtime": 1785860474.0091813,
-    "ast_hash": "f557ba1b122a4cfe962cd49b649d14df",
+    "mtime": 1785860976.2526295,
+    "ast_hash": "d7b03258679bad835ca2a729167f50be",
     "semantic_hash": ""
   },
   "/Users/enesfurkanornek/Documents/projects/karmodint-web/layouts/default.vue": {

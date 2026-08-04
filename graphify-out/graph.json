@@ -13,6 +13,15 @@
       "norm_label": "app.vue"
     },
     {
+      "label": "tailwind.config.js",
+      "file_type": "code",
+      "source_file": "tailwind.config.js",
+      "source_location": "L1",
+      "id": "tailwind_config_js",
+      "community": 11,
+      "norm_label": "tailwind.config.js"
+    },
+    {
       "label": "package.json",
       "file_type": "code",
       "source_file": "package.json",
@@ -2932,9 +2941,9 @@
       "source_file": "components/HeroSection.vue",
       "source_location": "L143",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "components_herosection_vue",
-      "target": "components_herosection_slides",
-      "confidence_score": 1.0
+      "target": "components_herosection_slides"
     },
     {
       "relation": "contains",
@@ -2942,9 +2951,9 @@
       "source_file": "components/HeroSection.vue",
       "source_location": "L166",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "components_herosection_vue",
-      "target": "components_herosection_currentindex",
-      "confidence_score": 1.0
+      "target": "components_herosection_currentindex"
     },
     {
       "relation": "contains",
@@ -2952,9 +2961,9 @@
       "source_file": "components/HeroSection.vue",
       "source_location": "L169",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "components_herosection_vue",
-      "target": "components_herosection_nextslide",
-      "confidence_score": 1.0
+      "target": "components_herosection_nextslide"
     },
     {
       "relation": "contains",
@@ -2962,9 +2971,9 @@
       "source_file": "components/HeroSection.vue",
       "source_location": "L173",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "components_herosection_vue",
-      "target": "components_herosection_prevslide",
-      "confidence_score": 1.0
+      "target": "components_herosection_prevslide"
     },
     {
       "relation": "contains",
@@ -2972,9 +2981,9 @@
       "source_file": "components/HeroSection.vue",
       "source_location": "L177",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "components_herosection_vue",
-      "target": "components_herosection_gotoslide",
-      "confidence_score": 1.0
+      "target": "components_herosection_gotoslide"
     },
     {
       "relation": "contains",
@@ -2982,9 +2991,9 @@
       "source_file": "components/HeroSection.vue",
       "source_location": "L181",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "components_herosection_vue",
-      "target": "components_herosection_startautoplay",
-      "confidence_score": 1.0
+      "target": "components_herosection_startautoplay"
     },
     {
       "relation": "contains",
@@ -2992,9 +3001,9 @@
       "source_file": "components/HeroSection.vue",
       "source_location": "L187",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "components_herosection_vue",
-      "target": "components_herosection_pauseautoplay",
-      "confidence_score": 1.0
+      "target": "components_herosection_pauseautoplay"
     },
     {
       "relation": "contains",
@@ -4988,5 +4997,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "e11d509d80aaa79d429593cf3faa790ba891c695"
+  "built_at_commit": "e147a2ee7492a2e75c3303833db97cb24f9b3fd9"
 }

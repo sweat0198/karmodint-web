@@ -1,12 +1,25 @@
 :root {
   --font-sans: 'Inter', system-ui, sans-serif;
   --font-heading: 'Inter', system-ui, sans-serif;
-  --color-signal-red: #E31E24;
-  --color-primary: #BA0013;
+
+  /* Brand Theme Tokens */
+  --brand-red: #E31E24;
+  --brand-red-hover: #C9181D;
+  --brand-red-dark: #BA0013;
+  --brand-red-deep: #90000F;
+  --brand-navy: #121C2A;
+  --brand-navy-heading: #291715;
+  --brand-navy-slate: #3D4756;
+  --brand-slate-muted: #64748B;
+  --brand-slate-light: #BDC7D9;
+  --brand-rose-bg: #FFF8F7;
+  --brand-rose-card: #FFE9E6;
+  --brand-rose-border: #E7BDB8;
+
   --color-page-bg: #F8FAFC;
   --color-card-bg: #FFFFFF;
   --color-text-primary: #1F2937;
-  --color-text-secondary: #64748B;
+  --color-text-secondary: var(--brand-slate-muted);
 }
 
 body {
@@ -61,4 +74,27 @@ h1, h2, h3, h4, h5, h6 {
 .btn-secondary:hover {
   background-color: #F1F5F9;
 }
+
+/* Brand Utilities Fallback */
+.bg-brand-navy { background-color: var(--brand-navy) !important; }
+.bg-brand-navy-heading { background-color: var(--brand-navy-heading) !important; }
+.bg-brand-navy-slate { background-color: var(--brand-navy-slate) !important; }
+.bg-brand-red { background-color: var(--brand-red) !important; }
+.bg-brand-red-hover:hover { background-color: var(--brand-red-hover) !important; }
+.bg-brand-red-dark { background-color: var(--brand-red-dark) !important; }
+.bg-brand-rose-bg { background-color: var(--brand-rose-bg) !important; }
+.bg-brand-rose-card { background-color: var(--brand-rose-card) !important; }
+
+.text-brand-navy-heading { color: var(--brand-navy-heading) !important; }
+.text-brand-navy-slate { color: var(--brand-navy-slate) !important; }
+.text-brand-red { color: var(--brand-red) !important; }
+.text-brand-red-dark { color: var(--brand-red-dark) !important; }
+.text-brand-red-deep { color: var(--brand-red-deep) !important; }
+.text-brand-slate-muted { color: var(--brand-slate-muted) !important; }
+.text-brand-slate-light { color: var(--brand-slate-light) !important; }
+
+.border-brand-rose-border { border-color: var(--brand-rose-border) !important; }
+.border-brand-navy-slate { border-color: var(--brand-navy-slate) !important; }
+.border-brand-red { border-color: var(--brand-red) !important; }
+
 
