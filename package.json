@@ -1,0 +1,26 @@
+{
+  "name": "karmodint-web",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "bun --bun x nuxi build",
+    "dev": "bun --bun x nuxi dev",
+    "generate": "bun --bun x nuxi generate",
+    "preview": "bun --bun x nuxi preview",
+    "postinstall": "bun --bun x nuxi prepare"
+  },
+  "dependencies": {
+    "@nuxt/ui": "^2.19.2",
+    "@pinia/nuxt": "^0.10.0",
+    "@sanity/client": "^7.1.0",
+    "nuxt": "^3.15.4",
+    "pinia": "^2.3.1",
+    "pinia-plugin-persistedstate": "^4.2.0",
+    "resend": "^4.1.2",
+    "vue": "^3.5.13",
+    "vue-router": "^4.5.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.2"
+  }
+}

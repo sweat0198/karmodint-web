@@ -1,0 +1,64 @@
+:root {
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-heading: 'Inter', system-ui, sans-serif;
+  --color-signal-red: #E31E24;
+  --color-primary: #BA0013;
+  --color-page-bg: #F8FAFC;
+  --color-card-bg: #FFFFFF;
+  --color-text-primary: #1F2937;
+  --color-text-secondary: #64748B;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-page-bg);
+  color: var(--color-text-primary);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  letter-spacing: -0.01em;
+}
+
+/* Structural Precision Utility Classes */
+.structural-card {
+  background-color: #ffffff;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e2e8f0;
+}
+
+.label-caps {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 16px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.btn-primary {
+  background-color: #E31E24;
+  color: #ffffff;
+  border-radius: 4px;
+  font-weight: 600;
+  transition: background-color 0.15s ease-in-out;
+}
+
+.btn-primary:hover {
+  background-color: #BA0013;
+}
+
+.btn-secondary {
+  background-color: transparent;
+  border: 1px solid #1F2937;
+  color: #1F2937;
+  border-radius: 4px;
+  font-weight: 600;
+  transition: all 0.15s ease-in-out;
+}
+
+.btn-secondary:hover {
+  background-color: #F1F5F9;
+}
+

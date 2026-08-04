@@ -1,0 +1,196 @@
+<template>
+  <div class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="mb-8">
+      <span class="label-caps text-[#E31E24] block mb-2">Specifications Summary</span>
+      <h1 class="text-4xl font-bold text-[#1F2937] mb-2">Quote List & Enquiry</h1>
+      <p class="text-slate-600">Review your selected modular structures and request direct factory pricing.</p>
+    </div>
+
+    <!-- Success Confirmation View -->
+    <div v-if="submittedSuccess" class="structural-card p-12 text-center max-w-2xl mx-auto my-12 border-emerald-200">
+      <div class="w-20 h-20 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6 text-4xl border border-emerald-200">
+        ✓
+      </div>
+      <h2 class="text-3xl font-bold text-[#1F2937] mb-4">Quote Request Submitted!</h2>
+      <p class="text-slate-600 mb-6 leading-relaxed">
+        Thank you for submitting your enquiry. A copy of your quote request has been dispatched to your email address (<strong>{{ customer.email }}</strong>), and our sales team is reviewing your specification.
+      </p>
+      <div class="flex justify-center gap-4">
+        <NuxtLink to="/" class="btn-primary px-6 py-3 text-sm font-semibold">
+          Return to Catalog
+        </NuxtLink>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div v-else-if="quoteStore.isEmpty" class="structural-card p-16 text-center max-w-xl mx-auto my-12">
+      <UIcon name="i-heroicons-shopping-bag" class="w-20 h-20 text-slate-400 mx-auto mb-4" />
+      <h3 class="text-2xl font-bold text-[#1F2937] mb-2">Your Quote List is Empty</h3>
+      <p class="text-slate-600 text-sm mb-6">Browse our portable cabins, kiosks, and security gatehouses to add items.</p>
+      <NuxtLink to="/" class="btn-primary px-6 py-3 text-sm font-semibold inline-block">
+        Browse Catalog
+      </NuxtLink>
+    </div>
+
+    <!-- Active Quote List & Contact Form -->
+    <div v-else class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <!-- Items Summary Column (2 cols) -->
+      <div class="lg:col-span-2 space-y-4">
+        <div class="flex items-center justify-between pb-4 border-b border-slate-200">
+          <h2 class="text-xl font-bold text-[#1F2937]">Selected Units ({{ quoteStore.totalItemsCount }})</h2>
+          <button @click="quoteStore.clearQuote()" class="text-xs text-[#E31E24] hover:text-[#BA0013] font-semibold">Clear All</button>
+        </div>
+
+        <div 
+          v-for="item in quoteStore.items" 
+          :key="item.id"
+          class="structural-card p-6 flex flex-col sm:flex-row gap-6 items-start sm:items-center justify-between"
+        >
+          <div class="flex gap-4 items-center">
+            <div class="w-16 h-16 rounded-[4px] bg-slate-50 border border-slate-100 flex items-center justify-center text-[#E31E24] text-2xl flex-shrink-0">
+              <UIcon name="i-heroicons-cube" />
+            </div>
+            <div>
+              <h3 class="text-lg font-bold text-[#1F2937]">{{ item.productName }}</h3>
+              <p class="label-caps text-[#E31E24] mt-0.5">{{ item.variantLabel || 'Standard Spec' }}</p>
+              <p v-if="item.notes" class="text-xs text-slate-500 italic mt-1">Note: "{{ item.notes }}"</p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-6 w-full sm:w-auto justify-between border-t sm:border-t-0 border-slate-100 pt-4 sm:pt-0">
+            <!-- Quantity Controls -->
+            <div class="flex items-center gap-2">
+              <button @click="quoteStore.updateQuantity(item.id, item.quantity - 1)" class="w-8 h-8 rounded-[4px] bg-slate-100 border border-slate-200 text-[#1F2937] font-bold hover:bg-slate-200 text-sm">-</button>
+              <span class="w-8 text-center font-bold text-[#1F2937] text-sm">{{ item.quantity }}</span>
+              <button @click="quoteStore.updateQuantity(item.id, item.quantity + 1)" class="w-8 h-8 rounded-[4px] bg-slate-100 border border-slate-200 text-[#1F2937] font-bold hover:bg-slate-200 text-sm">+</button>
+            </div>
+
+            <!-- Remove Action -->
+            <button @click="quoteStore.removeItem(item.id)" class="text-slate-400 hover:text-[#E31E24] p-2">
+              <UIcon name="i-heroicons-trash" class="w-5 h-5" />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contact Details Form (1 col) -->
+      <div class="structural-card p-6 h-fit">
+        <h2 class="text-xl font-bold text-[#1F2937] mb-2">Contact Details</h2>
+        <p class="text-xs text-slate-500 mb-6">Enter your details to receive an official quote by email.</p>
+
+        <form @submit.prevent="submitQuote" class="space-y-4">
+          <div>
+            <label class="label-caps text-slate-500 mb-1 block">Full Name *</label>
+            <input 
+              v-model="customer.name" 
+              type="text" 
+              required
+              placeholder="John Doe"
+              class="w-full bg-white border border-slate-300 rounded-[4px] px-3.5 py-2 text-sm text-[#1F2937] focus:outline-none focus:border-[#E31E24]"
+            />
+          </div>
+
+          <div>
+            <label class="label-caps text-slate-500 mb-1 block">Work Email *</label>
+            <input 
+              v-model="customer.email" 
+              type="email" 
+              required
+              placeholder="john@company.com"
+              class="w-full bg-white border border-slate-300 rounded-[4px] px-3.5 py-2 text-sm text-[#1F2937] focus:outline-none focus:border-[#E31E24]"
+            />
+          </div>
+
+          <div>
+            <label class="label-caps text-slate-500 mb-1 block">Phone Number</label>
+            <input 
+              v-model="customer.phone" 
+              type="tel" 
+              placeholder="+44 7123 456789"
+              class="w-full bg-white border border-slate-300 rounded-[4px] px-3.5 py-2 text-sm text-[#1F2937] focus:outline-none focus:border-[#E31E24]"
+            />
+          </div>
+
+          <div>
+            <label class="label-caps text-slate-500 mb-1 block">Company / Site Name</label>
+            <input 
+              v-model="customer.company" 
+              type="text" 
+              placeholder="Acme Construction Ltd"
+              class="w-full bg-white border border-slate-300 rounded-[4px] px-3.5 py-2 text-sm text-[#1F2937] focus:outline-none focus:border-[#E31E24]"
+            />
+          </div>
+
+          <div>
+            <label class="label-caps text-slate-500 mb-1 block">General Instructions / Delivery Site</label>
+            <textarea 
+              v-model="customer.notes" 
+              rows="3" 
+              placeholder="Delivery address, access restrictions, or target delivery date..."
+              class="w-full bg-white border border-slate-300 rounded-[4px] px-3.5 py-2 text-sm text-[#1F2937] focus:outline-none focus:border-[#E31E24]"
+            ></textarea>
+          </div>
+
+          <div v-if="errorMessage" class="p-3 bg-red-50 border border-red-200 text-[#E31E24] text-xs rounded-[4px]">
+            {{ errorMessage }}
+          </div>
+
+          <button 
+            type="submit" 
+            :disabled="submitting"
+            class="btn-primary w-full py-3 text-sm font-semibold disabled:opacity-50 flex items-center justify-center gap-2"
+          >
+            <UIcon v-if="submitting" name="i-heroicons-arrow-path" class="w-5 h-5 animate-spin" />
+            <span>{{ submitting ? 'Submitting Request...' : 'Submit Combined Quote Request' }}</span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { useQuoteStore } from '~/stores/quote'
+
+const quoteStore = useQuoteStore()
+
+const customer = ref({
+  name: '',
+  email: '',
+  phone: '',
+  company: '',
+  notes: ''
+})
+
+const submitting = ref(false)
+const submittedSuccess = ref(false)
+const errorMessage = ref('')
+
+async function submitQuote() {
+  if (!customer.value.name || !customer.value.email) return
+
+  submitting.value = true
+  errorMessage.value = ''
+
+  try {
+    const res: any = await $fetch('/api/quote', {
+      method: 'POST',
+      body: {
+        items: quoteStore.items,
+        customer: customer.value
+      }
+    })
+
+    if (res?.success) {
+      submittedSuccess.value = true
+      quoteStore.clearQuote()
+    } else {
+      errorMessage.value = 'Failed to process request. Please check details.'
+    }
+  } catch (err: any) {
+    errorMessage.value = err?.data?.statusMessage || err.message || 'Submission error.'
+  } finally {
+    submitting.value = false
+  }
+}
+</script>
