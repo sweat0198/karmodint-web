@@ -27,16 +27,16 @@
           Products
         </NuxtLink>
         <NuxtLink 
-          to="/about-contact" 
+          to="/about" 
           class="text-base transition-colors py-1 relative"
-          :class="route.path === '/about-contact' && !route.hash ? 'text-white font-bold border-b-2 border-brand-red pb-[6px]' : 'text-brand-slate-light hover:text-white font-medium'"
+          :class="route.path === '/about' && !route.hash ? 'text-white font-bold border-b-2 border-brand-red pb-[6px]' : 'text-brand-slate-light hover:text-white font-medium'"
         >
           About Us
         </NuxtLink>
         <NuxtLink 
-          to="/about-contact#contact" 
+          to="/about#contact" 
           class="text-base transition-colors py-1 relative"
-          :class="route.hash === '#contact' ? 'text-white font-bold border-b-2 border-brand-red pb-[6px]' : 'text-brand-slate-light hover:text-white font-medium'"
+          :class="route.path === '/about' && route.hash === '#contact' ? 'text-white font-bold border-b-2 border-brand-red pb-[6px]' : 'text-brand-slate-light hover:text-white font-medium'"
         >
           Contact Us
         </NuxtLink>
@@ -103,14 +103,14 @@
         Products
       </NuxtLink>
       <NuxtLink 
-        to="/about-contact" 
+        to="/about" 
         @click="isMobileMenuOpen = false"
         class="block text-base font-medium text-brand-slate-light hover:text-white"
       >
         About Us
       </NuxtLink>
       <NuxtLink 
-        to="/about-contact#contact" 
+        to="/about#contact" 
         @click="isMobileMenuOpen = false"
         class="block text-base font-medium text-brand-slate-light hover:text-white"
       >

@@ -69,7 +69,7 @@
           </div>
           <ul class="flex flex-col gap-2 w-full">
             <li>
-              <NuxtLink to="/about-contact" class="text-brand-slate-light hover:text-white transition-colors text-base leading-6">
+              <NuxtLink to="/about" class="text-brand-slate-light hover:text-white transition-colors text-base leading-6">
                 About Us
               </NuxtLink>
             </li>
@@ -79,12 +79,12 @@
               </NuxtLink>
             </li>
             <li>
-              <NuxtLink to="/about-contact" class="text-brand-slate-light hover:text-white transition-colors text-base leading-6">
+              <NuxtLink to="/about" class="text-brand-slate-light hover:text-white transition-colors text-base leading-6">
                 ISO 9001 Certified
               </NuxtLink>
             </li>
             <li>
-              <NuxtLink to="/about-contact" class="text-brand-slate-light hover:text-white transition-colors text-base leading-6">
+              <NuxtLink to="/about" class="text-brand-slate-light hover:text-white transition-colors text-base leading-6">
                 Environment Policy
               </NuxtLink>
             </li>
@@ -100,17 +100,17 @@
           </div>
           <ul class="flex flex-col gap-2 w-full">
             <li>
-              <NuxtLink to="/about-contact" class="text-brand-slate-light hover:text-white transition-colors text-base leading-6">
+              <NuxtLink to="/about" class="text-brand-slate-light hover:text-white transition-colors text-base leading-6">
                 Terms of Service
               </NuxtLink>
             </li>
             <li>
-              <NuxtLink to="/about-contact" class="text-brand-slate-light hover:text-white transition-colors text-base leading-6">
+              <NuxtLink to="/about" class="text-brand-slate-light hover:text-white transition-colors text-base leading-6">
                 Privacy Policy
               </NuxtLink>
             </li>
             <li>
-              <NuxtLink to="/about-contact" class="text-brand-slate-light hover:text-white transition-colors text-base leading-6">
+              <NuxtLink to="/about" class="text-brand-slate-light hover:text-white transition-colors text-base leading-6">
                 Cookie Policy
               </NuxtLink>
             </li>

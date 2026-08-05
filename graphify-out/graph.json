@@ -490,6 +490,42 @@
       "norm_label": "contactsection.vue"
     },
     {
+      "label": "TimelineSection.vue",
+      "file_type": "code",
+      "source_file": "components/about/TimelineSection.vue",
+      "source_location": "L1",
+      "id": "components_about_timelinesection_vue",
+      "community": 59,
+      "norm_label": "timelinesection.vue"
+    },
+    {
+      "label": "ProjectsBentoSection.vue",
+      "file_type": "code",
+      "source_file": "components/about/ProjectsBentoSection.vue",
+      "source_location": "L1",
+      "id": "components_about_projectsbentosection_vue",
+      "community": 59,
+      "norm_label": "projectsbentosection.vue"
+    },
+    {
+      "label": "HeroSection.vue",
+      "file_type": "code",
+      "source_file": "components/about/HeroSection.vue",
+      "source_location": "L1",
+      "id": "components_about_herosection_vue",
+      "community": 61,
+      "norm_label": "herosection.vue"
+    },
+    {
+      "label": "MissionVisionSection.vue",
+      "file_type": "code",
+      "source_file": "components/about/MissionVisionSection.vue",
+      "source_location": "L1",
+      "id": "components_about_missionvisionsection_vue",
+      "community": 59,
+      "norm_label": "missionvisionsection.vue"
+    },
+    {
       "label": "default.vue",
       "file_type": "code",
       "source_file": "layouts/default.vue",
@@ -524,6 +560,15 @@
       "id": "pages_quote_vue",
       "community": 48,
       "norm_label": "quote.vue"
+    },
+    {
+      "label": "about.vue",
+      "file_type": "code",
+      "source_file": "pages/about.vue",
+      "source_location": "L1",
+      "id": "pages_about_vue",
+      "community": 59,
+      "norm_label": "about.vue"
     },
     {
       "label": "index.vue",
@@ -1944,7 +1989,7 @@
       "source_file": ".agents/skills/graphify/SKILL.md",
       "source_location": "L775",
       "id": "graphify_skill_for_update_incremental_re_extraction",
-      "community": 1,
+      "community": 60,
       "norm_label": "for --update (incremental re-extraction)"
     },
     {
@@ -1953,7 +1998,7 @@
       "source_file": ".agents/skills/graphify/SKILL.md",
       "source_location": "L779",
       "id": "graphify_skill_codeblock_32",
-      "community": 1,
+      "community": 60,
       "norm_label": "code:bash ($(cat graphify-out/.graphify_python) -c \")"
     },
     {
@@ -1962,7 +2007,7 @@
       "source_file": ".agents/skills/graphify/SKILL.md",
       "source_location": "L802",
       "id": "graphify_skill_codeblock_33",
-      "community": 1,
+      "community": 60,
       "norm_label": "code:bash ($(cat graphify-out/.graphify_python) -c \")"
     },
     {
@@ -1971,7 +2016,7 @@
       "source_file": ".agents/skills/graphify/SKILL.md",
       "source_location": "L820",
       "id": "graphify_skill_codeblock_34",
-      "community": 1,
+      "community": 60,
       "norm_label": "code:bash ($(cat graphify-out/.graphify_python) -c \")"
     },
     {
@@ -1980,7 +2025,7 @@
       "source_file": ".agents/skills/graphify/SKILL.md",
       "source_location": "L840",
       "id": "graphify_skill_codeblock_35",
-      "community": 1,
+      "community": 60,
       "norm_label": "code:bash (if [ ! -f graphify-out/.graphify_extract.json ]; then)"
     },
     {
@@ -1989,7 +2034,7 @@
       "source_file": ".agents/skills/graphify/SKILL.md",
       "source_location": "L853",
       "id": "graphify_skill_codeblock_36",
-      "community": 1,
+      "community": 60,
       "norm_label": "code:bash ($(cat graphify-out/.graphify_python) -c \")"
     },
     {
@@ -1998,7 +2043,7 @@
       "source_file": ".agents/skills/graphify/SKILL.md",
       "source_location": "L904",
       "id": "graphify_skill_codeblock_37",
-      "community": 1,
+      "community": 60,
       "norm_label": "code:bash ($(cat graphify-out/.graphify_python) -c \")"
     },
     {
@@ -2587,6 +2632,42 @@
       "norm_label": "consequences"
     },
     {
+      "label": "AboutMissionVisionSection.vue",
+      "file_type": "code",
+      "source_file": "components/AboutMissionVisionSection.vue",
+      "source_location": "L1",
+      "community": 56,
+      "norm_label": "aboutmissionvisionsection.vue",
+      "id": "components_aboutmissionvisionsection_vue"
+    },
+    {
+      "label": "AboutHeroSection.vue",
+      "file_type": "code",
+      "source_file": "components/AboutHeroSection.vue",
+      "source_location": "L1",
+      "community": 55,
+      "norm_label": "aboutherosection.vue",
+      "id": "components_aboutherosection_vue"
+    },
+    {
+      "label": "AboutProjectsBentoSection.vue",
+      "file_type": "code",
+      "source_file": "components/AboutProjectsBentoSection.vue",
+      "source_location": "L1",
+      "community": 57,
+      "norm_label": "aboutprojectsbentosection.vue",
+      "id": "components_aboutprojectsbentosection_vue"
+    },
+    {
+      "label": "AboutTimelineSection.vue",
+      "file_type": "code",
+      "source_file": "components/AboutTimelineSection.vue",
+      "source_location": "L1",
+      "community": 58,
+      "norm_label": "abouttimelinesection.vue",
+      "id": "components_abouttimelinesection_vue"
+    },
+    {
       "label": "quoteStore",
       "file_type": "code",
       "source_file": "pages/index.vue",
@@ -3013,6 +3094,39 @@
       "confidence_score": 1.0,
       "source": "components_herosection_vue",
       "target": "components_herosection_pauseautoplay"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "pages/about.vue",
+      "source_location": "L24",
+      "weight": 1.0,
+      "source": "pages_about_vue",
+      "target": "components_about_timelinesection_vue",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "pages/about.vue",
+      "source_location": "L26",
+      "weight": 1.0,
+      "source": "pages_about_vue",
+      "target": "components_about_projectsbentosection_vue",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "pages/about.vue",
+      "source_location": "L25",
+      "weight": 1.0,
+      "source": "pages_about_vue",
+      "target": "components_about_missionvisionsection_vue",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -5006,5 +5120,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "140a8536ba81d7997cc3e4c561da64d840375c51"
+  "built_at_commit": "d07c3383297e0bdbb36c49a8b274b4ff0a8d9aab"
 }
