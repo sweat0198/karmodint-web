@@ -66,5 +66,7 @@ export const useQuoteStore = defineStore('quote', {
     }
   },
 
-  persist: true
+  persist: {
+    storage: piniaPluginPersistedstate.localStorage()
+  }
 })

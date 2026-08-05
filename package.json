@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "build": "bun --bun x nuxi build",
-    "dev": "bun --bun x nuxi dev",
+    "dev": "bun x nuxi dev",
     "generate": "bun --bun x nuxi generate",
     "preview": "bun --bun x nuxi preview",
     "postinstall": "bun --bun x nuxi prepare"

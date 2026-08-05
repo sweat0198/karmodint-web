@@ -22,7 +22,10 @@ export default {
         'brand-slate-light': '#BDC7D9',
         'brand-rose-bg': '#FFF8F7',
         'brand-rose-card': '#FFE9E6',
-        'brand-rose-border': '#E7BDB8'
+        'brand-rose-border': '#E7BDB8',
+        'brand-rose-text': '#5D3F3C',
+        'brand-rose-footer': '#FDDBD7',
+        'brand-navy-dark': '#402B29'
       }
     }
   }

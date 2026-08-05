@@ -490,6 +490,33 @@
       "norm_label": "contactsection.vue"
     },
     {
+      "label": "form",
+      "file_type": "code",
+      "source_file": "components/ContactSection.vue",
+      "source_location": "L207",
+      "id": "components_contactsection_form",
+      "community": 52,
+      "norm_label": "form"
+    },
+    {
+      "label": "submitted",
+      "file_type": "code",
+      "source_file": "components/ContactSection.vue",
+      "source_location": "L215",
+      "id": "components_contactsection_submitted",
+      "community": 52,
+      "norm_label": "submitted"
+    },
+    {
+      "label": "handleSubmit()",
+      "file_type": "code",
+      "source_file": "components/ContactSection.vue",
+      "source_location": "L217",
+      "id": "components_contactsection_handlesubmit",
+      "community": 52,
+      "norm_label": "handlesubmit()"
+    },
+    {
       "label": "TimelineSection.vue",
       "file_type": "code",
       "source_file": "components/about/TimelineSection.vue",
@@ -551,6 +578,15 @@
       "id": "pages_about_contact_vue",
       "community": 47,
       "norm_label": "about-contact.vue"
+    },
+    {
+      "label": "contact.vue",
+      "file_type": "code",
+      "source_file": "pages/contact.vue",
+      "source_location": "L1",
+      "id": "pages_contact_vue",
+      "community": 62,
+      "norm_label": "contact.vue"
     },
     {
       "label": "quote.vue",
@@ -3096,15 +3132,45 @@
       "target": "components_herosection_pauseautoplay"
     },
     {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components/ContactSection.vue",
+      "source_location": "L207",
+      "weight": 1.0,
+      "source": "components_contactsection_vue",
+      "target": "components_contactsection_form",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components/ContactSection.vue",
+      "source_location": "L215",
+      "weight": 1.0,
+      "source": "components_contactsection_vue",
+      "target": "components_contactsection_submitted",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "components/ContactSection.vue",
+      "source_location": "L217",
+      "weight": 1.0,
+      "source": "components_contactsection_vue",
+      "target": "components_contactsection_handlesubmit",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "pages/about.vue",
       "source_location": "L24",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "pages_about_vue",
-      "target": "components_about_timelinesection_vue",
-      "confidence_score": 1.0
+      "target": "components_about_timelinesection_vue"
     },
     {
       "relation": "imports_from",
@@ -3113,9 +3179,9 @@
       "source_file": "pages/about.vue",
       "source_location": "L26",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "pages_about_vue",
-      "target": "components_about_projectsbentosection_vue",
-      "confidence_score": 1.0
+      "target": "components_about_projectsbentosection_vue"
     },
     {
       "relation": "imports_from",
@@ -3124,9 +3190,9 @@
       "source_file": "pages/about.vue",
       "source_location": "L25",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "pages_about_vue",
-      "target": "components_about_missionvisionsection_vue",
-      "confidence_score": 1.0
+      "target": "components_about_missionvisionsection_vue"
     },
     {
       "relation": "contains",
@@ -5120,5 +5186,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "d07c3383297e0bdbb36c49a8b274b4ff0a8d9aab"
+  "built_at_commit": "759e9c60a9cba601af66e1ee971c5c515f90c9f1"
 }
