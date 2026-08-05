@@ -526,6 +526,15 @@
       "norm_label": "quote.vue"
     },
     {
+      "label": "index.vue",
+      "file_type": "code",
+      "source_file": "pages/products/index.vue",
+      "source_location": "L1",
+      "id": "pages_products_index_vue",
+      "community": 54,
+      "norm_label": "index.vue"
+    },
+    {
       "label": "[slug].vue",
       "file_type": "code",
       "source_file": "pages/products/[slug].vue",
@@ -4997,5 +5006,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "e147a2ee7492a2e75c3303833db97cb24f9b3fd9"
+  "built_at_commit": "140a8536ba81d7997cc3e4c561da64d840375c51"
 }

@@ -1,16 +1,16 @@
-# Graph Report - karmodint-web  (2026-08-04)
+# Graph Report - karmodint-web  (2026-08-05)
 
 ## Corpus Check
-- 52 files · ~247,724 words
+- 53 files · ~248,604 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 290 nodes · 238 edges · 54 communities (32 shown, 22 thin omitted)
+- 291 nodes · 238 edges · 55 communities (33 shown, 22 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `e147a2ee`
+- Built from commit: `140a8536`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -72,7 +72,7 @@
 ## Surprising Connections (you probably didn't know these)
 - None detected - all connections are within the same source files.
 
-## Communities (54 total, 22 thin omitted)
+## Communities (55 total, 22 thin omitted)
 
 ### Community 0 - "Community 0"
 Cohesion: 0.06
@@ -161,7 +161,7 @@ _Questions this graph is uniquely positioned to answer:_
 - **Why does `What You Must Do When Invoked` connect `Community 0` to `Community 1`, `Community 5`?**
   _High betweenness centrality (0.063) - this node is a cross-community bridge._
 - **Why does `/graphify` connect `Community 1` to `Community 0`?**
-  _High betweenness centrality (0.052) - this node is a cross-community bridge._
+  _High betweenness centrality (0.051) - this node is a cross-community bridge._
 - **Why does `Step 3 - Extract entities and relationships` connect `Community 5` to `Community 0`?**
   _High betweenness centrality (0.021) - this node is a cross-community bridge._
 - **What connects `name`, `type`, `private` to the rest of the system?**

@@ -13,7 +13,7 @@
         </div>
 
         <NuxtLink 
-          to="/categories/portable-cabins" 
+          to="/products" 
           class="text-brand-red-dark hover:text-brand-red-deep text-xs font-semibold tracking-[1.2px] uppercase inline-flex items-center gap-1 transition-colors"
         >
           <span>VIEW ALL SPECIFICATIONS</span>

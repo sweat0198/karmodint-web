@@ -15,6 +15,13 @@
         <NuxtLink 
           to="/" 
           class="text-base transition-colors py-1 relative"
+          :class="route.path === '/' ? 'text-white font-bold border-b-2 border-brand-red pb-[6px]' : 'text-brand-slate-light hover:text-white font-medium'"
+        >
+          Home
+        </NuxtLink>
+        <NuxtLink 
+          to="/products" 
+          class="text-base transition-colors py-1 relative"
           :class="isProductsActive ? 'text-white font-bold border-b-2 border-brand-red pb-[6px]' : 'text-brand-slate-light hover:text-white font-medium'"
         >
           Products
@@ -22,16 +29,9 @@
         <NuxtLink 
           to="/about-contact" 
           class="text-base transition-colors py-1 relative"
-          :class="route.path === '/about-contact' ? 'text-white font-bold border-b-2 border-brand-red pb-[6px]' : 'text-brand-slate-light hover:text-white font-medium'"
+          :class="route.path === '/about-contact' && !route.hash ? 'text-white font-bold border-b-2 border-brand-red pb-[6px]' : 'text-brand-slate-light hover:text-white font-medium'"
         >
           About Us
-        </NuxtLink>
-        <NuxtLink 
-          to="/categories/portable-cabins" 
-          class="text-base transition-colors py-1 relative"
-          :class="route.path.includes('/categories') ? 'text-white font-bold border-b-2 border-brand-red pb-[6px]' : 'text-brand-slate-light hover:text-white font-medium'"
-        >
-          Gallery
         </NuxtLink>
         <NuxtLink 
           to="/about-contact#contact" 
@@ -93,6 +93,13 @@
         @click="isMobileMenuOpen = false"
         class="block text-base font-medium text-brand-slate-light hover:text-white"
       >
+        Home
+      </NuxtLink>
+      <NuxtLink 
+        to="/products" 
+        @click="isMobileMenuOpen = false"
+        class="block text-base font-medium text-brand-slate-light hover:text-white"
+      >
         Products
       </NuxtLink>
       <NuxtLink 
@@ -103,14 +110,7 @@
         About Us
       </NuxtLink>
       <NuxtLink 
-        to="/categories/portable-cabins" 
-        @click="isMobileMenuOpen = false"
-        class="block text-base font-medium text-brand-slate-light hover:text-white"
-      >
-        Gallery
-      </NuxtLink>
-      <NuxtLink 
-        to="/about-contact" 
+        to="/about-contact#contact" 
         @click="isMobileMenuOpen = false"
         class="block text-base font-medium text-brand-slate-light hover:text-white"
       >
@@ -146,6 +146,6 @@ const quoteStore = useQuoteStore()
 const isMobileMenuOpen = ref(false)
 
 const isProductsActive = computed(() => {
-  return route.path === '/' || route.path.startsWith('/products')
+  return route.path.startsWith('/products')
 })
 </script>
