@@ -12,8 +12,8 @@
           class="relative min-h-[380px] lg:min-h-[580px] flex flex-col justify-end p-8 lg:p-12 overflow-hidden"
         >
           <img
-            src="/images/hero-building-enhanced.png"
-            alt="Modular Construction"
+            src="/images/get-in-touch.jpg"
+            alt="Modular Building Architecture"
             class="absolute inset-0 w-full h-full object-cover object-center"
           />
           <!-- Dark Gradient Overlay -->

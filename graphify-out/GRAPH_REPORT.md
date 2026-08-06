@@ -1,7 +1,7 @@
-# Graph Report - karmodint-web  (2026-08-05)
+# Graph Report - karmodint-web  (2026-08-06)
 
 ## Corpus Check
-- 59 files · ~249,986 words
+- 59 files · ~265,854 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
@@ -10,7 +10,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `759e9c60`
+- Built from commit: `9afb9126`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 

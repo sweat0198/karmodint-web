@@ -10,8 +10,8 @@
     "semantic_hash": ""
   },
   "/Users/enesfurkanornek/Documents/projects/karmodint-web/package.json": {
-    "mtime": 1785942002.23868,
-    "ast_hash": "fc086d9eb0939f3bad01aa889306f2a4",
+    "mtime": 1786053574.1234143,
+    "ast_hash": "43c1e40bf44a8a533fc6d598b5f651c3",
     "semantic_hash": ""
   },
   "/Users/enesfurkanornek/Documents/projects/karmodint-web/nuxt.config.ts": {
@@ -50,28 +50,28 @@
     "semantic_hash": ""
   },
   "/Users/enesfurkanornek/Documents/projects/karmodint-web/components/AppHeader.vue": {
-    "mtime": 1785941860.3927479,
-    "ast_hash": "8dccfcb98ac481a8fe0bed989c97764c",
+    "mtime": 1785942410.0317075,
+    "ast_hash": "cff5d48976ef60fbd3a6bb352a03690c",
     "semantic_hash": ""
   },
   "/Users/enesfurkanornek/Documents/projects/karmodint-web/components/ProductCatalogSection.vue": {
-    "mtime": 1785940655.4136264,
-    "ast_hash": "26a692b7551f36f6420714e100fb3db2",
+    "mtime": 1785942421.598838,
+    "ast_hash": "2ef699db805672c215aa6b493f1a6491",
     "semantic_hash": ""
   },
   "/Users/enesfurkanornek/Documents/projects/karmodint-web/components/AppFooter.vue": {
-    "mtime": 1785941169.8388739,
-    "ast_hash": "d2874455c9f1f6063c6fa3c2e7feea4d",
+    "mtime": 1785942419.7000828,
+    "ast_hash": "f0ecbcc5202a0bc62d8e9aec76846763",
     "semantic_hash": ""
   },
   "/Users/enesfurkanornek/Documents/projects/karmodint-web/components/HeroSection.vue": {
-    "mtime": 1785860965.1378393,
-    "ast_hash": "d3626cbd82b99eba49576dbd13ea687f",
+    "mtime": 1785942423.096943,
+    "ast_hash": "41d7ab574eb220ef847b6a54fc19b101",
     "semantic_hash": ""
   },
   "/Users/enesfurkanornek/Documents/projects/karmodint-web/components/ContactSection.vue": {
-    "mtime": 1785942329.5658298,
-    "ast_hash": "b9728d26c14439b5d9d7bb35b4622561",
+    "mtime": 1786053768.381085,
+    "ast_hash": "9b29674f257d475b8b837da59e1f8618",
     "semantic_hash": ""
   },
   "/Users/enesfurkanornek/Documents/projects/karmodint-web/components/about/TimelineSection.vue": {
@@ -327,6 +327,11 @@
   "/Users/enesfurkanornek/Documents/projects/karmodint-web/public/images/hero-building-enhanced.png": {
     "mtime": 1785860625.2960572,
     "ast_hash": "09b84cf2b6444eec6d711791e3d90ec9",
+    "semantic_hash": ""
+  },
+  "/Users/enesfurkanornek/Documents/projects/karmodint-web/public/images/get-in-touch.jpg": {
+    "mtime": 1786053756.1473348,
+    "ast_hash": "2b1e8c0be1615da89a9c33143170f2ae",
     "semantic_hash": ""
   },
   "/Users/enesfurkanornek/Documents/projects/karmodint-web/public/images/product-security-cabin-110.png": {

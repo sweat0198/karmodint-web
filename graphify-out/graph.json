@@ -367,7 +367,7 @@
       "label": "quoteStore",
       "file_type": "code",
       "source_file": "components/ProductCatalogSection.vue",
-      "source_location": "L99",
+      "source_location": "L129",
       "id": "components_productcatalogsection_quotestore",
       "community": 50,
       "norm_label": "quotestore"
@@ -376,7 +376,7 @@
       "label": "router",
       "file_type": "code",
       "source_file": "components/ProductCatalogSection.vue",
-      "source_location": "L100",
+      "source_location": "L130",
       "id": "components_productcatalogsection_router",
       "community": 50,
       "norm_label": "router"
@@ -385,7 +385,7 @@
       "label": "products",
       "file_type": "code",
       "source_file": "components/ProductCatalogSection.vue",
-      "source_location": "L102",
+      "source_location": "L132",
       "id": "components_productcatalogsection_products",
       "community": 50,
       "norm_label": "products"
@@ -394,7 +394,7 @@
       "label": "handleSelect()",
       "file_type": "code",
       "source_file": "components/ProductCatalogSection.vue",
-      "source_location": "L144",
+      "source_location": "L174",
       "id": "components_productcatalogsection_handleselect",
       "community": 50,
       "norm_label": "handleselect()"
@@ -421,7 +421,7 @@
       "label": "slides",
       "file_type": "code",
       "source_file": "components/HeroSection.vue",
-      "source_location": "L143",
+      "source_location": "L242",
       "id": "components_herosection_slides",
       "community": 53,
       "norm_label": "slides"
@@ -430,7 +430,7 @@
       "label": "currentIndex",
       "file_type": "code",
       "source_file": "components/HeroSection.vue",
-      "source_location": "L166",
+      "source_location": "L265",
       "id": "components_herosection_currentindex",
       "community": 53,
       "norm_label": "currentindex"
@@ -439,7 +439,7 @@
       "label": "nextSlide()",
       "file_type": "code",
       "source_file": "components/HeroSection.vue",
-      "source_location": "L169",
+      "source_location": "L268",
       "id": "components_herosection_nextslide",
       "community": 53,
       "norm_label": "nextslide()"
@@ -448,7 +448,7 @@
       "label": "prevSlide()",
       "file_type": "code",
       "source_file": "components/HeroSection.vue",
-      "source_location": "L173",
+      "source_location": "L272",
       "id": "components_herosection_prevslide",
       "community": 53,
       "norm_label": "prevslide()"
@@ -457,7 +457,7 @@
       "label": "goToSlide()",
       "file_type": "code",
       "source_file": "components/HeroSection.vue",
-      "source_location": "L177",
+      "source_location": "L276",
       "id": "components_herosection_gotoslide",
       "community": 53,
       "norm_label": "gotoslide()"
@@ -466,7 +466,7 @@
       "label": "startAutoplay()",
       "file_type": "code",
       "source_file": "components/HeroSection.vue",
-      "source_location": "L181",
+      "source_location": "L280",
       "id": "components_herosection_startautoplay",
       "community": 53,
       "norm_label": "startautoplay()"
@@ -475,7 +475,7 @@
       "label": "pauseAutoplay()",
       "file_type": "code",
       "source_file": "components/HeroSection.vue",
-      "source_location": "L187",
+      "source_location": "L286",
       "id": "components_herosection_pauseautoplay",
       "community": 53,
       "norm_label": "pauseautoplay()"
@@ -493,7 +493,7 @@
       "label": "form",
       "file_type": "code",
       "source_file": "components/ContactSection.vue",
-      "source_location": "L207",
+      "source_location": "L304",
       "id": "components_contactsection_form",
       "community": 52,
       "norm_label": "form"
@@ -502,7 +502,7 @@
       "label": "submitted",
       "file_type": "code",
       "source_file": "components/ContactSection.vue",
-      "source_location": "L215",
+      "source_location": "L312",
       "id": "components_contactsection_submitted",
       "community": 52,
       "norm_label": "submitted"
@@ -511,7 +511,7 @@
       "label": "handleSubmit()",
       "file_type": "code",
       "source_file": "components/ContactSection.vue",
-      "source_location": "L217",
+      "source_location": "L314",
       "id": "components_contactsection_handlesubmit",
       "community": 52,
       "norm_label": "handlesubmit()"
@@ -3137,9 +3137,9 @@
       "source_file": "components/ContactSection.vue",
       "source_location": "L207",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "components_contactsection_vue",
-      "target": "components_contactsection_form",
-      "confidence_score": 1.0
+      "target": "components_contactsection_form"
     },
     {
       "relation": "contains",
@@ -3147,9 +3147,9 @@
       "source_file": "components/ContactSection.vue",
       "source_location": "L215",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "components_contactsection_vue",
-      "target": "components_contactsection_submitted",
-      "confidence_score": 1.0
+      "target": "components_contactsection_submitted"
     },
     {
       "relation": "contains",
@@ -3157,9 +3157,9 @@
       "source_file": "components/ContactSection.vue",
       "source_location": "L217",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "components_contactsection_vue",
-      "target": "components_contactsection_handlesubmit",
-      "confidence_score": 1.0
+      "target": "components_contactsection_handlesubmit"
     },
     {
       "relation": "imports_from",
@@ -5186,5 +5186,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "759e9c60a9cba601af66e1ee971c5c515f90c9f1"
+  "built_at_commit": "9afb9126749cd803cceee2bc7c05810928cd12e6"
 }
