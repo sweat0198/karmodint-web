@@ -9,8 +9,13 @@
     "ast_hash": "5e407925ae5102a82f2d832f6bda9119",
     "semantic_hash": ""
   },
+  "/Users/enesfurkanornek/Documents/projects/karmodint-web/vue-shim.d.ts": {
+    "mtime": 1786054687.8780274,
+    "ast_hash": "15f258a20951d8fbe51b57f7b8ce3776",
+    "semantic_hash": ""
+  },
   "/Users/enesfurkanornek/Documents/projects/karmodint-web/package.json": {
-    "mtime": 1786053574.1234143,
+    "mtime": 1786053856.0339546,
     "ast_hash": "43c1e40bf44a8a533fc6d598b5f651c3",
     "semantic_hash": ""
   },
@@ -22,6 +27,11 @@
   "/Users/enesfurkanornek/Documents/projects/karmodint-web/tsconfig.json": {
     "mtime": 1785840814.2720952,
     "ast_hash": "07807a46dbdf0707e8087ac313b83239",
+    "semantic_hash": ""
+  },
+  "/Users/enesfurkanornek/Documents/projects/karmodint-web/types/configurator.ts": {
+    "mtime": 1786054692.418168,
+    "ast_hash": "706f19c88767f71ee5ac11203d59084a",
     "semantic_hash": ""
   },
   "/Users/enesfurkanornek/Documents/projects/karmodint-web/app/app.vue": {
@@ -50,8 +60,8 @@
     "semantic_hash": ""
   },
   "/Users/enesfurkanornek/Documents/projects/karmodint-web/components/AppHeader.vue": {
-    "mtime": 1785942410.0317075,
-    "ast_hash": "cff5d48976ef60fbd3a6bb352a03690c",
+    "mtime": 1786055187.8127446,
+    "ast_hash": "de02248088a95e1af4a4c7ecbf1972ac",
     "semantic_hash": ""
   },
   "/Users/enesfurkanornek/Documents/projects/karmodint-web/components/ProductCatalogSection.vue": {
@@ -60,8 +70,8 @@
     "semantic_hash": ""
   },
   "/Users/enesfurkanornek/Documents/projects/karmodint-web/components/AppFooter.vue": {
-    "mtime": 1785942419.7000828,
-    "ast_hash": "f0ecbcc5202a0bc62d8e9aec76846763",
+    "mtime": 1786055199.0541744,
+    "ast_hash": "91559503e2742eab235d490725f0c698",
     "semantic_hash": ""
   },
   "/Users/enesfurkanornek/Documents/projects/karmodint-web/components/HeroSection.vue": {
@@ -70,8 +80,8 @@
     "semantic_hash": ""
   },
   "/Users/enesfurkanornek/Documents/projects/karmodint-web/components/ContactSection.vue": {
-    "mtime": 1786053768.381085,
-    "ast_hash": "9b29674f257d475b8b837da59e1f8618",
+    "mtime": 1786053854.4519534,
+    "ast_hash": "4c358eac97c9bf34ed6b64f3b3e4bff9",
     "semantic_hash": ""
   },
   "/Users/enesfurkanornek/Documents/projects/karmodint-web/components/about/TimelineSection.vue": {
@@ -80,8 +90,8 @@
     "semantic_hash": ""
   },
   "/Users/enesfurkanornek/Documents/projects/karmodint-web/components/about/ProjectsBentoSection.vue": {
-    "mtime": 1785941652.336077,
-    "ast_hash": "55d7179d6e96e7f52154b7c72bc4d34f",
+    "mtime": 1786055439.7778907,
+    "ast_hash": "d9d94e705e1bebc55625f5302b2c2649",
     "semantic_hash": ""
   },
   "/Users/enesfurkanornek/Documents/projects/karmodint-web/components/about/HeroSection.vue": {
@@ -94,6 +104,21 @@
     "ast_hash": "d4330327f6de63a52afb38f7fcd5a5bd",
     "semantic_hash": ""
   },
+  "/Users/enesfurkanornek/Documents/projects/karmodint-web/components/configurator/ProductConfigurator.vue": {
+    "mtime": 1786054698.944974,
+    "ast_hash": "2ee1c445087a199bc74f369a44097f1f",
+    "semantic_hash": ""
+  },
+  "/Users/enesfurkanornek/Documents/projects/karmodint-web/components/configurator/ItemConfigurator.vue": {
+    "mtime": 1786054704.7763135,
+    "ast_hash": "22263fbf46496e6eef64d781e6a51f2a",
+    "semantic_hash": ""
+  },
+  "/Users/enesfurkanornek/Documents/projects/karmodint-web/components/configurator/ConfiguratorPriceBar.vue": {
+    "mtime": 1786054401.8514965,
+    "ast_hash": "bc6c510493fb56e636b9a53c81b93fed",
+    "semantic_hash": ""
+  },
   "/Users/enesfurkanornek/Documents/projects/karmodint-web/layouts/default.vue": {
     "mtime": 1785859905.924435,
     "ast_hash": "ffcdc575693db185295e48e8a59e53fb",
@@ -102,6 +127,11 @@
   "/Users/enesfurkanornek/Documents/projects/karmodint-web/pages/index.vue": {
     "mtime": 1785860479.0716422,
     "ast_hash": "4864e95f44128bb151f30b4d0b531353",
+    "semantic_hash": ""
+  },
+  "/Users/enesfurkanornek/Documents/projects/karmodint-web/pages/gallery.vue": {
+    "mtime": 1786055366.1271303,
+    "ast_hash": "1d2ff7d557e0e7a11af78f75ebd41f74",
     "semantic_hash": ""
   },
   "/Users/enesfurkanornek/Documents/projects/karmodint-web/pages/about-contact.vue": {
@@ -329,11 +359,6 @@
     "ast_hash": "09b84cf2b6444eec6d711791e3d90ec9",
     "semantic_hash": ""
   },
-  "/Users/enesfurkanornek/Documents/projects/karmodint-web/public/images/get-in-touch.jpg": {
-    "mtime": 1786053756.1473348,
-    "ast_hash": "2b1e8c0be1615da89a9c33143170f2ae",
-    "semantic_hash": ""
-  },
   "/Users/enesfurkanornek/Documents/projects/karmodint-web/public/images/product-security-cabin-110.png": {
     "mtime": 1785860449.3291562,
     "ast_hash": "1d2261d8571ea13f01c535a020704c3c",
@@ -357,6 +382,36 @@
   "/Users/enesfurkanornek/Documents/projects/karmodint-web/public/images/product-service-cabin-135.png": {
     "mtime": 1785860449.3331516,
     "ast_hash": "fb1146750b3e1ed92939d87c9e4f4cdb",
+    "semantic_hash": ""
+  },
+  "/Users/enesfurkanornek/Documents/projects/karmodint-web/public/images/get-in-touch.jpg": {
+    "mtime": 1786053756.1473348,
+    "ast_hash": "2b1e8c0be1615da89a9c33143170f2ae",
+    "semantic_hash": ""
+  },
+  "/Users/enesfurkanornek/Documents/projects/karmodint-web/public/images/gallery/clinic.png": {
+    "mtime": 1786055031.3443775,
+    "ast_hash": "ca5bdc49ab846256d42351d7b87e1db0",
+    "semantic_hash": ""
+  },
+  "/Users/enesfurkanornek/Documents/projects/karmodint-web/public/images/gallery/office.png": {
+    "mtime": 1786055031.307542,
+    "ast_hash": "a603b30702ac2be491d1b9366ef46a61",
+    "semantic_hash": ""
+  },
+  "/Users/enesfurkanornek/Documents/projects/karmodint-web/public/images/gallery/kiosk.png": {
+    "mtime": 1786055031.2798011,
+    "ast_hash": "3f2efb12507df9925b0952b991fc19c4",
+    "semantic_hash": ""
+  },
+  "/Users/enesfurkanornek/Documents/projects/karmodint-web/public/images/gallery/education.png": {
+    "mtime": 1786055031.4011989,
+    "ast_hash": "26e81000a56286c8b850f7017b14924c",
+    "semantic_hash": ""
+  },
+  "/Users/enesfurkanornek/Documents/projects/karmodint-web/public/images/gallery/accommodation.png": {
+    "mtime": 1786055031.3268979,
+    "ast_hash": "b6c9fc103f792a63c387b31618836d3a",
     "semantic_hash": ""
   }
 }

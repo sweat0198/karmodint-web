@@ -90,7 +90,7 @@
             </li>
             <li>
               <NuxtLink
-                to="/categories/modular-buildings"
+                to="/gallery"
                 class="text-brand-slate-light hover:text-white transition-colors text-base leading-6"
               >
                 Projects Gallery

@@ -50,6 +50,17 @@
           About Us
         </NuxtLink>
         <NuxtLink
+          to="/gallery"
+          class="text-base transition-colors py-1 relative"
+          :class="
+            route.path === '/gallery'
+              ? 'text-white font-bold border-b-2 border-brand-red pb-[6px]'
+              : 'text-brand-slate-light hover:text-white font-medium'
+          "
+        >
+          Gallery
+        </NuxtLink>
+        <NuxtLink
           to="/contact"
           class="text-base transition-colors py-1 relative"
           :class="
@@ -133,6 +144,13 @@
         class="block text-base font-medium text-brand-slate-light hover:text-white"
       >
         About Us
+      </NuxtLink>
+      <NuxtLink
+        to="/gallery"
+        @click="isMobileMenuOpen = false"
+        class="block text-base font-medium text-brand-slate-light hover:text-white"
+      >
+        Gallery
       </NuxtLink>
       <NuxtLink
         to="/contact"

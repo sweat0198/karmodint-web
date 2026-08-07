@@ -22,6 +22,15 @@
       "norm_label": "tailwind.config.js"
     },
     {
+      "label": "vue-shim.d.ts",
+      "file_type": "code",
+      "source_file": "vue-shim.d.ts",
+      "source_location": "L1",
+      "id": "vue_shim_d_ts",
+      "community": 67,
+      "norm_label": "vue-shim.d.ts"
+    },
+    {
       "label": "package.json",
       "file_type": "code",
       "source_file": "package.json",
@@ -245,6 +254,60 @@
       "id": "karmodint_web_tsconfig_extends",
       "community": 35,
       "norm_label": "extends"
+    },
+    {
+      "label": "configurator.ts",
+      "file_type": "code",
+      "source_file": "types/configurator.ts",
+      "source_location": "L1",
+      "id": "types_configurator_ts",
+      "community": 63,
+      "norm_label": "configurator.ts"
+    },
+    {
+      "label": "OptionItem",
+      "file_type": "code",
+      "source_file": "types/configurator.ts",
+      "source_location": "L1",
+      "id": "types_configurator_optionitem",
+      "community": 63,
+      "norm_label": "optionitem"
+    },
+    {
+      "label": "CounterOption",
+      "file_type": "code",
+      "source_file": "types/configurator.ts",
+      "source_location": "L9",
+      "id": "types_configurator_counteroption",
+      "community": 63,
+      "norm_label": "counteroption"
+    },
+    {
+      "label": "CheckboxOption",
+      "file_type": "code",
+      "source_file": "types/configurator.ts",
+      "source_location": "L17",
+      "id": "types_configurator_checkboxoption",
+      "community": 63,
+      "norm_label": "checkboxoption"
+    },
+    {
+      "label": "ConfiguratorStep",
+      "file_type": "code",
+      "source_file": "types/configurator.ts",
+      "source_location": "L24",
+      "id": "types_configurator_configuratorstep",
+      "community": 63,
+      "norm_label": "configuratorstep"
+    },
+    {
+      "label": "SpecSummaryItem",
+      "file_type": "code",
+      "source_file": "types/configurator.ts",
+      "source_location": "L34",
+      "id": "types_configurator_specsummaryitem",
+      "community": 63,
+      "norm_label": "specsummaryitem"
     },
     {
       "label": "app.vue",
@@ -553,6 +616,42 @@
       "norm_label": "missionvisionsection.vue"
     },
     {
+      "label": "ProductConfigurator.vue",
+      "file_type": "code",
+      "source_file": "components/configurator/ProductConfigurator.vue",
+      "source_location": "L1",
+      "id": "components_configurator_productconfigurator_vue",
+      "community": 66,
+      "norm_label": "productconfigurator.vue"
+    },
+    {
+      "label": "ItemConfigurator.vue",
+      "file_type": "code",
+      "source_file": "components/configurator/ItemConfigurator.vue",
+      "source_location": "L1",
+      "id": "components_configurator_itemconfigurator_vue",
+      "community": 64,
+      "norm_label": "itemconfigurator.vue"
+    },
+    {
+      "label": "selectedOpt",
+      "file_type": "code",
+      "source_file": "components/configurator/ItemConfigurator.vue",
+      "source_location": "L59",
+      "id": "configurator_itemconfigurator_selectedopt",
+      "community": 64,
+      "norm_label": "selectedopt"
+    },
+    {
+      "label": "ConfiguratorPriceBar.vue",
+      "file_type": "code",
+      "source_file": "components/configurator/ConfiguratorPriceBar.vue",
+      "source_location": "L1",
+      "id": "components_configurator_configuratorpricebar_vue",
+      "community": 65,
+      "norm_label": "configuratorpricebar.vue"
+    },
+    {
       "label": "default.vue",
       "file_type": "code",
       "source_file": "layouts/default.vue",
@@ -569,6 +668,78 @@
       "id": "pages_index_vue",
       "community": 14,
       "norm_label": "index.vue"
+    },
+    {
+      "label": "gallery.vue",
+      "file_type": "code",
+      "source_file": "pages/gallery.vue",
+      "source_location": "L1",
+      "id": "pages_gallery_vue",
+      "community": 60,
+      "norm_label": "gallery.vue"
+    },
+    {
+      "label": "categories",
+      "file_type": "code",
+      "source_file": "pages/gallery.vue",
+      "source_location": "L249",
+      "id": "pages_gallery_categories",
+      "community": 60,
+      "norm_label": "categories"
+    },
+    {
+      "label": "[]",
+      "file_type": "code",
+      "source_file": "pages/gallery.vue",
+      "source_location": "L258",
+      "id": "pages_gallery",
+      "community": 60,
+      "norm_label": "[]"
+    },
+    {
+      "label": "filteredItems",
+      "file_type": "code",
+      "source_file": "pages/gallery.vue",
+      "source_location": "L342",
+      "id": "pages_gallery_filtereditems",
+      "community": 60,
+      "norm_label": "filtereditems"
+    },
+    {
+      "label": "visibleItems",
+      "file_type": "code",
+      "source_file": "pages/gallery.vue",
+      "source_location": "L349",
+      "id": "pages_gallery_visibleitems",
+      "community": 60,
+      "norm_label": "visibleitems"
+    },
+    {
+      "label": "hasMoreItems",
+      "file_type": "code",
+      "source_file": "pages/gallery.vue",
+      "source_location": "L356",
+      "id": "pages_gallery_hasmoreitems",
+      "community": 60,
+      "norm_label": "hasmoreitems"
+    },
+    {
+      "label": "openModal()",
+      "file_type": "code",
+      "source_file": "pages/gallery.vue",
+      "source_location": "L360",
+      "id": "pages_gallery_openmodal",
+      "community": 60,
+      "norm_label": "openmodal()"
+    },
+    {
+      "label": "closeModal()",
+      "file_type": "code",
+      "source_file": "pages/gallery.vue",
+      "source_location": "L364",
+      "id": "pages_gallery_closemodal",
+      "community": 60,
+      "norm_label": "closemodal()"
     },
     {
       "label": "about-contact.vue",
@@ -2025,7 +2196,7 @@
       "source_file": ".agents/skills/graphify/SKILL.md",
       "source_location": "L775",
       "id": "graphify_skill_for_update_incremental_re_extraction",
-      "community": 60,
+      "community": 1,
       "norm_label": "for --update (incremental re-extraction)"
     },
     {
@@ -2034,7 +2205,7 @@
       "source_file": ".agents/skills/graphify/SKILL.md",
       "source_location": "L779",
       "id": "graphify_skill_codeblock_32",
-      "community": 60,
+      "community": 1,
       "norm_label": "code:bash ($(cat graphify-out/.graphify_python) -c \")"
     },
     {
@@ -2043,7 +2214,7 @@
       "source_file": ".agents/skills/graphify/SKILL.md",
       "source_location": "L802",
       "id": "graphify_skill_codeblock_33",
-      "community": 60,
+      "community": 1,
       "norm_label": "code:bash ($(cat graphify-out/.graphify_python) -c \")"
     },
     {
@@ -2052,7 +2223,7 @@
       "source_file": ".agents/skills/graphify/SKILL.md",
       "source_location": "L820",
       "id": "graphify_skill_codeblock_34",
-      "community": 60,
+      "community": 1,
       "norm_label": "code:bash ($(cat graphify-out/.graphify_python) -c \")"
     },
     {
@@ -2061,7 +2232,7 @@
       "source_file": ".agents/skills/graphify/SKILL.md",
       "source_location": "L840",
       "id": "graphify_skill_codeblock_35",
-      "community": 60,
+      "community": 1,
       "norm_label": "code:bash (if [ ! -f graphify-out/.graphify_extract.json ]; then)"
     },
     {
@@ -2070,7 +2241,7 @@
       "source_file": ".agents/skills/graphify/SKILL.md",
       "source_location": "L853",
       "id": "graphify_skill_codeblock_36",
-      "community": 60,
+      "community": 1,
       "norm_label": "code:bash ($(cat graphify-out/.graphify_python) -c \")"
     },
     {
@@ -2079,7 +2250,7 @@
       "source_file": ".agents/skills/graphify/SKILL.md",
       "source_location": "L904",
       "id": "graphify_skill_codeblock_37",
-      "community": 60,
+      "community": 1,
       "norm_label": "code:bash ($(cat graphify-out/.graphify_python) -c \")"
     },
     {
@@ -2964,6 +3135,56 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "types/configurator.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "types_configurator_ts",
+      "target": "types_configurator_optionitem"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "types/configurator.ts",
+      "source_location": "L9",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "types_configurator_ts",
+      "target": "types_configurator_counteroption"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "types/configurator.ts",
+      "source_location": "L17",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "types_configurator_ts",
+      "target": "types_configurator_checkboxoption"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "types/configurator.ts",
+      "source_location": "L24",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "types_configurator_ts",
+      "target": "types_configurator_configuratorstep"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "types/configurator.ts",
+      "source_location": "L34",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "types_configurator_ts",
+      "target": "types_configurator_specsummaryitem"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "stores/quote.ts",
       "source_location": "L3",
       "weight": 1.0,
@@ -3197,6 +3418,16 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "components/configurator/ItemConfigurator.vue",
+      "source_location": "L59",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "components_configurator_itemconfigurator_vue",
+      "target": "configurator_itemconfigurator_selectedopt"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "pages/index.vue",
       "source_location": "L109",
       "weight": 1.0,
@@ -3233,6 +3464,76 @@
       "confidence_score": 1.0,
       "source": "pages_index_vue",
       "target": "pages_index_quickaddtoquote"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "pages/gallery.vue",
+      "source_location": "L249",
+      "weight": 1.0,
+      "source": "pages_gallery_vue",
+      "target": "pages_gallery_categories",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "pages/gallery.vue",
+      "source_location": "L258",
+      "weight": 1.0,
+      "source": "pages_gallery_vue",
+      "target": "pages_gallery",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "pages/gallery.vue",
+      "source_location": "L342",
+      "weight": 1.0,
+      "source": "pages_gallery_vue",
+      "target": "pages_gallery_filtereditems",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "pages/gallery.vue",
+      "source_location": "L349",
+      "weight": 1.0,
+      "source": "pages_gallery_vue",
+      "target": "pages_gallery_visibleitems",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "pages/gallery.vue",
+      "source_location": "L356",
+      "weight": 1.0,
+      "source": "pages_gallery_vue",
+      "target": "pages_gallery_hasmoreitems",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "pages/gallery.vue",
+      "source_location": "L360",
+      "weight": 1.0,
+      "source": "pages_gallery_vue",
+      "target": "pages_gallery_openmodal",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "pages/gallery.vue",
+      "source_location": "L364",
+      "weight": 1.0,
+      "source": "pages_gallery_vue",
+      "target": "pages_gallery_closemodal",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -5186,5 +5487,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "9afb9126749cd803cceee2bc7c05810928cd12e6"
+  "built_at_commit": "c74429a52bff7547e6bd1102a0ec108709445712"
 }

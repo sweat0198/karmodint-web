@@ -1,16 +1,16 @@
-# Graph Report - karmodint-web  (2026-08-06)
+# Graph Report - karmodint-web  (2026-08-07)
 
 ## Corpus Check
-- 59 files · ~265,854 words
+- 65 files · ~295,157 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 304 nodes · 244 edges · 63 communities (40 shown, 23 thin omitted)
+- 323 nodes · 257 edges · 68 communities (44 shown, 24 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `9afb9126`
+- Built from commit: `c74429a5`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -58,6 +58,8 @@
 - [[_COMMUNITY_Community 52|Community 52]]
 - [[_COMMUNITY_Community 53|Community 53]]
 - [[_COMMUNITY_Community 60|Community 60]]
+- [[_COMMUNITY_Community 63|Community 63]]
+- [[_COMMUNITY_Community 64|Community 64]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `What You Must Do When Invoked` - 16 edges
@@ -74,15 +76,15 @@
 ## Surprising Connections (you probably didn't know these)
 - None detected - all connections are within the same source files.
 
-## Communities (63 total, 23 thin omitted)
+## Communities (68 total, 24 thin omitted)
 
 ### Community 0 - "Community 0"
 Cohesion: 0.06
 Nodes (35): code:bash (mkdir -p graphify-out), code:bash ($(cat graphify-out/.graphify_python) -c "), code:bash (graphify export obsidian), code:bash (LOCAL_PATH=$(graphify clone <github-url> [--branch <branch>]), code:bash (graphify export html  # auto-aggregates to community view if), code:bash (graphify export wiki), code:bash (graphify export neo4j), code:bash (graphify export neo4j --push bolt://localhost:7687 --user ne) (+27 more)
 
 ### Community 1 - "Community 1"
-Cohesion: 0.07
-Nodes (27): code:block1 (/graphify                                             # full), code:bash (if [ ! -f graphify-out/.graphify_python ]; then), code:bash (graphify cluster-only .), code:bash (graphify query "QUESTION"), code:bash ($(cat graphify-out/.graphify_python) -m graphify save-result), code:bash (graphify path "NODE_A" "NODE_B"), code:bash ($(cat graphify-out/.graphify_python) -m graphify save-result), code:bash (graphify explain "NODE_NAME") (+19 more)
+Cohesion: 0.06
+Nodes (34): code:block1 (/graphify                                             # full), code:bash (if [ ! -f graphify-out/.graphify_python ]; then), code:bash ($(cat graphify-out/.graphify_python) -c "), code:bash ($(cat graphify-out/.graphify_python) -c "), code:bash ($(cat graphify-out/.graphify_python) -c "), code:bash (if [ ! -f graphify-out/.graphify_extract.json ]; then), code:bash ($(cat graphify-out/.graphify_python) -c "), code:bash ($(cat graphify-out/.graphify_python) -c ") (+26 more)
 
 ### Community 2 - "Community 2"
 Cohesion: 0.07
@@ -153,28 +155,32 @@ Cohesion: 0.4
 Nodes (3): products, quoteStore, router
 
 ### Community 60 - "Community 60"
-Cohesion: 0.29
-Nodes (7): code:bash ($(cat graphify-out/.graphify_python) -c "), code:bash ($(cat graphify-out/.graphify_python) -c "), code:bash ($(cat graphify-out/.graphify_python) -c "), code:bash (if [ ! -f graphify-out/.graphify_extract.json ]; then), code:bash ($(cat graphify-out/.graphify_python) -c "), code:bash ($(cat graphify-out/.graphify_python) -c "), For --update (incremental re-extraction)
+Cohesion: 0.25
+Nodes (5): [], categories, filteredItems, hasMoreItems, visibleItems
+
+### Community 63 - "Community 63"
+Cohesion: 0.33
+Nodes (5): CheckboxOption, ConfiguratorStep, CounterOption, OptionItem, SpecSummaryItem
 
 ## Knowledge Gaps
-- **171 isolated node(s):** `name`, `type`, `private`, `build`, `dev` (+166 more)
+- **182 isolated node(s):** `name`, `type`, `private`, `build`, `dev` (+177 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **23 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **24 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `What You Must Do When Invoked` connect `Community 0` to `Community 1`, `Community 5`?**
-  _High betweenness centrality (0.057) - this node is a cross-community bridge._
-- **Why does `/graphify` connect `Community 1` to `Community 0`, `Community 60`?**
-  _High betweenness centrality (0.047) - this node is a cross-community bridge._
+  _High betweenness centrality (0.051) - this node is a cross-community bridge._
+- **Why does `/graphify` connect `Community 1` to `Community 0`?**
+  _High betweenness centrality (0.042) - this node is a cross-community bridge._
 - **Why does `Step 3 - Extract entities and relationships` connect `Community 5` to `Community 0`?**
-  _High betweenness centrality (0.019) - this node is a cross-community bridge._
+  _High betweenness centrality (0.017) - this node is a cross-community bridge._
 - **What connects `name`, `type`, `private` to the rest of the system?**
-  _171 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _182 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Community 0` be split into smaller, more focused modules?**
   _Cohesion score 0.06 - nodes in this community are weakly interconnected._
 - **Should `Community 1` be split into smaller, more focused modules?**
-  _Cohesion score 0.07 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.06 - nodes in this community are weakly interconnected._
 - **Should `Community 2` be split into smaller, more focused modules?**
   _Cohesion score 0.07 - nodes in this community are weakly interconnected._
