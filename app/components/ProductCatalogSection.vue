@@ -53,11 +53,6 @@
 </template>
 
 <script setup lang="ts">
-import { useQuoteStore } from "~/stores/quote";
-
-const quoteStore = useQuoteStore();
-const router = useRouter();
-
 const products = [
   {
     id: "prod-k2004",
@@ -99,15 +94,4 @@ const products = [
     ],
   },
 ];
-
-function handleSelect(product: (typeof products)[0]) {
-  quoteStore.addItem({
-    productId: product.id,
-    productName: product.name,
-    productSlug: product.slug,
-    variantLabel: product.categoryTag,
-    basePrice: product.price,
-    quantity: 1,
-  });
-}
 </script>

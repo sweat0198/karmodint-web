@@ -407,9 +407,7 @@ const itemsList = computed(() => {
 });
 
 // Tracks which items are expanded in accordion
-const expandedItemIds = ref<Set<string>>(
-  new Set(["sec-std-gatehouse-default"]),
-);
+const expandedItemIds = ref<Set<string>>(new Set());
 
 // Local reactive mapping for each item's selection state
 const itemConfigs = reactive<Record<string, Record<string, any>>>({});

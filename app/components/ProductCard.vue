@@ -123,7 +123,7 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { useQuoteStore } from "~/stores/quote";
 
 export interface ProductCardProps {
@@ -142,6 +142,7 @@ export interface ProductCardProps {
 const props = defineProps<ProductCardProps>();
 const quoteStore = useQuoteStore();
 const router = useRouter();
+const route = useRoute();
 
 const formattedSpecs = computed(() => {
   if (!props.product.specs) return [];
@@ -157,7 +158,7 @@ const quantityInBasket = computed(() => {
   return quoteStore.getItemQuantity(props.product.id);
 });
 
-function handleAdd() {
+function addItemToBasket() {
   quoteStore.addItem({
     productId: props.product.id,
     productName: props.product.name,
@@ -166,12 +167,20 @@ function handleAdd() {
       props.variantLabel || props.product.categoryTag || "Standard Spec",
     basePrice: props.product.price,
     quantity: 1,
+    image: props.product.image,
   });
+}
+
+function handleAdd() {
+  addItemToBasket();
+  if (route.path === "/" || !route.path.startsWith("/products")) {
+    router.push("/products");
+  }
 }
 
 function handleCustomize() {
   if (quantityInBasket.value === 0) {
-    handleAdd();
+    addItemToBasket();
   }
   router.push("/customize");
 }
@@ -185,6 +194,7 @@ function handleIncrement() {
       props.variantLabel || props.product.categoryTag || "Standard Spec",
     basePrice: props.product.price,
     quantity: 1,
+    image: props.product.image,
   });
 }
 
