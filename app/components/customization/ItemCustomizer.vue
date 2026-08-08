@@ -125,7 +125,7 @@ const handleQuote = () => {
     />
 
     <!-- Sticky Bottom Price Bar (shown if showPriceBar is true) -->
-    <CustomizationPriceBar
+    <PriceBar
       v-if="showPriceBar"
       :estimated-total="estimatedTotal"
       :currency-symbol="currencySymbol"

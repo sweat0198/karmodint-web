@@ -269,85 +269,6 @@
         </div>
       </div>
     </div>
-
-    <!-- Sticky Bottom Master Summary Bar -->
-    <div
-      v-if="itemsList.length > 0"
-      class="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 shadow-[0_-4px_24px_rgba(0,0,0,0.08)] py-4 px-4 sm:px-8"
-    >
-      <div
-        class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4"
-      >
-        <!-- Summary Stats -->
-        <div
-          class="flex items-center gap-6 w-full sm:w-auto justify-between sm:justify-start"
-        >
-          <div>
-            <span
-              class="text-[10px] font-bold text-brand-slate-muted tracking-wider uppercase block"
-            >
-              Total Customized Units
-            </span>
-            <div class="flex items-center gap-2">
-              <span
-                class="text-xl sm:text-2xl font-bold text-brand-navy-heading"
-              >
-                {{ quoteStore.totalItemsCount }}
-                {{ quoteStore.totalItemsCount === 1 ? "Unit" : "Units" }}
-              </span>
-              <span
-                class="text-xs text-emerald-600 font-semibold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200"
-              >
-                Specifications Ready
-              </span>
-            </div>
-          </div>
-
-          <div class="h-8 w-px bg-slate-200 hidden sm:block"></div>
-
-          <div>
-            <span
-              class="text-[10px] font-bold text-brand-slate-muted tracking-wider uppercase block"
-            >
-              Estimated Total
-            </span>
-            <div class="flex items-center gap-1.5">
-              <span
-                class="text-xl sm:text-2xl font-extrabold text-brand-navy-heading leading-none"
-              >
-                £{{ quoteStore.totalQuotePrice.toLocaleString() }}
-              </span>
-              <span class="text-xs text-brand-slate-muted font-medium"
-                >+ VAT & Delivery</span
-              >
-            </div>
-          </div>
-        </div>
-
-        <!-- Master Actions -->
-        <div class="flex items-center gap-3 w-full sm:w-auto">
-          <NuxtLink
-            to="/quote"
-            class="flex-1 sm:flex-initial flex items-center justify-center gap-2 px-8 py-3 bg-brand-red hover:bg-brand-red-hover text-white font-semibold text-xs tracking-wider uppercase rounded-[2px] transition-all shadow-sm hover:shadow"
-          >
-            <span>Proceed to Review & Quote</span>
-            <svg
-              class="w-4 h-4 text-white shrink-0"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M14 5l7 7m0 0l-7 7m7-7H3"
-              />
-            </svg>
-          </NuxtLink>
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -373,37 +294,6 @@ useHead({
 });
 
 const quoteStore = useQuoteStore();
-
-// Default fallback items for initial SSR/empty state demonstration
-const defaultModularUnits: QuoteItem[] = [
-  {
-    id: "sec-std-gatehouse-default",
-    productId: "sec-std-gatehouse",
-    productName: "Karmod Standard Security Gatehouse 2.0m",
-    productSlug: "standard-gatehouse",
-    variantLabel: "Security Cabins",
-    basePrice: 3100,
-    customTotal: 3100,
-    quantity: 1,
-    image: "/images/product-service-cabin-135.png",
-    specSummary: [
-      { label: "DIMENSIONS", value: "2.00m x 2.00m" },
-      { label: "FINISH", value: "Standard White (RAL 9002)" },
-      { label: "GLAZING", value: "3 Glazed Panes" },
-      { label: "ELECTRICS", value: "Integrated LED & Sockets" },
-    ],
-  },
-];
-
-// Seed store if empty
-if (quoteStore.items.length === 0) {
-  quoteStore.seedDefaultItems();
-}
-
-// Active items list
-const itemsList = computed(() => {
-  return quoteStore.items.length > 0 ? quoteStore.items : defaultModularUnits;
-});
 
 // Tracks which items are expanded in accordion
 const expandedItemIds = ref<Set<string>>(new Set());
@@ -496,14 +386,10 @@ function loadDemoItems() {
 
 onMounted(() => {
   quoteStore.setLastVisitedRoute('/customize');
-  if (quoteStore.items.length === 0) {
-    loadDemoItems();
-  } else {
-    // Expand the first item by default for immediate customization visibility
-    const first = quoteStore.items[0];
-    if (first) {
-      expandedItemIds.value.add(first.id);
-    }
+  // Expand the first item by default if items exist
+  const first = quoteStore.items[0];
+  if (first) {
+    expandedItemIds.value.add(first.id);
   }
 });
 </script>
