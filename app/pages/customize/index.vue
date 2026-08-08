@@ -13,7 +13,7 @@
           to="/quote"
           class="flex items-center justify-center gap-2 px-8 py-3 bg-brand-red hover:bg-brand-red-hover text-white font-semibold text-xs tracking-wider uppercase rounded-[2px] transition-colors duration-150 shadow-sm hover:shadow"
         >
-          <span>Proceed to Review</span>
+          <span>Review & Request Quote</span>
           <svg
             class="w-4 h-4 text-white shrink-0"
             fill="none"
@@ -495,6 +495,7 @@ function loadDemoItems() {
 }
 
 onMounted(() => {
+  quoteStore.setLastVisitedRoute('/customize');
   if (quoteStore.items.length === 0) {
     loadDemoItems();
   } else {

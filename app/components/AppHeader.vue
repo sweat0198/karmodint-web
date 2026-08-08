@@ -73,13 +73,14 @@
         </NuxtLink>
       </nav>
 
-      <!-- Action Button / Quote Link -->
+      <!-- Action Button / Buy Flow Continue Link -->
       <div class="hidden md:flex items-center gap-4">
         <NuxtLink
-          to="/quote"
+          :to="quoteStore.continueRoute"
           class="bg-brand-red hover:bg-brand-red-hover text-white font-semibold text-xs tracking-[0.6px] uppercase px-6 py-3 rounded-[2px] transition-colors inline-flex items-center gap-2 shadow-sm"
+          :title="`Continue buy flow at ${quoteStore.continueRoute}`"
         >
-          <span>REQUEST CALLBACK</span>
+          <span>{{ continueButtonText }}</span>
           <span
             v-if="quoteStore.totalItemsCount > 0"
             class="ml-1 px-2 py-0.5 text-xs bg-white text-brand-red font-bold rounded-full"
@@ -162,11 +163,11 @@
 
       <div class="pt-2">
         <NuxtLink
-          to="/quote"
+          :to="quoteStore.continueRoute"
           @click="isMobileMenuOpen = false"
           class="w-full bg-brand-red hover:bg-brand-red-hover text-white font-semibold text-xs tracking-[0.6px] uppercase px-6 py-3 rounded-[2px] transition-colors flex items-center justify-center gap-2"
         >
-          <span>REQUEST CALLBACK</span>
+          <span>{{ continueButtonText }}</span>
           <span
             v-if="quoteStore.totalItemsCount > 0"
             class="px-2 py-0.5 text-xs bg-white text-brand-red font-bold rounded-full"
@@ -190,5 +191,9 @@ const isMobileMenuOpen = ref(false);
 
 const isProductsActive = computed(() => {
   return route.path.startsWith("/products");
+});
+
+const continueButtonText = computed(() => {
+  return quoteStore.isEmpty ? "GET A QUOTE" : "VIEW QUOTE";
 });
 </script>

@@ -216,6 +216,10 @@ const submitting = ref(false)
 const submittedSuccess = ref(false)
 const errorMessage = ref('')
 
+onMounted(() => {
+  quoteStore.setLastVisitedRoute('/quote')
+})
+
 async function submitQuote() {
   if (!customer.value.name || !customer.value.email) return
 

@@ -13,7 +13,7 @@
           to="/customize"
           class="flex items-center justify-center gap-2 px-8 py-3 bg-brand-red hover:bg-brand-red-hover text-white font-semibold text-xs tracking-wider uppercase rounded-[2px] transition-colors duration-150 shadow-sm hover:shadow"
         >
-          <span>Continue</span>
+          <span>Customize Selected</span>
           <span
             class="bg-white text-brand-red text-[11px] font-bold px-1.5 py-0.5 rounded-full leading-none"
           >
@@ -193,10 +193,23 @@
           reinforced panels, and integrated facilities.
         </p>
         <NuxtLink
-          to="/about-contact#contact"
-          class="mt-2 border border-brand-navy-heading text-brand-navy-heading hover:bg-brand-navy-heading hover:text-white px-8 py-3 rounded-[2px] text-xs font-semibold tracking-wider uppercase transition-colors"
+          :to="quoteStore.continueRoute"
+          class="mt-2 border border-brand-navy-heading text-brand-navy-heading hover:bg-brand-navy-heading hover:text-white px-8 py-3 rounded-[2px] text-xs font-semibold tracking-wider uppercase transition-colors inline-flex items-center gap-2"
         >
-          Request Callback
+          <span>Continue Buy Flow</span>
+          <svg
+            class="w-4 h-4 shrink-0"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M14 5l7 7m0 0l-7 7m7-7H3"
+            />
+          </svg>
         </NuxtLink>
       </section>
     </div>
@@ -273,6 +286,7 @@ function selectSubcategory(sub: string, parentCatName?: string) {
 }
 
 onMounted(() => {
+  quoteStore.setLastVisitedRoute('/products');
   const queryCat = route.query.category as string;
   const querySub = route.query.subcategory as string;
 
