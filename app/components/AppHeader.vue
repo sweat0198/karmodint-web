@@ -28,15 +28,15 @@
           Home
         </NuxtLink>
         <NuxtLink
-          to="/products"
+          to="/catalog"
           class="text-base transition-colors py-1 relative"
           :class="
-            isProductsActive
+            isCatalogActive
               ? 'text-white font-bold border-b-2 border-brand-red pb-[6px]'
               : 'text-brand-slate-light hover:text-white font-medium'
           "
         >
-          Products
+          Catalog
         </NuxtLink>
         <NuxtLink
           to="/about"
@@ -133,11 +133,11 @@
         Home
       </NuxtLink>
       <NuxtLink
-        to="/products"
+        to="/catalog"
         @click="isMobileMenuOpen = false"
         class="block text-base font-medium text-brand-slate-light hover:text-white"
       >
-        Products
+        Catalog
       </NuxtLink>
       <NuxtLink
         to="/about"
@@ -189,8 +189,8 @@ const route = useRoute();
 const quoteStore = useQuoteStore();
 const isMobileMenuOpen = ref(false);
 
-const isProductsActive = computed(() => {
-  return route.path.startsWith("/products");
+const isCatalogActive = computed(() => {
+  return route.path.startsWith("/catalog");
 });
 
 const continueButtonText = computed(() => {

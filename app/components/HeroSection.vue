@@ -23,7 +23,7 @@
 
         <div class="pt-2">
           <NuxtLink
-            to="/products"
+            to="/catalog"
             class="bg-brand-red hover:bg-brand-red-dark text-white text-[12px] font-semibold tracking-[0.6px] uppercase px-6 py-3 rounded-[2px] transition-colors inline-block text-center shadow-sm"
           >
             CONFIGURE &amp; QUOTE

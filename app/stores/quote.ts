@@ -28,7 +28,7 @@ export interface QuoteCustomerInfo {
 export const useQuoteStore = defineStore("quote", {
   state: () => ({
     items: [] as QuoteItem[],
-    lastVisitedRoute: "/products" as string,
+    lastVisitedRoute: "/catalog" as string,
     maxVisitedStep: 1 as number,
   }),
 
@@ -45,19 +45,19 @@ export const useQuoteStore = defineStore("quote", {
     continueRoute: (state) => {
       if (
         state.lastVisitedRoute &&
-        ["/products", "/customize", "/quote"].includes(state.lastVisitedRoute)
+        ["/catalog", "/customize", "/quote"].includes(state.lastVisitedRoute)
       ) {
         return state.lastVisitedRoute;
       }
       if (state.items.length > 0) {
         return "/customize";
       }
-      return "/products";
+      return "/catalog";
     },
     continueStepNumber: (state) => {
       if (state.lastVisitedRoute === "/quote") return 3;
       if (state.lastVisitedRoute === "/customize") return 2;
-      if (state.lastVisitedRoute === "/products") return 1;
+      if (state.lastVisitedRoute === "/catalog") return 1;
       return state.items.length > 0 ? 2 : 1;
     },
     isStepUnlocked: (state) => (stepNumber: number) => {
@@ -170,9 +170,9 @@ export const useQuoteStore = defineStore("quote", {
     },
 
     setLastVisitedRoute(route: string) {
-      if (["/products", "/customize", "/quote"].includes(route)) {
+      if (["/catalog", "/customize", "/quote"].includes(route)) {
         this.lastVisitedRoute = route;
-        if (route === "/products") {
+        if (route === "/catalog") {
           this.updateMaxVisitedStep(1);
         } else if (route === "/customize") {
           this.updateMaxVisitedStep(2);
@@ -184,7 +184,7 @@ export const useQuoteStore = defineStore("quote", {
 
     clearQuote() {
       this.items = [];
-      this.lastVisitedRoute = "/products";
+      this.lastVisitedRoute = "/catalog";
       this.maxVisitedStep = 1;
     },
   },

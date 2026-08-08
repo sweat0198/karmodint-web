@@ -112,7 +112,7 @@ const props = withDefaults(
   {
     currentStep: 1,
     steps: () => [
-      { number: 1, label: "SELECT PRODUCTS", route: "/products" },
+      { number: 1, label: "SELECT PRODUCTS", route: "/catalog" },
       { number: 2, label: "CUSTOMIZE", route: "/customize" },
       { number: 3, label: "REVIEW", route: "/quote" },
       { number: 4, label: "FINAL QUOTE", route: "/quote" },

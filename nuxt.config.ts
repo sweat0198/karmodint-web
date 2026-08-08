@@ -94,7 +94,7 @@ export default defineNuxtConfig({
       crawlLinks: true,
       routes: [
         "/",
-        "/products",
+        "/catalog",
         "/customize",
         "/quote",
         "/gallery",

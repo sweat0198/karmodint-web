@@ -38,7 +38,7 @@ withDefaults(
     description:
       "Browse our portable cabins, kiosks, and security gatehouses to add items.",
     buttonText: "Browse Catalog",
-    buttonTo: "/products",
+    buttonTo: "/catalog",
   },
 );
 </script>

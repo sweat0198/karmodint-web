@@ -62,15 +62,15 @@
     <div
       class="max-w-[1280px] w-full mx-auto px-6 lg:px-12 pt-6 flex flex-col gap-6"
     >
-      <!-- Breadcrumbs in Main Products Layout -->
+      <!-- Breadcrumbs in Main Catalog Layout -->
       <nav
         aria-label="Breadcrumb"
         class="flex items-center gap-2 text-xs font-semibold tracking-wider text-brand-slate-muted uppercase flex-wrap"
       >
         <NuxtLink
-          to="/products"
+          to="/catalog"
           class="hover:text-brand-navy-heading transition-colors"
-          >Products</NuxtLink
+          >Catalog</NuxtLink
         >
         <svg
           class="w-3 h-3 text-brand-slate-muted shrink-0"
@@ -245,7 +245,7 @@ import { useRoute, useRouter } from "vue-router";
 import { useQuoteStore } from "~/stores/quote";
 
 useHead({
-  title: "Products & Cabins | Karmod International",
+  title: "Catalog | Karmod International",
   meta: [
     {
       name: "description",
@@ -309,7 +309,7 @@ function selectSubcategory(sub: string, parentCatName?: string) {
 }
 
 onMounted(() => {
-  quoteStore.setLastVisitedRoute('/products');
+  quoteStore.setLastVisitedRoute('/catalog');
   const queryCat = route.query.category as string;
   const querySub = route.query.subcategory as string;
 

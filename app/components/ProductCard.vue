@@ -173,8 +173,8 @@ function addItemToBasket() {
 
 function handleAdd() {
   addItemToBasket();
-  if (route.path === "/" || !route.path.startsWith("/products")) {
-    router.push("/products");
+  if (route.path === "/" || !route.path.startsWith("/catalog")) {
+    router.push("/catalog");
   }
 }
 
