@@ -18,6 +18,10 @@ export default defineNuxtConfig({
     compatibilityVersion: 4,
   },
 
+  experimental: {
+    appManifest: false,
+  },
+
   tailwindcss: {
     quiet: true,
   },
