@@ -42,38 +42,10 @@
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
       <!-- Empty State View (Shown only if user clears all items) -->
-      <div
+      <EmptyQuoteState
         v-if="quoteStore.isEmpty"
-        class="bg-white border border-slate-200 rounded-[4px] p-12 text-center max-w-2xl mx-auto my-12 shadow-sm"
-      >
-        <div
-          class="w-16 h-16 rounded-full bg-brand-rose-card text-brand-red flex items-center justify-center mx-auto mb-4 text-2xl border border-brand-rose-border"
-        >
-          <UIcon name="i-heroicons-wrench-screwdriver" class="w-8 h-8" />
-        </div>
-        <h2 class="text-2xl font-bold text-brand-navy-heading mb-2">
-          No Items in Customization Queue
-        </h2>
-        <p class="text-brand-slate-muted text-sm mb-6 max-w-md mx-auto">
-          You currently have no modular units in your queue. Load our sample
-          security booth customization or browse our full modular catalog.
-        </p>
-        <div class="flex flex-wrap items-center justify-center gap-3">
-          <button
-            type="button"
-            @click="loadDemoItems"
-            class="bg-brand-navy-heading hover:bg-brand-navy text-white text-xs font-semibold px-5 py-3 rounded-[2px] transition-colors shadow-sm"
-          >
-            Load Sample Security Cabin
-          </button>
-          <NuxtLink
-            to="/products"
-            class="bg-brand-red hover:bg-brand-red-hover text-white text-xs font-semibold px-5 py-3 rounded-[2px] transition-colors shadow-sm"
-          >
-            Browse Product Catalog →
-          </NuxtLink>
-        </div>
-      </div>
+        button-to="/products"
+      />
 
       <!-- Multi-Item Expandable List View -->
       <div v-else class="space-y-6">
@@ -383,14 +355,6 @@ function handleItemConfigChange(
     payload.total,
     specSummary,
   );
-}
-
-function loadDemoItems() {
-  quoteStore.seedDefaultItems();
-  const first = quoteStore.items[0];
-  if (first) {
-    expandedItemIds.value.add(first.id);
-  }
 }
 
 onMounted(() => {

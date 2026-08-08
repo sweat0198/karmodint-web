@@ -89,15 +89,11 @@
         </div>
       </div>
 
-    <!-- Empty State -->
-    <div v-else-if="quoteStore.isEmpty" class="structural-card p-16 text-center max-w-xl mx-auto my-12">
-      <UIcon name="i-heroicons-shopping-bag" class="w-20 h-20 text-slate-400 mx-auto mb-4" />
-      <h3 class="text-2xl font-bold text-[#1F2937] mb-2">Your Quote List is Empty</h3>
-      <p class="text-slate-600 text-sm mb-6">Browse our portable cabins, kiosks, and security gatehouses to add items.</p>
-      <NuxtLink to="/" class="btn-primary px-6 py-3 text-sm font-semibold inline-block">
-        Browse Catalog
-      </NuxtLink>
-    </div>
+      <!-- Empty State -->
+      <EmptyQuoteState
+        v-else-if="quoteStore.isEmpty"
+        button-to="/products"
+      />
 
     <!-- Active Quote List & Contact Form -->
     <div v-else class="grid grid-cols-1 lg:grid-cols-3 gap-8">
