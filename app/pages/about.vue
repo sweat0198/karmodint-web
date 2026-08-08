@@ -15,11 +15,6 @@
 </template>
 
 <script setup lang="ts">
-import AboutHeroSection from "~/components/about/HeroSection.vue";
-import AboutMissionVisionSection from "~/components/about/MissionVisionSection.vue";
-import AboutProjectsBentoSection from "~/components/about/ProjectsBentoSection.vue";
-import AboutTimelineSection from "~/components/about/TimelineSection.vue";
-
 useHead({
   title: "About Us | Karmod International - Modular Construction Pioneers",
   meta: [

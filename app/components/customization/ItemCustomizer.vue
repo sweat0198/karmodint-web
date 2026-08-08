@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import { computed, watch } from "vue";
-import CustomizationPriceBar from "~/components/customization/CustomizationPriceBar.vue";
-import ProductCustomizer from "~/components/customization/ProductCustomizer.vue";
 import type { CustomizationStep, SpecSummaryItem } from "~/types/customization";
 
 interface Props {

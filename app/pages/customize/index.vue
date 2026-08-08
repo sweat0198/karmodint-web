@@ -353,7 +353,6 @@
 
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref } from "vue";
-import ItemCustomizer from "~/components/customization/ItemCustomizer.vue";
 import { useQuoteStore, type QuoteItem } from "~/stores/quote";
 import type { CustomizationStep, SpecSummaryItem } from "~/types/customization";
 import {

@@ -26,6 +26,17 @@ export default defineNuxtConfig({
     quiet: true,
   },
 
+  components: [
+    {
+      path: "~/components/customization",
+      pathPrefix: false,
+    },
+    {
+      path: "~/components",
+      pathPrefix: true,
+    },
+  ],
+
   modules: ["@nuxt/ui", "@pinia/nuxt", "pinia-plugin-persistedstate/nuxt"],
 
   app: {

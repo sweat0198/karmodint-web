@@ -5,8 +5,6 @@
 </template>
 
 <script setup lang="ts">
-import ContactSection from '~/components/ContactSection.vue'
-
 useHead({
   title: 'Contact Us | Karmod International',
   meta: [
