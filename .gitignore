@@ -26,3 +26,5 @@ logs
 # Stitch assets
 .stitch-assets
 
+# Graphify
+graphify-out/
