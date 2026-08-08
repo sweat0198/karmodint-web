@@ -1,7 +1,26 @@
+// Silence deprecated Tailwind color warnings emitted during Nuxt UI initialization
+import tailwindLog from "tailwindcss/lib/util/log";
+const _logObj = (tailwindLog as any).default || tailwindLog;
+if (_logObj && _logObj.warn) {
+  const _origWarn = _logObj.warn;
+  _logObj.warn = (key: any, messages?: any) => {
+    if (typeof key === "string" && key.endsWith("-color-renamed")) return;
+    _origWarn(key, messages);
+  };
+}
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: "2024-11-01",
   devtools: { enabled: true },
+
+  future: {
+    compatibilityVersion: 4,
+  },
+
+  tailwindcss: {
+    quiet: true,
+  },
 
   modules: ["@nuxt/ui", "@pinia/nuxt", "pinia-plugin-persistedstate/nuxt"],
 
