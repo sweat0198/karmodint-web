@@ -13,7 +13,7 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   currencySymbol: '£',
   vatText: '+ VAT',
-  saveLabel: 'Save Config',
+  saveLabel: 'Save Customization',
   quoteLabel: 'Get Instant Formal Quote',
   isSaving: false
 })

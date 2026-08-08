@@ -1,26 +1,57 @@
 <template>
-  <div class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="mb-8">
-      <span class="label-caps text-[#E31E24] block mb-2">Specifications Summary</span>
-      <h1 class="text-4xl font-bold text-[#1F2937] mb-2">Quote List & Enquiry</h1>
-      <p class="text-slate-600">Review your selected modular structures and request direct factory pricing.</p>
-    </div>
-
-    <!-- Success Confirmation View -->
-    <div v-if="submittedSuccess" class="structural-card p-12 text-center max-w-2xl mx-auto my-12 border-emerald-200">
-      <div class="w-20 h-20 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6 text-4xl border border-emerald-200">
-        ✓
-      </div>
-      <h2 class="text-3xl font-bold text-[#1F2937] mb-4">Quote Request Submitted!</h2>
-      <p class="text-slate-600 mb-6 leading-relaxed">
-        Thank you for submitting your enquiry. A copy of your quote request has been dispatched to your email address (<strong>{{ customer.email }}</strong>), and our sales team is reviewing your specification.
-      </p>
-      <div class="flex justify-center gap-4">
-        <NuxtLink to="/" class="btn-primary px-6 py-3 text-sm font-semibold">
-          Return to Catalog
+  <div class="w-full bg-white min-h-screen pb-16">
+    <!-- Buy Flow Header (Step 3: Review) -->
+    <BuyFlowHeader
+      v-if="!submittedSuccess"
+      :current-step="3"
+      step-label="Step 3 of 4 • Specifications Summary & Review"
+      title="Quote List & Enquiry"
+      description="Review your selected modular structures and request direct factory pricing."
+    >
+      <template #actions>
+        <NuxtLink
+          to="/products"
+          class="text-xs text-brand-slate-muted hover:text-brand-navy-heading font-semibold px-3 py-2 transition-colors mr-2"
+        >
+          + Add More Items
         </NuxtLink>
+      </template>
+    </BuyFlowHeader>
+
+    <!-- Buy Flow Header (Step 4: Confirmation) -->
+    <BuyFlowHeader
+      v-else
+      :current-step="4"
+      step-label="Step 4 of 4 • Final Quote Confirmation"
+      title="Quote Request Submitted!"
+      description="Thank you for submitting your enquiry. A copy of your quote request has been dispatched to your email."
+    >
+      <template #actions>
+        <NuxtLink
+          to="/products"
+          class="flex items-center justify-center gap-2 px-8 py-3 bg-brand-navy-heading hover:bg-brand-navy text-white font-semibold text-xs tracking-wider uppercase rounded-[2px] transition-colors duration-150 shadow-sm hover:shadow"
+        >
+          <span>Return to Catalog</span>
+        </NuxtLink>
+      </template>
+    </BuyFlowHeader>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
+      <!-- Success Confirmation View (Step 4) -->
+      <div v-if="submittedSuccess" class="structural-card p-12 text-center max-w-2xl mx-auto my-12 border-emerald-200">
+        <div class="w-20 h-20 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6 text-4xl border border-emerald-200">
+          ✓
+        </div>
+        <h2 class="text-3xl font-bold text-brand-navy-heading mb-4">Quote Request Submitted!</h2>
+        <p class="text-slate-600 mb-6 leading-relaxed">
+          Thank you for submitting your enquiry. A copy of your quote request has been dispatched to your email address (<strong>{{ customer.email }}</strong>), and our sales team is reviewing your specification.
+        </p>
+        <div class="flex justify-center gap-4">
+          <NuxtLink to="/products" class="btn-primary px-6 py-3 text-sm font-semibold">
+            Return to Catalog
+          </NuxtLink>
+        </div>
       </div>
-    </div>
 
     <!-- Empty State -->
     <div v-else-if="quoteStore.isEmpty" class="structural-card p-16 text-center max-w-xl mx-auto my-12">
@@ -53,6 +84,24 @@
             <div>
               <h3 class="text-lg font-bold text-[#1F2937]">{{ item.productName }}</h3>
               <p class="label-caps text-[#E31E24] mt-0.5">{{ item.variantLabel || 'Standard Spec' }}</p>
+              
+              <!-- Configured Spec Summary Badges -->
+              <div v-if="item.specSummary && item.specSummary.length" class="flex flex-wrap gap-1.5 mt-2">
+                <span 
+                  v-for="(spec, idx) in item.specSummary" 
+                  :key="idx"
+                  class="bg-slate-100 border border-slate-200 text-[#1F2937] text-[10px] font-semibold px-2 py-0.5 rounded-[2px]"
+                >
+                  {{ spec.label }}: {{ spec.value }}
+                </span>
+              </div>
+
+              <!-- Price Per Unit and Total -->
+              <div class="mt-2 text-sm font-bold text-brand-navy-heading">
+                £{{ ((item.customTotal || item.basePrice || 0) * item.quantity).toLocaleString() }}
+                <span class="text-xs font-normal text-slate-500">(£{{ (item.customTotal || item.basePrice || 0).toLocaleString() }}/ea + VAT)</span>
+              </div>
+
               <p v-if="item.notes" class="text-xs text-slate-500 italic mt-1">Note: "{{ item.notes }}"</p>
             </div>
           </div>
@@ -147,6 +196,7 @@
       </div>
     </div>
   </div>
+</div>
 </template>
 
 <script setup lang="ts">

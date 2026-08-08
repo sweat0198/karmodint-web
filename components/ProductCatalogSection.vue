@@ -41,83 +41,12 @@
 
       <!-- Products Grid -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <!-- Product Card 1 -->
-        <div
+        <ProductCard
           v-for="product in products"
           :key="product.id"
-          class="bg-white border border-brand-rose-border/30 rounded-[4px] shadow-[0px_10px_15px_-3px_rgba(0,0,0,0.05),0px_4px_6px_-2px_rgba(0,0,0,0.1)] overflow-hidden flex flex-col group transition-all hover:shadow-lg"
-        >
-          <!-- Thumbnail Container -->
-          <div class="bg-brand-rose-card h-[192px] relative overflow-hidden">
-            <img
-              :src="product.image"
-              :alt="product.name"
-              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-            />
-            <div
-              class="absolute top-4 right-4 bg-brand-rose-bg/90 backdrop-blur-[2px] px-2.5 py-1 rounded-[2px] shadow-sm"
-            >
-              <span
-                class="text-brand-navy-heading text-[12px] font-semibold tracking-[1.2px]"
-              >
-                {{ product.categoryTag }}
-              </span>
-            </div>
-          </div>
-
-          <!-- Card Content -->
-          <div class="p-6 flex flex-col flex-1 justify-between gap-6">
-            <div>
-              <h3 class="text-brand-navy-heading text-xl font-normal mb-4">
-                {{ product.name }}
-              </h3>
-
-              <!-- Specification Items -->
-              <div class="flex flex-col gap-3">
-                <div
-                  v-for="(spec, index) in product.specs"
-                  :key="index"
-                  class="border-b border-brand-rose-border/50 pb-2.5 flex items-center justify-between text-sm"
-                >
-                  <span class="text-brand-slate-muted font-normal">{{
-                    spec.label
-                  }}</span>
-                  <span class="text-brand-navy-heading font-medium">{{
-                    spec.value
-                  }}</span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Price & Action CTA -->
-            <div class="flex flex-col gap-3 pt-2">
-              <div>
-                <span
-                  class="text-brand-slate-muted text-[12px] font-semibold tracking-[1.2px] uppercase block"
-                >
-                  Starting From
-                </span>
-                <div class="flex items-baseline gap-1.5 mt-0.5">
-                  <span
-                    class="text-brand-red-dark text-2xl font-semibold tracking-[-0.24px]"
-                  >
-                    £{{ product.price.toLocaleString() }}
-                  </span>
-                  <span class="text-brand-slate-muted text-sm font-normal"
-                    >+ VAT</span
-                  >
-                </div>
-              </div>
-
-              <button
-                @click="handleSelect(product)"
-                class="w-full border border-brand-navy-slate text-brand-navy-slate hover:bg-brand-navy-slate hover:text-white transition-colors text-[12px] font-semibold tracking-[0.6px] uppercase text-center py-2.5 rounded-[2px]"
-              >
-                SELECT &amp; CUSTOMIZE
-              </button>
-            </div>
-          </div>
-        </div>
+          :product="product"
+          :variant-label="product.categoryTag"
+        />
       </div>
     </div>
   </section>
@@ -180,6 +109,5 @@ function handleSelect(product: (typeof products)[0]) {
     basePrice: product.price,
     quantity: 1,
   });
-  router.push("/quote");
 }
 </script>
