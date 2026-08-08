@@ -29,6 +29,7 @@ export const useQuoteStore = defineStore("quote", {
   state: () => ({
     items: [] as QuoteItem[],
     lastVisitedRoute: "/products" as string,
+    maxVisitedStep: 1 as number,
   }),
 
   getters: {
@@ -58,6 +59,13 @@ export const useQuoteStore = defineStore("quote", {
       if (state.lastVisitedRoute === "/customize") return 2;
       if (state.lastVisitedRoute === "/products") return 1;
       return state.items.length > 0 ? 2 : 1;
+    },
+    isStepUnlocked: (state) => (stepNumber: number) => {
+      if (stepNumber === 1) return true;
+      if (stepNumber === 2) return state.items.length > 0 || state.maxVisitedStep >= 2;
+      if (stepNumber === 3) return state.items.length > 0 && state.maxVisitedStep >= 3;
+      if (stepNumber === 4) return state.maxVisitedStep >= 4;
+      return false;
     },
     getItemQuantity: (state) => (productId: string) => {
       const match = state.items.find((i) => i.productId === productId);
@@ -151,18 +159,33 @@ export const useQuoteStore = defineStore("quote", {
             ],
           },
         ];
+        this.updateMaxVisitedStep(2);
+      }
+    },
+
+    updateMaxVisitedStep(step: number) {
+      if (step > this.maxVisitedStep) {
+        this.maxVisitedStep = step;
       }
     },
 
     setLastVisitedRoute(route: string) {
       if (["/products", "/customize", "/quote"].includes(route)) {
         this.lastVisitedRoute = route;
+        if (route === "/products") {
+          this.updateMaxVisitedStep(1);
+        } else if (route === "/customize") {
+          this.updateMaxVisitedStep(2);
+        } else if (route === "/quote") {
+          this.updateMaxVisitedStep(3);
+        }
       }
     },
 
     clearQuote() {
       this.items = [];
       this.lastVisitedRoute = "/products";
+      this.maxVisitedStep = 1;
     },
   },
 

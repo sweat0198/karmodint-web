@@ -9,12 +9,48 @@
       description="Review your selected modular structures and request direct factory pricing."
     >
       <template #actions>
-        <NuxtLink
-          to="/products"
-          class="text-xs text-brand-slate-muted hover:text-brand-navy-heading font-semibold px-3 py-2 transition-colors mr-2"
-        >
-          + Add More Items
-        </NuxtLink>
+        <div class="flex flex-wrap items-center gap-3">
+          <NuxtLink
+            to="/products"
+            class="flex items-center justify-center gap-2 px-6 sm:px-8 py-3 bg-white hover:bg-slate-100 text-brand-navy-heading border border-slate-300 font-semibold text-xs tracking-wider uppercase rounded-[2px] transition-colors duration-150 shadow-sm hover:shadow"
+          >
+            <svg
+              class="w-4 h-4 text-brand-slate-muted shrink-0"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 4v16m8-8H4"
+              />
+            </svg>
+            <span>Add More Items</span>
+          </NuxtLink>
+
+          <NuxtLink
+            v-if="!quoteStore.isEmpty"
+            to="/customize"
+            class="flex items-center justify-center gap-2 px-6 sm:px-8 py-3 bg-brand-red hover:bg-brand-red-hover text-white font-semibold text-xs tracking-wider uppercase rounded-[2px] transition-colors duration-150 shadow-sm hover:shadow"
+          >
+            <span>Customize Units</span>
+            <svg
+              class="w-4 h-4 text-white shrink-0"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M14 5l7 7m0 0l-7 7m7-7H3"
+              />
+            </svg>
+          </NuxtLink>
+        </div>
       </template>
     </BuyFlowHeader>
 

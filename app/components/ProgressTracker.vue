@@ -12,7 +12,7 @@
           <div
             class="h-full bg-brand-red transition-all duration-300"
             :style="{
-              width: `${((currentStep - 1) / (steps.length - 1)) * 100}%`,
+              width: `${((Math.max(currentStep, quoteStore.maxVisitedStep) - 1) / (steps.length - 1)) * 100}%`,
             }"
           ></div>
         </div>
@@ -37,7 +37,7 @@
               <div
                 :class="[
                   'w-8 h-8 rounded-xl flex items-center justify-center font-bold text-base transition-all duration-200 shrink-0 relative z-10',
-                  step.number <= currentStep
+                  step.number <= currentStep || isStepEnabled(step)
                     ? 'bg-brand-red text-white shadow-sm'
                     : 'bg-brand-navy text-brand-slate-light border border-brand-navy',
                   isStepEnabled(step) && step.number !== currentStep
@@ -54,12 +54,11 @@
               <span
                 :class="[
                   'text-xs font-semibold tracking-wider uppercase whitespace-nowrap transition-colors',
-                  step.number <= currentStep
+                  step.number === currentStep
                     ? 'text-brand-navy-heading font-bold'
-                    : 'text-brand-slate-muted',
-                  isStepEnabled(step) && step.number !== currentStep
-                    ? 'group-hover:text-brand-red'
-                    : '',
+                    : isStepEnabled(step)
+                      ? 'text-brand-navy-heading font-semibold group-hover:text-brand-red'
+                      : 'text-brand-slate-muted',
                 ]"
               >
                 {{ step.label }}
@@ -97,6 +96,8 @@
 </template>
 
 <script setup lang="ts">
+import { useQuoteStore } from "~/stores/quote";
+
 interface Step {
   number: number;
   label: string;
@@ -119,8 +120,12 @@ const props = withDefaults(
   },
 );
 
+const quoteStore = useQuoteStore();
+
 const isStepEnabled = (step: Step): boolean => {
-  return !!step.route && step.number <= props.currentStep;
+  if (!step.route) return false;
+  if (step.number <= props.currentStep) return true;
+  return quoteStore.isStepUnlocked(step.number);
 };
 </script>
 
