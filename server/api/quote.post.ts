@@ -1,5 +1,3 @@
-import { Resend } from 'resend'
-
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
   const config = useRuntimeConfig()
@@ -78,10 +76,25 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    const resend = new Resend(resendKey)
+    const sendEmail = async (payload: { from: string; to: string[]; subject: string; html: string }) => {
+      const res = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${resendKey}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      })
+
+      const data = await res.json()
+      if (!res.ok) {
+        throw new Error(data?.message || `Resend API error: ${res.statusText}`)
+      }
+      return data
+    }
 
     // 1. Send Notification to Business Inbox
-    const businessResult = await resend.emails.send({
+    const businessResult = await sendEmail({
       from: 'Karmod Quotes <quotes@karmod-international.com>',
       to: [businessInbox],
       subject: `New Quote Request from ${customer.name} (${items.length} items)`,
@@ -89,7 +102,7 @@ export default defineEventHandler(async (event) => {
     })
 
     // 2. Send Confirmation Email to Customer
-    const customerResult = await resend.emails.send({
+    const customerResult = await sendEmail({
       from: 'Karmod International <enquiries@karmod-international.com>',
       to: [customer.email],
       subject: 'We received your quote request - Karmod International',
@@ -105,8 +118,8 @@ export default defineEventHandler(async (event) => {
 
     return {
       success: true,
-      businessEmailId: businessResult.data?.id,
-      customerEmailId: customerResult.data?.id
+      businessEmailId: businessResult?.id,
+      customerEmailId: customerResult?.id
     }
   } catch (err: any) {
     console.error('Failed to send Resend emails:', err)
