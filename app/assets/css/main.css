@@ -1,3 +1,24 @@
+@import "tailwindcss";
+@import "@nuxt/ui";
+
+@theme {
+  --color-brand-navy: #121C2A;
+  --color-brand-navy-heading: #291715;
+  --color-brand-navy-slate: #3D4756;
+  --color-brand-red: #E31E24;
+  --color-brand-red-hover: #C9181D;
+  --color-brand-red-dark: #BA0013;
+  --color-brand-red-deep: #90000F;
+  --color-brand-slate-muted: #64748B;
+  --color-brand-slate-light: #BDC7D9;
+  --color-brand-rose-bg: #FFF8F7;
+  --color-brand-rose-card: #FFE9E6;
+  --color-brand-rose-border: #E7BDB8;
+  --color-brand-rose-text: #5D3F3C;
+  --color-brand-rose-footer: #FDDBD7;
+  --color-brand-navy-dark: #402B29;
+}
+
 :root {
   --font-sans: 'Inter', system-ui, sans-serif;
   --font-heading: 'Inter', system-ui, sans-serif;

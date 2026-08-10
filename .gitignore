@@ -28,3 +28,8 @@ logs
 
 # Graphify
 graphify-out/
+
+# Sanity
+.sanity/
+sanity/.sanity/
+
