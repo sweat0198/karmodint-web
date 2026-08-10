@@ -25,6 +25,18 @@ export default defineNuxtConfig({
     "@nuxtjs/sanity",
   ],
 
+  icon: {
+    clientBundle: {
+      scan: true,
+      icons: [
+        "heroicons:shopping-bag",
+        "heroicons:cube",
+        "heroicons:trash",
+        "heroicons:arrow-path",
+      ],
+    },
+  },
+
   sanity: {
     projectId: process.env.SANITY_PROJECT_ID || "dummy_project_id",
     dataset: process.env.SANITY_DATASET || "production",
