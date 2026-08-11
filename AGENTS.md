@@ -44,3 +44,14 @@ Code/commits/PRs: normal. Off: "stop caveman" / "normal mode".
 1. Use `graphify` for general architectural Q&A and concept traces.
 2. Use `code-review-graph` for change analysis, risk reviews, and impact mapping.
 3. Keep graphs fresh: run `graphify update .` and `code-review-graph update` after changing files.
+
+<!-- UI & Animation Engineering -->
+
+## UI & Animation Engineering
+
+When building or reviewing UI, animations, transitions, or styling changes, apply rules from `.agents/skills/`:
+- `emil-design-eng`: UI polish, component craft, invisible details, taste standards.
+- `animate`: Building animations/motion from scratch with exact easing/durations and reduced-motion support.
+- `review-animations` & `improve-animations`: Auditing and reviewing UI motion quality.
+- `find-animation-opportunities`: Identifying micro-interaction opportunities.
+
