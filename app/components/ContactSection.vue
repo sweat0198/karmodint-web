@@ -191,11 +191,12 @@
             >
               Direct Line
             </span>
-            <p
-              class="text-brand-navy-heading text-xl lg:text-2xl font-semibold tracking-tight"
+            <a
+              href="tel:+447824810226"
+              class="text-brand-navy-heading hover:text-brand-red text-xl lg:text-2xl font-semibold tracking-tight transition-colors block"
             >
-              +44 (0) 123 456 789
-            </p>
+              +44 7824 810226
+            </a>
             <p class="text-brand-slate-muted text-xs lg:text-sm">
               Mon - Fri, 8:00 AM - 6:00 PM GMT
             </p>
