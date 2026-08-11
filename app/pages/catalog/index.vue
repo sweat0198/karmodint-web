@@ -59,18 +59,149 @@
       </template>
     </BuyFlowHeader>
 
+    <!-- Mobile Sticky Navigation Bar: Categories Button + Breadcrumb (Figma 50:26 & 50:11) -->
+    <div
+      class="lg:hidden sticky top-[64px] z-30 bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-xs px-4 sm:px-6 pt-3.5 pb-3 flex flex-col gap-2.5"
+    >
+      <!-- Categories Button (Figma 50:26) -->
+      <button
+        type="button"
+        @click="isCategoryDrawerOpen = true"
+        class="w-full bg-white border border-slate-200 shadow-xs hover:border-slate-300 active:scale-[0.98] active:bg-slate-50 px-4 py-3.5 rounded-[4px] flex items-center justify-between transition-transform duration-150 [transition-timing-function:var(--ease-out)] group cursor-pointer focus-visible:ring-2 focus-visible:ring-brand-red focus-visible:outline-none select-none"
+        aria-label="Open Categories Selection"
+      >
+        <div class="flex items-center gap-2.5">
+          <!-- Red 3-bar filter/categories icon -->
+          <svg
+            class="w-[18px] h-[12px] text-[#E31E24] shrink-0"
+            viewBox="0 0 18 12"
+            fill="none"
+            stroke="currentColor"
+          >
+            <path
+              d="M0 1.5H18M3 6H15M6 10.5H12"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+          </svg>
+          <span class="font-medium text-base text-[#1f2937]">
+            Categories
+          </span>
+        </div>
+        <svg
+          class="w-3.5 h-2.5 text-slate-500 group-hover:text-slate-800 transition-colors duration-150 shrink-0"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 12 8"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="1.8"
+            d="M1 1.5L6 6.5L11 1.5"
+          />
+        </svg>
+      </button>
+
+      <!-- Breadcrumbs (Figma 50:11) -->
+      <nav
+        aria-label="Breadcrumb"
+        class="flex items-center gap-1.5 text-xs font-semibold tracking-[1.2px] text-slate-500 uppercase overflow-x-auto overscroll-x-contain whitespace-nowrap scrollbar-none py-0.5"
+      >
+        <NuxtLink
+          to="/"
+          class="hover:text-slate-900 active:opacity-70 transition-opacity duration-150 shrink-0"
+        >
+          Home
+        </NuxtLink>
+        <svg
+          class="w-3 h-3 text-slate-400 shrink-0"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9 5l7 7-7 7"
+          />
+        </svg>
+        <NuxtLink
+          to="/catalog"
+          class="hover:text-slate-900 active:opacity-70 transition-opacity duration-150 shrink-0"
+        >
+          Products
+        </NuxtLink>
+        <svg
+          class="w-3 h-3 text-slate-400 shrink-0"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9 5l7 7-7 7"
+          />
+        </svg>
+        <span
+          @click="isCategoryDrawerOpen = true"
+          class="hover:text-slate-900 active:opacity-70 cursor-pointer transition-opacity duration-150 shrink-0"
+        >
+          {{ activeCategory }}
+        </span>
+        <svg
+          class="w-3 h-3 text-slate-400 shrink-0"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9 5l7 7-7 7"
+          />
+        </svg>
+        <span class="text-[#1f2937] font-bold shrink-0">
+          {{ activeSubcategory }}
+        </span>
+      </nav>
+    </div>
+
     <div
       class="max-w-[1280px] w-full mx-auto px-6 lg:px-12 pt-6 flex flex-col gap-6"
     >
-      <!-- Breadcrumbs in Main Catalog Layout -->
+      <!-- Breadcrumbs in Main Catalog Layout (Desktop) -->
       <nav
         aria-label="Breadcrumb"
-        class="flex items-center gap-2 text-xs font-semibold tracking-wider text-brand-slate-muted uppercase flex-wrap"
+        class="hidden lg:flex items-center gap-2 text-xs font-semibold tracking-wider text-brand-slate-muted uppercase flex-wrap"
       >
+        <NuxtLink
+          to="/"
+          class="hover:text-brand-navy-heading transition-colors"
+          >Home</NuxtLink
+        >
+        <svg
+          class="w-3 h-3 text-brand-slate-muted shrink-0"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9 5l7 7-7 7"
+          />
+        </svg>
         <NuxtLink
           to="/catalog"
           class="hover:text-brand-navy-heading transition-colors"
-          >Catalog</NuxtLink
+          >Products</NuxtLink
         >
         <svg
           class="w-3 h-3 text-brand-slate-muted shrink-0"
@@ -87,6 +218,7 @@
         </svg>
         <span
           class="hover:text-brand-navy-heading cursor-pointer transition-colors"
+          @click="toggleCategory(activeCategory)"
           >{{ activeCategory }}</span
         >
         <svg
@@ -106,11 +238,12 @@
           activeSubcategory
         }}</span>
       </nav>
+
       <!-- Main Layout Container: Sidebar + Product Grid -->
       <div class="flex flex-col lg:flex-row gap-8 items-start w-full">
-        <!-- Sidebar - Categories (290px width) -->
+        <!-- Sidebar - Categories (Desktop 290px width) -->
         <aside
-          class="w-full lg:w-[290px] shrink-0 bg-white border border-slate-100 rounded-[4px] p-6 shadow-sm"
+          class="hidden lg:block w-[290px] shrink-0 bg-white border border-slate-100 rounded-[4px] p-6 shadow-sm"
         >
           <h2
             class="text-brand-navy-heading text-2xl font-semibold tracking-tight mb-6"
@@ -236,6 +369,16 @@
         </NuxtLink>
       </section>
     </div>
+
+    <!-- Mobile Category Bottom Sheet Navigation Drawer (Stitch Screen) -->
+    <CategoryDrawer
+      v-model:is-open="isCategoryDrawerOpen"
+      :categories="categories"
+      :active-category="activeCategory"
+      :active-subcategory="activeSubcategory"
+      :expanded-category="expandedCategory"
+      @select="selectSubcategory"
+    />
   </div>
 </template>
 
@@ -259,6 +402,7 @@ const router = useRouter();
 const route = useRoute();
 const quoteStore = useQuoteStore();
 
+const isCategoryDrawerOpen = ref(false);
 const activeCategory = ref("Standard Units");
 const activeSubcategory = ref("Security Cabins");
 const expandedCategory = ref("Standard Units");

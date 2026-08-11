@@ -61,7 +61,10 @@
                       : 'text-brand-slate-muted',
                 ]"
               >
-                {{ step.label }}
+                <span class="hidden md:inline">{{ step.label }}</span>
+                <span class="md:hidden">{{
+                  step.mobileLabel || step.label
+                }}</span>
               </span>
             </div>
           </NuxtLink>
@@ -85,7 +88,10 @@
               <span
                 class="text-xs font-semibold tracking-wider uppercase whitespace-nowrap text-brand-slate-muted"
               >
-                {{ step.label }}
+                <span class="hidden md:inline">{{ step.label }}</span>
+                <span class="md:hidden">{{
+                  step.mobileLabel || step.label
+                }}</span>
               </span>
             </div>
           </div>
@@ -101,6 +107,7 @@ import { useQuoteStore } from "~/stores/quote";
 interface Step {
   number: number;
   label: string;
+  mobileLabel?: string;
   route?: string;
 }
 
@@ -112,10 +119,20 @@ const props = withDefaults(
   {
     currentStep: 1,
     steps: () => [
-      { number: 1, label: "SELECT PRODUCTS", route: "/catalog" },
+      {
+        number: 1,
+        label: "SELECT PRODUCTS",
+        mobileLabel: "SELECT",
+        route: "/catalog",
+      },
       { number: 2, label: "CUSTOMIZE", route: "/customize" },
       { number: 3, label: "REVIEW", route: "/quote" },
-      { number: 4, label: "FINAL QUOTE", route: "/quote" },
+      {
+        number: 4,
+        label: "FINAL QUOTE",
+        mobileLabel: "QUOTE",
+        route: "/quote",
+      },
     ],
   },
 );
