@@ -101,26 +101,5 @@ h1, h2, h3, h4, h5, h6 {
   background-color: #F1F5F9;
 }
 
-/* Brand Utilities Fallback */
-.bg-brand-navy { background-color: var(--brand-navy) !important; }
-.bg-brand-navy-heading { background-color: var(--brand-navy-heading) !important; }
-.bg-brand-navy-slate { background-color: var(--brand-navy-slate) !important; }
-.bg-brand-red { background-color: var(--brand-red) !important; }
-.bg-brand-red-hover:hover { background-color: var(--brand-red-hover) !important; }
-.bg-brand-red-dark { background-color: var(--brand-red-dark) !important; }
-.bg-brand-rose-bg { background-color: var(--brand-rose-bg) !important; }
-.bg-brand-rose-card { background-color: var(--brand-rose-card) !important; }
-
-.text-brand-navy-heading { color: var(--brand-navy-heading) !important; }
-.text-brand-navy-slate { color: var(--brand-navy-slate) !important; }
-.text-brand-red { color: var(--brand-red) !important; }
-.text-brand-red-dark { color: var(--brand-red-dark) !important; }
-.text-brand-red-deep { color: var(--brand-red-deep) !important; }
-.text-brand-slate-muted { color: var(--brand-slate-muted) !important; }
-.text-brand-slate-light { color: var(--brand-slate-light) !important; }
-
-.border-brand-rose-border { border-color: var(--brand-rose-border) !important; }
-.border-brand-navy-slate { border-color: var(--brand-navy-slate) !important; }
-.border-brand-red { border-color: var(--brand-red) !important; }
 
 
