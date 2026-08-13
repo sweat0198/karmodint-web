@@ -67,7 +67,7 @@ export function useAppSeo() {
       name: "Karmod International",
       legalName: "Karmod International Ltd",
       url: siteUrl.replace(/\/$/, ""),
-      logo: `${siteUrl.replace(/\/$/, "")}/favicon.ico`,
+      logo: `${siteUrl.replace(/\/$/, "")}/images/karmod-logo.png`,
       description:
         "Specialist manufacturer of portable cabins, kiosks, security gatehouses, and modular building solutions across the UK and worldwide.",
       address: {
