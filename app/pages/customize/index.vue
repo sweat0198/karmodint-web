@@ -262,16 +262,16 @@ import {
   getDefaultSelections,
   getModularStepsForProduct,
 } from "~/utils/modularConfigPresets";
+import { useAppSeo } from "~/composables/useAppSeo";
 
-useHead({
+const { setPageSeo } = useAppSeo();
+
+setPageSeo({
   title: "Customize Modular Units | Karmod International",
-  meta: [
-    {
-      name: "description",
-      content:
-        "Interactive 3D customization for Karmod modular cabins, security gatehouses, and portable buildings.",
-    },
-  ],
+  description:
+    "Interactive engineering configuration for Karmod modular cabins, security gatehouses, and portable buildings.",
+  canonicalPath: "/customize",
+  noindex: true,
 });
 
 const quoteStore = useQuoteStore();

@@ -33,3 +33,6 @@ graphify-out/
 .sanity/
 sanity/.sanity/
 
+# Agent tools & scratch
+.agents/seo-tools/
+

@@ -12,10 +12,17 @@
 </template>
 
 <script setup lang="ts">
-useHead({
-  title: 'Karmod International - Modular Building Solutions & Cabins',
-  meta: [
-    { name: 'description', content: 'Engineered for durability, designed for efficiency. Premium modular and portable buildings across the UK.' }
+import { useAppSeo } from '~/composables/useAppSeo'
+
+const { setPageSeo, getOrganizationSchema, getWebSiteSchema } = useAppSeo()
+
+setPageSeo({
+  title: 'Karmod International - Portable Cabins, Kiosks & Modular Buildings',
+  description: 'Engineered for durability, designed for efficiency. Premium modular buildings, portable cabins, retail kiosks, and security gatehouses across the UK and worldwide.',
+  canonicalPath: '/',
+  jsonLd: [
+    getOrganizationSchema(),
+    getWebSiteSchema()
   ]
 })
 </script>

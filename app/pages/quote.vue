@@ -233,6 +233,16 @@
 
 <script setup lang="ts">
 import { useQuoteStore } from '~/stores/quote'
+import { useAppSeo } from '~/composables/useAppSeo'
+
+const { setPageSeo } = useAppSeo()
+
+setPageSeo({
+  title: 'Review Quote & Request Pricing | Karmod International',
+  description: 'Review chosen modular building specifications and submit for official direct quotation.',
+  canonicalPath: '/quote',
+  noindex: true
+})
 
 const quoteStore = useQuoteStore()
 

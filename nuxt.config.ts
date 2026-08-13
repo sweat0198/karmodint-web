@@ -44,14 +44,22 @@ export default defineNuxtConfig({
 
   app: {
     head: {
+      htmlAttrs: {
+        lang: "en-GB",
+      },
       title:
         "Karmod International - Portable Cabins, Kiosks & Modular Buildings",
       meta: [
+        { charset: "utf-8" },
+        { name: "viewport", content: "width=device-width, initial-scale=1" },
         {
           name: "description",
           content:
-            "Karmod International Ltd manufactures premium modular buildings, portable cabins, retail kiosks, gatehouses, and ticket booths.",
+            "Karmod International Ltd manufactures premium modular buildings, portable cabins, retail kiosks, gatehouses, and ticket booths across the UK and worldwide.",
         },
+        { property: "og:site_name", content: "Karmod International" },
+        { property: "og:type", content: "website" },
+        { name: "twitter:card", content: "summary_large_image" },
       ],
       link: [
         { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -81,6 +89,8 @@ export default defineNuxtConfig({
     businessEmail:
       process.env.BUSINESS_EMAIL || "enquiries@karmod-international.com",
     public: {
+      siteUrl:
+        process.env.NUXT_PUBLIC_SITE_URL || "https://www.karmodint.co.uk",
       sanityProjectId: process.env.SANITY_PROJECT_ID || "dummy_project_id",
       sanityDataset: process.env.SANITY_DATASET || "production",
     },
@@ -104,15 +114,19 @@ export default defineNuxtConfig({
         "/customize",
         "/quote",
         "/gallery",
-        "/about-contact",
         "/contact",
         "/about",
+        "/sitemap.xml",
       ],
       ignore: ["/api/quote"],
     },
   },
 
   routeRules: {
+    // 301 Permanent Redirect for legacy about-contact path
+    "/about-contact": {
+      redirect: { to: "/about", statusCode: 301 },
+    },
     // Prerender static pages at build time
     "/**": { prerender: true },
     // Ensure API endpoints remain runtime/dynamic functions

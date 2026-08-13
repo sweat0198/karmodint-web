@@ -232,6 +232,9 @@
 
 <script setup lang="ts">
 import { ref, computed } from "vue";
+import { useAppSeo } from "~/composables/useAppSeo";
+
+const { setPageSeo, getBreadcrumbSchema } = useAppSeo();
 
 interface GalleryItem {
   id: string;
@@ -365,13 +368,31 @@ const closeModal = () => {
   selectedItem.value = null;
 };
 
-useHead({
-  title: "Project Gallery | Karmod International",
-  meta: [
+setPageSeo({
+  title: "Modular Building Project Gallery | Karmod International",
+  description:
+    "Explore Karmod's portfolio of modular construction projects across healthcare, commercial, industrial, security, and education sectors across the UK and internationally.",
+  canonicalPath: "/gallery",
+  jsonLd: [
+    getBreadcrumbSchema([
+      { name: "Home", path: "/" },
+      { name: "Project Gallery", path: "/gallery" },
+    ]),
     {
-      name: "description",
-      content:
-        "Explore Karmod UK's portfolio of modular construction projects across healthcare, commercial, industrial, security, and education sectors.",
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      name: "Karmod Modular Projects Gallery",
+      description:
+        "Portfolio of prefabricated structures, modular hospital wings, security checkpoints, and commercial kiosks.",
+      mainEntity: {
+        "@type": "ItemList",
+        itemListElement: galleryItems.map((item, idx) => ({
+          "@type": "ListItem",
+          position: idx + 1,
+          name: item.title,
+          description: item.description,
+        })),
+      },
     },
   ],
 });

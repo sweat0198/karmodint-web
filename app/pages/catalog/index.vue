@@ -386,21 +386,12 @@
 import { onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useQuoteStore } from "~/stores/quote";
-
-useHead({
-  title: "Catalog | Karmod International",
-  meta: [
-    {
-      name: "description",
-      content:
-        "Explore Karmod standard modular units, security cabins, gatehouses, and portable accommodation.",
-    },
-  ],
-});
+import { useAppSeo } from "~/composables/useAppSeo";
 
 const router = useRouter();
 const route = useRoute();
 const quoteStore = useQuoteStore();
+const { setPageSeo, getProductSchema, getBreadcrumbSchema } = useAppSeo();
 
 const isCategoryDrawerOpen = ref(false);
 const activeCategory = ref("Standard Units");
@@ -534,4 +525,27 @@ function handleSelect(product: (typeof products)[0]) {
     quantity: 1,
   });
 }
+
+setPageSeo({
+  title: "Modular Buildings & Portable Cabins Catalog | Karmod International",
+  description:
+    "Explore Karmod's full catalog of modular buildings, portable cabins, security gatehouses, retail kiosks, and sanitary units with customizable engineering options.",
+  canonicalPath: "/catalog",
+  jsonLd: [
+    getBreadcrumbSchema([
+      { name: "Home", path: "/" },
+      { name: "Modular Products Catalog", path: "/catalog" },
+    ]),
+    {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      name: "Modular Building Catalog",
+      itemListElement: products.map((prod, idx) => ({
+        "@type": "ListItem",
+        position: idx + 1,
+        item: getProductSchema(prod),
+      })),
+    },
+  ],
+});
 </script>

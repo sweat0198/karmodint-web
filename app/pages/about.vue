@@ -15,13 +15,27 @@
 </template>
 
 <script setup lang="ts">
-useHead({
+import { useAppSeo } from "~/composables/useAppSeo";
+
+const { setPageSeo, getOrganizationSchema, getBreadcrumbSchema } = useAppSeo();
+
+setPageSeo({
   title: "About Us | Karmod International - Modular Construction Pioneers",
-  meta: [
+  description:
+    "Learn about Karmod's legacy of engineering excellence in modular buildings, our mission, vision, and high-performance prefabricated projects across the UK and internationally.",
+  canonicalPath: "/about",
+  jsonLd: [
+    getBreadcrumbSchema([
+      { name: "Home", path: "/" },
+      { name: "About Us", path: "/about" },
+    ]),
     {
-      name: "description",
-      content:
-        "Learn about Karmod UK's legacy of engineering excellence in modular buildings, our mission, vision, and high-performance projects across the UK and internationally.",
+      "@context": "https://schema.org",
+      "@type": "AboutPage",
+      name: "About Karmod International",
+      description:
+        "Overview of Karmod International's modular construction heritage, engineering standards, and worldwide delivery.",
+      mainEntity: getOrganizationSchema(),
     },
   ],
 });
