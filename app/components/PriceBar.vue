@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { useRoute } from "vue-router";
+import QuickContactWidget from "~/components/QuickContactWidget.vue";
 import { useQuoteStore } from "~/stores/quote";
 
 interface Props {
@@ -11,6 +12,7 @@ interface Props {
   quoteLabel?: string;
   isSaving?: boolean;
   showWhenEmpty?: boolean;
+  showQuickContact?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -20,6 +22,7 @@ const props = withDefaults(defineProps<Props>(), {
   quoteLabel: "",
   isSaving: false,
   showWhenEmpty: false,
+  showQuickContact: true,
 });
 
 const emit = defineEmits<{
@@ -88,6 +91,16 @@ const destinationRoute = computed(() => {
       v-if="isVisible"
       class="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 shadow-[0_-4px_24px_rgba(0,0,0,0.08)] py-4 px-4 sm:px-8"
     >
+      <!-- Anchored Floating Quick Contact (WhatsApp & Phone) attached directly above PriceBar -->
+      <div
+        v-if="showQuickContact"
+        class="max-w-7xl mx-auto relative pointer-events-none"
+      >
+        <div class="absolute bottom-full right-0 mb-6 pointer-events-auto">
+          <QuickContactWidget :is-anchored="true" />
+        </div>
+      </div>
+
       <div
         class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4"
       >

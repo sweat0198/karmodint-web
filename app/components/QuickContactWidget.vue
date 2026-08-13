@@ -1,7 +1,11 @@
 <template>
   <div
-    class="fixed right-4 sm:right-6 z-30 flex flex-col items-end gap-2.5 origin-bottom-right pointer-events-auto quick-contact-root"
-    :class="[hasPriceBar ? 'bottom-[136px] sm:bottom-[108px]' : 'bottom-6']"
+    class="origin-bottom-right pointer-events-auto quick-contact-root"
+    :class="[
+      isAnchored
+        ? 'relative flex flex-col items-end gap-2.5 is-anchored'
+        : 'fixed right-4 sm:right-6 bottom-6 z-50 flex flex-col items-end gap-2.5',
+    ]"
     @mouseenter="isHovered = true"
     @mouseleave="isHovered = false"
   >
@@ -100,12 +104,16 @@
 
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref } from "vue";
-import { useRoute } from "vue-router";
 import { useQuickContact } from "~/composables/useQuickContact";
-import { useQuoteStore } from "~/stores/quote";
 
-const route = useRoute();
-const quoteStore = useQuoteStore();
+interface Props {
+  isAnchored?: boolean;
+}
+
+withDefaults(defineProps<Props>(), {
+  isAnchored: false,
+});
+
 const { phoneDisplay, phoneTelHref, whatsAppUrl, hasQuoteItems, quoteCount } =
   useQuickContact();
 
@@ -114,12 +122,6 @@ const isCollapsed = ref(false);
 let lastScrollY = 0;
 let idleTimer: ReturnType<typeof setTimeout> | null = null;
 let ticking = false;
-
-// PriceBar collision check
-const hasPriceBar = computed(() => {
-  if (route.path === "/quote") return false;
-  return quoteStore.totalItemsCount > 0;
-});
 
 function handleScroll() {
   if (!ticking) {
@@ -162,9 +164,8 @@ onUnmounted(() => {
 <style scoped>
 /* ─── Apple / Emil Kowalski 120fps Fluid Motion Design Tokens ─── */
 
-.quick-contact-root {
-  will-change: bottom;
-  transition: bottom 320ms cubic-bezier(0.16, 1, 0.3, 1);
+.quick-contact-root:not(.is-anchored) {
+  will-change: transform, opacity;
 }
 
 /* Secondary Direct Call Pill */

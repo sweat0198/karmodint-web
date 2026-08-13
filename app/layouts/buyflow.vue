@@ -13,14 +13,24 @@
 
     <!-- Global Customization / Basket Price Bar -->
     <PriceBar />
+
+    <!-- Standalone Quick Contact Floating Widget (active when PriceBar is not visible) -->
+    <QuickContactWidget v-if="!hasPriceBar" />
   </div>
 </template>
 
 <script setup lang="ts">
+import { computed } from "vue";
 import { useRoute } from "vue-router";
 import PriceBar from "~/components/PriceBar.vue";
+import QuickContactWidget from "~/components/QuickContactWidget.vue";
 import { useQuoteStore } from "~/stores/quote";
 
 const route = useRoute();
 const quoteStore = useQuoteStore();
+
+const hasPriceBar = computed(() => {
+  if (route.path === "/quote") return false;
+  return quoteStore.totalItemsCount > 0;
+});
 </script>
