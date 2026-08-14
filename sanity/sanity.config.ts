@@ -7,7 +7,7 @@ export default defineConfig({
   name: 'default',
   title: 'Karmod International Studio',
 
-  projectId: process.env.SANITY_STUDIO_PROJECT_ID || 'dummy_project_id',
+  projectId: process.env.SANITY_STUDIO_PROJECT_ID || 'dummy-project-id',
   dataset: process.env.SANITY_STUDIO_DATASET || 'production',
 
   plugins: [

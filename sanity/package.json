@@ -12,10 +12,11 @@
     "deploy-graphql": "sanity graphql deploy"
   },
   "dependencies": {
-    "sanity": "^3.0.0",
+    "sanity": "^6.9.2",
     "styled-components": "^6.1.15"
   },
   "devDependencies": {
+    "@sanity/cli": "^7.18.0",
     "@sanity/eslint-config-studio": "^3.0.0",
     "@types/react": "^18.0.0",
     "eslint": "^8.0.0",
