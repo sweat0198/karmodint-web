@@ -284,7 +284,8 @@
 
       <!-- 3. Map Section (Integrated) -->
       <div
-        class="border border-brand-rose-border rounded-lg shadow-sm overflow-hidden h-[400px] relative bg-slate-200"
+        id="map-section"
+        class="border border-brand-rose-border rounded-lg shadow-sm overflow-hidden h-[400px] relative bg-slate-200 scroll-mt-24"
       >
         <iframe
           title="Karmod UK Location Map"

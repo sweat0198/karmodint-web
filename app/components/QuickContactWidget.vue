@@ -3,64 +3,104 @@
     class="origin-bottom-right pointer-events-auto quick-contact-root"
     :class="[
       isAnchored
-        ? 'relative flex flex-col items-end gap-2.5 is-anchored'
-        : 'fixed right-4 sm:right-6 bottom-6 z-50 flex flex-col items-end gap-2.5',
+        ? 'relative flex flex-col items-end gap-2 is-anchored'
+        : 'fixed right-4 sm:right-6 bottom-6 z-50 flex flex-col items-end gap-2',
     ]"
     @mouseenter="isHovered = true"
     @mouseleave="isHovered = false"
   >
-    <!-- Secondary Action: Direct Phone Dial Pill (Staggered Entrance) -->
-    <a
-      :href="phoneTelHref"
-      class="quick-contact-phone-btn group flex items-center gap-2 text-slate-200 hover:text-white px-3 py-1.5 rounded-full text-xs font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-red focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
+    <!-- Top Action Row (Map + Phone + Close) -->
+    <div
+      class="quick-contact-top-bar flex items-center gap-1 p-1 rounded-full text-slate-200"
       :class="{
-        'is-hidden': isCollapsed && !isHovered,
-        'is-visible': !isCollapsed || isHovered,
+        'is-hidden': !isOpen,
+        'is-visible': isOpen,
       }"
-      :title="`Call Direct: ${phoneDisplay}`"
-      aria-label="Direct Phone Call"
     >
-      <div
-        class="w-5 h-5 rounded-full bg-brand-red/20 text-brand-red flex items-center justify-center shrink-0 transition-transform duration-200 group-hover:scale-110"
+      <!-- Navigation Map Button (Home page only) -->
+      <button
+        v-if="isHomePage"
+        type="button"
+        @click="scrollToMap"
+        class="quick-contact-icon-btn group flex items-center justify-center w-7 h-7 rounded-full hover:text-white hover:bg-slate-800/80 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 cursor-pointer transition-colors duration-150"
+        title="Scroll to Location Map"
+        aria-label="Scroll to Location Map"
       >
-        <svg
-          class="w-3 h-3"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
+        <div
+          class="w-5 h-5 rounded-full bg-sky-500/20 text-sky-400 flex items-center justify-center shrink-0 transition-transform duration-200 group-hover:scale-110"
         >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
-          />
-        </svg>
-      </div>
-      <span class="font-semibold text-[11px] tracking-wide">{{
-        phoneDisplay
-      }}</span>
-    </a>
+          <UIcon name="i-tabler-location" class="w-3.5 h-3.5" />
+        </div>
+      </button>
+
+      <!-- Direct Phone Dial Pill -->
+      <a
+        :href="phoneTelHref"
+        class="quick-contact-phone-link group flex items-center gap-1.5 px-2.5 py-1 rounded-full text-slate-200 hover:text-white hover:bg-slate-800/80 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-red transition-colors duration-150"
+        :title="`Call Direct: ${phoneDisplay}`"
+        aria-label="Direct Phone Call"
+      >
+        <div
+          class="w-5 h-5 rounded-full bg-brand-red/20 text-brand-red flex items-center justify-center shrink-0 transition-transform duration-200 group-hover:scale-110"
+        >
+          <svg
+            class="w-3 h-3"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+            />
+          </svg>
+        </div>
+        <span class="font-semibold text-[11px] tracking-wide">{{
+          phoneDisplay
+        }}</span>
+      </a>
+
+      <!-- Close / Minimize Button -->
+      <button
+        type="button"
+        @click="closeWidget"
+        class="quick-contact-close-btn group flex items-center justify-center w-7 h-7 rounded-full text-slate-400 hover:text-white hover:bg-slate-800/80 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 cursor-pointer transition-colors duration-150"
+        title="Minimize"
+        aria-label="Minimize quick contact widget"
+      >
+        <UIcon
+          name="i-tabler-x"
+          class="w-3.5 h-3.5 transition-transform duration-200 group-hover:scale-110"
+        />
+      </button>
+    </div>
 
     <!-- Primary Action: WhatsApp Quick Contact Fluid Capsule -->
     <a
       :href="whatsAppUrl"
-      target="_blank"
-      rel="noopener noreferrer"
-      class="quick-contact-main-btn group relative flex items-center text-white rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
+      :target="!isOpen ? undefined : '_blank'"
+      :rel="!isOpen ? undefined : 'noopener noreferrer'"
+      @click="handleWhatsAppClick"
+      class="quick-contact-main-btn group relative flex items-center text-white rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 cursor-pointer"
       :class="{
-        'is-collapsed': isCollapsed && !isHovered,
-        'is-expanded': !isCollapsed || isHovered,
+        'is-collapsed': !isOpen,
+        'is-expanded': isOpen,
       }"
       :title="
-        hasQuoteItems
-          ? 'Chat on WhatsApp with active quote breakdown'
-          : 'Chat with Karmod UK on WhatsApp'
+        !isOpen
+          ? 'Open Quick Contact'
+          : hasQuoteItems
+            ? 'Chat on WhatsApp with active quote breakdown'
+            : 'Chat with Karmod UK on WhatsApp'
       "
-      aria-label="Chat on WhatsApp"
+      :aria-label="!isOpen ? 'Open Quick Contact' : 'Chat on WhatsApp'"
     >
       <!-- WhatsApp Brand Icon (Fixed Anchor 48px square) -->
-      <div class="icon-anchor relative shrink-0 flex items-center justify-center">
+      <div
+        class="icon-anchor relative shrink-0 flex items-center justify-center"
+      >
         <svg
           class="w-6 h-6 fill-current text-emerald-300 group-hover:text-white transition-colors duration-200"
           viewBox="0 0 24 24"
@@ -81,8 +121,12 @@
 
       <!-- Fluid Morphing Label Container -->
       <div class="label-morph-container overflow-hidden">
-        <div class="label-inner flex flex-col items-start pr-4 whitespace-nowrap">
-          <span class="text-xs font-bold leading-tight flex items-center gap-1.5 text-white">
+        <div
+          class="label-inner flex flex-col items-start pr-4 whitespace-nowrap"
+        >
+          <span
+            class="text-xs font-bold leading-tight flex items-center gap-1.5 text-white"
+          >
             WhatsApp Us
             <span
               v-if="hasQuoteItems"
@@ -93,7 +137,9 @@
           </span>
           <span class="text-[10px] text-emerald-100/90 font-medium">
             {{
-              hasQuoteItems ? "Send unit spec & price" : "Instant modular support"
+              hasQuoteItems
+                ? "Send unit spec & price"
+                : "Instant modular support"
             }}
           </span>
         </div>
@@ -104,6 +150,7 @@
 
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref } from "vue";
+import { useRoute } from "vue-router";
 import { useQuickContact } from "~/composables/useQuickContact";
 
 interface Props {
@@ -114,16 +161,58 @@ withDefaults(defineProps<Props>(), {
   isAnchored: false,
 });
 
+const route = useRoute();
 const { phoneDisplay, phoneTelHref, whatsAppUrl, hasQuoteItems, quoteCount } =
   useQuickContact();
 
+const isHomePage = computed(() => route.path === "/");
+
 const isHovered = ref(false);
 const isCollapsed = ref(false);
+const isManuallyClosed = ref(false);
+
+const isOpen = computed(() => {
+  if (isManuallyClosed.value) {
+    return !isCollapsed.value;
+  }
+  return !isCollapsed.value || isHovered.value;
+});
+
 let lastScrollY = 0;
 let idleTimer: ReturnType<typeof setTimeout> | null = null;
 let ticking = false;
 
+function scrollToMap() {
+  const mapElement =
+    document.getElementById("map-section") ||
+    document.querySelector('iframe[title*="Map"]') ||
+    document.getElementById("location-map");
+  if (mapElement) {
+    mapElement.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+}
+
+function closeWidget() {
+  isCollapsed.value = true;
+  isManuallyClosed.value = true;
+  if (idleTimer) clearTimeout(idleTimer);
+}
+
+function expandWidget() {
+  isCollapsed.value = false;
+  isManuallyClosed.value = false;
+}
+
+function handleWhatsAppClick(e: MouseEvent) {
+  if (!isOpen.value) {
+    e.preventDefault();
+    expandWidget();
+  }
+}
+
 function handleScroll() {
+  if (isManuallyClosed.value) return;
+
   if (!ticking) {
     window.requestAnimationFrame(() => {
       const currentScrollY = window.scrollY;
@@ -141,11 +230,15 @@ function handleScroll() {
       lastScrollY = currentScrollY;
       ticking = false;
 
-      // Idle expand timer
+      // Idle expand timer (only if not manually closed)
       if (idleTimer) clearTimeout(idleTimer);
-      idleTimer = setTimeout(() => {
-        isCollapsed.value = false;
-      }, 2400);
+      if (!isManuallyClosed.value) {
+        idleTimer = setTimeout(() => {
+          if (!isManuallyClosed.value) {
+            isCollapsed.value = false;
+          }
+        }, 2400);
+      }
     });
     ticking = true;
   }
@@ -168,8 +261,8 @@ onUnmounted(() => {
   will-change: transform, opacity;
 }
 
-/* Secondary Direct Call Pill */
-.quick-contact-phone-btn {
+/* Top Action Bar (Map + Phone + Close) */
+.quick-contact-top-bar {
   background: rgba(15, 23, 42, 0.92);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
@@ -178,31 +271,48 @@ onUnmounted(() => {
     0 8px 20px -4px rgba(0, 0, 0, 0.35),
     inset 0 1px 0 0 rgba(255, 255, 255, 0.12);
   transform-origin: bottom right;
-  will-change: transform, opacity;
+  will-change: transform, opacity, max-height, margin, padding;
   backface-visibility: hidden;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
-.quick-contact-phone-btn.is-visible {
+.quick-contact-top-bar.is-visible {
   opacity: 1;
+  max-height: 44px;
   transform: translateY(0) scale(1);
+  pointer-events: auto;
+  margin-bottom: 0;
   transition:
-    transform 280ms cubic-bezier(0.16, 1, 0.3, 1) 40ms,
-    opacity 220ms ease-out 40ms,
-    background-color 150ms ease;
+    transform 300ms cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 240ms cubic-bezier(0.16, 1, 0.3, 1),
+    max-height 300ms cubic-bezier(0.16, 1, 0.3, 1),
+    margin-bottom 300ms cubic-bezier(0.16, 1, 0.3, 1),
+    padding 240ms ease;
 }
 
-.quick-contact-phone-btn.is-hidden {
+.quick-contact-top-bar.is-hidden {
   opacity: 0;
+  max-height: 0;
   transform: translateY(8px) scale(0.94);
   pointer-events: none;
+  margin-bottom: -8px;
+  padding-top: 0;
+  padding-bottom: 0;
+  border-color: transparent;
   transition:
-    transform 180ms cubic-bezier(0.4, 0, 1, 1),
-    opacity 140ms ease-in,
-    background-color 150ms ease;
+    transform 260ms cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 180ms cubic-bezier(0.16, 1, 0.3, 1),
+    max-height 260ms cubic-bezier(0.16, 1, 0.3, 1),
+    margin-bottom 260ms cubic-bezier(0.16, 1, 0.3, 1),
+    padding 260ms cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 180ms ease;
 }
 
-.quick-contact-phone-btn:active {
-  transform: scale(0.96) translateY(1px);
+.quick-contact-icon-btn:active,
+.quick-contact-phone-link:active,
+.quick-contact-close-btn:active {
+  transform: scale(0.94);
   transition-duration: 80ms;
 }
 
@@ -216,25 +326,22 @@ onUnmounted(() => {
     0 4px 12px -2px rgba(0, 0, 0, 0.22),
     inset 0 1px 0 0 rgba(255, 255, 255, 0.25);
   transform-origin: bottom right;
-  will-change: width, max-width, transform, background-color, box-shadow;
+  will-change: max-width, transform, background-color, box-shadow;
   backface-visibility: hidden;
   overflow: hidden;
   transition:
-    max-width 280ms cubic-bezier(0.16, 1, 0.3, 1),
+    max-width 300ms cubic-bezier(0.16, 1, 0.3, 1),
     transform 200ms cubic-bezier(0.16, 1, 0.3, 1),
-    background-color 180ms ease,
-    box-shadow 240ms cubic-bezier(0.16, 1, 0.3, 1);
+    background-color 200ms ease,
+    box-shadow 260ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .quick-contact-main-btn.is-collapsed {
-  width: 48px;
-  min-width: 48px;
   max-width: 48px;
 }
 
 .quick-contact-main-btn.is-expanded {
-  width: auto;
-  max-width: 260px;
+  max-width: 280px;
 }
 
 .icon-anchor {
@@ -248,9 +355,9 @@ onUnmounted(() => {
 .label-morph-container {
   display: grid;
   transition:
-    grid-template-columns 280ms cubic-bezier(0.16, 1, 0.3, 1),
-    opacity 200ms cubic-bezier(0.16, 1, 0.3, 1),
-    filter 200ms ease;
+    grid-template-columns 300ms cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 240ms cubic-bezier(0.16, 1, 0.3, 1),
+    filter 240ms ease;
   will-change: grid-template-columns, opacity;
 }
 
@@ -269,15 +376,20 @@ onUnmounted(() => {
 
 .label-inner {
   min-width: 0;
-  transition: transform 280ms cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+  transition:
+    transform 300ms cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 240ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .is-collapsed .label-inner {
-  transform: translateX(4px);
+  transform: translateX(8px);
+  opacity: 0;
 }
 
 .is-expanded .label-inner {
   transform: translateX(0);
+  opacity: 1;
 }
 
 /* Desktop Hover Elevation */
@@ -315,7 +427,7 @@ onUnmounted(() => {
 /* Reduced Motion Mode */
 @media (prefers-reduced-motion: reduce) {
   .quick-contact-root,
-  .quick-contact-phone-btn,
+  .quick-contact-top-bar,
   .quick-contact-main-btn,
   .label-morph-container,
   .label-inner,

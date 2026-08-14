@@ -33,6 +33,8 @@ export default defineNuxtConfig({
         "heroicons:cube",
         "heroicons:trash",
         "heroicons:arrow-path",
+        "heroicons:map-pin",
+        "tabler:location",
       ],
     },
   },
