@@ -1,4 +1,26 @@
-import { productType } from './product'
 import { categoryType } from './category'
+import { productType } from './product'
+import { customizationGroupType } from './customizationGroup'
+import { quoteEnquiryType } from './quoteEnquiry'
+import { blockContent } from './objects/blockContent'
+import { sizeOption } from './objects/sizeOption'
+import { customizationItem } from './objects/customizationItem'
+import { specItem } from './objects/specItem'
+import { seo } from './objects/seo'
+import { quoteItem } from './objects/quoteItem'
 
-export const schemaTypes = [productType, categoryType]
+export const schemaTypes = [
+  // Document types
+  productType,
+  categoryType,
+  customizationGroupType,
+  quoteEnquiryType,
+
+  // Object types
+  blockContent,
+  sizeOption,
+  customizationItem,
+  specItem,
+  seo,
+  quoteItem
+]
