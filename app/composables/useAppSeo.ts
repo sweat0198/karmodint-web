@@ -1,4 +1,5 @@
 import { useRuntimeConfig, useSeoMeta, useHead } from "#imports";
+import { getCompanyPostalAddressSchema } from "~/constants/company";
 
 export interface PageSeoOptions {
   title: string;
@@ -70,14 +71,12 @@ export function useAppSeo() {
       logo: `${siteUrl.replace(/\/$/, "")}/images/karmod-logo.png`,
       description:
         "Specialist manufacturer of portable cabins, kiosks, security gatehouses, and modular building solutions across the UK and worldwide.",
-      address: {
-        "@type": "PostalAddress",
-        addressCountry: "GB",
-      },
+      address: getCompanyPostalAddressSchema(),
       contactPoint: {
         "@type": "ContactPoint",
         contactType: "sales and customer support",
         email: "enquiries@karmod-international.com",
+        telephone: "+44 7824 810226",
         areaServed: ["GB", "Worldwide"],
         availableLanguage: ["English"],
       },

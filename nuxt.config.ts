@@ -67,9 +67,23 @@ export default defineNuxtConfig({
       link: [
         { rel: "icon", href: "/favicon.ico", sizes: "32x32" },
         { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
-        { rel: "icon", type: "image/png", sizes: "32x32", href: "/favicon-32x32.png" },
-        { rel: "icon", type: "image/png", sizes: "16x16", href: "/favicon-16x16.png" },
-        { rel: "apple-touch-icon", sizes: "180x180", href: "/apple-touch-icon.png" },
+        {
+          rel: "icon",
+          type: "image/png",
+          sizes: "32x32",
+          href: "/favicon-32x32.png",
+        },
+        {
+          rel: "icon",
+          type: "image/png",
+          sizes: "16x16",
+          href: "/favicon-16x16.png",
+        },
+        {
+          rel: "apple-touch-icon",
+          sizes: "180x180",
+          href: "/apple-touch-icon.png",
+        },
         { rel: "manifest", href: "/site.webmanifest" },
         { rel: "preconnect", href: "https://fonts.googleapis.com" },
         {
@@ -97,11 +111,13 @@ export default defineNuxtConfig({
     resendApiKey: process.env.RESEND_API_KEY || "",
     businessEmail:
       process.env.BUSINESS_EMAIL || "enquiries@karmod-international.com",
+    mapboxAccessToken: process.env.MAPBOX_ACCESS_TOKEN || "",
     public: {
       siteUrl:
         process.env.NUXT_PUBLIC_SITE_URL || "https://www.karmodint.co.uk",
       sanityProjectId: process.env.SANITY_PROJECT_ID || "dummy_project_id",
       sanityDataset: process.env.SANITY_DATASET || "production",
+      mapboxAccessToken: process.env.MAPBOX_ACCESS_TOKEN || "",
     },
   },
 
@@ -127,7 +143,7 @@ export default defineNuxtConfig({
         "/about",
         "/sitemap.xml",
       ],
-      ignore: ["/api/quote"],
+      ignore: ["/api/**"],
     },
   },
 

@@ -273,10 +273,10 @@
               UK Headquarters
             </span>
             <p class="text-brand-navy-heading text-lg font-semibold">
-              Karmod Modular UK
+              {{ COMPANY_DETAILS.legalName }}
             </p>
-            <p class="text-brand-slate-muted text-xs lg:text-sm">
-              123 Industrial Way, London, LN1 2AB
+            <p class="text-brand-slate-muted text-xs lg:text-sm leading-relaxed">
+              {{ COMPANY_DETAILS.address.formatted }}
             </p>
           </div>
         </div>
@@ -289,7 +289,7 @@
       >
         <iframe
           title="Karmod UK Location Map"
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d158858.47340003058!2d-0.2416812064117769!3d51.52855824174697!2m3!1f0!2s0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47d8a00baf21de75%3A0x52963a5addd52a99!2sLondon%2C%20UK!5e0!3m2!1sen!2suk!4v1700000000000!5m2!1sen!2suk"
+          :src="COMPANY_DETAILS.maps.googleMapsEmbedUrl"
           class="w-full h-full border-0 filter grayscale contrast-125 opacity-90 hover:grayscale-0 hover:opacity-100 hover:contrast-100 transition-all duration-1000 ease-in-out"
           allowfullscreen
           loading="lazy"
@@ -302,6 +302,7 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
+import { COMPANY_DETAILS } from "~/constants/company";
 
 const form = ref({
   fullName: "",

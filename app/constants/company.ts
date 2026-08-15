@@ -1,0 +1,94 @@
+/**
+ * Single source of truth for Karmod International company metadata,
+ * official registered address, contact channels, and SEO Schema.org definitions.
+ */
+
+export interface PostalAddressDefinition {
+  streetAddress: string
+  addressLocality: string
+  addressRegion: string
+  postalCode: string
+  addressCountry: 'GB'
+}
+
+export interface CoordinatesDefinition {
+  latitude: number
+  longitude: number
+}
+
+export interface ContactPointDefinition {
+  phoneDisplay: string
+  phoneRaw: string
+  phoneTelHref: string
+  whatsAppNumber: string
+  whatsAppUrl: string
+  salesEmail: string
+  supportEmail: string
+  openingHours: string
+}
+
+export const COMPANY_ADDRESS = {
+  line1: 'Unit 4 Fairfield Industrial Estate, Fair Farm Drive, Melton Road',
+  locality: 'Waltham On The Wolds',
+  town: 'Melton Mowbray',
+  region: 'Leicestershire',
+  country: 'England',
+  countryCode: 'GB',
+  postcode: 'LE14 4AJ',
+  full: 'Unit 4 Fairfield Industrial Estate Fair Farm Drive Melton Road, Waltham On The Wolds, Melton Mowbray, England, LE14 4AJ',
+  formatted: 'Unit 4 Fairfield Industrial Estate, Fair Farm Drive, Melton Road, Waltham On The Wolds, Melton Mowbray, LE14 4AJ'
+} as const
+
+export type CompanyAddress = typeof COMPANY_ADDRESS
+
+export const COMPANY_COORDINATES = {
+  latitude: 52.813677,
+  longitude: -0.813535
+} as const satisfies CoordinatesDefinition
+
+export type CompanyCoordinates = typeof COMPANY_COORDINATES
+
+export const COMPANY_CONTACT = {
+  phoneDisplay: '+44 7824 810226',
+  phoneRaw: '+447824810226',
+  phoneTelHref: 'tel:+447824810226',
+  whatsAppNumber: '447824810226',
+  whatsAppUrl: 'https://wa.me/447824810226',
+  salesEmail: 'sales@karmodint.co.uk',
+  supportEmail: 'enquiries@karmod-international.com',
+  openingHours: 'Mon - Fri, 8:00 AM - 6:00 PM GMT'
+} as const satisfies ContactPointDefinition
+
+export const COMPANY_MAPS = {
+  googleMapsEmbedUrl:
+    'https://maps.google.com/maps?q=Unit+4+Fairfield+Industrial+Estate,+Fair+Farm+Drive,+Melton+Road,+Waltham+On+The+Wolds,+Melton+Mowbray+LE14+4AJ&t=&z=14&ie=UTF8&iwloc=&output=embed',
+  googleMapsDirectionsUrl:
+    'https://www.google.com/maps/dir/?api=1&destination=LE14+4AJ'
+} as const
+
+export const COMPANY_DETAILS = {
+  name: 'Karmod International',
+  legalName: 'Karmod International Ltd',
+  tradingName: 'Karmod Modular UK',
+  tagline: 'Delivering high-quality, precision-engineered modular building solutions across the United Kingdom.',
+  address: COMPANY_ADDRESS,
+  coordinates: COMPANY_COORDINATES,
+  contact: COMPANY_CONTACT,
+  maps: COMPANY_MAPS
+} as const
+
+export type CompanyDetails = typeof COMPANY_DETAILS
+
+/**
+ * Returns Schema.org PostalAddress structured object for SEO JSON-LD
+ */
+export function getCompanyPostalAddressSchema() {
+  return {
+    '@type': 'PostalAddress' as const,
+    streetAddress: COMPANY_ADDRESS.line1,
+    addressLocality: `${COMPANY_ADDRESS.locality}, ${COMPANY_ADDRESS.town}`,
+    addressRegion: COMPANY_ADDRESS.region,
+    postalCode: COMPANY_ADDRESS.postcode,
+    addressCountry: COMPANY_ADDRESS.countryCode
+  }
+}
