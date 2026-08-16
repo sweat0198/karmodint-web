@@ -1,5 +1,5 @@
 import {
-  lookupPostcode,
+  resolveLocation,
   calculateDrivingRoute,
   computeDeliveryFee,
   formatDuration,
@@ -11,13 +11,13 @@ export default defineEventHandler(async (event) => {
   const query = getQuery(event)
   const config = useRuntimeConfig()
 
-  const originInput = (query.origin || query.originPostcode || DEFAULT_ORIGIN_POSTCODE) as string
-  const destinationInput = (query.destination || query.destinationPostcode || query.postcode) as string
+  const originInput = query.origin || query.originPostcode || DEFAULT_ORIGIN_POSTCODE
+  const destinationInput = query.destination || query.destinationPostcode || query.postcode || query.address
 
   if (!destinationInput) {
     throw createError({
       statusCode: 400,
-      statusMessage: 'Missing query parameter: "destination" (or "postcode") is required.'
+      statusMessage: 'Missing query parameter: "destination", "postcode", or "address" is required.'
     })
   }
 
@@ -25,8 +25,8 @@ export default defineEventHandler(async (event) => {
 
   try {
     const [origin, destination] = await Promise.all([
-      lookupPostcode(originInput),
-      lookupPostcode(destinationInput)
+      resolveLocation(originInput),
+      resolveLocation(destinationInput)
     ])
 
     const route = await calculateDrivingRoute(origin, destination, mapboxToken)

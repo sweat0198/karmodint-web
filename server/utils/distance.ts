@@ -121,6 +121,107 @@ export async function lookupPostcode(postcode: string): Promise<PostcodeResult> 
 }
 
 /**
+ * Extract UK postcode from a string if present (e.g. "10 Downing St, London SW1A 2AA" -> "SW1A 2AA")
+ */
+export function extractPostcodeFromString(text: string): string | null {
+  if (!text || typeof text !== 'string') return null
+  const trimmed = text.trim()
+
+  // 1. Match full UK postcode (e.g. SW1A 1AA, LE14 4AJ, EC1V 9LB, M1 1AE)
+  const fullPostcodeRegex = /\b([A-Z]{1,2}[0-9][A-Z0-9]?\s*[0-9][A-Z]{2})\b/i
+  const match = trimmed.match(fullPostcodeRegex)
+  if (match && match[1]) {
+    return match[1].trim().toUpperCase()
+  }
+
+  // 2. Match outcode/area code at the boundary (e.g. "SW1A", "LE14", "B1")
+  const outcodeRegex = /\b([A-Z]{1,2}[0-9][A-Z0-9]?)\b/i
+  const outcodeMatch = trimmed.match(outcodeRegex)
+  if (outcodeMatch && outcodeMatch[1]) {
+    return outcodeMatch[1].trim().toUpperCase()
+  }
+
+  return null
+}
+
+/**
+ * Resolves location to a PostcodeResult from either:
+ * 1. Postcode string (e.g. "LE14 4AJ", "SW1A 2AA")
+ * 2. Full address string with embedded postcode (e.g. "10 Downing St, London SW1A 2AA, UK")
+ * 3. Object with coordinates { lat, lng } or { latitude, longitude } and optional postcode/address
+ */
+export async function resolveLocation(input: any): Promise<PostcodeResult> {
+  if (!input) {
+    throw new Error('Location input is required')
+  }
+
+  // Case 1: Object with coordinates or properties
+  if (typeof input === 'object') {
+    const lat = Number(input.latitude ?? input.lat ?? input.coordinates?.lat)
+    const lng = Number(input.longitude ?? input.lng ?? input.coordinates?.lng)
+    const postcode =
+      input.postcode ||
+      (typeof input.formattedAddress === 'string'
+        ? extractPostcodeFromString(input.formattedAddress)
+        : '') ||
+      ''
+
+    if (!isNaN(lat) && !isNaN(lng) && (lat !== 0 || lng !== 0)) {
+      return {
+        postcode: postcode ? normalizePostcode(postcode) : 'DELIVERY-SITE',
+        latitude: lat,
+        longitude: lng,
+        district: input.district || input.townCity || input.county || '',
+        region: input.region || '',
+        country: input.country || 'United Kingdom'
+      }
+    }
+
+    if (postcode) {
+      return lookupPostcode(postcode)
+    }
+
+    if (input.formattedAddress && typeof input.formattedAddress === 'string') {
+      return resolveLocation(input.formattedAddress)
+    }
+
+    if (input.destinationPostcode || input.destination || input.postcode) {
+      return resolveLocation(input.destinationPostcode || input.destination || input.postcode)
+    }
+  }
+
+  // Case 2: String input
+  if (typeof input === 'string') {
+    const trimmed = input.trim()
+    if (!trimmed) {
+      throw new Error('Please provide a valid location or postcode')
+    }
+
+    // If string has commas or is longer than standard UK postcode (typically <= 8 chars), extract postcode first
+    if (trimmed.includes(',') || trimmed.length > 8) {
+      const extracted = extractPostcodeFromString(trimmed)
+      if (extracted) {
+        return await lookupPostcode(extracted)
+      }
+    }
+
+    // Try direct postcode lookup
+    try {
+      return await lookupPostcode(trimmed)
+    } catch (directErr) {
+      // Fallback: try extracting postcode
+      const extracted = extractPostcodeFromString(trimmed)
+      if (extracted && extracted !== trimmed) {
+        return await lookupPostcode(extracted)
+      }
+      throw directErr
+    }
+  }
+
+  throw new Error('Unable to resolve delivery location coordinates')
+}
+
+/**
  * Fallback straight-line (Haversine) calculation with road factor multiplier (~1.3x)
  */
 export function calculateHaversineRoadDistance(

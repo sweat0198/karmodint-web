@@ -202,13 +202,21 @@
             />
           </div>
 
-          <!-- Delivery Address Autocomplete -->
+          <!-- Delivery Address Autocomplete & Logistics Distance Calculation -->
           <div>
             <UkAddressAutocomplete
               v-model="customer.address"
               label="Delivery Site Address"
               placeholder="Search postcode or address (e.g. LE14 4AJ)..."
               :show-manual-toggle="true"
+              @select="onAddressSelected"
+              @clear="onAddressCleared"
+            />
+
+            <!-- Real-time Logistics Distance Estimate -->
+            <DeliveryDistanceCard
+              :result="distanceResult"
+              :is-loading="isCalculatingDistance"
             />
           </div>
 
@@ -244,6 +252,7 @@
 <script setup lang="ts">
 import { useQuoteStore } from '~/stores/quote'
 import { useAppSeo } from '~/composables/useAppSeo'
+import { useDeliveryDistance } from '~/composables/useDeliveryDistance'
 import type { ParsedUkAddress } from '~/composables/useGooglePlacesAutocomplete'
 
 const { setPageSeo } = useAppSeo()
@@ -256,6 +265,12 @@ setPageSeo({
 })
 
 const quoteStore = useQuoteStore()
+const {
+  distanceResult,
+  isLoading: isCalculatingDistance,
+  calculateDistance,
+  reset: resetDistance
+} = useDeliveryDistance()
 
 const customer = ref({
   name: '',
@@ -272,7 +287,31 @@ const errorMessage = ref('')
 
 onMounted(() => {
   quoteStore.setLastVisitedRoute('/quote')
+  if (customer.value.address) {
+    calculateDistance(customer.value.address, { immediate: true })
+  }
 })
+
+function onAddressSelected(address: ParsedUkAddress) {
+  calculateDistance(address, { immediate: true })
+}
+
+function onAddressCleared() {
+  resetDistance()
+}
+
+// Watch for manual address changes or dynamic updates
+watch(
+  () => customer.value.address,
+  (newAddress) => {
+    if (!newAddress) {
+      resetDistance()
+      return
+    }
+    calculateDistance(newAddress, { immediate: false, debounceMs: 450 })
+  },
+  { deep: true }
+)
 
 async function submitQuote() {
   if (!customer.value.name || !customer.value.email) return
@@ -285,7 +324,17 @@ async function submitQuote() {
       method: 'POST',
       body: {
         items: quoteStore.items,
-        customer: customer.value
+        customer: {
+          ...customer.value,
+          deliveryEstimate: distanceResult.value ? {
+            miles: distanceResult.value.distance.miles,
+            km: distanceResult.value.distance.km,
+            duration: distanceResult.value.duration.formatted,
+            originPostcode: distanceResult.value.origin.postcode,
+            destinationPostcode: distanceResult.value.destination.postcode,
+            provider: distanceResult.value.provider
+          } : undefined
+        }
       }
     })
 

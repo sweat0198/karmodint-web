@@ -6,11 +6,67 @@ import {
   computeDeliveryFee,
   lookupPostcode,
   calculateDrivingRoute,
+  extractPostcodeFromString,
+  resolveLocation,
   DEFAULT_ORIGIN_POSTCODE,
   type PostcodeResult
 } from '~~/server/utils/distance'
 
 describe('UK Distance & Delivery Utils', () => {
+  describe('extractPostcodeFromString', () => {
+    it('extracts full UK postcode from address string', () => {
+      expect(extractPostcodeFromString('10 Downing Street, London SW1A 2AA, UK')).toBe('SW1A 2AA')
+      expect(extractPostcodeFromString('Unit 4, Fairfield Industrial Estate, Melton Mowbray LE14 4AJ')).toBe('LE14 4AJ')
+      expect(extractPostcodeFromString('Flat 2, 45 Piccadilly, Manchester M1 1AE')).toBe('M1 1AE')
+    })
+
+    it('extracts outcode from partial address', () => {
+      expect(extractPostcodeFromString('Central London SW1A')).toBe('SW1A')
+      expect(extractPostcodeFromString('Leicestershire LE14')).toBe('LE14')
+    })
+
+    it('returns null for strings without postcodes', () => {
+      expect(extractPostcodeFromString('Random Street Name, Somewhere')).toBeNull()
+      expect(extractPostcodeFromString('')).toBeNull()
+    })
+  })
+
+  describe('resolveLocation', () => {
+    it('resolves directly from a UK postcode string', async () => {
+      const result = await resolveLocation('SW1A 1AA')
+      expect(result.postcode).toBe('SW1A 1AA')
+      expect(result.latitude).toBeCloseTo(51.501, 1)
+      expect(result.longitude).toBeCloseTo(-0.141, 1)
+    })
+
+    it('resolves from full address string with embedded postcode', async () => {
+      const result = await resolveLocation('10 Downing St, London SW1A 2AA, UK')
+      expect(result.postcode).toBe('SW1A 2AA')
+      expect(result.latitude).toBeDefined()
+    })
+
+    it('resolves from coordinate object directly without external API call', async () => {
+      const result = await resolveLocation({
+        coordinates: { lat: 51.5074, lng: -0.1278 },
+        postcode: 'WC2N 5DU',
+        townCity: 'London'
+      })
+      expect(result.latitude).toBe(51.5074)
+      expect(result.longitude).toBe(-0.1278)
+      expect(result.postcode).toBe('WC2N 5DU')
+      expect(result.district).toBe('London')
+    })
+
+    it('resolves from parsed address object with only postcode', async () => {
+      const result = await resolveLocation({
+        postcode: 'LE14 4AJ',
+        townCity: 'Melton Mowbray'
+      })
+      expect(result.postcode).toBe('LE14 4AJ')
+      expect(result.latitude).toBeCloseTo(52.813, 1)
+    })
+  })
+
   describe('normalizePostcode', () => {
     it('trims and capitalizes postcodes', () => {
       expect(normalizePostcode('  sw1a 1aa  ')).toBe('SW1A 1AA')

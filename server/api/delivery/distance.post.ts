@@ -1,5 +1,5 @@
 import {
-  lookupPostcode,
+  resolveLocation,
   calculateDrivingRoute,
   computeDeliveryFee,
   formatDuration,
@@ -12,22 +12,27 @@ export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig()
 
   const originInput = body?.originPostcode || body?.origin || DEFAULT_ORIGIN_POSTCODE
-  const destinationInput = body?.destinationPostcode || body?.destination || body?.postcode
+  const destinationInput =
+    body?.destinationPostcode ||
+    body?.destination ||
+    body?.postcode ||
+    body?.address ||
+    body
 
-  if (!destinationInput || typeof destinationInput !== 'string') {
+  if (!destinationInput) {
     throw createError({
       statusCode: 400,
-      statusMessage: 'Invalid request: "destinationPostcode" (or "postcode") is required.'
+      statusMessage: 'Invalid request: "destinationPostcode", "postcode", or "address" is required.'
     })
   }
 
   const mapboxToken = config.mapboxAccessToken || process.env.MAPBOX_ACCESS_TOKEN
 
   try {
-    // 1. Resolve coordinates for both postcodes via postcodes.io
+    // 1. Resolve coordinates for both postcodes / addresses / coordinates
     const [origin, destination] = await Promise.all([
-      lookupPostcode(originInput),
-      lookupPostcode(destinationInput)
+      resolveLocation(originInput),
+      resolveLocation(destinationInput)
     ])
 
     // 2. Calculate driving route distance & duration

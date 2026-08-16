@@ -38,6 +38,14 @@ export default defineEventHandler(async (event) => {
         <p><strong>Phone:</strong> ${customer.phone || 'Not provided'}</p>
         <p><strong>Company:</strong> ${customer.company || 'N/A'}</p>
         ${customer.address ? `<p><strong>Delivery Address:</strong> ${typeof customer.address === 'object' && customer.address?.formattedAddress ? customer.address.formattedAddress : customer.address}</p>` : ''}
+        ${customer.deliveryEstimate ? `
+          <div style="margin: 12px 0; padding: 12px; background: #f8fafc; border-left: 3px solid #ef4444; border-radius: 4px;">
+            <p style="margin: 0 0 4px 0; font-weight: 600; color: #0f172a;">Estimated Logistics & Delivery Route:</p>
+            <p style="margin: 2px 0; font-size: 13px;"><strong>Road Distance:</strong> ${customer.deliveryEstimate.miles} miles</p>
+            <p style="margin: 2px 0; font-size: 13px;"><strong>Est. Drive Transit:</strong> ~${customer.deliveryEstimate.duration}</p>
+            <p style="margin: 2px 0; font-size: 12px; color: #64748b;">Dispatched from Melton Mowbray Hub (${customer.deliveryEstimate.originPostcode || 'LE14 4AJ'})</p>
+          </div>
+        ` : ''}
         ${customer.notes ? `<p><strong>Additional Notes:</strong> ${customer.notes}</p>` : ''}
 
         <h3 style="color: #0f172a; border-bottom: 2px solid #ef4444; padding-bottom: 8px; margin-top: 24px;">Requested Items (${items.length})</h3>
