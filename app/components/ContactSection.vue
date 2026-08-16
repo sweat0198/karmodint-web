@@ -192,13 +192,13 @@
               Direct Line
             </span>
             <a
-              href="tel:+447824810226"
+              :href="COMPANY_DETAILS.contact.phoneTelHref"
               class="text-brand-navy-heading hover:text-brand-red text-xl lg:text-2xl font-semibold tracking-tight transition-colors block"
             >
-              +44 7824 810226
+              {{ COMPANY_DETAILS.contact.phoneDisplay }}
             </a>
             <p class="text-brand-slate-muted text-xs lg:text-sm">
-              Mon - Fri, 8:00 AM - 6:00 PM GMT
+              {{ COMPANY_DETAILS.contact.openingHours }}
             </p>
           </div>
         </div>
@@ -231,10 +231,10 @@
               Sales &amp; Enquiries
             </span>
             <a
-              href="mailto:sales@karmodint.co.uk"
+              :href="`mailto:${COMPANY_DETAILS.contact.salesEmail}`"
               class="text-brand-navy-heading hover:text-brand-red text-xl lg:text-2xl font-semibold tracking-tight transition-colors"
             >
-              sales@karmodint.co.uk
+              {{ COMPANY_DETAILS.contact.salesEmail }}
             </a>
           </div>
         </div>

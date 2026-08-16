@@ -1,5 +1,9 @@
 import { useRuntimeConfig, useSeoMeta, useHead } from "#imports";
-import { getCompanyPostalAddressSchema } from "~/constants/company";
+import {
+  getCompanyPostalAddressSchema,
+  COMPANY_CONTACT,
+  COMPANY_SOCIAL,
+} from "~/constants/company";
 
 export interface PageSeoOptions {
   title: string;
@@ -75,13 +79,16 @@ export function useAppSeo() {
       contactPoint: {
         "@type": "ContactPoint",
         contactType: "sales and customer support",
-        email: "enquiries@karmod-international.com",
-        telephone: "+44 7824 810226",
+        email: COMPANY_CONTACT.supportEmail,
+        telephone: COMPANY_CONTACT.phoneDisplay,
         areaServed: ["GB", "Worldwide"],
         availableLanguage: ["English"],
       },
       sameAs: [
-        "https://www.linkedin.com/company/karmod-international",
+        COMPANY_SOCIAL.facebook,
+        COMPANY_SOCIAL.linkedin,
+        COMPANY_SOCIAL.pinterest,
+        COMPANY_SOCIAL.instagram,
       ],
     };
   }

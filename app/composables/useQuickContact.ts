@@ -1,9 +1,10 @@
 import { computed } from 'vue'
 import { useQuoteStore } from '~/stores/quote'
+import { COMPANY_CONTACT } from '~/constants/company'
 
-export const BUSINESS_PHONE_RAW = '+447824810226'
-export const BUSINESS_PHONE_DISPLAY = '+44 7824 810226'
-export const BUSINESS_WHATSAPP_NUMBER = '447824810226'
+export const BUSINESS_PHONE_RAW = COMPANY_CONTACT.phoneRaw
+export const BUSINESS_PHONE_DISPLAY = COMPANY_CONTACT.phoneDisplay
+export const BUSINESS_WHATSAPP_NUMBER = COMPANY_CONTACT.whatsAppNumber
 
 export function useQuickContact() {
   const quoteStore = useQuoteStore()

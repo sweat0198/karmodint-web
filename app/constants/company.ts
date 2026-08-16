@@ -21,10 +21,18 @@ export interface ContactPointDefinition {
   phoneRaw: string
   phoneTelHref: string
   whatsAppNumber: string
+  whatsAppDisplay: string
   whatsAppUrl: string
   salesEmail: string
   supportEmail: string
   openingHours: string
+}
+
+export interface SocialLinksDefinition {
+  facebook: string
+  linkedin: string
+  pinterest: string
+  instagram: string
 }
 
 export const COMPANY_ADDRESS = {
@@ -49,15 +57,23 @@ export const COMPANY_COORDINATES = {
 export type CompanyCoordinates = typeof COMPANY_COORDINATES
 
 export const COMPANY_CONTACT = {
-  phoneDisplay: '+44 7824 810226',
-  phoneRaw: '+447824810226',
-  phoneTelHref: 'tel:+447824810226',
+  phoneDisplay: '0116 403 0143',
+  phoneRaw: '+441164030143',
+  phoneTelHref: 'tel:+441164030143',
   whatsAppNumber: '447824810226',
+  whatsAppDisplay: '+44 7824 810226',
   whatsAppUrl: 'https://wa.me/447824810226',
-  salesEmail: 'sales@karmodint.co.uk',
+  salesEmail: 'info@karmodint.co.uk',
   supportEmail: 'enquiries@karmod-international.com',
   openingHours: 'Mon - Fri, 8:00 AM - 6:00 PM GMT'
 } as const satisfies ContactPointDefinition
+
+export const COMPANY_SOCIAL = {
+  facebook: 'https://www.facebook.com/karmodint/',
+  linkedin: 'https://www.linkedin.com/company/karmodint/',
+  pinterest: 'https://uk.pinterest.com/karmodint/',
+  instagram: 'https://www.instagram.com/karmodint/'
+} as const satisfies SocialLinksDefinition
 
 export const COMPANY_MAPS = {
   googleMapsEmbedUrl:
@@ -74,6 +90,7 @@ export const COMPANY_DETAILS = {
   address: COMPANY_ADDRESS,
   coordinates: COMPANY_COORDINATES,
   contact: COMPANY_CONTACT,
+  social: COMPANY_SOCIAL,
   maps: COMPANY_MAPS
 } as const
 
