@@ -10,15 +10,14 @@
         <h1
           class="text-brand-navy-heading text-4xl sm:text-[48px] font-bold leading-[1.1] tracking-[-0.96px]"
         >
-          Pioneering Modular<br />Building Solutions
+          Modular Cabins &amp;<br />Building Solutions
         </h1>
 
         <p
           class="text-brand-slate-muted text-base sm:text-[18px] leading-[27px]"
         >
           Engineered for durability, designed for efficiency. We deliver premium
-          modular and portable buildings across the UK, ensuring rapid
-          deployment and uncompromising quality.
+          modular containers, GRP &amp; sandwich panel cabins, and bulletproof security gatehouses across the UK.
         </p>
 
         <div class="pt-2">
@@ -241,24 +240,29 @@ import { onMounted, onUnmounted, ref } from "vue";
 
 const slides = [
   {
-    image: "/images/hero-building-enhanced.png",
-    title: "Multi-Story Modular Complex",
-    subtitle: "Commercial grade steel frame architecture",
+    image: "/images/hero/hero-modular-containers.jpg",
+    title: "Modular Office & Storage Containers",
+    subtitle: "Site offices (2.3x6m to 3x7m), storage depots & living units",
   },
   {
-    image: "/images/hero-building-interior.png",
-    title: "Ergonomic Interior Workspaces",
-    subtitle: "Insulated, climate-controlled interiors",
+    image: "/images/hero/hero-grp-cabin.jpg",
+    title: "GRP Polyester Modular Cabins",
+    subtitle: "Weatherproof kiosks & guard booths (150x150 to 270x270)",
   },
   {
-    image: "/images/hero-building-site.png",
-    title: "Rapid Site Office Deployment",
-    subtitle: "Delivered and assembled across the UK",
+    image: "/images/hero/hero-panel-cabin.jpg",
+    title: "Sandwich Panel Security Cabins",
+    subtitle: "Insulated gatehouses & ticket units (110x110 to 235x235)",
   },
   {
-    image: "/images/hero-building-kiosk.png",
-    title: "Retail & Commercial Kiosks",
-    subtitle: "Custom timber & composite panel finish",
+    image: "/images/hero/hero-metrocity-composite.jpg",
+    title: "MetroCity & Composite Cabins",
+    subtitle: "Modern architectural retail kiosks & city commercial pods",
+  },
+  {
+    image: "/images/hero/hero-bulletproof-cabin.jpg",
+    title: "Bulletproof Security Cabins",
+    subtitle: "BR6 / BR7 ballistic certified armored guard checkpoints",
   },
 ];
 
