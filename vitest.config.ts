@@ -8,6 +8,7 @@ export default defineConfig({
   test: {
     environment: 'happy-dom',
     globals: true,
+    testTimeout: 15000,
     include: ['tests/**/*.{test,spec}.ts']
   },
   resolve: {

@@ -37,6 +37,7 @@ export default defineEventHandler(async (event) => {
         <p><strong>Email:</strong> ${customer.email}</p>
         <p><strong>Phone:</strong> ${customer.phone || 'Not provided'}</p>
         <p><strong>Company:</strong> ${customer.company || 'N/A'}</p>
+        ${customer.address ? `<p><strong>Delivery Address:</strong> ${typeof customer.address === 'object' && customer.address?.formattedAddress ? customer.address.formattedAddress : customer.address}</p>` : ''}
         ${customer.notes ? `<p><strong>Additional Notes:</strong> ${customer.notes}</p>` : ''}
 
         <h3 style="color: #0f172a; border-bottom: 2px solid #ef4444; padding-bottom: 8px; margin-top: 24px;">Requested Items (${items.length})</h3>

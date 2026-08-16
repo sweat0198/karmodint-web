@@ -202,12 +202,22 @@
             />
           </div>
 
+          <!-- Delivery Address Autocomplete -->
           <div>
-            <label class="label-caps text-slate-500 mb-1 block">General Instructions / Delivery Site</label>
+            <UkAddressAutocomplete
+              v-model="customer.address"
+              label="Delivery Site Address"
+              placeholder="Search postcode or address (e.g. LE14 4AJ)..."
+              :show-manual-toggle="true"
+            />
+          </div>
+
+          <div>
+            <label class="label-caps text-slate-500 mb-1 block">General Instructions / Access Details</label>
             <textarea 
               v-model="customer.notes" 
               rows="3" 
-              placeholder="Delivery address, access restrictions, or target delivery date..."
+              placeholder="Access restrictions, site contact, or target delivery date..."
               class="w-full bg-white border border-slate-300 rounded-[4px] px-3.5 py-2 text-sm text-[#1F2937] focus:outline-none focus:border-[#E31E24]"
             ></textarea>
           </div>
@@ -234,6 +244,7 @@
 <script setup lang="ts">
 import { useQuoteStore } from '~/stores/quote'
 import { useAppSeo } from '~/composables/useAppSeo'
+import type { ParsedUkAddress } from '~/composables/useGooglePlacesAutocomplete'
 
 const { setPageSeo } = useAppSeo()
 
@@ -251,6 +262,7 @@ const customer = ref({
   email: '',
   phone: '',
   company: '',
+  address: '' as string | ParsedUkAddress,
   notes: ''
 })
 

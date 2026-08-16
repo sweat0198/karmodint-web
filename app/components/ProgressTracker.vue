@@ -6,7 +6,7 @@
       <div class="relative flex items-center justify-between w-full">
         <!-- Connecting Line Background -->
         <div
-          class="absolute top-[20px] left-0 right-0 h-[2px] bg-brand-slate-light/50 -z-0"
+          class="absolute top-5 left-0 right-0 h-0.5 bg-brand-slate-light/50 z-0"
         >
           <!-- Active Line Fill -->
           <div

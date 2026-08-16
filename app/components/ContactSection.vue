@@ -275,7 +275,9 @@
             <p class="text-brand-navy-heading text-lg font-semibold">
               {{ COMPANY_DETAILS.legalName }}
             </p>
-            <p class="text-brand-slate-muted text-xs lg:text-sm leading-relaxed">
+            <p
+              class="text-brand-slate-muted text-xs lg:text-sm leading-relaxed"
+            >
               {{ COMPANY_DETAILS.address.formatted }}
             </p>
           </div>

@@ -118,6 +118,7 @@ export default defineNuxtConfig({
       sanityProjectId: process.env.SANITY_PROJECT_ID || "dummy_project_id",
       sanityDataset: process.env.SANITY_DATASET || "production",
       mapboxAccessToken: process.env.MAPBOX_ACCESS_TOKEN || "",
+      googleMapsApiKey: process.env.NUXT_PUBLIC_GOOGLE_MAPS_API_KEY || "",
     },
   },
 

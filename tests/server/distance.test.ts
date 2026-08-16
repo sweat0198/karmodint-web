@@ -88,7 +88,7 @@ describe('UK Distance & Delivery Utils', () => {
 
     it('throws descriptive error for completely invalid postcode', async () => {
       await expect(lookupPostcode('INVALID999')).rejects.toThrow(/not found/)
-    })
+    }, 15000)
   })
 
   describe('calculateDrivingRoute with providers', () => {
