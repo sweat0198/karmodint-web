@@ -2,7 +2,7 @@
   <section
     class="w-full py-12 lg:py-20 px-6 lg:px-12 bg-slate-50 flex justify-center"
   >
-    <div class="max-w-[1280px] w-full flex flex-col gap-12">
+    <div class="max-w-7xl w-full flex flex-col gap-12">
       <!-- 1. Top Split Section (Hero Visual + Consultation Form) -->
       <div
         class="bg-white border border-brand-rose-border rounded-lg shadow-md overflow-hidden grid grid-cols-1 lg:grid-cols-2"
@@ -24,12 +24,12 @@
           <!-- Hero Content -->
           <div class="relative z-10 text-white space-y-3">
             <h1
-              class="text-3xl sm:text-4xl lg:text-[48px] font-bold leading-tight tracking-tight"
+              class="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight tracking-tight"
             >
               Get in Touch
             </h1>
             <p
-              class="text-white/90 text-base lg:text-[18px] leading-[27px] max-w-[448px]"
+              class="text-white/90 text-base lg:text-lg leading-relaxed max-w-md"
             >
               Discuss your next modular construction project with our
               engineering experts. We deliver precision-built solutions tailored
@@ -41,7 +41,7 @@
         <!-- Right Column: Project Consultation Form -->
         <div class="p-8 lg:p-12 flex flex-col justify-center bg-white">
           <h2
-            class="text-brand-navy-heading text-2xl lg:text-[32px] font-bold tracking-tight mb-6"
+            class="text-brand-navy-heading text-2xl lg:text-3xl font-bold tracking-tight mb-6"
           >
             Project Consultation
           </h2>

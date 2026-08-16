@@ -4,7 +4,7 @@
       :name="icon"
       class="w-20 h-20 text-slate-400 mx-auto mb-4"
     />
-    <h3 class="text-2xl font-bold text-[#1F2937] mb-2">
+    <h3 class="text-2xl font-bold text-gray-800 mb-2">
       {{ title }}
     </h3>
     <p class="text-slate-600 text-sm mb-6 max-w-md mx-auto leading-relaxed">

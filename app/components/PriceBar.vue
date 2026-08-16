@@ -157,7 +157,7 @@ const destinationRoute = computed(() => {
         <div class="flex items-center gap-3 w-full sm:w-auto justify-end">
           <NuxtLink
             :to="destinationRoute"
-            class="flex-1 sm:flex-initial flex items-center justify-center gap-2 px-8 py-3 bg-brand-red hover:bg-brand-red-hover text-white font-semibold text-xs tracking-wider uppercase rounded-[2px] transition-all shadow-sm hover:shadow"
+            class="flex-1 sm:flex-initial flex items-center justify-center gap-2 px-8 py-3 bg-brand-red hover:bg-brand-red-hover text-white font-semibold text-xs tracking-wider uppercase rounded-xs transition-all shadow-sm hover:shadow"
             :title="`Continue to ${destinationRoute}`"
           >
             <span>{{ actionText }}</span>

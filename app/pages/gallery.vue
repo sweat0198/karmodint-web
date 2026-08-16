@@ -2,34 +2,41 @@
   <main class="w-full min-h-screen bg-white flex flex-col items-center">
     <!-- Main Content Container -->
     <div
-      class="w-full max-w-[1280px] mx-auto px-6 lg:px-12 pt-[60px] md:pt-[79px] pb-[80px] flex flex-col gap-10"
+      class="w-full max-w-7xl mx-auto px-6 lg:px-12 pt-[60px] md:pt-[79px] pb-20 flex flex-col gap-10"
     >
       <!-- Header Section -->
-      <div class="flex flex-col gap-4 items-start pb-6 border-b border-slate-100">
+      <div
+        class="flex flex-col gap-4 items-start pb-6 border-b border-slate-100"
+      >
         <div class="flex flex-col gap-2">
           <h1
-            class="text-3xl md:text-4xl lg:text-[48px] font-bold text-[#291715] tracking-tight leading-tight"
+            class="text-3xl md:text-4xl lg:text-5xl font-bold text-brand-navy-heading tracking-tight leading-tight"
           >
             Project Gallery
           </h1>
-          <p class="text-base md:text-lg text-slate-600 max-w-[672px] leading-relaxed">
-            Explore our portfolio of modular construction projects across various sectors,
-            demonstrating our commitment to quality, speed, and design excellence.
+          <p
+            class="text-base md:text-lg text-slate-600 max-w-2xl leading-relaxed"
+          >
+            Explore our portfolio of modular construction projects across
+            various sectors, demonstrating our commitment to quality, speed, and
+            design excellence.
           </p>
         </div>
       </div>
 
       <!-- Filter Bar -->
-      <div class="border-b border-slate-200 pb-4 flex items-center gap-3 overflow-x-auto no-scrollbar">
+      <div
+        class="border-b border-slate-200 pb-4 flex items-center gap-3 overflow-x-auto no-scrollbar"
+      >
         <button
           v-for="cat in categories"
           :key="cat.id"
           @click="activeCategory = cat.id"
-          class="px-4 py-2 rounded-[2px] text-xs font-semibold tracking-[1.2px] uppercase whitespace-nowrap transition-all duration-200"
+          class="px-4 py-2 rounded-xs text-xs font-semibold tracking-[1.2px] uppercase whitespace-nowrap transition-all duration-200"
           :class="
             activeCategory === cat.id
               ? 'bg-brand-red text-white shadow-sm'
-              : 'bg-[#f1f5f9] text-[#64748b] hover:bg-slate-200 hover:text-slate-900'
+              : 'bg-slate-100 text-brand-slate-muted hover:bg-slate-200 hover:text-slate-900'
           "
         >
           {{ cat.label }}
@@ -44,7 +51,7 @@
           v-for="item in visibleItems"
           :key="item.id"
           @click="openModal(item)"
-          class="group relative overflow-hidden rounded-[2px] shadow-md bg-white border border-slate-100 cursor-pointer transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
+          class="group relative overflow-hidden rounded-xs shadow-md bg-white border border-slate-100 cursor-pointer transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
           :class="item.gridSpan"
         >
           <!-- Background Image -->
@@ -71,7 +78,8 @@
             <h3
               class="font-bold tracking-tight text-white transition-colors duration-200"
               :class="
-                item.gridSpan.includes('col-span-2') && item.gridSpan.includes('row-span-2')
+                item.gridSpan.includes('col-span-2') &&
+                item.gridSpan.includes('row-span-2')
                   ? 'text-2xl lg:text-3xl'
                   : 'text-lg lg:text-xl'
               "
@@ -102,7 +110,7 @@
       <!-- Empty State if filter returns no items -->
       <div
         v-if="filteredItems.length === 0"
-        class="py-16 text-center flex flex-col items-center justify-center gap-3 bg-slate-50 rounded-[2px]"
+        class="py-16 text-center flex flex-col items-center justify-center gap-3 bg-slate-50 rounded-xs"
       >
         <p class="text-slate-500 text-lg font-medium">
           No projects found in this category.
@@ -122,7 +130,7 @@
       >
         <button
           @click="showAll = true"
-          class="border border-[#291715] text-[#291715] hover:bg-[#291715] hover:text-white transition-colors px-[33px] py-[13px] rounded-[2px] text-xs font-semibold tracking-[0.6px] uppercase shadow-sm"
+          class="border border-brand-navy-heading text-brand-navy-heading hover:bg-brand-navy-heading hover:text-white transition-colors px-[33px] py-[13px] rounded-xs text-xs font-semibold tracking-[0.6px] uppercase shadow-sm"
         >
           LOAD MORE PROJECTS
         </button>
@@ -137,7 +145,7 @@
         @click.self="closeModal"
       >
         <div
-          class="bg-white rounded-[2px] max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl flex flex-col md:flex-row relative"
+          class="bg-white rounded-xs max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl flex flex-col md:flex-row relative"
         >
           <!-- Close Button -->
           <button
@@ -145,7 +153,12 @@
             class="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-black/50 hover:bg-black text-white flex items-center justify-center transition-colors"
             aria-label="Close modal"
           >
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -156,7 +169,9 @@
           </button>
 
           <!-- Modal Image Side -->
-          <div class="md:w-1/2 min-h-[300px] md:min-h-full relative bg-slate-900">
+          <div
+            class="md:w-1/2 min-h-[300px] md:min-h-full relative bg-slate-900"
+          >
             <img
               :src="selectedItem.image"
               :alt="selectedItem.title"
@@ -173,7 +188,7 @@
                 >
                   {{ selectedItem.category }}
                 </span>
-                <h2 class="text-2xl md:text-3xl font-bold text-[#291715] mt-1">
+                <h2 class="text-2xl md:text-3xl font-bold text-brand-navy-heading mt-1">
                   {{ selectedItem.title }}
                 </h2>
               </div>
@@ -183,10 +198,14 @@
               </p>
 
               <div class="space-y-2 pt-2 border-t border-slate-100">
-                <h4 class="text-xs font-semibold uppercase text-slate-400 tracking-wider">
+                <h4
+                  class="text-xs font-semibold uppercase text-slate-400 tracking-wider"
+                >
                   Project Highlights
                 </h4>
-                <ul class="grid grid-cols-2 gap-2 text-xs md:text-sm text-slate-700">
+                <ul
+                  class="grid grid-cols-2 gap-2 text-xs md:text-sm text-slate-700"
+                >
                   <li class="flex items-center gap-2">
                     <span class="w-1.5 h-1.5 rounded-full bg-brand-red"></span>
                     Fast Track Modular Build
@@ -212,13 +231,13 @@
               <NuxtLink
                 to="/quote"
                 @click="closeModal"
-                class="w-full bg-brand-red hover:bg-brand-red-hover text-white text-center font-semibold text-xs tracking-[0.6px] uppercase px-6 py-3 rounded-[2px] transition-colors"
+                class="w-full bg-brand-red hover:bg-brand-red-hover text-white text-center font-semibold text-xs tracking-[0.6px] uppercase px-6 py-3 rounded-xs transition-colors"
               >
                 REQUEST QUOTE FOR SIMILAR PROJECT
               </NuxtLink>
               <button
                 @click="closeModal"
-                class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs tracking-[0.6px] uppercase px-6 py-2.5 rounded-[2px] transition-colors"
+                class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs tracking-[0.6px] uppercase px-6 py-2.5 rounded-xs transition-colors"
               >
                 Close
               </button>
@@ -231,7 +250,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { computed, ref } from "vue";
 import { useAppSeo } from "~/composables/useAppSeo";
 
 const { setPageSeo, getBreadcrumbSchema } = useAppSeo();
@@ -239,7 +258,12 @@ const { setPageSeo, getBreadcrumbSchema } = useAppSeo();
 interface GalleryItem {
   id: string;
   title: string;
-  category: "SECURITY" | "COMMERCIAL" | "INDUSTRIAL" | "HEALTHCARE" | "EDUCATION";
+  category:
+    | "SECURITY"
+    | "COMMERCIAL"
+    | "INDUSTRIAL"
+    | "HEALTHCARE"
+    | "EDUCATION";
   image: string;
   gridSpan: string;
   description: string;
@@ -357,7 +381,11 @@ const visibleItems = computed(() => {
 });
 
 const hasMoreItems = computed(() => {
-  return !showAll.value && activeCategory.value === "ALL" && filteredItems.value.length > 6;
+  return (
+    !showAll.value &&
+    activeCategory.value === "ALL" &&
+    filteredItems.value.length > 6
+  );
 });
 
 const openModal = (item: GalleryItem) => {

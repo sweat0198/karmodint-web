@@ -110,7 +110,7 @@ const handleQuote = () => {
 
 <template>
   <div
-    class="w-full flex flex-col relative bg-slate-50 border border-slate-200/80 rounded-[4px] overflow-hidden"
+    class="w-full flex flex-col relative bg-slate-50 border border-slate-200/80 rounded overflow-hidden"
   >
     <!-- Customization Main Layout (Viewer + Steps) -->
     <ProductCustomizer

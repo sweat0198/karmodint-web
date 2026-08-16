@@ -1,18 +1,18 @@
 <template>
   <footer class="bg-brand-navy text-white border-t border-brand-rose-border/20">
-    <div class="max-w-[1280px] mx-auto px-6 lg:px-12 py-12">
+    <div class="max-w-7xl mx-auto px-6 lg:px-12 py-12">
       <div class="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-12">
         <!-- Col 1: Brand & Description (Spans 2 cols on desktop) -->
         <div class="md:col-span-2 flex flex-col gap-4 items-start">
           <div>
             <span
-              class="text-brand-red text-[12px] font-semibold tracking-[1.2px] uppercase"
+              class="text-brand-red text-xs font-semibold tracking-[1.2px] uppercase"
             >
               KARMOD UK
             </span>
           </div>
 
-          <div class="max-w-[384px]">
+          <div class="max-w-sm">
             <p class="text-brand-slate-light text-base leading-6">
               Delivering high-quality, precision-engineered modular building
               solutions across the United Kingdom.
@@ -33,7 +33,7 @@
               target="_blank"
               rel="noopener noreferrer"
               aria-label="LinkedIn"
-              class="w-10 h-10 rounded-[8px] border border-brand-slate-light/30 flex items-center justify-center text-brand-slate-light hover:text-white hover:border-brand-red hover:bg-brand-red/10 transition-colors"
+              class="w-10 h-10 rounded-lg border border-brand-slate-light/30 flex items-center justify-center text-brand-slate-light hover:text-white hover:border-brand-red hover:bg-brand-red/10 transition-colors"
             >
               <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
                 <path
@@ -46,7 +46,7 @@
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Facebook"
-              class="w-10 h-10 rounded-[8px] border border-brand-slate-light/30 flex items-center justify-center text-brand-slate-light hover:text-white hover:border-brand-red hover:bg-brand-red/10 transition-colors"
+              class="w-10 h-10 rounded-lg border border-brand-slate-light/30 flex items-center justify-center text-brand-slate-light hover:text-white hover:border-brand-red hover:bg-brand-red/10 transition-colors"
             >
               <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
                 <path
@@ -59,7 +59,7 @@
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Instagram"
-              class="w-10 h-10 rounded-[8px] border border-brand-slate-light/30 flex items-center justify-center text-brand-slate-light hover:text-white hover:border-brand-red hover:bg-brand-red/10 transition-colors"
+              class="w-10 h-10 rounded-lg border border-brand-slate-light/30 flex items-center justify-center text-brand-slate-light hover:text-white hover:border-brand-red hover:bg-brand-red/10 transition-colors"
             >
               <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
                 <path
@@ -74,7 +74,7 @@
         <div class="flex flex-col gap-4 items-start">
           <div>
             <h4
-              class="text-brand-red text-[12px] font-semibold tracking-[0.6px] uppercase"
+              class="text-brand-red text-xs font-semibold tracking-[0.6px] uppercase"
             >
               COMPANY
             </h4>
@@ -119,7 +119,7 @@
         <div class="flex flex-col gap-4 items-start pb-8 md:pb-0">
           <div>
             <h4
-              class="text-brand-red text-[12px] font-semibold tracking-[0.6px] uppercase"
+              class="text-brand-red text-xs font-semibold tracking-[0.6px] uppercase"
             >
               LEGAL
             </h4>

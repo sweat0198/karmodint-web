@@ -8,22 +8,21 @@
       <!-- Left Content (Span 5) -->
       <div class="lg:col-span-5 flex flex-col items-start gap-6">
         <h1
-          class="text-brand-navy-heading text-4xl sm:text-[48px] font-bold leading-[1.1] tracking-[-0.96px]"
+          class="text-brand-navy-heading text-4xl sm:text-5xl font-bold leading-tight tracking-tight"
         >
           Modular Cabins &amp;<br />Building Solutions
         </h1>
 
-        <p
-          class="text-brand-slate-muted text-base sm:text-[18px] leading-[27px]"
-        >
+        <p class="text-brand-slate-muted text-base sm:text-lg leading-relaxed">
           Engineered for durability, designed for efficiency. We deliver premium
-          modular containers, GRP &amp; sandwich panel cabins, and bulletproof security gatehouses across the UK.
+          modular containers, GRP &amp; sandwich panel cabins, and bulletproof
+          security gatehouses across the UK.
         </p>
 
         <div class="pt-2">
           <NuxtLink
             to="/catalog"
-            class="bg-brand-red hover:bg-brand-red-dark text-white text-[12px] font-semibold tracking-[0.6px] uppercase px-6 py-3 rounded-[2px] transition-colors inline-block text-center shadow-sm"
+            class="bg-brand-red hover:bg-brand-red-dark text-white text-xs font-semibold tracking-wider uppercase px-6 py-3 rounded-xs transition-colors inline-block text-center shadow-sm"
           >
             CONFIGURE &amp; QUOTE
           </NuxtLink>
@@ -50,7 +49,7 @@
                 />
               </svg>
               <span
-                class="text-brand-slate-muted text-[12px] font-semibold tracking-[1.2px] uppercase"
+                class="text-brand-slate-muted text-xs font-semibold tracking-[1.2px] uppercase"
                 >ISO 9001</span
               >
             </div>
@@ -58,7 +57,7 @@
             <!-- Badge 2 -->
             <div class="flex items-center gap-2">
               <svg
-                class="w-[18px] h-[19px] text-brand-slate-muted"
+                class="w-4.5 h-4.5 text-brand-slate-muted"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -71,7 +70,7 @@
                 />
               </svg>
               <span
-                class="text-brand-slate-muted text-[12px] font-semibold tracking-[1.2px] uppercase"
+                class="text-brand-slate-muted text-xs font-semibold tracking-[1.2px] uppercase"
                 >UK Regs Compliant</span
               >
             </div>
@@ -79,7 +78,7 @@
             <!-- Badge 3 -->
             <div class="flex items-center gap-2">
               <svg
-                class="w-[18px] h-[18px] text-brand-slate-muted"
+                class="w-4.5 h-4.5 text-brand-slate-muted"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -92,7 +91,7 @@
                 />
               </svg>
               <span
-                class="text-brand-slate-muted text-[12px] font-semibold tracking-[1.2px] uppercase"
+                class="text-brand-slate-muted text-xs font-semibold tracking-[1.2px] uppercase"
                 >Est. 1986</span
               >
             </div>
@@ -102,7 +101,7 @@
 
       <!-- Right Image Carousel Block (Span 7) -->
       <div
-        class="lg:col-span-7 h-[380px] sm:h-[480px] lg:h-[520px] bg-brand-rose-card rounded-[12px] overflow-hidden shadow-[0px_20px_25px_-5px_rgba(0,0,0,0.1),0px_10px_10px_-5px_rgba(0,0,0,0.04)] border border-brand-rose-border/40 relative group"
+        class="lg:col-span-7 h-95 sm:h-120 lg:h-130 bg-brand-rose-card rounded-xl overflow-hidden shadow-xl border border-brand-rose-border/40 relative group"
         @mouseenter="pauseAutoplay"
         @mouseleave="startAutoplay"
       >
@@ -131,7 +130,7 @@
 
         <!-- Floating Glassmorphism Badge Bottom-Left (Dynamic per slide) -->
         <div
-          class="absolute bottom-6 left-6 z-20 backdrop-blur-md bg-white/90 border border-white/50 px-4 py-3 rounded-[8px] shadow-lg flex items-center gap-3 transition-all duration-300"
+          class="absolute bottom-6 left-6 z-20 backdrop-blur-md bg-white/90 border border-white/50 px-4 py-3 rounded-lg shadow-lg flex items-center gap-3 transition-all duration-300"
         >
           <div
             class="w-9 h-9 rounded-full bg-brand-red/10 border border-brand-red/20 flex items-center justify-center text-brand-red shrink-0"
@@ -164,7 +163,7 @@
 
         <!-- Floating Live Indicator Badge Top-Right -->
         <div
-          class="absolute top-6 right-6 z-20 backdrop-blur-md bg-brand-navy-heading/80 border border-white/20 px-3.5 py-2 rounded-[6px] shadow-md flex items-center gap-2 text-white"
+          class="absolute top-6 right-6 z-20 backdrop-blur-md bg-brand-navy-heading/80 border border-white/20 px-3.5 py-2 rounded-md shadow-md flex items-center gap-2 text-white"
         >
           <span class="w-2 h-2 rounded-full bg-brand-red animate-pulse"></span>
           <span class="text-[11px] font-semibold tracking-[0.8px] uppercase">

@@ -1,19 +1,19 @@
 <template>
   <div
-    class="bg-white border border-slate-100 rounded-[4px] shadow-sm hover:shadow-md transition-shadow overflow-hidden flex flex-col justify-between group"
+    class="bg-white border border-slate-100 rounded shadow-sm hover:shadow-md transition-shadow overflow-hidden flex flex-col justify-between group"
   >
     <!-- Thumbnail Header -->
     <div
-      class="bg-slate-50 h-[192px] p-4 flex items-center justify-center relative border-b border-slate-100"
+      class="bg-slate-50 h-48 p-4 flex items-center justify-center relative border-b border-slate-100"
     >
       <img
         :src="product.image"
         :alt="product.name"
-        class="max-h-[160px] w-auto object-contain mix-blend-multiply transition-transform hover:scale-105 duration-300"
+        class="max-h-40 w-auto object-contain mix-blend-multiply transition-transform hover:scale-105 duration-300"
       />
       <div
         v-if="product.categoryTag"
-        class="absolute top-3 right-3 bg-white/90 backdrop-blur-[2px] px-2 py-0.5 rounded-[2px] border border-slate-200 shadow-xs"
+        class="absolute top-3 right-3 bg-white/90 backdrop-blur-[2px] px-2 py-0.5 rounded-xs border border-slate-200 shadow-xs"
       >
         <span
           class="text-brand-navy-heading text-[11px] font-semibold tracking-wider uppercase"
@@ -77,7 +77,7 @@
           <button
             type="button"
             @click="handleCustomize"
-            class="border border-brand-navy-heading text-brand-navy-heading hover:bg-brand-navy-heading hover:text-white text-xs font-semibold py-2.5 px-3 rounded-[2px] transition-colors duration-150 text-center flex items-center justify-center"
+            class="border border-brand-navy-heading text-brand-navy-heading hover:bg-brand-navy-heading hover:text-white text-xs font-semibold py-2.5 px-3 rounded-xs transition-colors duration-150 text-center flex items-center justify-center"
           >
             Customize
           </button>
@@ -86,7 +86,7 @@
           <button
             v-if="quantityInBasket === 0"
             @click="handleAdd"
-            class="bg-brand-red hover:bg-brand-red-hover text-white text-sm font-semibold py-2.5 px-3 rounded-[2px] transition-colors duration-150 text-center flex items-center justify-center gap-1.5 shadow-xs"
+            class="bg-brand-red hover:bg-brand-red-hover text-white text-sm font-semibold py-2.5 px-3 rounded-xs transition-colors duration-150 text-center flex items-center justify-center gap-1.5 shadow-xs"
           >
             <span class="text-sm font-bold leading-none">+</span>
             <span>Add</span>
@@ -95,21 +95,21 @@
           <!-- Quantity Stepper Controls (When item IS in basket) -->
           <div
             v-else
-            class="bg-brand-red text-white rounded-[2px] flex items-center justify-between p-1.5 shadow-xs transition-all animate-fadeIn"
+            class="bg-brand-red text-white rounded-xs flex items-center justify-between p-1.5 shadow-xs transition-all animate-fadeIn"
           >
             <button
               @click="handleDecrement"
-              class="w-7 h-7 flex items-center justify-center font-bold text-base hover:bg-brand-red-dark active:scale-95 rounded-[2px] transition-colors select-none"
+              class="w-7 h-7 flex items-center justify-center font-bold text-base hover:bg-brand-red-dark active:scale-95 rounded-xs transition-colors select-none"
               title="Decrease quantity"
             >
               −
             </button>
-            <span class="font-bold text-sm px-2 text-center min-w-[24px]">
+            <span class="font-bold text-sm px-2 text-center min-w-6">
               {{ quantityInBasket }}
             </span>
             <button
               @click="handleIncrement"
-              class="w-7 h-7 flex items-center justify-center font-bold text-base hover:bg-brand-red-dark active:scale-95 rounded-[2px] transition-colors select-none"
+              class="w-7 h-7 flex items-center justify-center font-bold text-base hover:bg-brand-red-dark active:scale-95 rounded-xs transition-colors select-none"
               title="Increase quantity"
             >
               +

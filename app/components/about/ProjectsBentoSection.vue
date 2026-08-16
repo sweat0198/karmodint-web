@@ -7,11 +7,11 @@
       <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
           <h2
-            class="text-brand-navy text-3xl sm:text-[32px] font-bold tracking-[-0.32px] leading-[38.4px]"
+            class="text-brand-navy text-3xl sm:text-4xl font-bold tracking-tight leading-tight"
           >
             Projects &amp; Works
           </h2>
-          <p class="text-brand-slate-muted text-base leading-[24px] mt-1">
+          <p class="text-brand-slate-muted text-base leading-6 mt-1">
             A selection of our high-performance modular installations.
           </p>
         </div>
@@ -19,7 +19,7 @@
         <!-- Button to Gallery -->
         <NuxtLink
           to="/gallery"
-          class="inline-flex items-center gap-2 border border-brand-navy text-brand-navy hover:bg-brand-navy hover:text-white px-6 py-2.5 rounded-[2px] text-xs font-semibold uppercase tracking-[1.2px] transition-colors self-start sm:self-auto shrink-0 shadow-sm"
+          class="inline-flex items-center gap-2 border border-brand-navy text-brand-navy hover:bg-brand-navy hover:text-white px-6 py-2.5 rounded-xs text-xs font-semibold uppercase tracking-[1.2px] transition-colors self-start sm:self-auto shrink-0 shadow-sm"
         >
           <span>EXPLORE FULL GALLERY</span>
           <svg
@@ -42,7 +42,7 @@
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
         <!-- Large Item (Col Span 8) -->
         <div
-          class="lg:col-span-8 relative h-[320px] sm:h-[384px] rounded-lg overflow-hidden shadow-[0px_10px_15px_-3px_rgba(0,0,0,0.05),0px_4px_6px_-2px_rgba(0,0,0,0.1)] group"
+          class="lg:col-span-8 relative h-80 sm:h-96 rounded-lg overflow-hidden shadow-[0px_10px_15px_-3px_rgba(0,0,0,0.05),0px_4px_6px_-2px_rgba(0,0,0,0.1)] group"
         >
           <img
             src="/images/hero-building.png"
@@ -59,7 +59,7 @@
             class="absolute bottom-6 left-6 right-6 flex flex-col gap-2 items-start"
           >
             <div
-              class="bg-white/20 backdrop-blur-md px-2.5 py-1 rounded-[2px] text-white text-[12px] font-semibold tracking-[1.2px] uppercase"
+              class="bg-white/20 backdrop-blur-md px-2.5 py-1 rounded-xs text-white text-xs font-semibold tracking-[1.2px] uppercase"
             >
               Commercial
             </div>
@@ -71,7 +71,7 @@
 
         <!-- Small Item (Col Span 4) -->
         <div
-          class="lg:col-span-4 relative h-[320px] sm:h-[384px] rounded-lg overflow-hidden shadow-[0px_10px_15px_-3px_rgba(0,0,0,0.05),0px_4px_6px_-2px_rgba(0,0,0,0.1)] group"
+          class="lg:col-span-4 relative h-80 sm:h-96 rounded-lg overflow-hidden shadow-[0px_10px_15px_-3px_rgba(0,0,0,0.05),0px_4px_6px_-2px_rgba(0,0,0,0.1)] group"
         >
           <img
             src="/images/hero-building-kiosk.png"
@@ -88,7 +88,7 @@
             class="absolute bottom-6 left-6 right-6 flex flex-col gap-2 items-start"
           >
             <div
-              class="bg-white/20 backdrop-blur-md px-2.5 py-1 rounded-[2px] text-white text-[12px] font-semibold tracking-[1.2px] uppercase"
+              class="bg-white/20 backdrop-blur-md px-2.5 py-1 rounded-xs text-white text-xs font-semibold tracking-[1.2px] uppercase"
             >
               Infrastructure
             </div>

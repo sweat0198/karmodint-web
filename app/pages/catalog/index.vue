@@ -12,7 +12,7 @@
           <NuxtLink
             v-if="!quoteStore.isEmpty"
             to="/customize"
-            class="flex items-center justify-center gap-2 px-8 py-3 bg-brand-red hover:bg-brand-red-hover text-white font-semibold text-xs tracking-wider uppercase rounded-[2px] transition-colors duration-150 shadow-sm hover:shadow"
+            class="flex items-center justify-center gap-2 px-8 py-3 bg-brand-red hover:bg-brand-red-hover text-white font-semibold text-xs tracking-wider uppercase rounded-xs transition-colors duration-150 shadow-sm hover:shadow"
           >
             <span>Customize Selected</span>
             <span
@@ -38,7 +38,7 @@
           <NuxtLink
             v-if="!quoteStore.isEmpty && quoteStore.isStepUnlocked(3)"
             to="/quote"
-            class="flex items-center justify-center gap-2 px-6 py-3 bg-white hover:bg-slate-100 text-brand-navy-heading border border-slate-300 font-semibold text-xs tracking-wider uppercase rounded-[2px] transition-colors duration-150 shadow-sm hover:shadow"
+            class="flex items-center justify-center gap-2 px-6 py-3 bg-white hover:bg-slate-100 text-brand-navy-heading border border-slate-300 font-semibold text-xs tracking-wider uppercase rounded-xs transition-colors duration-150 shadow-sm hover:shadow"
           >
             <span>Review Quote</span>
             <svg
@@ -61,19 +61,19 @@
 
     <!-- Mobile Sticky Navigation Bar: Categories Button + Breadcrumb (Figma 50:26 & 50:11) -->
     <div
-      class="lg:hidden sticky top-[64px] z-30 bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-xs px-4 sm:px-6 pt-3.5 pb-3 flex flex-col gap-2.5"
+      class="lg:hidden sticky top-16 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-xs px-4 sm:px-6 pt-3.5 pb-3 flex flex-col gap-2.5"
     >
       <!-- Categories Button (Figma 50:26) -->
       <button
         type="button"
         @click="isCategoryDrawerOpen = true"
-        class="w-full bg-white border border-slate-200 shadow-xs hover:border-slate-300 active:scale-[0.98] active:bg-slate-50 px-4 py-3.5 rounded-[4px] flex items-center justify-between transition-transform duration-150 [transition-timing-function:var(--ease-out)] group cursor-pointer focus-visible:ring-2 focus-visible:ring-brand-red focus-visible:outline-none select-none"
+        class="w-full bg-white border border-slate-200 shadow-xs hover:border-slate-300 active:scale-[0.98] active:bg-slate-50 px-4 py-3.5 rounded flex items-center justify-between transition-transform duration-150 [transition-timing-function:var(--ease-out)] group cursor-pointer focus-visible:ring-2 focus-visible:ring-brand-red focus-visible:outline-none select-none"
         aria-label="Open Categories Selection"
       >
         <div class="flex items-center gap-2.5">
           <!-- Red 3-bar filter/categories icon -->
           <svg
-            class="w-[18px] h-[12px] text-[#E31E24] shrink-0"
+            class="w-[18px] h-3 text-brand-red shrink-0"
             viewBox="0 0 18 12"
             fill="none"
             stroke="currentColor"
@@ -85,7 +85,7 @@
               stroke-linecap="round"
             />
           </svg>
-          <span class="font-medium text-base text-[#1f2937]">
+          <span class="font-medium text-base text-gray-800">
             Categories
           </span>
         </div>
@@ -166,14 +166,14 @@
             d="M9 5l7 7-7 7"
           />
         </svg>
-        <span class="text-[#1f2937] font-bold shrink-0">
+        <span class="text-gray-800 font-bold shrink-0">
           {{ activeSubcategory }}
         </span>
       </nav>
     </div>
 
     <div
-      class="max-w-[1280px] w-full mx-auto px-6 lg:px-12 pt-6 flex flex-col gap-6"
+      class="max-w-7xl w-full mx-auto px-6 lg:px-12 pt-6 flex flex-col gap-6"
     >
       <!-- Breadcrumbs in Main Catalog Layout (Desktop) -->
       <nav
@@ -243,7 +243,7 @@
       <div class="flex flex-col lg:flex-row gap-8 items-start w-full">
         <!-- Sidebar - Categories (Desktop 290px width) -->
         <aside
-          class="hidden lg:block w-[290px] shrink-0 bg-white border border-slate-100 rounded-[4px] p-6 shadow-sm"
+          class="hidden lg:block w-[290px] shrink-0 bg-white border border-slate-100 rounded p-6 shadow-sm"
         >
           <h2
             class="text-brand-navy-heading text-2xl font-semibold tracking-tight mb-6"
@@ -336,7 +336,7 @@
 
       <!-- Footer CTA Section -->
       <section
-        class="bg-brand-rose-bg border border-brand-rose-border rounded-[4px] p-8 lg:p-12 text-center flex flex-col items-center gap-4 mt-8 shadow-sm"
+        class="bg-brand-rose-bg border border-brand-rose-border rounded p-8 lg:p-12 text-center flex flex-col items-center gap-4 mt-8 shadow-sm"
       >
         <h2
           class="text-brand-navy-heading text-2xl font-semibold tracking-tight"
@@ -350,7 +350,7 @@
         </p>
         <NuxtLink
           :to="quoteStore.continueRoute"
-          class="mt-2 border border-brand-navy-heading text-brand-navy-heading hover:bg-brand-navy-heading hover:text-white px-8 py-3 rounded-[2px] text-xs font-semibold tracking-wider uppercase transition-colors inline-flex items-center gap-2"
+          class="mt-2 border border-brand-navy-heading text-brand-navy-heading hover:bg-brand-navy-heading hover:text-white px-8 py-3 rounded-xs text-xs font-semibold tracking-wider uppercase transition-colors inline-flex items-center gap-2"
         >
           <span>Continue Buy Flow</span>
           <svg

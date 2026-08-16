@@ -63,7 +63,7 @@
           @keydown.up.prevent="onArrowUp"
           @keydown.enter.prevent="onEnter"
           @keydown.esc.prevent="closeDropdown"
-          class="w-full bg-white border border-slate-300 rounded-[4px] pl-10 pr-10 py-2.5 text-sm text-[#1F2937] placeholder-slate-400 focus:outline-none focus:border-brand-red focus:ring-1 focus:ring-brand-red transition-all duration-150 shadow-sm"
+          class="w-full bg-white border border-slate-300 rounded pl-10 pr-10 py-2.5 text-sm text-gray-800 placeholder-slate-400 focus:outline-none focus:border-brand-red focus:ring-1 focus:ring-brand-red transition-all duration-150 shadow-sm"
           :class="{
             'opacity-60 cursor-not-allowed bg-slate-50': disabled,
             'border-emerald-500 focus:border-emerald-500 focus:ring-emerald-500':
@@ -142,7 +142,7 @@
         <div
           v-if="isDropdownOpen && predictions.length > 0"
           role="listbox"
-          class="absolute z-50 w-full mt-1.5 bg-white border border-slate-200 rounded-[4px] shadow-lg overflow-hidden max-h-64 overflow-y-auto"
+          class="absolute z-50 w-full mt-1.5 bg-white border border-slate-200 rounded shadow-lg overflow-hidden max-h-64 overflow-y-auto"
         >
           <ul class="divide-y divide-slate-100 py-1">
             <li
@@ -177,7 +177,7 @@
               </svg>
 
               <div class="flex-1 min-w-0">
-                <div class="text-sm font-semibold truncate text-[#1F2937]">
+                <div class="text-sm font-semibold truncate text-gray-800">
                   {{ item.mainText }}
                 </div>
                 <div
@@ -207,7 +207,7 @@
       <!-- Selected Address Details Pill -->
       <div
         v-if="selectedAddress && !isDropdownOpen"
-        class="mt-2.5 p-3 bg-brand-rose-bg border border-brand-rose-border rounded-[4px] text-xs text-brand-rose-text flex items-start justify-between gap-3 animate-fade-in"
+        class="mt-2.5 p-3 bg-brand-rose-bg border border-brand-rose-border rounded text-xs text-brand-rose-text flex items-start justify-between gap-3 animate-fade-in"
       >
         <div class="space-y-0.5">
           <div class="font-bold text-brand-navy-heading text-sm">
@@ -229,7 +229,7 @@
           </div>
         </div>
         <span
-          class="shrink-0 inline-flex items-center px-2 py-0.5 rounded-[2px] text-[10px] font-bold uppercase tracking-wider bg-emerald-100 text-emerald-800"
+          class="shrink-0 inline-flex items-center px-2 py-0.5 rounded-xs text-[10px] font-bold uppercase tracking-wider bg-emerald-100 text-emerald-800"
         >
           UK Verified
         </span>
@@ -239,7 +239,7 @@
     <!-- Mode B: Manual Address Entry Form -->
     <div
       v-else
-      class="space-y-3 bg-slate-50/70 p-4 border border-slate-200 rounded-[4px] animate-fade-in"
+      class="space-y-3 bg-slate-50/70 p-4 border border-slate-200 rounded animate-fade-in"
     >
       <div>
         <label class="label-caps text-slate-500 mb-1 block"
@@ -251,7 +251,7 @@
           required
           placeholder="Building name, number and street"
           @input="emitManualChange"
-          class="w-full bg-white border border-slate-300 rounded-[4px] px-3 py-2 text-sm text-[#1F2937] focus:outline-none focus:border-brand-red"
+          class="w-full bg-white border border-slate-300 rounded px-3 py-2 text-sm text-gray-800 focus:outline-none focus:border-brand-red"
         />
       </div>
 
@@ -264,7 +264,7 @@
           type="text"
           placeholder="Apartment, suite, unit, etc."
           @input="emitManualChange"
-          class="w-full bg-white border border-slate-300 rounded-[4px] px-3 py-2 text-sm text-[#1F2937] focus:outline-none focus:border-brand-red"
+          class="w-full bg-white border border-slate-300 rounded px-3 py-2 text-sm text-gray-800 focus:outline-none focus:border-brand-red"
         />
       </div>
 
@@ -279,7 +279,7 @@
             required
             placeholder="e.g. London or Manchester"
             @input="emitManualChange"
-            class="w-full bg-white border border-slate-300 rounded-[4px] px-3 py-2 text-sm text-[#1F2937] focus:outline-none focus:border-brand-red"
+            class="w-full bg-white border border-slate-300 rounded px-3 py-2 text-sm text-gray-800 focus:outline-none focus:border-brand-red"
           />
         </div>
 
@@ -293,7 +293,7 @@
             required
             placeholder="e.g. SW1A 2AA"
             @input="emitManualChange"
-            class="w-full bg-white border border-slate-300 rounded-[4px] px-3 py-2 text-sm text-[#1F2937] uppercase focus:outline-none focus:border-brand-red"
+            class="w-full bg-white border border-slate-300 rounded px-3 py-2 text-sm text-gray-800 uppercase focus:outline-none focus:border-brand-red"
           />
         </div>
       </div>

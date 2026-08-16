@@ -3,7 +3,7 @@
     <!-- Loading State Skeleton -->
     <div
       v-if="isLoading"
-      class="mt-2.5 p-3.5 bg-slate-50 border border-slate-200 rounded-[4px] space-y-2 animate-pulse"
+      class="mt-2.5 p-3.5 bg-slate-50 border border-slate-200 rounded space-y-2 animate-pulse"
     >
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-2">
@@ -27,7 +27,7 @@
     <!-- Calculated Result Card -->
     <div
       v-else-if="result && result.distance"
-      class="mt-2.5 p-3.5 bg-linear-to-br from-slate-50 to-brand-rose-bg/30 border border-slate-200 hover:border-brand-rose-border rounded-[4px] shadow-sm transition-all duration-200 animate-fade-in"
+      class="mt-2.5 p-3.5 bg-linear-to-br from-slate-50 to-brand-rose-bg/30 border border-slate-200 hover:border-brand-rose-border rounded shadow-sm transition-all duration-200 animate-fade-in"
     >
       <!-- Top Row: Route Icon & Mileage Badge -->
       <div
@@ -48,7 +48,7 @@
 
         <div class="flex items-center shrink-0">
           <span
-            class="px-2 py-0.5 bg-brand-navy-heading text-white text-[11px] font-bold tracking-tight rounded-[2px]"
+            class="px-2 py-0.5 bg-brand-navy-heading text-white text-[11px] font-bold tracking-tight rounded-xs"
           >
             {{ result.distance.miles }} miles
           </span>

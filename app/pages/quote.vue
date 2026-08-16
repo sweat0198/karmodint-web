@@ -12,7 +12,7 @@
         <div class="flex flex-wrap items-center gap-3">
           <NuxtLink
             to="/catalog"
-            class="flex items-center justify-center gap-2 px-6 sm:px-8 py-3 bg-white hover:bg-slate-100 text-brand-navy-heading border border-slate-300 font-semibold text-xs tracking-wider uppercase rounded-[2px] transition-colors duration-150 shadow-sm hover:shadow"
+            class="flex items-center justify-center gap-2 px-6 sm:px-8 py-3 bg-white hover:bg-slate-100 text-brand-navy-heading border border-slate-300 font-semibold text-xs tracking-wider uppercase rounded-xs transition-colors duration-150 shadow-sm hover:shadow"
           >
             <svg
               class="w-4 h-4 text-brand-slate-muted shrink-0"
@@ -33,7 +33,7 @@
           <NuxtLink
             v-if="!quoteStore.isEmpty"
             to="/customize"
-            class="flex items-center justify-center gap-2 px-6 sm:px-8 py-3 bg-brand-red hover:bg-brand-red-hover text-white font-semibold text-xs tracking-wider uppercase rounded-[2px] transition-colors duration-150 shadow-sm hover:shadow"
+            class="flex items-center justify-center gap-2 px-6 sm:px-8 py-3 bg-brand-red hover:bg-brand-red-hover text-white font-semibold text-xs tracking-wider uppercase rounded-xs transition-colors duration-150 shadow-sm hover:shadow"
           >
             <span>Customize Units</span>
             <svg
@@ -65,7 +65,7 @@
       <template #actions>
         <NuxtLink
           to="/catalog"
-          class="flex items-center justify-center gap-2 px-8 py-3 bg-brand-navy-heading hover:bg-brand-navy text-white font-semibold text-xs tracking-wider uppercase rounded-[2px] transition-colors duration-150 shadow-sm hover:shadow"
+          class="flex items-center justify-center gap-2 px-8 py-3 bg-brand-navy-heading hover:bg-brand-navy text-white font-semibold text-xs tracking-wider uppercase rounded-xs transition-colors duration-150 shadow-sm hover:shadow"
         >
           <span>Return to Catalog</span>
         </NuxtLink>
@@ -100,8 +100,8 @@
       <!-- Items Summary Column (2 cols) -->
       <div class="lg:col-span-2 space-y-4">
         <div class="flex items-center justify-between pb-4 border-b border-slate-200">
-          <h2 class="text-xl font-bold text-[#1F2937]">Selected Units ({{ quoteStore.totalItemsCount }})</h2>
-          <button @click="quoteStore.clearQuote()" class="text-xs text-[#E31E24] hover:text-[#BA0013] font-semibold">Clear All</button>
+          <h2 class="text-xl font-bold text-gray-800">Selected Units ({{ quoteStore.totalItemsCount }})</h2>
+          <button @click="quoteStore.clearQuote()" class="text-xs text-brand-red hover:text-brand-red-dark font-semibold">Clear All</button>
         </div>
 
         <div 
@@ -110,19 +110,19 @@
           class="structural-card p-6 flex flex-col sm:flex-row gap-6 items-start sm:items-center justify-between"
         >
           <div class="flex gap-4 items-center">
-            <div class="w-16 h-16 rounded-[4px] bg-slate-50 border border-slate-100 flex items-center justify-center text-[#E31E24] text-2xl flex-shrink-0">
+            <div class="w-16 h-16 rounded bg-slate-50 border border-slate-100 flex items-center justify-center text-brand-red text-2xl flex-shrink-0">
               <UIcon name="i-heroicons-cube" />
             </div>
             <div>
-              <h3 class="text-lg font-bold text-[#1F2937]">{{ item.productName }}</h3>
-              <p class="label-caps text-[#E31E24] mt-0.5">{{ item.variantLabel || 'Standard Spec' }}</p>
+              <h3 class="text-lg font-bold text-gray-800">{{ item.productName }}</h3>
+              <p class="label-caps text-brand-red mt-0.5">{{ item.variantLabel || 'Standard Spec' }}</p>
               
               <!-- Configured Spec Summary Badges -->
               <div v-if="item.specSummary && item.specSummary.length" class="flex flex-wrap gap-1.5 mt-2">
                 <span 
                   v-for="(spec, idx) in item.specSummary" 
                   :key="idx"
-                  class="bg-slate-100 border border-slate-200 text-[#1F2937] text-[10px] font-semibold px-2 py-0.5 rounded-[2px]"
+                  class="bg-slate-100 border border-slate-200 text-gray-800 text-[10px] font-semibold px-2 py-0.5 rounded-xs"
                 >
                   {{ spec.label }}: {{ spec.value }}
                 </span>
@@ -141,13 +141,13 @@
           <div class="flex items-center gap-6 w-full sm:w-auto justify-between border-t sm:border-t-0 border-slate-100 pt-4 sm:pt-0">
             <!-- Quantity Controls -->
             <div class="flex items-center gap-2">
-              <button @click="quoteStore.updateQuantity(item.id, item.quantity - 1)" class="w-8 h-8 rounded-[4px] bg-slate-100 border border-slate-200 text-[#1F2937] font-bold hover:bg-slate-200 text-sm">-</button>
-              <span class="w-8 text-center font-bold text-[#1F2937] text-sm">{{ item.quantity }}</span>
-              <button @click="quoteStore.updateQuantity(item.id, item.quantity + 1)" class="w-8 h-8 rounded-[4px] bg-slate-100 border border-slate-200 text-[#1F2937] font-bold hover:bg-slate-200 text-sm">+</button>
+              <button @click="quoteStore.updateQuantity(item.id, item.quantity - 1)" class="w-8 h-8 rounded bg-slate-100 border border-slate-200 text-gray-800 font-bold hover:bg-slate-200 text-sm">-</button>
+              <span class="w-8 text-center font-bold text-gray-800 text-sm">{{ item.quantity }}</span>
+              <button @click="quoteStore.updateQuantity(item.id, item.quantity + 1)" class="w-8 h-8 rounded bg-slate-100 border border-slate-200 text-gray-800 font-bold hover:bg-slate-200 text-sm">+</button>
             </div>
 
             <!-- Remove Action -->
-            <button @click="quoteStore.removeItem(item.id)" class="text-slate-400 hover:text-[#E31E24] p-2">
+            <button @click="quoteStore.removeItem(item.id)" class="text-slate-400 hover:text-brand-red p-2">
               <UIcon name="i-heroicons-trash" class="w-5 h-5" />
             </button>
           </div>
@@ -156,7 +156,7 @@
 
       <!-- Contact Details Form (1 col) -->
       <div class="structural-card p-6 h-fit">
-        <h2 class="text-xl font-bold text-[#1F2937] mb-2">Contact Details</h2>
+        <h2 class="text-xl font-bold text-gray-800 mb-2">Contact Details</h2>
         <p class="text-xs text-slate-500 mb-6">Enter your details to receive an official quote by email.</p>
 
         <form @submit.prevent="submitQuote" class="space-y-4">
@@ -167,7 +167,7 @@
               type="text" 
               required
               placeholder="John Doe"
-              class="w-full bg-white border border-slate-300 rounded-[4px] px-3.5 py-2 text-sm text-[#1F2937] focus:outline-none focus:border-[#E31E24]"
+              class="w-full bg-white border border-slate-300 rounded px-3.5 py-2 text-sm text-gray-800 focus:outline-none focus:border-brand-red"
             />
           </div>
 
@@ -178,7 +178,7 @@
               type="email" 
               required
               placeholder="john@company.com"
-              class="w-full bg-white border border-slate-300 rounded-[4px] px-3.5 py-2 text-sm text-[#1F2937] focus:outline-none focus:border-[#E31E24]"
+              class="w-full bg-white border border-slate-300 rounded px-3.5 py-2 text-sm text-gray-800 focus:outline-none focus:border-brand-red"
             />
           </div>
 
@@ -188,7 +188,7 @@
               v-model="customer.phone" 
               type="tel" 
               placeholder="+44 7123 456789"
-              class="w-full bg-white border border-slate-300 rounded-[4px] px-3.5 py-2 text-sm text-[#1F2937] focus:outline-none focus:border-[#E31E24]"
+              class="w-full bg-white border border-slate-300 rounded px-3.5 py-2 text-sm text-gray-800 focus:outline-none focus:border-brand-red"
             />
           </div>
 
@@ -198,7 +198,7 @@
               v-model="customer.company" 
               type="text" 
               placeholder="Acme Construction Ltd"
-              class="w-full bg-white border border-slate-300 rounded-[4px] px-3.5 py-2 text-sm text-[#1F2937] focus:outline-none focus:border-[#E31E24]"
+              class="w-full bg-white border border-slate-300 rounded px-3.5 py-2 text-sm text-gray-800 focus:outline-none focus:border-brand-red"
             />
           </div>
 
@@ -226,11 +226,11 @@
               v-model="customer.notes" 
               rows="3" 
               placeholder="Access restrictions, site contact, or target delivery date..."
-              class="w-full bg-white border border-slate-300 rounded-[4px] px-3.5 py-2 text-sm text-[#1F2937] focus:outline-none focus:border-[#E31E24]"
+              class="w-full bg-white border border-slate-300 rounded px-3.5 py-2 text-sm text-gray-800 focus:outline-none focus:border-brand-red"
             ></textarea>
           </div>
 
-          <div v-if="errorMessage" class="p-3 bg-red-50 border border-red-200 text-[#E31E24] text-xs rounded-[4px]">
+          <div v-if="errorMessage" class="p-3 bg-red-50 border border-red-200 text-brand-red text-xs rounded">
             {{ errorMessage }}
           </div>
 

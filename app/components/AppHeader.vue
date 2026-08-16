@@ -3,7 +3,7 @@
     class="sticky top-0 z-50 bg-brand-navy border-b border-brand-rose-border/30 shadow-md"
   >
     <div
-      class="max-w-[1280px] mx-auto px-6 lg:px-12 py-4 flex items-center justify-between"
+      class="max-w-7xl mx-auto px-6 lg:px-12 py-4 flex items-center justify-between"
     >
       <!-- Logo -->
       <NuxtLink to="/" class="flex items-center shrink-0">
@@ -21,7 +21,7 @@
           class="text-base transition-colors py-1 relative"
           :class="
             route.path === '/'
-              ? 'text-white font-bold border-b-2 border-brand-red pb-[6px]'
+              ? 'text-white font-bold border-b-2 border-brand-red pb-1.5'
               : 'text-brand-slate-light hover:text-white font-medium'
           "
         >
@@ -32,7 +32,7 @@
           class="text-base transition-colors py-1 relative"
           :class="
             isCatalogActive
-              ? 'text-white font-bold border-b-2 border-brand-red pb-[6px]'
+              ? 'text-white font-bold border-b-2 border-brand-red pb-1.5'
               : 'text-brand-slate-light hover:text-white font-medium'
           "
         >
@@ -43,7 +43,7 @@
           class="text-base transition-colors py-1 relative"
           :class="
             route.path === '/about' && !route.hash
-              ? 'text-white font-bold border-b-2 border-brand-red pb-[6px]'
+              ? 'text-white font-bold border-b-2 border-brand-red pb-1.5'
               : 'text-brand-slate-light hover:text-white font-medium'
           "
         >
@@ -54,7 +54,7 @@
           class="text-base transition-colors py-1 relative"
           :class="
             route.path === '/gallery'
-              ? 'text-white font-bold border-b-2 border-brand-red pb-[6px]'
+              ? 'text-white font-bold border-b-2 border-brand-red pb-1.5'
               : 'text-brand-slate-light hover:text-white font-medium'
           "
         >
@@ -65,7 +65,7 @@
           class="text-base transition-colors py-1 relative"
           :class="
             route.path === '/contact'
-              ? 'text-white font-bold border-b-2 border-brand-red pb-[6px]'
+              ? 'text-white font-bold border-b-2 border-brand-red pb-1.5'
               : 'text-brand-slate-light hover:text-white font-medium'
           "
         >
@@ -97,7 +97,7 @@
           :href="whatsAppUrl"
           target="_blank"
           rel="noopener noreferrer"
-          class="bg-[#075E54]/90 hover:bg-[#128C7E] text-white font-semibold text-xs px-3.5 py-2.5 rounded-[2px] border border-emerald-400/30 transition-all inline-flex items-center gap-2 shadow-sm"
+          class="bg-[#075E54]/90 hover:bg-[#128C7E] text-white font-semibold text-xs px-3.5 py-2.5 rounded-xs border border-emerald-400/30 transition-all inline-flex items-center gap-2 shadow-sm"
           :title="hasQuoteItems ? 'Chat on WhatsApp with active quote breakdown' : 'Chat with Karmod UK on WhatsApp'"
         >
           <svg class="w-4 h-4 text-emerald-300 fill-current shrink-0" viewBox="0 0 24 24">
@@ -192,7 +192,7 @@
           :href="whatsAppUrl"
           target="_blank"
           rel="noopener noreferrer"
-          class="bg-[#075E54] hover:bg-[#128C7E] text-white font-semibold text-xs px-3 py-2.5 rounded-[2px] flex items-center justify-center gap-1.5 transition-colors shadow-sm"
+          class="bg-[#075E54] hover:bg-[#128C7E] text-white font-semibold text-xs px-3 py-2.5 rounded-xs flex items-center justify-center gap-1.5 transition-colors shadow-sm"
         >
           <svg class="w-4 h-4 text-emerald-300 fill-current shrink-0" viewBox="0 0 24 24">
             <path
@@ -203,7 +203,7 @@
         </a>
         <a
           :href="phoneTelHref"
-          class="bg-slate-800 hover:bg-slate-700 text-white font-semibold text-xs px-3 py-2.5 rounded-[2px] flex items-center justify-center gap-1.5 transition-colors shadow-sm"
+          class="bg-slate-800 hover:bg-slate-700 text-white font-semibold text-xs px-3 py-2.5 rounded-xs flex items-center justify-center gap-1.5 transition-colors shadow-sm"
         >
           <svg class="w-3.5 h-3.5 text-brand-red shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path

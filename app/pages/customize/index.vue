@@ -11,7 +11,7 @@
         <div class="flex flex-wrap items-center gap-3">
           <NuxtLink
             to="/catalog"
-            class="flex items-center justify-center gap-2 px-6 py-3 bg-white hover:bg-slate-100 text-brand-navy-heading border border-slate-300 font-semibold text-xs tracking-wider uppercase rounded-[2px] transition-colors duration-150 shadow-sm"
+            class="flex items-center justify-center gap-2 px-6 py-3 bg-white hover:bg-slate-100 text-brand-navy-heading border border-slate-300 font-semibold text-xs tracking-wider uppercase rounded-xs transition-colors duration-150 shadow-sm"
           >
             <span>+ Add Products</span>
           </NuxtLink>
@@ -19,7 +19,7 @@
           <NuxtLink
             v-if="!quoteStore.isEmpty"
             to="/quote"
-            class="flex items-center justify-center gap-2 px-8 py-3 bg-brand-red hover:bg-brand-red-hover text-white font-semibold text-xs tracking-wider uppercase rounded-[2px] transition-colors duration-150 shadow-sm hover:shadow"
+            class="flex items-center justify-center gap-2 px-8 py-3 bg-brand-red hover:bg-brand-red-hover text-white font-semibold text-xs tracking-wider uppercase rounded-xs transition-colors duration-150 shadow-sm hover:shadow"
           >
             <span>Review & Request Quote</span>
             <svg
@@ -75,7 +75,7 @@
         <div
           v-for="item in quoteStore.items"
           :key="item.id"
-          class="bg-white border rounded-[4px] transition-[border-color,box-shadow] duration-200 overflow-hidden shadow-xs"
+          class="bg-white border rounded transition-[border-color,box-shadow] duration-200 overflow-hidden shadow-xs"
           :class="[
             isExpanded(item.id)
               ? 'border-brand-red/80 ring-1 ring-brand-red/20 shadow-md'
@@ -91,7 +91,7 @@
             <div class="flex items-start sm:items-center gap-4 shrink-0">
               <!-- Thumbnail Box -->
               <div
-                class="w-20 h-20 sm:w-24 sm:h-24 rounded-[4px] bg-slate-50 border border-slate-100 p-2 flex items-center justify-center shrink-0 relative overflow-hidden"
+                class="w-20 h-20 sm:w-24 sm:h-24 rounded bg-slate-50 border border-slate-100 p-2 flex items-center justify-center shrink-0 relative overflow-hidden"
               >
                 <img
                   :src="item.image || getFallbackImage(item.productId)"
@@ -109,7 +109,7 @@
               <div class="flex flex-col gap-1 shrink-0">
                 <div class="flex items-center gap-2 flex-wrap">
                   <span
-                    class="label-caps text-brand-red bg-brand-rose-card px-2 py-0.5 rounded-[2px]"
+                    class="label-caps text-brand-red bg-brand-rose-card px-2 py-0.5 rounded-xs"
                   >
                     {{ item.variantLabel || "Modular Cabin" }}
                   </span>
@@ -134,7 +134,7 @@
               <div
                 v-for="(spec, idx) in getItemSpecSummary(item)"
                 :key="idx"
-                class="bg-slate-50 border border-slate-200/80 rounded px-2.5 py-1 flex items-center gap-1.5 text-xs text-[#1F2937]"
+                class="bg-slate-50 border border-slate-200/80 rounded px-2.5 py-1 flex items-center gap-1.5 text-xs text-gray-800"
               >
                 <span
                   class="text-[10px] font-bold uppercase text-brand-slate-muted tracking-wider"
@@ -170,12 +170,12 @@
 
               <!-- Quantity Controls -->
               <div
-                class="flex items-center gap-1 bg-slate-50 border border-slate-200 rounded-[2px] p-0.5"
+                class="flex items-center gap-1 bg-slate-50 border border-slate-200 rounded-xs p-0.5"
               >
                 <button
                   type="button"
                   @click="quoteStore.updateQuantity(item.id, item.quantity - 1)"
-                  class="w-7 h-7 rounded-[2px] bg-white border border-slate-200 text-brand-navy-heading font-bold hover:bg-slate-100 text-xs flex items-center justify-center transition-colors"
+                  class="w-7 h-7 rounded-xs bg-white border border-slate-200 text-brand-navy-heading font-bold hover:bg-slate-100 text-xs flex items-center justify-center transition-colors"
                   title="Decrease quantity"
                 >
                   -
@@ -188,7 +188,7 @@
                 <button
                   type="button"
                   @click="quoteStore.updateQuantity(item.id, item.quantity + 1)"
-                  class="w-7 h-7 rounded-[2px] bg-white border border-slate-200 text-brand-navy-heading font-bold hover:bg-slate-100 text-xs flex items-center justify-center transition-colors"
+                  class="w-7 h-7 rounded-xs bg-white border border-slate-200 text-brand-navy-heading font-bold hover:bg-slate-100 text-xs flex items-center justify-center transition-colors"
                   title="Increase quantity"
                 >
                   +
@@ -199,7 +199,7 @@
               <button
                 type="button"
                 @click="toggleExpand(item.id)"
-                class="inline-flex items-center justify-center gap-1.5 w-28 shrink-0 py-2 text-xs font-semibold rounded-[2px] transition-all"
+                class="inline-flex items-center justify-center gap-1.5 w-28 shrink-0 py-2 text-xs font-semibold rounded-xs transition-all"
                 :class="[
                   isExpanded(item.id)
                     ? 'bg-brand-rose-card text-brand-red border border-brand-rose-border hover:bg-brand-rose-border'

@@ -40,7 +40,7 @@
 
         <!-- Drawer Header -->
         <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center shrink-0">
-          <h2 class="text-xl font-bold text-[#1F2937] tracking-tight">Categories</h2>
+          <h2 class="text-xl font-bold text-gray-800 tracking-tight">Categories</h2>
           <button
             type="button"
             @click="closeDrawer"
@@ -66,7 +66,7 @@
                 type="button"
                 @click="onToggleCategory(cat.name)"
                 class="flex items-center justify-between w-full text-left text-lg font-medium active:scale-[0.99] transition-[color,transform] duration-150 [transition-timing-function:var(--ease-out)] cursor-pointer"
-                :class="activeCategory === cat.name ? 'text-[#1F2937] font-semibold' : 'text-slate-600 hover:text-[#1F2937]'"
+                :class="activeCategory === cat.name ? 'text-gray-800 font-semibold' : 'text-slate-600 hover:text-gray-800'"
               >
                 <span>{{ cat.name }}</span>
                 <svg
@@ -95,8 +95,8 @@
                     class="block w-full text-left pl-5 py-2.5 text-base rounded-r-md active:scale-[0.99] transition-[background-color,color,transform] duration-150 [transition-timing-function:var(--ease-out)] cursor-pointer"
                     :class="
                       activeSubcategory === sub
-                        ? 'border-l-2 border-[#E31E24] -ml-[2px] bg-[#f9e9ea] text-[#1F2937] font-bold'
-                        : 'text-slate-600 hover:text-[#1F2937] hover:bg-slate-50 font-normal'
+                        ? 'border-l-2 border-brand-red -ml-[2px] bg-[#f9e9ea] text-gray-800 font-bold'
+                        : 'text-slate-600 hover:text-gray-800 hover:bg-slate-50 font-normal'
                     "
                   >
                     {{ sub }}
@@ -112,7 +112,7 @@
           <button
             type="button"
             @click="onApply"
-            class="w-full block text-center bg-[#E31E24] hover:bg-[#BA0013] active:scale-[0.98] text-white font-semibold text-xs tracking-wider uppercase py-4 rounded-lg transition-transform duration-150 [transition-timing-function:var(--ease-out)] shadow-sm cursor-pointer focus-visible:ring-2 focus-visible:ring-brand-navy focus:outline-none"
+            class="w-full block text-center bg-brand-red hover:bg-brand-red-dark active:scale-[0.98] text-white font-semibold text-xs tracking-wider uppercase py-4 rounded-lg transition-transform duration-150 [transition-timing-function:var(--ease-out)] shadow-sm cursor-pointer focus-visible:ring-2 focus-visible:ring-brand-navy focus:outline-none"
           >
             Apply Categories
           </button>

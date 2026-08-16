@@ -251,7 +251,7 @@ const zoomOut = () => {
             <!-- Connecting vertical line except for last item -->
             <div
               v-if="index < steps.length - 1"
-              class="absolute left-[12px] top-[32px] bottom-[-32px] w-px bg-brand-rose-border/40 pointer-events-none"
+              class="absolute left-3 top-8 bottom-[-32px] w-px bg-brand-rose-border/40 pointer-events-none"
             ></div>
 
             <!-- Step Header -->
@@ -418,7 +418,7 @@ const zoomOut = () => {
                         -
                       </button>
                       <span
-                        class="text-sm font-medium text-brand-navy-heading min-w-[16px] text-center"
+                        class="text-sm font-medium text-brand-navy-heading min-w-4 text-center"
                       >
                         {{ getStepSelection(step.id)?.counterValue ?? 0 }}
                       </span>
