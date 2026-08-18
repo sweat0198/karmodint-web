@@ -9,6 +9,7 @@
     "preview": "nuxi preview",
     "postinstall": "nuxi prepare",
     "generate:favicons": "node scripts/favicon-generator.mjs",
+    "generate:email-preview": "jiti scripts/generate-email-preview.mjs",
     "test": "vitest run",
     "test:watch": "vitest"
   },

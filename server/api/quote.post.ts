@@ -1,140 +1,124 @@
-export default defineEventHandler(async (event) => {
-  const body = await readBody(event)
-  const config = useRuntimeConfig()
+import { buildQuoteEmails, sendResendEmail } from '../utils/email'
+import { buildSanityQuoteEnquiry } from '../utils/sanityLead'
+
+const handler = async (event: any) => {
+  let body: any
+  try {
+    body = event?.context?.$mockBody !== undefined 
+      ? event.context.$mockBody 
+      : (typeof readBody !== 'undefined' ? await readBody(event) : event?.body)
+  } catch {
+    body = {}
+  }
 
   const { items, customer } = body || {}
 
   if (!customer?.name || !customer?.email || !items || !Array.isArray(items) || items.length === 0) {
-    throw createError({
+    const errorFn = typeof createError !== 'undefined' ? createError : (err: any) => Object.assign(new Error(err.statusMessage), err)
+    throw errorFn({
       statusCode: 400,
       statusMessage: 'Invalid quote submission payload. Missing contact details or quote items.'
     })
   }
 
-  const resendKey = config.resendApiKey || process.env.RESEND_API_KEY
-  const businessInbox = config.businessEmail || process.env.BUSINESS_EMAIL || 'enquiries@karmod-international.com'
-
-  // Construct Email HTML Content
-  const itemsHtml = items.map((item: any, idx: number) => `
-    <tr style="border-bottom: 1px solid #e2e8f0;">
-      <td style="padding: 12px; font-weight: 600;">${idx + 1}. ${item.productName}</td>
-      <td style="padding: 12px;">${item.variantLabel || 'Standard'}</td>
-      <td style="padding: 12px; text-align: center;">${item.quantity}</td>
-      <td style="padding: 12px; font-style: italic;">${item.notes || '-'}</td>
-    </tr>
-  `).join('')
-
-  const emailBodyHtml = `
-    <div style="font-family: Arial, sans-serif; max-width: 650px; margin: 0 auto; color: #1e293b;">
-      <div style="background-color: #0f172a; padding: 24px; text-align: center; border-radius: 8px 8px 0 0;">
-        <h2 style="color: #ef4444; margin: 0; font-size: 24px;">Karmod International</h2>
-        <p style="color: #94a3b8; margin: 4px 0 0 0;">New Product Quote Request</p>
-      </div>
-
-      <div style="padding: 24px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 0 0 8px 8px;">
-        <h3 style="color: #0f172a; border-bottom: 2px solid #ef4444; padding-bottom: 8px;">Customer Contact Details</h3>
-        <p><strong>Name:</strong> ${customer.name}</p>
-        <p><strong>Email:</strong> ${customer.email}</p>
-        <p><strong>Phone:</strong> ${customer.phone || 'Not provided'}</p>
-        <p><strong>Company:</strong> ${customer.company || 'N/A'}</p>
-        ${customer.address ? `<p><strong>Delivery Address:</strong> ${typeof customer.address === 'object' && customer.address?.formattedAddress ? customer.address.formattedAddress : customer.address}</p>` : ''}
-        ${customer.deliveryEstimate ? `
-          <div style="margin: 12px 0; padding: 12px; background: #f8fafc; border-left: 3px solid #ef4444; border-radius: 4px;">
-            <p style="margin: 0 0 4px 0; font-weight: 600; color: #0f172a;">Estimated Logistics & Delivery Route:</p>
-            <p style="margin: 2px 0; font-size: 13px;"><strong>Road Distance:</strong> ${customer.deliveryEstimate.miles} miles</p>
-            <p style="margin: 2px 0; font-size: 13px;"><strong>Est. Drive Transit:</strong> ~${customer.deliveryEstimate.duration}</p>
-            <p style="margin: 2px 0; font-size: 12px; color: #64748b;">Dispatched from Melton Mowbray Hub (${customer.deliveryEstimate.originPostcode || 'LE14 4AJ'})</p>
-          </div>
-        ` : ''}
-        ${customer.notes ? `<p><strong>Additional Notes:</strong> ${customer.notes}</p>` : ''}
-
-        <h3 style="color: #0f172a; border-bottom: 2px solid #ef4444; padding-bottom: 8px; margin-top: 24px;">Requested Items (${items.length})</h3>
-        <table style="width: 100%; border-collapse: collapse; margin-top: 12px;">
-          <thead>
-            <tr style="background: #f8fafc; text-align: left;">
-              <th style="padding: 10px;">Product</th>
-              <th style="padding: 10px;">Variant</th>
-              <th style="padding: 10px; text-align: center;">Qty</th>
-              <th style="padding: 10px;">Item Notes</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${itemsHtml}
-          </tbody>
-        </table>
-
-        <div style="margin-top: 32px; padding-top: 16px; border-top: 1px solid #e2e8f0; font-size: 12px; color: #64748b;">
-          Submitted via Karmod International Web Application.
-        </div>
-      </div>
-    </div>
-  `
-
-  if (!resendKey || resendKey === 'dummy_resend_key') {
-    // Development/Fallback response when Resend API key is not configured yet
-    console.log('[MOCK RESEND] Dual email dispatch simulated for:', {
-      businessInbox,
-      customerEmail: customer.email,
-      itemCount: items.length
-    })
-    return {
-      success: true,
-      simulated: true,
-      message: 'Quote enquiry logged successfully (Simulated mode: Add RESEND_API_KEY env variable for live delivery).'
+  let config: any = {}
+  try {
+    if (typeof useRuntimeConfig !== 'undefined') {
+      config = useRuntimeConfig()
     }
+  } catch {
+    config = {}
   }
 
-  try {
-    const sendEmail = async (payload: { from: string; to: string[]; subject: string; html: string }) => {
-      const res = await fetch('https://api.resend.com/emails', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${resendKey}`,
-          'Content-Type': 'application/json'
+  const resendApiKey = config?.resendApiKey || process.env.RESEND_API_KEY
+  const businessInbox = config?.businessEmail || process.env.BUSINESS_EMAIL || 'info@karmodint.co.uk'
+  const fromEmail = config?.fromEmail || process.env.RESEND_FROM_EMAIL || 'Karmod International <info@karmodint.co.uk>'
+  const sanityApiToken = config?.sanityApiToken || process.env.SANITY_API_TOKEN
+  const sanityProjectId = config?.public?.sanityProjectId || process.env.SANITY_PROJECT_ID
+  const siteUrl = config?.public?.siteUrl || process.env.NUXT_PUBLIC_SITE_URL
+
+  // 1. Build and format email payloads
+  const { businessEmail, customerEmail } = buildQuoteEmails(
+    {
+      customer,
+      items
+    },
+    businessInbox,
+    fromEmail,
+    siteUrl
+  )
+
+  // 2. Dispatch Business Notification
+  const businessResult = await sendResendEmail(businessEmail, resendApiKey)
+
+  // 3. Dispatch Customer Confirmation
+  const customerResult = await sendResendEmail(customerEmail, resendApiKey)
+
+  // 4. Optional Sanity Lead Sync (if Sanity write token available)
+  let sanityLeadId: string | undefined
+  if (sanityApiToken && sanityProjectId && sanityProjectId !== 'dummy_project_id') {
+    try {
+      const sanityDoc = buildSanityQuoteEnquiry({
+        customer: {
+          name: customer.name,
+          email: customer.email,
+          phone: customer.phone || 'Not provided',
+          company: customer.company,
+          deliveryLocation: typeof customer.address === 'object' ? customer.address?.formattedAddress : customer.address,
+          notes: customer.notes
         },
-        body: JSON.stringify(payload)
+        items: items.map((item: any) => ({
+          productId: item.productId,
+          productName: item.productName,
+          variantLabel: item.variantLabel,
+          quantity: item.quantity || 1,
+          unitPrice: item.customTotal || item.unitPrice || item.basePrice,
+          notes: item.notes,
+          selectedCustomizations: item.selectedCustomizations
+        }))
       })
 
-      const data = await res.json()
-      if (!res.ok) {
-        throw new Error(data?.message || `Resend API error: ${res.statusText}`)
+      const sanityDataset = config?.public?.sanityDataset || process.env.SANITY_DATASET || 'production'
+      const sanityUrl = `https://${sanityProjectId}.api.sanity.io/v2024-01-01/data/mutate/${sanityDataset}`
+
+      const sanityRes = await fetch(sanityUrl, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${sanityApiToken}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          mutations: [{ create: sanityDoc }]
+        })
+      })
+
+      if (sanityRes.ok) {
+        const sanityData = await sanityRes.json()
+        sanityLeadId = sanityData?.results?.[0]?.id
       }
-      return data
+    } catch (sanityErr) {
+      console.warn('[SANITY LEAD SYNC WARNING]', sanityErr)
     }
+  }
 
-    // 1. Send Notification to Business Inbox
-    const businessResult = await sendEmail({
-      from: 'Karmod Quotes <quotes@karmod-international.com>',
-      to: [businessInbox],
-      subject: `New Quote Request from ${customer.name} (${items.length} items)`,
-      html: emailBodyHtml
-    })
-
-    // 2. Send Confirmation Email to Customer
-    const customerResult = await sendEmail({
-      from: 'Karmod International <enquiries@karmod-international.com>',
-      to: [customer.email],
-      subject: 'We received your quote request - Karmod International',
-      html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #1e293b; padding: 24px;">
-          <h2 style="color: #ef4444;">Thank you for your enquiry, ${customer.name}!</h2>
-          <p>We have received your quote request for ${items.length} product(s). Our sales team is reviewing your specification and will follow up with you shortly via email or phone.</p>
-          <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 20px 0;" />
-          <p style="font-size: 14px; color: #64748b;">Karmod International Ltd — Portable Cabins, Kiosks, Gatehouses & Modular Buildings</p>
-        </div>
-      `
-    })
-
-    return {
-      success: true,
-      businessEmailId: businessResult?.id,
-      customerEmailId: customerResult?.id
-    }
-  } catch (err: any) {
-    console.error('Failed to send Resend emails:', err)
-    throw createError({
+  if (!businessResult.success && !businessResult.simulated) {
+    const errorFn = typeof createError !== 'undefined' ? createError : (err: any) => Object.assign(new Error(err.statusMessage), err)
+    throw errorFn({
       statusCode: 500,
-      statusMessage: `Failed to dispatch quote email: ${err.message}`
+      statusMessage: `Failed to dispatch quote email: ${businessResult.error}`
     })
   }
-})
+
+  return {
+    success: true,
+    simulated: businessResult.simulated || false,
+    message: businessResult.simulated
+      ? 'Quote enquiry logged successfully (Simulated mode: Add RESEND_API_KEY env variable for live delivery).'
+      : 'Quote enquiry dispatched successfully via Resend.',
+    businessEmailId: businessResult.id,
+    customerEmailId: customerResult.id,
+    sanityLeadId
+  }
+}
+
+export default typeof defineEventHandler !== 'undefined' ? defineEventHandler(handler) : handler
