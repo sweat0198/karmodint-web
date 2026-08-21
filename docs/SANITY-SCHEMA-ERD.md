@@ -8,7 +8,8 @@ This document outlines the content architecture, relations, and entity-relations
 erDiagram
     CATEGORY ||--o{ CATEGORY : "parent / children"
     CATEGORY ||--o{ PRODUCT : "categorizes (many-to-many)"
-    PRODUCT ||--|{ SIZE_OPTION : "embedded sizes (min 1)"
+    PRODUCT ||--|{ SIZE_OPTION : "embedded sizes (min 1, exactly 1 default)"
+    SIZE_OPTION ||--|{ SIZE_IMAGE : "own renders (min 1, exactly 1 plan view)"
     PRODUCT ||--o{ CUSTOMIZATION_GROUP : "references groups"
     CUSTOMIZATION_GROUP ||--|{ CUSTOMIZATION_ITEM : "contains items"
     PRODUCT ||--o{ SPEC_ITEM : "specifications"
@@ -31,7 +32,7 @@ erDiagram
         string shortDescription
         array description_portableText
         array categories
-        array images
+        array lifestyleImages
         array sizes
         array customizationGroups
         array specifications
@@ -63,9 +64,18 @@ erDiagram
         number widthM
         number lengthM
         number heightM
+        number weightKg
+        boolean isPoa
         number price
         boolean isDefault
-        image floorPlanImage
+        array images
+    }
+
+    SIZE_IMAGE {
+        string view
+        string alt
+        string caption
+        image asset
     }
 
     SPEC_ITEM {
@@ -136,7 +146,18 @@ erDiagram
 - `requiresTextInput`: Flag for user notes (e.g., custom electrical requirements).
 
 ### 5. `sizeOption` (Object)
-- Metric dimensions (`widthM`, `lengthM`, `heightM`), explicit price (£), default selection flag, and optional floor plan / 2D diagram.
+- Metric dimensions (`widthM`, `lengthM`, `heightM`) and `weightKg`.
+- `isPoa`: when true the size has no published price — `price` is hidden in the Studio and the UI shows "POA" rather than a figure.
+- `weightKg`: `0` is the agreed sentinel for **weight not yet supplied**. It does not mean weightless, and must not be rendered as "0 kg".
+- `isDefault`: exactly one size per product must be the default. Card thumbnails resolve through it.
+- `images[]`: the renders for **this size only** (min 1). Every render depicts one particular size, so a product-level gallery no longer exists — an editor cannot attach an image except to a size.
+  - Each render carries a `view` from a closed vocabulary: `front`, `left-diagonal`, `right-diagonal`, `right`, `back`, `interior`, `door`, `top`.
+  - Exactly one render per size must be the `top` (plan) view — this replaces the old `floorPlanImage` field, so no second field can disagree about which image is the plan.
+  - Each render's array `_key` is its view name; Sanity enforces `_key` uniqueness, making duplicate views structurally impossible.
+  - Vocabulary and validators live in `sanity/schemas/objects/productImageViews.ts`.
+
+### 5a. `product.lifestyleImages` (Object array)
+- Optional, size-agnostic photography only — installed units in context. Named so it cannot quietly become a size gallery again.
 
 ### 6. `quoteEnquiry` (Document - Lead CRM)
 - Stored directly in Sanity when visitors submit the quote form.

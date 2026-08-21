@@ -1,5 +1,24 @@
 import { defineType, defineField, defineArrayMember } from 'sanity'
 
+/**
+ * A product must nominate exactly one size as the pre-selected default.
+ *
+ * Card thumbnails read the default size's first render, so zero defaults leaves a product with no
+ * image to show and two makes the choice arbitrary.
+ *
+ * Returns `true` for absent or empty sizes — that is the `required().min(1)` rule's job to report.
+ */
+export function validateExactlyOneDefaultSize(
+  sizes: Array<{ isDefault?: boolean }> | undefined
+): true | string {
+  if (!sizes || sizes.length === 0) return true
+
+  const defaultCount = sizes.filter((size) => size?.isDefault === true).length
+  if (defaultCount === 1) return true
+
+  return `Exactly one size must be marked as the default selection (found ${defaultCount})`
+}
+
 export const productType = defineType({
   name: 'product',
   title: 'Product',
@@ -46,9 +65,12 @@ export const productType = defineType({
       validation: (Rule) => Rule.required().min(1)
     }),
     defineField({
-      name: 'images',
-      title: 'Product Images (3-4 recommended)',
+      name: 'lifestyleImages',
+      title: 'Lifestyle Photography (optional)',
       type: 'array',
+      description:
+        'Genuinely size-agnostic photography only — installed units in context, people using them. '
+        + 'Anything depicting one particular unit belongs on that size, not here.',
       of: [
         defineArrayMember({
           type: 'image',
@@ -68,16 +90,20 @@ export const productType = defineType({
             }
           ]
         })
-      ],
-      validation: (Rule) => Rule.required().min(1)
+      ]
     }),
     defineField({
       name: 'sizes',
       title: 'Size Options (Mandatory)',
       type: 'array',
       of: [defineArrayMember({ type: 'sizeOption' })],
-      description: 'At least one size option must be defined with dimensions and base price.',
-      validation: (Rule) => Rule.required().min(1)
+      description: 'At least one size option must be defined, with its own renders and dimensions.',
+      validation: (Rule) =>
+        Rule.required()
+          .min(1)
+          .custom((sizes: Array<{ isDefault?: boolean }> | undefined) =>
+            validateExactlyOneDefaultSize(sizes)
+          )
     }),
     defineField({
       name: 'customizationGroups',
@@ -146,16 +172,29 @@ export const productType = defineType({
       title: 'name',
       status: 'status',
       isFeatured: 'isFeatured',
-      sizes: 'sizes',
-      media: 'images.0'
+      sizes: 'sizes'
     },
-    prepare({ title, status, isFeatured, sizes, media }) {
-      const prices = (sizes || [])
+    prepare({ title, status, isFeatured, sizes }) {
+      const sizeList: any[] = sizes || []
+
+      // Thumbnail comes from the default size's leading render — the reason exactly one size
+      // must be flagged default.
+      const defaultSize = sizeList.find((s: any) => s?.isDefault === true) ?? sizeList[0]
+      const media = defaultSize?.images?.[0]
+
+      // POA sizes carry a placeholder price of 0; counting them would render "From £0".
+      const prices = sizeList
+        .filter((s: any) => s?.isPoa !== true)
         .map((s: any) => s?.price)
         .filter((p: any) => typeof p === 'number')
 
       const lowestPrice = prices.length > 0 ? Math.min(...prices) : null
-      const priceText = lowestPrice !== null ? `From £${lowestPrice.toLocaleString()}` : 'Price not set'
+      let priceText = 'Price not set'
+      if (lowestPrice !== null) {
+        priceText = `From £${lowestPrice.toLocaleString()}`
+      } else if (sizeList.length > 0) {
+        priceText = 'POA'
+      }
       const badges = [
         isFeatured ? '★ Featured' : null,
         status !== 'published' ? `[${status?.toUpperCase()}]` : null
@@ -163,7 +202,7 @@ export const productType = defineType({
 
       return {
         title: badges ? `${title} ${badges}` : title || 'Unnamed Product',
-        subtitle: `${priceText} • ${sizes?.length || 0} size(s)`,
+        subtitle: `${priceText} • ${sizeList.length} size(s)`,
         media
       }
     }

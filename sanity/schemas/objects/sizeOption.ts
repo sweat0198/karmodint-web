@@ -1,4 +1,5 @@
-import { defineType, defineField } from 'sanity'
+import { defineType, defineField, defineArrayMember } from 'sanity'
+import { viewOptionList, validateExactlyOneTopView } from './productImageViews'
 
 export const sizeOption = defineType({
   name: 'sizeOption',
@@ -30,36 +31,100 @@ export const sizeOption = defineType({
       name: 'heightM',
       title: 'Height (meters)',
       type: 'number',
-      description: 'External height in meters (e.g. 2.6)',
+      description: 'External height in meters (e.g. 2.6). Leave empty when not published.',
       validation: (Rule) => Rule.positive()
+    }),
+    defineField({
+      name: 'weightKg',
+      title: 'Weight (kg)',
+      type: 'number',
+      description: 'Unit weight in kg. Use 0 to record "not yet supplied" — it does not mean weightless.',
+      // min(0) rather than positive(), so the 0 sentinel validates.
+      validation: (Rule) => Rule.min(0)
+    }),
+    defineField({
+      name: 'isPoa',
+      title: 'Price on Application',
+      type: 'boolean',
+      description: 'No published price for this size — the quote builder shows POA instead of a figure.',
+      initialValue: false
     }),
     defineField({
       name: 'price',
       title: 'Base Price (£)',
       type: 'number',
       description: 'Base indicative price for this specific size option',
-      validation: (Rule) => Rule.required().min(0)
+      hidden: ({ parent }) => parent?.isPoa === true,
+      validation: (Rule) =>
+        Rule.custom((value, context: any) => {
+          const isPoa = context.parent?.isPoa === true
+          if (!isPoa && (value === undefined || value === null)) {
+            return 'Price is required unless this size is marked Price on Application'
+          }
+          // Checked even when POA: the field is only hidden, so a stale negative can survive the
+          // toggle being flipped on.
+          if (value !== undefined && value !== null && value < 0) {
+            return 'Price cannot be negative'
+          }
+          return true
+        })
     }),
     defineField({
       name: 'isDefault',
       title: 'Default Selection',
       type: 'boolean',
-      description: 'Pre-select this size on the product page',
+      description: 'Pre-select this size on the product page. Exactly one size per product must be the default.',
       initialValue: false
     }),
     defineField({
-      name: 'floorPlanImage',
-      title: 'Floor Plan / Technical Drawing',
-      type: 'image',
-      options: { hotspot: true },
-      fields: [
-        {
-          name: 'alt',
-          type: 'string',
-          title: 'Alt Text',
-          initialValue: 'Floor plan diagram'
-        }
-      ]
+      name: 'images',
+      title: 'Renders for this Size',
+      type: 'array',
+      description:
+        'Every render depicts one particular size, so images belong to the size rather than the product. '
+        + 'Ordered by the view vocabulary — the front elevation leads and is used as the thumbnail.',
+      of: [
+        defineArrayMember({
+          type: 'image',
+          options: { hotspot: true },
+          fields: [
+            {
+              name: 'view',
+              type: 'string',
+              title: 'View',
+              description: 'Which elevation this render shows. Drives the generated alt text.',
+              options: { list: viewOptionList() },
+              validation: (Rule) => Rule.required()
+            },
+            {
+              name: 'alt',
+              type: 'string',
+              title: 'Alt Text',
+              description: 'Important for SEO and accessibility.',
+              validation: (Rule) => Rule.required()
+            },
+            {
+              name: 'caption',
+              type: 'string',
+              title: 'Caption'
+            }
+          ],
+          preview: {
+            select: { view: 'view', alt: 'alt', media: 'asset' },
+            prepare({ view, alt, media }) {
+              const label = viewOptionList().find((v) => v.value === view)?.title
+              return { title: label || 'No view set', subtitle: alt, media }
+            }
+          }
+        })
+      ],
+      // The import writes each image's _key as its view name. Sanity enforces _key uniqueness
+      // within an array, which makes duplicate views structurally impossible — a second guarantee
+      // alongside the exactly-one-plan rule below, for free.
+      validation: (Rule) =>
+        Rule.required()
+          .min(1)
+          .custom((images: Array<{ view?: string }> | undefined) => validateExactlyOneTopView(images))
     })
   ],
   preview: {
@@ -68,15 +133,17 @@ export const sizeOption = defineType({
       lengthM: 'lengthM',
       widthM: 'widthM',
       price: 'price',
+      isPoa: 'isPoa',
       isDefault: 'isDefault',
-      media: 'floorPlanImage'
+      media: 'images.0'
     },
-    prepare({ title, lengthM, widthM, price, isDefault, media }) {
+    prepare({ title, lengthM, widthM, price, isPoa, isDefault, media }) {
       const dimStr = lengthM && widthM ? `(${lengthM}m × ${widthM}m)` : ''
       const defaultBadge = isDefault ? ' [DEFAULT]' : ''
+      const priceLabel = isPoa ? 'POA' : `£${price?.toLocaleString() ?? 0}`
       return {
         title: `${title || 'Unnamed Size'}${defaultBadge}`,
-        subtitle: `£${price?.toLocaleString() || 0} ${dimStr}`,
+        subtitle: `${priceLabel} ${dimStr}`,
         media
       }
     }

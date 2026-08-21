@@ -51,11 +51,55 @@ describe('Sanity Types & Conversion Helpers Contract Verification', () => {
       lengthM: 4.0,
       widthM: 2.4,
       heightM: 2.5,
+      weightKg: 550,
+      isPoa: false,
       price: 3200,
-      isDefault: true
+      isDefault: true,
+      images: [
+        {
+          _key: 'front',
+          _type: 'image',
+          view: 'front',
+          alt: 'Cabin 2.40m x 4.00m, front view',
+          asset: { _ref: 'image-abc-png', _type: 'reference' }
+        },
+        {
+          _key: 'top',
+          _type: 'image',
+          view: 'top',
+          alt: 'Cabin 2.40m x 4.00m, plan view from above',
+          asset: { _ref: 'image-def-png', _type: 'reference' }
+        }
+      ]
     }
 
     expect(size.lengthM).toBe(4.0)
     expect(size.isDefault).toBe(true)
+    expect(size.images.map((i) => i.view)).toEqual(['front', 'top'])
+  })
+
+  it('models a POA size whose weight is the unsupplied sentinel', () => {
+    const size: SanitySizeOption = {
+      _key: 'sz_poa',
+      label: '2.70m x 2.70m',
+      lengthM: 2.7,
+      widthM: 2.7,
+      weightKg: 0,
+      isPoa: true,
+      price: 0,
+      images: [
+        {
+          _key: 'top',
+          _type: 'image',
+          view: 'top',
+          alt: 'Cabin 2.70m x 2.70m, plan view from above',
+          asset: { _ref: 'image-ghi-png', _type: 'reference' }
+        }
+      ]
+    }
+
+    expect(size.isPoa).toBe(true)
+    expect(size.weightKg).toBe(0)
+    expect(size.heightM).toBeUndefined()
   })
 })

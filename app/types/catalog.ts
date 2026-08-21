@@ -26,15 +26,46 @@ export interface SanitySEO {
   noIndex?: boolean
 }
 
+/**
+ * Which elevation a render depicts. Mirrors the closed vocabulary in
+ * `sanity/schemas/objects/productImageViews.ts` — type only, so nothing in the app bundles the
+ * Studio schema at runtime.
+ */
+export type ProductImageView =
+  | 'front'
+  | 'left-diagonal'
+  | 'right-diagonal'
+  | 'right'
+  | 'back'
+  | 'interior'
+  | 'door'
+  | 'top'
+
+/**
+ * A render belonging to one size option.
+ *
+ * `_key` is the view name. Sanity enforces `_key` uniqueness within an array, so this makes a
+ * duplicate view structurally impossible rather than merely invalid.
+ */
+export interface SanitySizeImage extends SanityImage {
+  _key?: ProductImageView
+  view: ProductImageView
+  alt: string
+}
+
 export interface SanitySizeOption {
   _key?: string
   label: string
   lengthM: number
   widthM: number
   heightM?: number
+  /** Unit weight in kg. `0` means "not yet supplied", NOT weightless — do not render it as "0 kg". */
+  weightKg?: number
+  /** When true, `price` is a placeholder and the UI must show POA instead of a figure. */
+  isPoa?: boolean
   price: number
   isDefault?: boolean
-  floorPlanImage?: SanityImage
+  images: SanitySizeImage[]
 }
 
 export type PricingType = 'fixed' | 'included' | 'poa'
@@ -95,7 +126,8 @@ export interface SanityProduct {
   shortDescription?: string
   description?: any[] // Portable Text blocks
   categories: SanityCategory[]
-  images: SanityImage[]
+  /** Size-agnostic photography only. Per-size renders live on the size option. */
+  lifestyleImages?: SanityImage[]
   sizes: SanitySizeOption[]
   customizationGroups?: SanityCustomizationGroup[]
   specifications?: SanitySpecItem[]

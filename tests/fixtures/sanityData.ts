@@ -1,3 +1,14 @@
+/** Builds a size render the way the catalogue import does: `_key` is the view name. */
+function mockSizeImage(view: string, assetId: string, alt: string) {
+  return {
+    _key: view,
+    _type: 'image',
+    view,
+    alt,
+    asset: { _type: 'reference', _ref: assetId }
+  }
+}
+
 export const mockCategories = [
   {
     _id: 'cat_cabins',
@@ -5,8 +16,7 @@ export const mockCategories = [
     name: 'Portable Cabins',
     slug: { _type: 'slug', current: 'portable-cabins' },
     description: 'Versatile modular cabins for office, security, and accommodation.',
-    displayOrder: 1,
-    isActive: true
+    displayOrder: 1
   },
   {
     _id: 'cat_kiosks',
@@ -14,8 +24,7 @@ export const mockCategories = [
     name: 'Retail & Catering Kiosks',
     slug: { _type: 'slug', current: 'kiosks' },
     description: 'Commercial sales kiosks, ticket booths, and food concession units.',
-    displayOrder: 2,
-    isActive: true
+    displayOrder: 2
   }
 ]
 
@@ -95,17 +104,31 @@ export const mockProducts = [
         lengthM: 1.5,
         widthM: 1.5,
         heightM: 2.4,
+        weightKg: 280,
+        isPoa: false,
         price: 2450,
-        isDefault: true
+        isDefault: true,
+        images: [
+          mockSizeImage('front', 'image-gatehouse150-front-png', '1.50m x 1.50m Security Gatehouse Cabin, 1.50m x 1.50m (Compact), front view'),
+          mockSizeImage('interior', 'image-gatehouse150-interior-png', '1.50m x 1.50m Security Gatehouse Cabin, 1.50m x 1.50m (Compact), interior view'),
+          mockSizeImage('top', 'image-gatehouse150-top-png', '1.50m x 1.50m Security Gatehouse Cabin, 1.50m x 1.50m (Compact), plan view from above')
+        ]
       },
       {
+        // POA size: price is a placeholder, so the catalog card query must exclude it from math::min.
         _key: 'size_2',
         label: '1.50m x 2.15m (Extended)',
         lengthM: 2.15,
         widthM: 1.5,
         heightM: 2.4,
-        price: 3100,
-        isDefault: false
+        weightKg: 0,
+        isPoa: true,
+        price: 0,
+        isDefault: false,
+        images: [
+          mockSizeImage('front', 'image-gatehouse215-front-png', '1.50m x 1.50m Security Gatehouse Cabin, 1.50m x 2.15m (Extended), front view'),
+          mockSizeImage('top', 'image-gatehouse215-top-png', '1.50m x 1.50m Security Gatehouse Cabin, 1.50m x 2.15m (Extended), plan view from above')
+        ]
       }
     ],
     customizationGroups: [
@@ -138,8 +161,15 @@ export const mockProducts = [
         lengthM: 3.0,
         widthM: 2.0,
         heightM: 2.5,
+        weightKg: 0,
+        isPoa: false,
         price: 5800,
-        isDefault: true
+        isDefault: true,
+        images: [
+          mockSizeImage('front', 'image-retail300-front-png', 'Retail Concession Food Kiosk 3.00m x 2.00m, 3.00m x 2.00m Standard Hatch, front view'),
+          mockSizeImage('door', 'image-retail300-door-png', 'Retail Concession Food Kiosk 3.00m x 2.00m, 3.00m x 2.00m Standard Hatch, door detail'),
+          mockSizeImage('top', 'image-retail300-top-png', 'Retail Concession Food Kiosk 3.00m x 2.00m, 3.00m x 2.00m Standard Hatch, plan view from above')
+        ]
       }
     ],
     customizationGroups: [

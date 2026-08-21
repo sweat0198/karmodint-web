@@ -5,6 +5,7 @@ import { categoryType } from '../../sanity/schemas/category'
 import { customizationGroupType } from '../../sanity/schemas/customizationGroup'
 import { quoteEnquiryType } from '../../sanity/schemas/quoteEnquiry'
 import { customizationItem } from '../../sanity/schemas/objects/customizationItem'
+import { sizeOption } from '../../sanity/schemas/objects/sizeOption'
 
 describe('Sanity Schemas Structure & Validation Rules', () => {
   it('registers all required document and object types in schema index', () => {
@@ -28,7 +29,7 @@ describe('Sanity Schemas Structure & Validation Rules', () => {
       expect(fieldNames).toContain('shortDescription')
       expect(fieldNames).toContain('description')
       expect(fieldNames).toContain('categories')
-      expect(fieldNames).toContain('images')
+      expect(fieldNames).toContain('lifestyleImages')
       expect(fieldNames).toContain('sizes')
       expect(fieldNames).toContain('customizationGroups')
       expect(fieldNames).toContain('specifications')
@@ -57,6 +58,53 @@ describe('Sanity Schemas Structure & Validation Rules', () => {
       expect(sizesField).toBeDefined()
       expect(sizesField.type).toBe('array')
       expect(sizesField.of[0].type).toBe('sizeOption')
+    })
+
+    it('has no product-level image gallery — renders belong to a size', () => {
+      const fieldNames = productType.fields.map((f: any) => f.name)
+      expect(fieldNames).not.toContain('images')
+    })
+
+    it('leaves lifestyle photography optional and un-required', () => {
+      const lifestyleField: any = productType.fields.find((f: any) => f.name === 'lifestyleImages')
+      expect(lifestyleField.type).toBe('array')
+      expect(lifestyleField.validation).toBeUndefined()
+    })
+  })
+
+  describe('Size Option Schema', () => {
+    it('defines POA, weight, and a size-owned render gallery', () => {
+      const fieldNames = sizeOption.fields.map((f: any) => f.name)
+      expect(fieldNames).toContain('isPoa')
+      expect(fieldNames).toContain('weightKg')
+      expect(fieldNames).toContain('images')
+    })
+
+    it('drops the separate floor plan field in favour of the "top" view', () => {
+      const fieldNames = sizeOption.fields.map((f: any) => f.name)
+      expect(fieldNames).not.toContain('floorPlanImage')
+    })
+
+    it('hides price in the Studio when the size is POA', () => {
+      const priceField: any = sizeOption.fields.find((f: any) => f.name === 'price')
+      expect(priceField.hidden({ parent: { isPoa: true } })).toBe(true)
+      expect(priceField.hidden({ parent: { isPoa: false } })).toBe(false)
+    })
+
+    it('constrains each render to the closed view vocabulary', () => {
+      const imagesField: any = sizeOption.fields.find((f: any) => f.name === 'images')
+      const viewField = imagesField.of[0].fields.find((f: any) => f.name === 'view')
+      const values = viewField.options.list.map((o: any) => o.value)
+      expect(values).toEqual([
+        'front',
+        'left-diagonal',
+        'right-diagonal',
+        'right',
+        'back',
+        'interior',
+        'door',
+        'top'
+      ])
     })
   })
 
