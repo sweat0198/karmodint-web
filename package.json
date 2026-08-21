@@ -10,6 +10,10 @@
     "postinstall": "nuxi prepare",
     "generate:favicons": "node scripts/favicon-generator.mjs",
     "generate:email-preview": "jiti scripts/generate-email-preview.mjs",
+    "catalogue:scrape": "jiti scripts/catalogue/scrape-sources.ts",
+    "catalogue:assets": "jiti scripts/catalogue/upload-assets.ts",
+    "catalogue:import": "jiti scripts/catalogue/import-catalogue.ts",
+    "typecheck:catalogue": "tsc -p tsconfig.catalogue.json",
     "test": "vitest run",
     "test:watch": "vitest"
   },
@@ -28,11 +32,18 @@
     "@iconify-json/heroicons": "^1.2.2",
     "@iconify-json/tabler": "^1.2.38",
     "@nuxt/test-utils": "^4.1.0",
+    "@portabletext/block-tools": "^5.2.0",
+    "@portabletext/schema": "^2.2.4",
+    "@types/jsdom": "^30.0.0",
     "@types/node": "^26.1.2",
     "@vue/test-utils": "^2.4.11",
     "groq-js": "^2.0.0",
     "happy-dom": "^20.11.2",
+    "jiti": "^2.7.0",
+    "jsdom": "^30.0.1",
+    "marked": "^18.0.10",
     "sharp": "^0.35.3",
+    "typescript": "^7.0.2",
     "vitest": "^4.1.10"
   }
 }

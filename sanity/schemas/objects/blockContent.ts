@@ -1,4 +1,10 @@
 import { defineType, defineArrayMember } from 'sanity'
+import {
+  BLOCK_CONTENT_DECORATORS,
+  BLOCK_CONTENT_LINK_ANNOTATION,
+  BLOCK_CONTENT_LISTS,
+  BLOCK_CONTENT_STYLES
+} from './blockContentSpec'
 
 export const blockContent = defineType({
   title: 'Block Content',
@@ -8,32 +14,21 @@ export const blockContent = defineType({
     defineArrayMember({
       title: 'Block',
       type: 'block',
-      styles: [
-        { title: 'Normal', value: 'normal' },
-        { title: 'H2', value: 'h2' },
-        { title: 'H3', value: 'h3' },
-        { title: 'H4', value: 'h4' },
-        { title: 'Quote', value: 'blockquote' }
-      ],
-      lists: [
-        { title: 'Bullet', value: 'bullet' },
-        { title: 'Numbered', value: 'number' }
-      ],
+      // Styles, lists and decorators come from the shared whitelist so the catalogue import's
+      // markdown conversion is held to exactly what an editor can type here.
+      styles: BLOCK_CONTENT_STYLES,
+      lists: BLOCK_CONTENT_LISTS,
       marks: {
-        decorators: [
-          { title: 'Strong', value: 'strong' },
-          { title: 'Emphasis', value: 'em' },
-          { title: 'Code', value: 'code' }
-        ],
+        decorators: BLOCK_CONTENT_DECORATORS,
         annotations: [
           {
-            title: 'URL',
-            name: 'link',
+            title: BLOCK_CONTENT_LINK_ANNOTATION.title,
+            name: BLOCK_CONTENT_LINK_ANNOTATION.name,
             type: 'object',
             fields: [
               {
                 title: 'URL',
-                name: 'href',
+                name: BLOCK_CONTENT_LINK_ANNOTATION.hrefField,
                 type: 'url',
                 validation: (Rule) =>
                   Rule.uri({

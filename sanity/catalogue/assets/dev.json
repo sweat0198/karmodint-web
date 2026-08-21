@@ -1,0 +1,28 @@
+{
+  "dataset": "dev",
+  "assets": {
+    "public/images/products/cabin-grp-150x150/front.png": "image-6ef4a83884cd97eb7c39e91be2a9126482c078dc-442x683-png",
+    "public/images/products/cabin-grp-150x150/interior.png": "image-801fb25ad25d1e2c42f6e5dc635115a7441725f3-434x673-png",
+    "public/images/products/cabin-grp-150x150/left-diagonal.png": "image-60551ea0b1fd012baf9547edf292afd3a0b36e4c-463x684-png",
+    "public/images/products/cabin-grp-150x150/top.png": "image-a2bb5dbc283a0c384e63765aa9103360a48223cb-673x676-png",
+    "public/images/products/cabin-grp-150x215/front.png": "image-5db98f788db2bcdb8f0411c5848414b1821425b7-608x670-png",
+    "public/images/products/cabin-grp-150x215/interior.png": "image-1be8534de190ea37837a08f252c730234b1eca29-607x668-png",
+    "public/images/products/cabin-grp-150x215/left-diagonal.png": "image-02eca27259d2df8d395d431cd7d615552f2c7d95-532x683-png",
+    "public/images/products/cabin-grp-150x215/top.png": "image-a6ec9c3021e4f4523d90a3b996f9dc42f3919376-950x676-png",
+    "public/images/products/cabin-grp-150x270/front.png": "image-250769d30ffe0178e12ec15cf224437ce3ebe342-759x672-png",
+    "public/images/products/cabin-grp-150x270/interior.png": "image-27823a4fe0ba0df2070da71100cbbbdfa01212aa-753x667-png",
+    "public/images/products/cabin-grp-150x270/left-diagonal.png": "image-83692e76094a2c13e53f9e3db8523d68e448b0f3-612x680-png",
+    "public/images/products/cabin-grp-150x270/top.png": "image-b2a696be49dea4170e8af8d02417705ef9c7aa58-1029x588-png",
+    "public/images/products/cabin-grp-215x270/back.png": "image-ff1364c8be16793daac0ba0e29bf885b26eb39c9-612x676-png",
+    "public/images/products/cabin-grp-215x270/door.png": "image-76f65d23108919023865e8fc8f1fce960970edc0-604x672-png",
+    "public/images/products/cabin-grp-215x270/front.png": "image-5c18126796ccdf716ec57b6aed4c04f5c0c16611-752x679-png",
+    "public/images/products/cabin-grp-215x270/interior.png": "image-d75f66e47a6d97bd8d65f148c97da9ed833fbb39-744x670-png",
+    "public/images/products/cabin-grp-215x270/left-diagonal.png": "image-edfa57e1aa2593a698310772512d7a75c31274bb-659x682-png",
+    "public/images/products/cabin-grp-215x270/right.png": "image-b66df53ae85fc163f2186720bdecbbc5e203d05c-822x664-png",
+    "public/images/products/cabin-grp-215x270/top.png": "image-82e71c22d9e0348fe44748c9f969fe62d405aa71-823x664-png",
+    "public/images/products/cabin-grp-270x270/front.png": "image-86b5a19703075249b29723a1f5bafa24a0c3ddad-732x677-png",
+    "public/images/products/cabin-grp-270x270/interior.png": "image-3a13ff373612db51cd7dfa39d5d885ee801c3aff-729x671-png",
+    "public/images/products/cabin-grp-270x270/left-diagonal.png": "image-98634bef663dd22dae90c0ae5166809e5d1011fd-794x671-png",
+    "public/images/products/cabin-grp-270x270/top.png": "image-a65ecc319006365b7e4a4579342f97566d3ddce1-652x672-png"
+  }
+}

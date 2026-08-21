@@ -1,0 +1,78 @@
+{
+  "renderRoot": "public/images/products",
+  "products": [
+    {
+      "id": "product-grp-cabin",
+      "name": "GRP Cabin",
+      "slug": "grp-cabin",
+      "copyFile": "grp-cabin.md",
+      "categories": ["category-cabin", "category-cabin-grp"],
+      "sizes": [
+        {
+          "key": "150x150",
+          "lengthM": 1.5,
+          "widthM": 1.5,
+          "heightM": 2.4,
+          "weightKg": 280,
+          "isPoa": true,
+          "price": 0,
+          "isDefault": false,
+          "sourceUrl": "https://karmodkabin.com/en/product/polyester-cabin-150x150/",
+          "renderFolder": "cabin-grp-150x150",
+          "views": ["front", "left-diagonal", "interior", "top"]
+        },
+        {
+          "key": "150x215",
+          "lengthM": 1.5,
+          "widthM": 2.15,
+          "heightM": 2.4,
+          "weightKg": 350,
+          "isPoa": true,
+          "price": 0,
+          "isDefault": false,
+          "sourceUrl": "https://karmodkabin.com/en/product/polyester-cabin-150x215/",
+          "renderFolder": "cabin-grp-150x215",
+          "views": ["front", "left-diagonal", "interior", "top"]
+        },
+        {
+          "key": "150x270",
+          "lengthM": 1.5,
+          "widthM": 2.7,
+          "heightM": 2.4,
+          "weightKg": 450,
+          "isPoa": true,
+          "price": 0,
+          "isDefault": false,
+          "sourceUrl": "https://karmodkabin.com/en/product/polyester-cabin-150x270/",
+          "renderFolder": "cabin-grp-150x270",
+          "views": ["front", "left-diagonal", "interior", "top"]
+        },
+        {
+          "key": "215x270",
+          "lengthM": 2.15,
+          "widthM": 2.7,
+          "heightM": 2.4,
+          "weightKg": 550,
+          "isPoa": true,
+          "price": 0,
+          "isDefault": true,
+          "sourceUrl": "https://karmodkabin.com/en/product/polyester-cabin-215x270/",
+          "renderFolder": "cabin-grp-215x270",
+          "views": ["front", "left-diagonal", "right", "back", "interior", "door", "top"]
+        },
+        {
+          "key": "270x270",
+          "lengthM": 2.7,
+          "widthM": 2.7,
+          "weightKg": 0,
+          "isPoa": true,
+          "price": 0,
+          "isDefault": false,
+          "sourceUrl": "https://karmodkabin.com/en/product/wide-cabin-270x270/",
+          "renderFolder": "cabin-grp-270x270",
+          "views": ["front", "left-diagonal", "interior", "top"]
+        }
+      ]
+    }
+  ]
+}

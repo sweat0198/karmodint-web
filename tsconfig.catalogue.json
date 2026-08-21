@@ -1,0 +1,20 @@
+{
+  "//": "Typechecks the catalogue import pipeline. The root tsconfig extends Nuxt's, which includes only app/ — scripts/ and tests/ sit outside it, so this config is what holds the pipeline to strict types.",
+  "compilerOptions": {
+    "strict": true,
+    "noEmit": true,
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "skipLibCheck": true,
+    "types": ["node"],
+    "resolveJsonModule": true,
+    "esModuleInterop": true
+  },
+  "include": [
+    "scripts/catalogue/**/*.ts",
+    "tests/catalogue/**/*.ts",
+    "sanity/schemas/objects/blockContentSpec.ts",
+    "sanity/schemas/objects/productImageViews.ts"
+  ]
+}

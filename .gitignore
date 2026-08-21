@@ -33,6 +33,11 @@ graphify-out/
 .sanity/
 sanity/.sanity/
 
+# Catalogue import: raw source HTML, re-fetchable with `pnpm catalogue:scrape --refresh`.
+# The committed extract in sanity/catalogue/ is the reviewable artefact, not this.
+.cache/karmod-source/
+
 # Agent tools & scratch
 .agents/seo-tools/
+.scratch/
 
