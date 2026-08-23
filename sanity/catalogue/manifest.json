@@ -6,7 +6,10 @@
       "name": "GRP Cabin",
       "slug": "grp-cabin",
       "copyFile": "grp-cabin.md",
-      "categories": ["category-cabin", "category-cabin-grp"],
+      "categories": [
+        "category-cabin",
+        "category-cabin-grp"
+      ],
       "sizes": [
         {
           "key": "150x150",
@@ -19,7 +22,12 @@
           "isDefault": false,
           "sourceUrl": "https://karmodkabin.com/en/product/polyester-cabin-150x150/",
           "renderFolder": "cabin-grp-150x150",
-          "views": ["front", "left-diagonal", "interior", "top"]
+          "views": [
+            "front",
+            "left-diagonal",
+            "interior",
+            "top"
+          ]
         },
         {
           "key": "150x215",
@@ -32,7 +40,12 @@
           "isDefault": false,
           "sourceUrl": "https://karmodkabin.com/en/product/polyester-cabin-150x215/",
           "renderFolder": "cabin-grp-150x215",
-          "views": ["front", "left-diagonal", "interior", "top"]
+          "views": [
+            "front",
+            "left-diagonal",
+            "interior",
+            "top"
+          ]
         },
         {
           "key": "150x270",
@@ -45,7 +58,12 @@
           "isDefault": false,
           "sourceUrl": "https://karmodkabin.com/en/product/polyester-cabin-150x270/",
           "renderFolder": "cabin-grp-150x270",
-          "views": ["front", "left-diagonal", "interior", "top"]
+          "views": [
+            "front",
+            "left-diagonal",
+            "interior",
+            "top"
+          ]
         },
         {
           "key": "215x270",
@@ -58,7 +76,15 @@
           "isDefault": true,
           "sourceUrl": "https://karmodkabin.com/en/product/polyester-cabin-215x270/",
           "renderFolder": "cabin-grp-215x270",
-          "views": ["front", "left-diagonal", "right", "back", "interior", "door", "top"]
+          "views": [
+            "front",
+            "left-diagonal",
+            "right",
+            "back",
+            "interior",
+            "door",
+            "top"
+          ]
         },
         {
           "key": "270x270",
@@ -70,7 +96,455 @@
           "isDefault": false,
           "sourceUrl": "https://karmodkabin.com/en/product/wide-cabin-270x270/",
           "renderFolder": "cabin-grp-270x270",
-          "views": ["front", "left-diagonal", "interior", "top"]
+          "views": [
+            "front",
+            "left-diagonal",
+            "interior",
+            "top"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "product-insulated-panel-cabin",
+      "name": "Insulated Panel Cabin",
+      "slug": "insulated-panel-cabin",
+      "copyFile": "insulated-panel-cabin.md",
+      "categories": [
+        "category-cabin",
+        "category-cabin-panel"
+      ],
+      "sizes": [
+        {
+          "key": "110x110",
+          "lengthM": 1.1,
+          "widthM": 1.1,
+          "weightKg": 0,
+          "isPoa": true,
+          "price": 0,
+          "isDefault": false,
+          "sourceUrl": "https://karmodkabin.com/en/product/panel-cabin-110x110/",
+          "renderFolder": "cabin-panel-110x110",
+          "views": [
+            "front",
+            "left-diagonal",
+            "interior",
+            "top"
+          ]
+        },
+        {
+          "key": "135x135",
+          "lengthM": 1.35,
+          "widthM": 1.35,
+          "weightKg": 0,
+          "isPoa": true,
+          "price": 0,
+          "isDefault": false,
+          "sourceUrl": "https://karmodkabin.com/en/product/panel-cabin-135x135/",
+          "renderFolder": "cabin-panel-135x135",
+          "views": [
+            "front",
+            "left-diagonal",
+            "interior",
+            "top"
+          ]
+        },
+        {
+          "key": "135x210",
+          "lengthM": 1.35,
+          "widthM": 2.1,
+          "weightKg": 0,
+          "isPoa": true,
+          "price": 0,
+          "isDefault": true,
+          "sourceUrl": "https://karmodkabin.com/en/product/panel-cabin-135x210/",
+          "renderFolder": "cabin-panel-135x210",
+          "views": [
+            "front",
+            "left-diagonal",
+            "right-diagonal",
+            "right",
+            "back",
+            "interior",
+            "top"
+          ]
+        },
+        {
+          "key": "210x210",
+          "lengthM": 2.1,
+          "widthM": 2.1,
+          "weightKg": 0,
+          "isPoa": true,
+          "price": 0,
+          "isDefault": false,
+          "sourceUrl": "https://karmodkabin.com/en/product/panel-cabin-210x210/",
+          "renderFolder": "cabin-panel-210x210",
+          "views": [
+            "front",
+            "left-diagonal",
+            "interior",
+            "top"
+          ]
+        },
+        {
+          "key": "260x260",
+          "lengthM": 2.6,
+          "widthM": 2.6,
+          "weightKg": 0,
+          "isPoa": true,
+          "price": 0,
+          "isDefault": false,
+          "sourceUrl": "https://karmodkabin.com/en/product/panel-cabin-260x260/",
+          "renderFolder": "cabin-panel-260x260",
+          "views": [
+            "front",
+            "left-diagonal",
+            "interior",
+            "top"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "product-metrocity-modular-cabin",
+      "name": "MetroCity Modular Cabin",
+      "slug": "metrocity-modular-cabin",
+      "copyFile": "metrocity-modular-cabin.md",
+      "categories": [
+        "category-cabin",
+        "category-cabin-metro-city"
+      ],
+      "sizes": [
+        {
+          "key": "140x140",
+          "lengthM": 1.4,
+          "widthM": 1.4,
+          "weightKg": 0,
+          "isPoa": true,
+          "price": 0,
+          "isDefault": false,
+          "sourceUrl": "https://karmodkabin.com/en/product/metro-city-cabin-140x140/",
+          "renderFolder": "cabin-metro-city-140x140",
+          "views": [
+            "front",
+            "left-diagonal",
+            "interior",
+            "door",
+            "top"
+          ]
+        },
+        {
+          "key": "140x215",
+          "lengthM": 1.4,
+          "widthM": 2.15,
+          "weightKg": 0,
+          "isPoa": true,
+          "price": 0,
+          "isDefault": true,
+          "sourceUrl": "https://karmodkabin.com/en/product/metro-city-cabin-140x215/",
+          "renderFolder": "cabin-metro-city-140x215",
+          "views": [
+            "front",
+            "left-diagonal",
+            "interior",
+            "door",
+            "top"
+          ]
+        },
+        {
+          "key": "215x215",
+          "lengthM": 2.15,
+          "widthM": 2.15,
+          "weightKg": 0,
+          "isPoa": true,
+          "price": 0,
+          "isDefault": false,
+          "sourceUrl": "https://karmodkabin.com/en/product/metro-city-cabin-215x215/",
+          "renderFolder": "cabin-metro-city-215x215",
+          "views": [
+            "front",
+            "left-diagonal",
+            "interior",
+            "top"
+          ]
+        },
+        {
+          "key": "215x265",
+          "lengthM": 2.15,
+          "widthM": 2.65,
+          "weightKg": 0,
+          "isPoa": true,
+          "price": 0,
+          "isDefault": false,
+          "sourceUrl": "https://karmodkabin.com/en/product/metro-city-cabin-215x265/",
+          "renderFolder": "cabin-metro-city-215x265",
+          "views": [
+            "front",
+            "left-diagonal",
+            "interior",
+            "top"
+          ]
+        },
+        {
+          "key": "265x265",
+          "lengthM": 2.65,
+          "widthM": 2.65,
+          "weightKg": 0,
+          "isPoa": true,
+          "price": 0,
+          "isDefault": false,
+          "sourceUrl": "https://karmodkabin.com/en/product/metro-city-cabin-265x265/",
+          "renderFolder": "cabin-metro-city-265x265",
+          "views": [
+            "front",
+            "left-diagonal",
+            "interior",
+            "top"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "product-kompocity-composite-cabin",
+      "name": "KompoCity Composite Cabin",
+      "slug": "kompocity-composite-cabin",
+      "copyFile": "kompocity-composite-cabin.md",
+      "categories": [
+        "category-cabin",
+        "category-cabin-composite"
+      ],
+      "sizes": [
+        {
+          "key": "140x140",
+          "lengthM": 1.4,
+          "widthM": 1.4,
+          "weightKg": 0,
+          "isPoa": true,
+          "price": 0,
+          "isDefault": false,
+          "sourceUrl": "https://karmodkabin.com/en/product/140x140-kompocity/",
+          "renderFolder": "cabin-composite-140x140",
+          "views": [
+            "front",
+            "left-diagonal",
+            "interior",
+            "top"
+          ]
+        },
+        {
+          "key": "140x215",
+          "lengthM": 1.4,
+          "widthM": 2.15,
+          "weightKg": 0,
+          "isPoa": true,
+          "price": 0,
+          "isDefault": false,
+          "sourceUrl": "https://karmodkabin.com/en/product/140x215-kompocity/",
+          "renderFolder": "cabin-composite-140x215",
+          "views": [
+            "front",
+            "left-diagonal",
+            "interior",
+            "top"
+          ]
+        },
+        {
+          "key": "215x215",
+          "lengthM": 2.15,
+          "widthM": 2.15,
+          "weightKg": 0,
+          "isPoa": true,
+          "price": 0,
+          "isDefault": true,
+          "sourceUrl": "https://karmodkabin.com/en/product/215x215-kompocity/",
+          "renderFolder": "cabin-composite-215x215",
+          "views": [
+            "front",
+            "left-diagonal",
+            "interior",
+            "top"
+          ]
+        },
+        {
+          "key": "215x265",
+          "lengthM": 2.15,
+          "widthM": 2.65,
+          "weightKg": 0,
+          "isPoa": true,
+          "price": 0,
+          "isDefault": false,
+          "sourceUrl": "https://karmodkabin.com/en/product/215x265-kompocity/",
+          "renderFolder": "cabin-composite-215x265",
+          "views": [
+            "front",
+            "left-diagonal",
+            "interior",
+            "top"
+          ]
+        },
+        {
+          "key": "265x265",
+          "lengthM": 2.65,
+          "widthM": 2.65,
+          "weightKg": 0,
+          "isPoa": true,
+          "price": 0,
+          "isDefault": false,
+          "sourceUrl": "https://karmodkabin.com/en/product/265x265-kompocity/",
+          "renderFolder": "cabin-composite-265x265",
+          "views": [
+            "front",
+            "left-diagonal",
+            "interior",
+            "top"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "product-bulletproof-security-cabin",
+      "name": "Bulletproof Security Cabin",
+      "slug": "bulletproof-security-cabin",
+      "copyFile": "bulletproof-security-cabin.md",
+      "categories": [
+        "category-bulletproof"
+      ],
+      "sizes": [
+        {
+          "key": "150x150",
+          "lengthM": 1.5,
+          "widthM": 1.5,
+          "weightKg": 0,
+          "isPoa": true,
+          "price": 0,
+          "isDefault": false,
+          "sourceUrl": "https://karmodkabin.com/en/product/armored-cabin-150x150/",
+          "renderFolder": "bulletproof-150x150",
+          "views": [
+            "front",
+            "left-diagonal",
+            "interior",
+            "top"
+          ]
+        },
+        {
+          "key": "150x200",
+          "lengthM": 1.5,
+          "widthM": 2,
+          "weightKg": 0,
+          "isPoa": true,
+          "price": 0,
+          "isDefault": false,
+          "sourceUrl": "https://karmodkabin.com/en/product/armored-cabin-150x200/",
+          "renderFolder": "bulletproof-150x200",
+          "views": [
+            "front",
+            "left-diagonal",
+            "interior",
+            "top"
+          ]
+        },
+        {
+          "key": "200x200",
+          "lengthM": 2,
+          "widthM": 2,
+          "weightKg": 0,
+          "isPoa": true,
+          "price": 0,
+          "isDefault": false,
+          "sourceUrl": "https://karmodkabin.com/en/product/armored-cabin-200x200/",
+          "renderFolder": "bulletproof-200x200",
+          "views": [
+            "front",
+            "left-diagonal",
+            "interior",
+            "top"
+          ]
+        },
+        {
+          "key": "200x300",
+          "lengthM": 2,
+          "widthM": 3,
+          "weightKg": 0,
+          "isPoa": true,
+          "price": 0,
+          "isDefault": true,
+          "sourceUrl": "https://karmodkabin.com/en/product/armored-cabin-200x300/",
+          "renderFolder": "bulletproof-200x300",
+          "views": [
+            "front",
+            "left-diagonal",
+            "interior",
+            "top"
+          ]
+        },
+        {
+          "key": "200x400",
+          "lengthM": 2,
+          "widthM": 4,
+          "weightKg": 0,
+          "isPoa": true,
+          "price": 0,
+          "isDefault": false,
+          "sourceUrl": "https://karmodkabin.com/en/product/armored-cabin-200x400/",
+          "renderFolder": "bulletproof-200x400",
+          "views": [
+            "front",
+            "left-diagonal",
+            "interior",
+            "top"
+          ]
+        },
+        {
+          "key": "300x300",
+          "lengthM": 3,
+          "widthM": 3,
+          "weightKg": 0,
+          "isPoa": true,
+          "price": 0,
+          "isDefault": false,
+          "sourceUrl": "https://karmodkabin.com/en/product/armored-cabin-300x300/",
+          "renderFolder": "bulletproof-300x300",
+          "views": [
+            "front",
+            "left-diagonal",
+            "interior",
+            "top"
+          ]
+        },
+        {
+          "key": "300x400",
+          "lengthM": 3,
+          "widthM": 4,
+          "weightKg": 0,
+          "isPoa": true,
+          "price": 0,
+          "isDefault": false,
+          "sourceUrl": "https://karmodkabin.com/en/product/armored-cabin-300x400/",
+          "renderFolder": "bulletproof-300x400",
+          "views": [
+            "front",
+            "left-diagonal",
+            "interior",
+            "top"
+          ]
+        },
+        {
+          "key": "300x500",
+          "lengthM": 3,
+          "widthM": 5,
+          "weightKg": 0,
+          "isPoa": true,
+          "price": 0,
+          "isDefault": false,
+          "sourceUrl": "https://karmodkabin.com/en/product/armored-cabin-300x500/",
+          "renderFolder": "bulletproof-300x500",
+          "views": [
+            "front",
+            "left-diagonal",
+            "interior",
+            "top"
+          ]
         }
       ]
     }
