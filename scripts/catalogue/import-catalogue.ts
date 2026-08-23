@@ -10,14 +10,12 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { loadAssetManifest } from './lib/assets'
-import { buildCatalogueSeed, toNdjson } from './lib/buildSeed'
+import { buildCatalogueSeed, SEED_FILE, toNdjson } from './lib/buildSeed'
 import { loadCopyFile } from './lib/copy'
 import { repoPath } from './lib/paths'
 import { loadValidatedManifest, resolveDataset, runScript } from './lib/runScript'
-import { createWriteClient, readSanityTarget } from './lib/sanityEnv'
+import { createSanityClient, readSanityTarget } from './lib/sanityEnv'
 import type { SeedProduct } from './lib/buildSeed'
-
-const SEED_FILE = 'sanity/seeds/products.ndjson'
 
 function countImages(documents: SeedProduct[]): number {
   return documents.reduce(
@@ -49,7 +47,7 @@ async function main(): Promise<void> {
   }
 
   // One transaction, so a failure part-way leaves the dataset as it was rather than half-imported.
-  const client = createWriteClient(readSanityTarget())
+  const client = createSanityClient(readSanityTarget())
   let transaction = client.transaction()
   for (const document of documents) {
     transaction = transaction.createOrReplace(document)

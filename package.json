@@ -13,6 +13,7 @@
     "catalogue:scrape": "jiti scripts/catalogue/scrape-sources.ts",
     "catalogue:assets": "jiti scripts/catalogue/upload-assets.ts",
     "catalogue:import": "jiti scripts/catalogue/import-catalogue.ts",
+    "catalogue:verify": "jiti scripts/catalogue/verify-catalogue.ts",
     "typecheck:catalogue": "tsc -p tsconfig.catalogue.json",
     "test": "vitest run",
     "test:watch": "vitest"

@@ -15,7 +15,7 @@ import { assetManifestFile, loadAssetManifest, saveAssetManifest } from './lib/a
 import { renderPath } from './lib/manifest'
 import { repoPath } from './lib/paths'
 import { loadValidatedManifest, resolveDataset, runScript } from './lib/runScript'
-import { createWriteClient, readSanityTarget } from './lib/sanityEnv'
+import { createSanityClient, readSanityTarget } from './lib/sanityEnv'
 
 async function main(): Promise<void> {
   const dryRun = process.argv.includes('--dry-run')
@@ -40,7 +40,7 @@ async function main(): Promise<void> {
     return
   }
 
-  const client = createWriteClient(readSanityTarget())
+  const client = createSanityClient(readSanityTarget())
 
   for (const renderFile of pending) {
     const asset = await client.assets.upload('image', fs.createReadStream(repoPath(renderFile)), {

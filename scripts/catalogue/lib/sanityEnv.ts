@@ -85,7 +85,13 @@ export function readDataset(): string {
   return dataset
 }
 
-export function createWriteClient(target: SanityTarget): SanityClient {
+/**
+ * A client for the target dataset.
+ *
+ * One function for reads and writes: the token these scripts need is a write token anyway, and a
+ * private dataset needs it to be read at all, so there is nothing to separate.
+ */
+export function createSanityClient(target: SanityTarget): SanityClient {
   return createClient({
     projectId: target.projectId,
     dataset: target.dataset,

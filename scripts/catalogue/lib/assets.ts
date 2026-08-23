@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto'
 import fs from 'node:fs'
 import path from 'node:path'
 import { repoPath } from './paths'
@@ -32,6 +33,17 @@ export function loadAssetManifest(dataset: string): AssetManifest {
     )
   }
   return loaded
+}
+
+/**
+ * Content hash of one render.
+ *
+ * Sanity derives an asset id from the file's content, so two paths mapping to one id should always
+ * be one picture. This is what lets that be checked rather than assumed — the manifest above is a
+ * committed JSON file a human can edit.
+ */
+export function hashRender(renderPath: string): string {
+  return createHash('sha256').update(fs.readFileSync(repoPath(renderPath))).digest('hex')
 }
 
 export function saveAssetManifest(manifest: AssetManifest): void {

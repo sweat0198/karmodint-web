@@ -5,6 +5,9 @@ import type { ProductCopy } from './copy'
 import { renderPath, sizeLabel, type CatalogueManifest, type ManifestProduct } from './manifest'
 import { markdownToPortableText, validatePortableText, type PortableTextBlock } from './portableText'
 
+/** Where the generated seed lands — written by the import, checked for currency by the verification. */
+export const SEED_FILE = 'sanity/seeds/products.ndjson'
+
 export interface SeedImage {
   _key: ProductImageView
   _type: 'image'

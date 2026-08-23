@@ -123,6 +123,13 @@ export function validateManifest(
   const problems: string[] = []
   const seenIds = new Set<string>()
   const seenSlugs = new Set<string>()
+  /**
+   * Render folder -> the size that claimed it, across the whole catalogue.
+   *
+   * A folder claimed twice is the one way the size-owns-its-images restructure can still be
+   * defeated: both sizes would list their own `images`, and both would list the same pictures.
+   */
+  const folderOwners = new Map<string, string>()
 
   for (const product of manifest.products) {
     if (seenIds.has(product.id)) problems.push(`Duplicate product id "${product.id}"`)
@@ -151,6 +158,12 @@ export function validateManifest(
       if (planViews.length !== 1) {
         problems.push(`${where} must have exactly one "${PLAN_VIEW}" view (found ${planViews.length})`)
       }
+
+      const folderOwner = folderOwners.get(size.renderFolder)
+      if (folderOwner) {
+        problems.push(`${where} render folder "${size.renderFolder}" is already used by ${folderOwner}`)
+      }
+      folderOwners.set(size.renderFolder, where)
 
       const unknown = size.views.filter((view) => !PRODUCT_IMAGE_VIEW_VALUES.includes(view))
       if (unknown.length > 0) {

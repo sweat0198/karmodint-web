@@ -87,6 +87,32 @@ describe('Catalogue manifest invariants', () => {
     )
   })
 
+  it('rejects two sizes of one product pointing at the same render folder', () => {
+    // A shared folder is the one way the schema restructure can still be defeated: both sizes would
+    // list their "own" images and both would show the same ones.
+    const shared = manifestWith([
+      { ...baseSize },
+      { ...baseSize, key: '150x215', isDefault: false }
+    ])
+    expect(validateManifest(shared, folderHolding('front', 'top'))).toContainEqual(
+      expect.stringContaining('render folder "folder-a" is already used by')
+    )
+  })
+
+  it('rejects two products pointing at the same render folder', () => {
+    const base = manifestWith([baseSize])
+    const twoProducts: CatalogueManifest = {
+      ...base,
+      products: [
+        ...base.products,
+        { ...base.products[0], id: 'product-other', slug: 'other' }
+      ]
+    }
+    expect(validateManifest(twoProducts, folderHolding('front', 'top'))).toContainEqual(
+      expect.stringContaining('render folder "folder-a" is already used by product-test size "150x150"')
+    )
+  })
+
   it('rejects a render folder that is not on disk', () => {
     expect(validateManifest(manifestWith([baseSize]), () => null)).toContainEqual(
       expect.stringContaining('does not exist')
