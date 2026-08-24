@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { schemaTypes } from '../../sanity/schemas'
 import { productType } from '../../sanity/schemas/product'
 import { categoryType } from '../../sanity/schemas/category'
-import { customizationGroupType } from '../../sanity/schemas/customizationGroup'
+import { customizationGroupType, validateBooleanGroup } from '../../sanity/schemas/customizationGroup'
 import { quoteEnquiryType } from '../../sanity/schemas/quoteEnquiry'
 import { customizationItem } from '../../sanity/schemas/objects/customizationItem'
 import { sizeOption } from '../../sanity/schemas/objects/sizeOption'
@@ -140,6 +140,70 @@ describe('Sanity Schemas Structure & Validation Rules', () => {
       expect(itemsField).toBeDefined()
       expect(itemsField.type).toBe('array')
       expect(itemsField.of[0].type).toBe('customizationItem')
+    })
+
+    it('tells editors the toggle mode takes exactly one option', () => {
+      const selectionTypeField: any = customizationGroupType.fields.find(
+        (f: any) => f.name === 'selectionType'
+      )
+      const booleanOption = selectionTypeField.options.list.find((o: any) => o.value === 'boolean')
+      expect(booleanOption.title).toMatch(/exactly one option/i)
+    })
+  })
+
+  describe('validateBooleanGroup', () => {
+    it('rejects a boolean group with more than one item', () => {
+      expect(
+        validateBooleanGroup({
+          selectionType: 'boolean',
+          isMandatory: false,
+          items: [{ title: 'A' }, { title: 'B' }]
+        })
+      ).toBe('A toggle group must have exactly one option (found 2)')
+    })
+
+    it('rejects a mandatory boolean group', () => {
+      expect(
+        validateBooleanGroup({
+          selectionType: 'boolean',
+          isMandatory: true,
+          items: [{ title: 'A' }]
+        })
+      ).toBe('A toggle group cannot be mandatory — it is optional by definition')
+    })
+
+    it('accepts a non-mandatory boolean group with exactly one item', () => {
+      expect(
+        validateBooleanGroup({
+          selectionType: 'boolean',
+          isMandatory: false,
+          items: [{ title: 'A' }]
+        })
+      ).toBe(true)
+    })
+
+    it('leaves single and multiple groups unaffected', () => {
+      expect(
+        validateBooleanGroup({
+          selectionType: 'single',
+          isMandatory: true,
+          items: [{ title: 'A' }, { title: 'B' }]
+        })
+      ).toBe(true)
+      expect(
+        validateBooleanGroup({
+          selectionType: 'multiple',
+          isMandatory: true,
+          items: [{ title: 'A' }, { title: 'B' }]
+        })
+      ).toBe(true)
+    })
+
+    it('defers to the required/min rule when items are absent', () => {
+      expect(validateBooleanGroup({ selectionType: 'boolean', isMandatory: false, items: undefined })).toBe(
+        true
+      )
+      expect(validateBooleanGroup({ selectionType: 'boolean', isMandatory: false, items: [] })).toBe(true)
     })
   })
 

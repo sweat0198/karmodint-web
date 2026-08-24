@@ -1,10 +1,12 @@
 import { defineConfig } from 'vitest/config'
+import vue from '@vitejs/plugin-vue'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const currentDir = path.dirname(fileURLToPath(import.meta.url))
 
 export default defineConfig({
+  plugins: [vue()],
   test: {
     // No test needs a browser DOM: these cover schemas, GROQ, server handlers and the catalogue
     // import, none of which touch `window`. A global DOM environment cost ~30s of setup per run
@@ -21,8 +23,11 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      '~': currentDir,
-      '@': currentDir,
+      // Mirrors Nuxt's own aliasing: `~`/`@` resolve into the `app/` srcDir, `~~`/`@@` resolve
+      // to the repo root. A prior version pointed all four at the repo root, which happened to
+      // work only because every test so far imported non-Vue files via `~~/app/...`.
+      '~': path.join(currentDir, 'app'),
+      '@': path.join(currentDir, 'app'),
       '~~': currentDir,
       '@@': currentDir
     }

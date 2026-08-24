@@ -1,5 +1,31 @@
 import { defineType, defineField, defineArrayMember } from 'sanity'
 
+/**
+ * A `boolean` group is a single on/off add-on. Without this constraint it is indistinguishable
+ * from a `multiple` group with one item, and editors pick between the two at random.
+ *
+ * Returns `true` for non-boolean groups and for absent/empty items — that is the `items` field's
+ * own `required().min(1)` rule's job to report.
+ */
+export function validateBooleanGroup(group: {
+  selectionType?: string
+  isMandatory?: boolean
+  items?: unknown[]
+}): true | string {
+  if (group.selectionType !== 'boolean') return true
+  if (!group.items || group.items.length === 0) return true
+
+  if (group.items.length !== 1) {
+    return `A toggle group must have exactly one option (found ${group.items.length})`
+  }
+
+  if (group.isMandatory) {
+    return 'A toggle group cannot be mandatory — it is optional by definition'
+  }
+
+  return true
+}
+
 export const customizationGroupType = defineType({
   name: 'customizationGroup',
   title: 'Customization Group',
@@ -28,7 +54,7 @@ export const customizationGroupType = defineType({
         list: [
           { title: 'Single Choice (Radio / Dropdown - pick 1)', value: 'single' },
           { title: 'Multiple Choice (Checkboxes - pick any)', value: 'multiple' },
-          { title: 'Optional Toggle (Add-on on/off)', value: 'boolean' }
+          { title: 'Optional Toggle (Add-on on/off — exactly one option)', value: 'boolean' }
         ],
         layout: 'radio'
       },
@@ -55,7 +81,16 @@ export const customizationGroupType = defineType({
       type: 'array',
       of: [defineArrayMember({ type: 'customizationItem' })],
       description: 'The selectable items in this group (e.g. 1 light 2 socket, 2 light 4 socket, Customised electricity)',
-      validation: (Rule) => Rule.required().min(1)
+      validation: (Rule) =>
+        Rule.required()
+          .min(1)
+          .custom((items: unknown[] | undefined, context: any) =>
+            validateBooleanGroup({
+              selectionType: context.document?.selectionType,
+              isMandatory: context.document?.isMandatory,
+              items
+            })
+          )
     }),
     defineField({
       name: 'displayOrder',

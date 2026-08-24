@@ -1,40 +1,13 @@
-export interface OptionItem {
-  id: string;
-  name: string;
-  description?: string;
-  price: number; // 0 means Included
-  image?: string;
-}
+/** Sanity group `_id` -> the customer's selection. Shape follows the group's selectionType. */
+export type CustomizationSelections = Record<string, string | null | string[] | boolean>
+//  single   -> item `_key`, or null for "None / Not required"
+//  multiple -> array of item `_key`s
+//  boolean  -> on/off for the group's single item
 
-export interface CounterOption {
-  id: string;
-  name: string;
-  unitPrice: number;
-  min?: number;
-  max?: number;
-}
-
-export interface CheckboxOption {
-  id: string;
-  name: string;
-  price: number;
-  priceSuffix?: string;
-}
-
-export interface CustomizationStep {
-  id: string;
-  stepNumber: number;
-  title: string;
-  type: "card" | "grid" | "counter-checkbox" | "list";
-  options?: OptionItem[];
-  counter?: CounterOption;
-  checkboxes?: CheckboxOption[];
-}
+/** "<groupId>:<itemKey>" -> the customer's free text for a requiresTextInput item. */
+export type CustomizationNotes = Record<string, string>
 
 export interface SpecSummaryItem {
   label: string;
   value: string;
 }
-
-// Backward-compatibility alias
-export type ConfiguratorStep = CustomizationStep;

@@ -1,20 +1,13 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { ref } from "vue";
+import type { SanityCustomizationGroup } from "~/types/catalog";
 import type {
-  CheckboxOption,
-  CounterOption,
-  CustomizationStep,
-  OptionItem,
+  CustomizationNotes,
+  CustomizationSelections,
   SpecSummaryItem,
 } from "~/types/customization";
 
-export type {
-  CheckboxOption,
-  CounterOption,
-  CustomizationStep,
-  OptionItem,
-  SpecSummaryItem,
-};
+export type { SpecSummaryItem };
 
 interface Props {
   title: string;
@@ -23,9 +16,10 @@ interface Props {
   specSummaryItems?: SpecSummaryItem[];
   specSheetUrl?: string;
   currencySymbol?: string;
-  steps: CustomizationStep[];
-  // Active selection state passed from parent or initialized
-  modelValue?: Record<string, any>;
+  groups: SanityCustomizationGroup[];
+  modelValue?: CustomizationSelections;
+  notes?: CustomizationNotes;
+  showDemoNotice?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -35,34 +29,14 @@ const props = withDefaults(defineProps<Props>(), {
   specSheetUrl: "#",
   currencySymbol: "£",
   modelValue: () => ({}),
+  notes: () => ({}),
+  showDemoNotice: false,
 });
 
 const emit = defineEmits<{
-  (e: "update:modelValue", value: Record<string, any>): void;
-  (e: "option-change", stepId: string, value: any): void;
+  (e: "update:modelValue", value: CustomizationSelections): void;
+  (e: "update:notes", value: CustomizationNotes): void;
 }>();
-
-// Internal reactive selections state sync
-const selections = computed({
-  get: () => props.modelValue,
-  set: (val) => emit("update:modelValue", val),
-});
-
-const updateSelection = (stepId: string, val: any) => {
-  const updated = { ...selections.value, [stepId]: val };
-  emit("update:modelValue", updated);
-  emit("option-change", stepId, val);
-};
-
-const getStepSelection = (stepId: string) => {
-  return selections.value[stepId];
-};
-
-// Format price label
-const formatPriceBadge = (price: number) => {
-  if (price === 0) return "Included";
-  return `+${props.currencySymbol}${price.toLocaleString()}`;
-};
 
 // 3D Viewer overlay controls
 const zoomLevel = ref(100);
@@ -239,307 +213,39 @@ const zoomOut = () => {
       </div>
     </div>
 
-    <!-- Right Column: Step-by-Step Customization Panel (2/5 width on desktop) -->
+    <!-- Right Column: Customization Panel (2/5 width on desktop) -->
     <div class="lg:w-2/5 bg-white relative flex flex-col min-h-0">
       <div class="lg:absolute lg:inset-0 p-6 md:p-8 overflow-y-auto">
-        <div class="flex flex-col gap-8 max-w-[480px]">
-          <div
-            v-for="(step, index) in steps"
-            :key="step.id"
-            class="relative flex flex-col gap-4"
+        <div
+          v-if="showDemoNotice"
+          class="mb-6 flex items-start gap-2.5 rounded border border-amber-300 bg-amber-50 px-3.5 py-2.5 text-xs text-amber-900"
+        >
+          <svg
+            class="w-4 h-4 shrink-0 mt-0.5 text-amber-500"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
           >
-            <!-- Connecting vertical line except for last item -->
-            <div
-              v-if="index < steps.length - 1"
-              class="absolute left-3 top-8 bottom-[-32px] w-px bg-brand-rose-border/40 pointer-events-none"
-            ></div>
-
-            <!-- Step Header -->
-            <div class="flex items-center gap-3 relative z-10">
-              <div
-                class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0 transition-colors"
-                :class="[
-                  getStepSelection(step.id)
-                    ? 'bg-brand-red text-white'
-                    : 'bg-brand-rose-card text-gray-800 border border-brand-rose-border',
-                ]"
-              >
-                {{ step.stepNumber }}
-              </div>
-              <h2 class="text-lg font-normal text-gray-800">
-                {{ step.title }}
-              </h2>
-            </div>
-
-            <!-- Step Content Body (pl-9 to align with step header title) -->
-            <div class="pl-9 w-full flex flex-col gap-3">
-              <!-- TYPE 1: Full-width Option Cards (e.g. Dimensions) -->
-              <template v-if="step.type === 'card' && step.options">
-                <div
-                  v-for="opt in step.options"
-                  :key="opt.id"
-                  class="relative border rounded p-4 transition-all cursor-pointer select-none"
-                  :class="[
-                    getStepSelection(step.id) === opt.id
-                      ? 'border-2 border-brand-red bg-white shadow-sm'
-                      : 'border-brand-rose-border/60 bg-white hover:border-brand-red/40',
-                  ]"
-                  @click="updateSelection(step.id, opt.id)"
-                >
-                  <!-- Active Checkmark Indicator Badge -->
-                  <div
-                    v-if="getStepSelection(step.id) === opt.id"
-                    class="absolute -top-2 -right-2 bg-brand-red text-white rounded-full w-5 h-5 flex items-center justify-center shadow"
-                  >
-                    <svg
-                      class="w-3 h-3"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="3"
-                        d="M5 13l4 4L19 7"
-                      ></path>
-                    </svg>
-                  </div>
-
-                  <div class="flex items-start justify-between gap-3">
-                    <div>
-                      <h3 class="text-base font-medium text-gray-800">
-                        {{ opt.name }}
-                      </h3>
-                      <p
-                        v-if="opt.description"
-                        class="text-sm text-brand-slate-muted mt-0.5"
-                      >
-                        {{ opt.description }}
-                      </p>
-                    </div>
-                    <span
-                      class="text-sm font-semibold shrink-0"
-                      :class="
-                        opt.price === 0 ? 'text-brand-red' : 'text-gray-800'
-                      "
-                    >
-                      {{ formatPriceBadge(opt.price) }}
-                    </span>
-                  </div>
-                </div>
-              </template>
-
-              <!-- TYPE 2: Grid Option Cards (e.g. Exterior Finish) -->
-              <template v-else-if="step.type === 'grid' && step.options">
-                <div class="grid grid-cols-2 gap-3">
-                  <div
-                    v-for="opt in step.options"
-                    :key="opt.id"
-                    class="border rounded p-3 transition-all cursor-pointer select-none flex flex-col gap-2"
-                    :class="[
-                      getStepSelection(step.id) === opt.id
-                        ? 'border-2 border-brand-red bg-white shadow-sm'
-                        : 'border-brand-rose-border/60 bg-white hover:border-brand-red/40',
-                    ]"
-                    @click="updateSelection(step.id, opt.id)"
-                  >
-                    <!-- Preview Box / Image -->
-                    <div
-                      class="w-full h-20 bg-slate-100 rounded border border-slate-200 overflow-hidden flex items-center justify-center"
-                    >
-                      <img
-                        v-if="opt.image"
-                        :src="opt.image"
-                        :alt="opt.name"
-                        class="w-full h-full object-cover"
-                      />
-                      <div
-                        v-else
-                        class="w-full h-full bg-slate-200/60 flex items-center justify-center text-xs text-slate-400 font-medium"
-                      >
-                        Preview
-                      </div>
-                    </div>
-                    <div class="text-center">
-                      <h3
-                        class="text-sm font-medium text-gray-800 leading-tight"
-                      >
-                        {{ opt.name }}
-                      </h3>
-                      <p class="text-xs text-brand-slate-muted mt-0.5">
-                        {{ formatPriceBadge(opt.price) }}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </template>
-
-              <!-- TYPE 3: Counter & Checkboxes (e.g. Doors & Windows) -->
-              <template v-else-if="step.type === 'counter-checkbox'">
-                <div
-                  class="bg-white border border-brand-rose-border/50 rounded p-4 flex flex-col gap-4"
-                >
-                  <!-- Counter Row -->
-                  <div
-                    v-if="step.counter"
-                    class="flex items-center justify-between"
-                  >
-                    <span class="text-sm font-medium text-gray-800">
-                      {{ step.counter.name }}
-                    </span>
-                    <div
-                      class="flex items-center gap-3 bg-brand-rose-bg border border-brand-rose-border/30 rounded p-1"
-                    >
-                      <button
-                        type="button"
-                        class="w-6 h-6 rounded flex items-center justify-center text-gray-800 hover:bg-white transition-colors"
-                        :disabled="
-                          (getStepSelection(step.id)?.counterValue ??
-                            step.counter.min ??
-                            0) <= (step.counter.min ?? 0)
-                        "
-                        @click="
-                          () => {
-                            const current =
-                              getStepSelection(step.id)?.counterValue ??
-                              step.counter?.min ??
-                              0;
-                            if (current > (step.counter?.min ?? 0)) {
-                              updateSelection(step.id, {
-                                ...getStepSelection(step.id),
-                                counterValue: current - 1,
-                              });
-                            }
-                          }
-                        "
-                      >
-                        -
-                      </button>
-                      <span
-                        class="text-sm font-medium text-brand-navy-heading min-w-4 text-center"
-                      >
-                        {{ getStepSelection(step.id)?.counterValue ?? 0 }}
-                      </span>
-                      <button
-                        type="button"
-                        class="w-6 h-6 rounded flex items-center justify-center text-gray-800 hover:bg-white transition-colors"
-                        :disabled="
-                          (getStepSelection(step.id)?.counterValue ?? 0) >=
-                          (step.counter.max ?? 99)
-                        "
-                        @click="
-                          () => {
-                            const current =
-                              getStepSelection(step.id)?.counterValue ?? 0;
-                            if (current < (step.counter?.max ?? 99)) {
-                              updateSelection(step.id, {
-                                ...getStepSelection(step.id),
-                                counterValue: current + 1,
-                              });
-                            }
-                          }
-                        "
-                      >
-                        +
-                      </button>
-                    </div>
-                  </div>
-
-                  <div
-                    v-if="step.checkboxes && step.checkboxes.length"
-                    class="w-full h-px bg-brand-rose-border/30"
-                  ></div>
-
-                  <!-- Checkbox options -->
-                  <div
-                    v-for="chk in step.checkboxes"
-                    :key="chk.id"
-                    class="flex items-center justify-between cursor-pointer"
-                    @click="
-                      () => {
-                        const currentObj = getStepSelection(step.id) || {};
-                        const chkState = currentObj.checkboxes || {};
-                        updateSelection(step.id, {
-                          ...currentObj,
-                          checkboxes: {
-                            ...chkState,
-                            [chk.id]: !chkState[chk.id],
-                          },
-                        });
-                      }
-                    "
-                  >
-                    <label
-                      class="flex items-center gap-3 cursor-pointer text-sm text-gray-800"
-                    >
-                      <input
-                        type="checkbox"
-                        class="rounded text-brand-red focus:ring-brand-red w-4 h-4 border-brand-rose-border"
-                        :checked="
-                          getStepSelection(step.id)?.checkboxes?.[chk.id]
-                        "
-                      />
-                      <span>{{ chk.name }}</span>
-                    </label>
-                    <span class="text-sm text-brand-slate-muted">
-                      +{{ currencySymbol }}{{ chk.price }}{{ chk.priceSuffix }}
-                    </span>
-                  </div>
-                </div>
-              </template>
-
-              <!-- TYPE 4: List Single Select (e.g. Electrical & HVAC) -->
-              <template v-else-if="step.type === 'list' && step.options">
-                <div
-                  v-for="opt in step.options"
-                  :key="opt.id"
-                  class="border rounded p-4 flex items-center justify-between transition-all cursor-pointer select-none"
-                  :class="[
-                    getStepSelection(step.id) === opt.id
-                      ? 'border-brand-red bg-brand-red/5 shadow-sm'
-                      : 'border-brand-rose-border/60 bg-white hover:border-brand-red/40',
-                  ]"
-                  @click="updateSelection(step.id, opt.id)"
-                >
-                  <div class="flex items-center gap-3">
-                    <!-- Icon placeholder or feature mark -->
-                    <div
-                      class="w-5 h-5 flex items-center justify-center text-brand-red"
-                    >
-                      <svg
-                        class="w-5 h-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="M13 10V3L4 14h7v7l9-11h-7z"
-                        ></path>
-                      </svg>
-                    </div>
-                    <span class="text-sm font-medium text-gray-800">{{
-                      opt.name
-                    }}</span>
-                  </div>
-                  <span
-                    class="text-sm font-medium"
-                    :class="
-                      opt.price === 0 ? 'text-brand-red' : 'text-gray-800'
-                    "
-                  >
-                    {{ formatPriceBadge(opt.price) }}
-                  </span>
-                </div>
-              </template>
-            </div>
-          </div>
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"
+            />
+          </svg>
+          <span>
+            <strong class="font-semibold">Demo data.</strong> Options and prices shown here are
+            placeholders, not the live catalogue. Do not send this quote to a customer.
+          </span>
         </div>
+
+        <CustomizationGroups
+          :groups="groups"
+          :model-value="modelValue"
+          :notes="notes"
+          @update:model-value="emit('update:modelValue', $event)"
+          @update:notes="emit('update:notes', $event)"
+        />
       </div>
     </div>
   </div>

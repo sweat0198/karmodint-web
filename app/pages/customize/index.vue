@@ -16,10 +16,17 @@
             <span>+ Add Products</span>
           </NuxtLink>
 
-          <NuxtLink
+          <button
             v-if="!quoteStore.isEmpty"
-            to="/quote"
-            class="flex items-center justify-center gap-2 px-8 py-3 bg-brand-red hover:bg-brand-red-hover text-white font-semibold text-xs tracking-wider uppercase rounded-xs transition-colors duration-150 shadow-sm hover:shadow"
+            type="button"
+            class="flex items-center justify-center gap-2 px-8 py-3 text-white font-semibold text-xs tracking-wider uppercase rounded-xs transition-colors duration-150 shadow-sm"
+            :class="[
+              canProceedToQuote
+                ? 'bg-brand-red hover:bg-brand-red-hover hover:shadow cursor-pointer'
+                : 'bg-slate-300 cursor-not-allowed',
+            ]"
+            :aria-disabled="!canProceedToQuote"
+            @click="handleProceedClick"
           >
             <span>Review & Request Quote</span>
             <svg
@@ -35,7 +42,7 @@
                 d="M14 5l7 7m0 0l-7 7m7-7H3"
               />
             </svg>
-          </NuxtLink>
+          </button>
         </div>
       </template>
     </BuyFlowHeader>
@@ -113,6 +120,12 @@
                   >
                     {{ item.variantLabel || "Modular Cabin" }}
                   </span>
+                  <span
+                    v-if="getItemUnsatisfiedMandatory(item).length > 0"
+                    class="text-[10px] font-bold uppercase text-white bg-brand-red px-2 py-0.5 rounded-full"
+                  >
+                    {{ getItemUnsatisfiedMandatory(item).length }} required
+                  </span>
                 </div>
                 <h3
                   class="text-base sm:text-lg font-bold text-brand-navy-heading leading-tight whitespace-nowrap"
@@ -160,9 +173,11 @@
                 </span>
                 <div class="flex items-baseline gap-1">
                   <span class="text-xl font-bold text-brand-navy-heading">
-                    £{{ getItemCustomTotal(item).toLocaleString() }}
+                    {{ getItemPricing(item).priceLabel.value }}
                   </span>
-                  <span class="text-[11px] text-brand-slate-muted min-w-8"
+                  <span
+                    v-if="!getItemPricing(item).sizeIsPoa.value"
+                    class="text-[11px] text-brand-slate-muted min-w-8"
                     >+ VAT</span
                   >
                 </div>
@@ -233,17 +248,17 @@
             :class="{ 'is-expanded': isExpanded(item.id) }"
           >
             <div class="accordion-inner border-t border-slate-200 bg-slate-50">
-              <ItemCustomizer
+              <ProductCustomizer
                 :title="item.productName"
                 :subtitle="`${item.variantLabel || 'Standard Spec'} • Engineering & Component Options`"
                 :preview-image="item.image || getFallbackImage(item.productId)"
-                :base-price="item.basePrice || 2450"
-                :steps="getItemSteps(item)"
-                :model-value="getItemConfig(item.id)"
                 :spec-summary-items="getItemSpecSummary(item)"
-                :show-price-bar="false"
-                @update:model-value="onModelUpdate(item.id, $event)"
-                @change="handleItemConfigChange(item, $event)"
+                :groups="DEMO_CUSTOMIZATION_GROUPS"
+                :model-value="getItemSelections(item.id)"
+                :notes="getItemNotes(item.id)"
+                show-demo-notice
+                @update:model-value="onSelectionsUpdate(item, $event)"
+                @update:notes="onNotesUpdate(item, $event)"
               />
             </div>
           </div>
@@ -254,14 +269,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref } from "vue";
+import { computed, nextTick, onMounted, reactive, ref } from "vue";
 import { useQuoteStore, type QuoteItem } from "~/stores/quote";
-import type { CustomizationStep, SpecSummaryItem } from "~/types/customization";
-import {
-  generateSpecSummary,
-  getDefaultSelections,
-  getModularStepsForProduct,
-} from "~/utils/modularConfigPresets";
+import type { CustomizationNotes, CustomizationSelections, SpecSummaryItem } from "~/types/customization";
+import { DEMO_CUSTOMIZATION_GROUPS } from "~/utils/customizationFixtures";
+import { buildSpecSummary, useCustomizationPricing } from "~/composables/useCustomizationPricing";
 import { useAppSeo } from "~/composables/useAppSeo";
 
 const { setPageSeo } = useAppSeo();
@@ -279,8 +291,10 @@ const quoteStore = useQuoteStore();
 // Tracks which items are expanded in accordion
 const expandedItemIds = ref<Set<string>>(new Set());
 
-// Local reactive mapping for each item's selection state
-const itemConfigs = reactive<Record<string, Record<string, any>>>({});
+// Local reactive mapping for each item's live selections and notes
+const itemSelections = reactive<Record<string, CustomizationSelections>>({});
+const itemNotes = reactive<Record<string, CustomizationNotes>>({});
+const itemPricingCache = new Map<string, ReturnType<typeof useCustomizationPricing>>();
 
 function isExpanded(id: string): boolean {
   return expandedItemIds.value.has(id);
@@ -308,53 +322,90 @@ function getFallbackImage(productId?: string): string {
   return "/images/product-container-k2004.png";
 }
 
-function getItemSteps(item: QuoteItem): CustomizationStep[] {
-  return getModularStepsForProduct(item.productId, item.productName);
+function getItemSelections(id: string): CustomizationSelections {
+  if (!itemSelections[id]) {
+    const existing = quoteStore.items.find((i) => i.id === id);
+    itemSelections[id] = existing?.configState ? { ...existing.configState } : {};
+  }
+  return itemSelections[id];
 }
 
-function getItemConfig(id: string): Record<string, any> {
-  if (!itemConfigs[id]) {
+function getItemNotes(id: string): CustomizationNotes {
+  if (!itemNotes[id]) {
     const existing = quoteStore.items.find((i) => i.id === id);
-    if (existing?.configState && Object.keys(existing.configState).length > 0) {
-      itemConfigs[id] = { ...existing.configState };
-    } else {
-      itemConfigs[id] = getDefaultSelections();
-    }
+    itemNotes[id] = existing?.customizationNotes ? { ...existing.customizationNotes } : {};
   }
-  return itemConfigs[id];
+  return itemNotes[id];
+}
+
+function getItemPricing(item: QuoteItem) {
+  let pricing = itemPricingCache.get(item.id);
+  if (!pricing) {
+    pricing = useCustomizationPricing(
+      () => DEMO_CUSTOMIZATION_GROUPS,
+      () => getItemSelections(item.id),
+      () => getItemNotes(item.id),
+      () => ({ price: item.basePrice ?? 0, isPoa: false }),
+    );
+    itemPricingCache.set(item.id, pricing);
+  }
+  return pricing;
+}
+
+function getItemUnsatisfiedMandatory(item: QuoteItem) {
+  return getItemPricing(item).unsatisfiedMandatory.value;
 }
 
 function getItemSpecSummary(item: QuoteItem): SpecSummaryItem[] {
-  if (item.specSummary && item.specSummary.length > 0) {
-    return item.specSummary;
+  const live = buildSpecSummary(DEMO_CUSTOMIZATION_GROUPS, getItemSelections(item.id));
+  if (live.length > 0) return live;
+  return item.specSummary ?? [];
+}
+
+function persistItemConfig(item: QuoteItem) {
+  const pricing = getItemPricing(item);
+  quoteStore.updateItemConfig(item.id, {
+    selections: getItemSelections(item.id),
+    notes: getItemNotes(item.id),
+    total: pricing.subtotal.value,
+    isPoa: pricing.hasPoa.value,
+    specSummary: buildSpecSummary(DEMO_CUSTOMIZATION_GROUPS, getItemSelections(item.id)),
+    lines: pricing.lines.value,
+  });
+}
+
+function onSelectionsUpdate(item: QuoteItem, next: CustomizationSelections) {
+  itemSelections[item.id] = next;
+  persistItemConfig(item);
+}
+
+function onNotesUpdate(item: QuoteItem, next: CustomizationNotes) {
+  itemNotes[item.id] = next;
+  persistItemConfig(item);
+}
+
+const canProceedToQuote = computed(() =>
+  quoteStore.items.every((item) => getItemUnsatisfiedMandatory(item).length === 0),
+);
+
+function handleProceedClick() {
+  if (canProceedToQuote.value) {
+    navigateTo("/quote");
+    return;
   }
-  const steps = getItemSteps(item);
-  const selections = getItemConfig(item.id);
-  return generateSpecSummary(steps, selections);
-}
 
-function getItemCustomTotal(item: QuoteItem): number {
-  return item.customTotal ?? item.basePrice ?? 2450;
-}
-
-function onModelUpdate(id: string, newSelections: Record<string, any>) {
-  itemConfigs[id] = newSelections;
-}
-
-function handleItemConfigChange(
-  item: QuoteItem,
-  payload: { selections: Record<string, any>; total: number },
-) {
-  itemConfigs[item.id] = payload.selections;
-  const steps = getItemSteps(item);
-  const specSummary = generateSpecSummary(steps, payload.selections);
-
-  quoteStore.updateItemConfig(
-    item.id,
-    payload.selections,
-    payload.total,
-    specSummary,
+  const offendingItem = quoteStore.items.find(
+    (item) => getItemUnsatisfiedMandatory(item).length > 0,
   );
+  if (!offendingItem) return;
+
+  expandedItemIds.value.add(offendingItem.id);
+  const offendingGroup = getItemUnsatisfiedMandatory(offendingItem)[0];
+  nextTick(() => {
+    document
+      .getElementById(`group-${offendingGroup?._id}`)
+      ?.scrollIntoView({ behavior: "smooth", block: "center" });
+  });
 }
 
 onMounted(() => {

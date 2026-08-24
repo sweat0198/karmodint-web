@@ -1,5 +1,10 @@
 import { defineStore } from "pinia";
-import type { SpecSummaryItem } from "~/types/customization";
+import type { SanitySelectedCustomization } from "~/types/catalog";
+import type {
+  CustomizationNotes,
+  CustomizationSelections,
+  SpecSummaryItem,
+} from "~/types/customization";
 
 export interface QuoteItem {
   id: string;
@@ -12,9 +17,21 @@ export interface QuoteItem {
   quantity: number;
   notes?: string;
   image?: string;
-  configState?: Record<string, any>;
+  configState?: CustomizationSelections;
+  customizationNotes?: CustomizationNotes;
   customTotal?: number;
   specSummary?: SpecSummaryItem[];
+  selectedCustomizations?: SanitySelectedCustomization[];
+  isPoa?: boolean;
+}
+
+export interface QuoteItemConfigPayload {
+  selections: CustomizationSelections;
+  notes: CustomizationNotes;
+  total: number;
+  isPoa: boolean;
+  specSummary: SpecSummaryItem[];
+  lines: SanitySelectedCustomization[];
 }
 
 export interface QuoteCustomerInfo {
@@ -122,19 +139,15 @@ export const useQuoteStore = defineStore("quote", {
       }
     },
 
-    updateItemConfig(
-      id: string,
-      configState: Record<string, any>,
-      customTotal: number,
-      specSummary?: SpecSummaryItem[],
-    ) {
+    updateItemConfig(id: string, payload: QuoteItemConfigPayload) {
       const item = this.items.find((i) => i.id === id);
       if (item) {
-        item.configState = configState;
-        item.customTotal = customTotal;
-        if (specSummary) {
-          item.specSummary = specSummary;
-        }
+        item.configState = payload.selections;
+        item.customizationNotes = payload.notes;
+        item.customTotal = payload.total;
+        item.isPoa = payload.isPoa;
+        item.specSummary = payload.specSummary;
+        item.selectedCustomizations = payload.lines;
       }
     },
 

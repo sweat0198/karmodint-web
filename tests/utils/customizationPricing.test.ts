@@ -1,0 +1,226 @@
+import { describe, it, expect } from 'vitest'
+import { useCustomizationPricing, buildSpecSummary } from '~~/app/composables/useCustomizationPricing'
+import type { SanityCustomizationGroup, SanitySizeOption } from '~~/app/types/catalog'
+import type { CustomizationSelections, CustomizationNotes } from '~~/app/types/customization'
+
+const groupSingleFinish: SanityCustomizationGroup = {
+  _id: 'grp-finish',
+  _type: 'customizationGroup',
+  title: 'Exterior Finish',
+  identifier: 'exterior-finish',
+  selectionType: 'single',
+  isMandatory: true,
+  items: [
+    { _key: 'white', title: 'Standard White', pricingType: 'included' },
+    { _key: 'anthracite', title: 'Anthracite Grey', pricingType: 'fixed', price: 320 }
+  ],
+  displayOrder: 1
+}
+
+const groupMultipleExtras: SanityCustomizationGroup = {
+  _id: 'grp-extras',
+  _type: 'customizationGroup',
+  title: 'Extras',
+  identifier: 'extras',
+  selectionType: 'multiple',
+  isMandatory: false,
+  items: [
+    { _key: 'shutter', title: 'Roller Shutter', pricingType: 'fixed', price: 295 },
+    { _key: 'canopy', title: 'Rain Canopy', pricingType: 'fixed', price: 160 }
+  ],
+  displayOrder: 2
+}
+
+const groupBooleanAc: SanityCustomizationGroup = {
+  _id: 'grp-ac',
+  _type: 'customizationGroup',
+  title: 'Air Conditioning',
+  identifier: 'ac',
+  selectionType: 'boolean',
+  isMandatory: false,
+  items: [{ _key: 'ac-unit', title: 'Split AC Unit', pricingType: 'fixed', price: 450 }],
+  displayOrder: 3
+}
+
+const groupPoaElectrical: SanityCustomizationGroup = {
+  _id: 'grp-electrical',
+  _type: 'customizationGroup',
+  title: 'Electrical Package',
+  identifier: 'electrical',
+  selectionType: 'single',
+  isMandatory: false,
+  items: [
+    { _key: 'standard', title: 'Standard Package', pricingType: 'included' },
+    {
+      _key: 'custom',
+      title: 'Custom Electrical Layout',
+      pricingType: 'poa',
+      requiresTextInput: true,
+      textInputPlaceholder: 'Describe your custom electrical requirements...'
+    }
+  ],
+  displayOrder: 4
+}
+
+const groupBooleanHeater: SanityCustomizationGroup = {
+  _id: 'grp-heater',
+  _type: 'customizationGroup',
+  title: 'Heater',
+  identifier: 'heater',
+  selectionType: 'boolean',
+  isMandatory: false,
+  items: [{ _key: 'heater-unit', title: 'Wall Convector Heater', pricingType: 'fixed', price: 210 }],
+  displayOrder: 5
+}
+
+const sizeFixed: SanitySizeOption = {
+  label: '2.40m x 3.00m',
+  lengthM: 3,
+  widthM: 2.4,
+  price: 3240,
+  isPoa: false,
+  images: []
+}
+
+const sizePoa: SanitySizeOption = {
+  label: '6.00m x 2.40m',
+  lengthM: 6,
+  widthM: 2.4,
+  price: 0,
+  isPoa: true,
+  images: []
+}
+
+function pricing(
+  groups: SanityCustomizationGroup[],
+  selections: CustomizationSelections,
+  notes: CustomizationNotes = {},
+  size: SanitySizeOption = sizeFixed
+) {
+  return useCustomizationPricing(groups, selections, notes, size)
+}
+
+describe('useCustomizationPricing', () => {
+  it('sums fixed items onto the size price', () => {
+    const result = pricing([groupSingleFinish], { 'grp-finish': 'anthracite' })
+    expect(result.subtotal.value).toBe(3240 + 320)
+  })
+
+  it('adds £0 for included items', () => {
+    const result = pricing([groupSingleFinish], { 'grp-finish': 'white' })
+    expect(result.subtotal.value).toBe(3240)
+  })
+
+  it('leaves subtotal untouched by a poa item, sets hasPoa, and labels it "+ POA"', () => {
+    const result = pricing([groupPoaElectrical], { 'grp-electrical': 'custom' })
+    expect(result.subtotal.value).toBe(3240)
+    expect(result.hasPoa.value).toBe(true)
+    expect(result.priceLabel.value).toBe('£3,240 + POA')
+  })
+
+  it('yields plain "POA" and does not total extras when the size itself is POA', () => {
+    const result = pricing(
+      [groupSingleFinish],
+      { 'grp-finish': 'anthracite' },
+      {},
+      sizePoa
+    )
+    expect(result.sizeIsPoa.value).toBe(true)
+    expect(result.priceLabel.value).toBe('POA')
+    expect(result.subtotal.value).toBe(0)
+  })
+
+  it('sums every selected item in a multiple group', () => {
+    const result = pricing([groupMultipleExtras], { 'grp-extras': ['shutter', 'canopy'] })
+    expect(result.subtotal.value).toBe(3240 + 295 + 160)
+  })
+
+  it('adds the boolean item only when true', () => {
+    const on = pricing([groupBooleanAc], { 'grp-ac': true })
+    expect(on.subtotal.value).toBe(3240 + 450)
+
+    const off = pricing([groupBooleanAc], { 'grp-ac': false })
+    expect(off.subtotal.value).toBe(3240)
+  })
+
+  it('adds nothing for a single selection of null', () => {
+    const result = pricing([{ ...groupSingleFinish, isMandatory: false }], { 'grp-finish': null })
+    expect(result.subtotal.value).toBe(3240)
+  })
+
+  it('lists a mandatory group with no selection in unsatisfiedMandatory, and drops it once selected', () => {
+    const empty = pricing([groupSingleFinish], {})
+    expect(empty.unsatisfiedMandatory.value).toEqual([groupSingleFinish])
+
+    const filled = pricing([groupSingleFinish], { 'grp-finish': 'white' })
+    expect(filled.unsatisfiedMandatory.value).toEqual([])
+  })
+
+  it('treats an empty array as unsatisfied for a mandatory multiple group', () => {
+    const mandatoryExtras = { ...groupMultipleExtras, isMandatory: true }
+    const empty = pricing([mandatoryExtras], { 'grp-extras': [] })
+    expect(empty.unsatisfiedMandatory.value).toEqual([mandatoryExtras])
+
+    const filled = pricing([mandatoryExtras], { 'grp-extras': ['shutter'] })
+    expect(filled.unsatisfiedMandatory.value).toEqual([])
+  })
+
+  it('never lists a boolean group as unsatisfied mandatory (D8 forbids mandatory toggles)', () => {
+    const result = pricing([groupBooleanAc], {})
+    expect(result.unsatisfiedMandatory.value).toEqual([])
+  })
+
+  it('builds quote lines with groupTitle, optionTitle, price, isPoa and customNotes', () => {
+    const result = pricing(
+      [groupPoaElectrical],
+      { 'grp-electrical': 'custom' },
+      { 'grp-electrical:custom': 'Need an extra socket by the desk' }
+    )
+    expect(result.lines.value).toEqual([
+      {
+        groupTitle: 'Electrical Package',
+        optionTitle: 'Custom Electrical Layout',
+        price: undefined,
+        isPoa: true,
+        customNotes: 'Need an extra socket by the desk'
+      }
+    ])
+  })
+
+  it('omits customNotes when the item does not carry one', () => {
+    const result = pricing([groupSingleFinish], { 'grp-finish': 'anthracite' })
+    expect(result.lines.value).toEqual([
+      { groupTitle: 'Exterior Finish', optionTitle: 'Anthracite Grey', price: 320, isPoa: false, customNotes: undefined }
+    ])
+  })
+})
+
+describe('buildSpecSummary', () => {
+  it('caps at 4 badges and joins multi-selects with " + "', () => {
+    const groups = [
+      groupSingleFinish,
+      groupMultipleExtras,
+      groupBooleanAc,
+      groupPoaElectrical,
+      groupBooleanHeater
+    ]
+    const selections: CustomizationSelections = {
+      'grp-finish': 'anthracite',
+      'grp-extras': ['shutter', 'canopy'],
+      'grp-ac': true,
+      'grp-electrical': 'custom',
+      'grp-heater': true
+    }
+
+    const summary = buildSpecSummary(groups, selections)
+
+    expect(summary).toHaveLength(4)
+    expect(summary[0]).toEqual({ label: 'Exterior Finish', value: 'Anthracite Grey' })
+    expect(summary[1]).toEqual({ label: 'Extras', value: 'Roller Shutter + Rain Canopy' })
+  })
+
+  it('skips groups with no selection', () => {
+    const summary = buildSpecSummary([groupSingleFinish, groupBooleanAc], { 'grp-finish': null, 'grp-ac': false })
+    expect(summary).toEqual([])
+  })
+})
