@@ -58,6 +58,7 @@ export const useQuoteStore = defineStore("quote", {
           sum + (item.customTotal ?? item.basePrice ?? 0) * item.quantity,
         0,
       ),
+    hasPoa: (state) => state.items.some((item) => item.isPoa),
     isEmpty: (state) => state.items.length === 0,
     continueRoute: (state) => {
       if (

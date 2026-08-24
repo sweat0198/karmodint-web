@@ -51,7 +51,11 @@ const calculatedTotal = computed(() => {
 });
 
 const formattedTotal = computed(() => {
-  return `${props.currencySymbol}${calculatedTotal.value.toLocaleString()}`;
+  const formatted = `${props.currencySymbol}${calculatedTotal.value.toLocaleString()}`;
+  // Mirrors useCustomizationPricing's priceLabel: POA units contribute their non-POA
+  // portion to the sum, so the aggregate needs the same "+ POA" caveat, not a bare number.
+  const showsPoa = props.estimatedTotal === undefined && quoteStore.hasPoa;
+  return showsPoa ? `${formatted} + POA` : formatted;
 });
 
 // Dynamic continuation text based on current location
