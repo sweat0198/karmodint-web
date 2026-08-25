@@ -1,5 +1,5 @@
 /** Builds a size render the way the catalogue import does: `_key` is the view name. */
-function mockSizeImage(view: string, assetId: string, alt: string) {
+export function mockSizeImage(view: string, assetId: string, alt: string) {
   return {
     _key: view,
     _type: 'image',

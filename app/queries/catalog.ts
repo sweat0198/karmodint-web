@@ -1,0 +1,77 @@
+import type { SanitySizeImage } from "~/types/catalog";
+
+export interface CatalogCategoryRef {
+  _id: string;
+  name: string;
+  slug: string;
+  displayOrder?: number;
+  parent?: {
+    _id: string;
+    name: string;
+    slug: string;
+    displayOrder?: number;
+  } | null;
+}
+
+export interface CatalogSizeOption {
+  _key?: string;
+  label: string;
+  lengthM: number;
+  widthM: number;
+  heightM?: number;
+  weightKg?: number;
+  isPoa?: boolean;
+  price: number;
+  isDefault?: boolean;
+  thumbnail: SanitySizeImage | null;
+  fallbackThumbnail: SanitySizeImage | null;
+}
+
+export interface CatalogProduct {
+  _id: string;
+  name: string;
+  slug: string;
+  isFeatured?: boolean;
+  shortDescription?: string;
+  categories: CatalogCategoryRef[];
+  sizes: CatalogSizeOption[];
+}
+
+export interface CategoryTreeChild {
+  _id: string;
+  name: string;
+  slug: string;
+  displayOrder?: number;
+}
+
+export interface CategoryTreeNode extends CategoryTreeChild {
+  children: CategoryTreeChild[];
+}
+
+/**
+ * Products with their sizes, shaped for the catalog fan-out (`toSizeCards`).
+ *
+ * The `drafts.` guard mirrors scripts/catalogue/lib/verifyCatalogue.ts — without it, opening a
+ * product in the Studio doubles it, since the draft twin copies `status: "published"` too.
+ *
+ * The thumbnail is picked by view *name*, not array position (D8): `left-diagonal` first, falling
+ * back to the first image if a size has no three-quarter render.
+ */
+export const PRODUCTS_WITH_SIZES_QUERY = `*[_type == "product" && status == "published" && !(_id in path("drafts.**"))] | order(isFeatured desc, name asc) {
+  _id, name, "slug": slug.current, isFeatured, shortDescription,
+  "categories": categories[]->{ _id, name, "slug": slug.current, displayOrder,
+                                "parent": parent->{ _id, name, "slug": slug.current, displayOrder } },
+  sizes[] {
+    _key, label, lengthM, widthM, heightM, weightKg, price, isPoa, isDefault,
+    "thumbnail": images[_key == "left-diagonal"][0] { asset, alt, view },
+    "fallbackThumbnail": images[0] { asset, alt, view }
+  }
+}`;
+
+/** The sidebar's category tree: top-level categories ordered by `displayOrder`, each with its children. */
+export const CATEGORY_TREE_QUERY = `*[_type == "category" && !defined(parent)] | order(displayOrder asc) {
+  _id, name, "slug": slug.current, displayOrder,
+  "children": *[_type == "category" && references(^._id)] | order(displayOrder asc) {
+    _id, name, "slug": slug.current, displayOrder
+  }
+}`;

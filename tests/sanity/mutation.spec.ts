@@ -29,7 +29,7 @@ describe('Sanity Quote Enquiry Mutation Builder', () => {
         {
           productId: 'prod_kiosk_150x150',
           productName: '1.50m x 1.50m Security Gatehouse Cabin',
-          variantLabel: '1.50m x 1.50m (Compact)',
+          sizeLabel: '1.50m x 1.50m (Compact)',
           quantity: 2,
           unitPrice: 2450,
           isPoa: false,
@@ -74,7 +74,7 @@ describe('Sanity Quote Enquiry Mutation Builder', () => {
       items: [
         {
           productName: 'Bespoke Armoured Blast Cabin',
-          variantLabel: 'Custom Spec',
+          sizeLabel: 'Custom Spec',
           quantity: 1,
           isPoa: true,
           selectedCustomizations: [

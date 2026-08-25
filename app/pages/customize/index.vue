@@ -118,7 +118,7 @@
                   <span
                     class="label-caps text-brand-red bg-brand-rose-card px-2 py-0.5 rounded-xs"
                   >
-                    {{ item.variantLabel || "Modular Cabin" }}
+                    {{ item.sizeLabel }}
                   </span>
                   <span
                     v-if="getItemUnsatisfiedMandatory(item).length > 0"
@@ -250,7 +250,7 @@
             <div class="accordion-inner border-t border-slate-200 bg-slate-50">
               <ProductCustomizer
                 :title="item.productName"
-                :subtitle="`${item.variantLabel || 'Standard Spec'} • Engineering & Component Options`"
+                :subtitle="`${item.sizeLabel} • Engineering & Component Options`"
                 :preview-image="item.image || getFallbackImage(item.productId)"
                 :spec-summary-items="getItemSpecSummary(item)"
                 :groups="DEMO_CUSTOMIZATION_GROUPS"

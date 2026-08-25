@@ -41,57 +41,26 @@
 
       <!-- Products Grid -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <ProductCard
-          v-for="product in products"
-          :key="product.id"
-          :product="product"
-          :variant-label="product.categoryTag"
-        />
+        <ProductCard v-for="card in featuredCards" :key="card.cardId" :card="card" />
       </div>
     </div>
   </section>
 </template>
 
 <script setup lang="ts">
-const products = [
-  {
-    id: "prod-k2004",
-    name: "Container K-2004",
-    slug: "container-k-2004",
-    categoryTag: "Flat Pack",
-    image: "/images/product-container-k2004.png",
-    price: 3450,
-    specs: [
-      { label: "Dimensions", value: "3m x 7m" },
-      { label: "Insulation", value: "60mm EPS" },
-      { label: "Layout", value: "Open Plan" },
-    ],
-  },
-  {
-    id: "prod-sec110",
-    name: "Security Cabin 110",
-    slug: "security-cabin-110",
-    categoryTag: "Guard Hut",
-    image: "/images/product-security-cabin-110.png",
-    price: 1200,
-    specs: [
-      { label: "Dimensions", value: "1.1m x 1.1m" },
-      { label: "Insulation", value: "40mm PUR" },
-      { label: "Glazing", value: "3-Side Visibility" },
-    ],
-  },
-  {
-    id: "prod-serv135",
-    name: "Service Cabin 135",
-    slug: "service-cabin-135",
-    categoryTag: "Ticket Office",
-    image: "/images/product-service-cabin-135.png",
-    price: 1850,
-    specs: [
-      { label: "Dimensions", value: "1.35m x 2.1m" },
-      { label: "Insulation", value: "40mm PUR" },
-      { label: "Features", value: "Serving Hatch" },
-    ],
-  },
-];
+import { computed } from "vue";
+import { useSanityQuery } from "#imports";
+import { toSizeCards } from "~/utils/sizeCards";
+import { PRODUCTS_WITH_SIZES_QUERY, type CatalogProduct } from "~/queries/catalog";
+
+const { data: products } = await useSanityQuery<CatalogProduct[]>(PRODUCTS_WITH_SIZES_QUERY);
+
+// The three smallest Size Options of the featured Product (GRP Cabin today).
+const featuredCards = computed(() => {
+  const featuredProduct = products.value?.find((p) => p.isFeatured);
+  if (!featuredProduct) return [];
+  return toSizeCards(products.value ?? [])
+    .filter((card) => card.productId === featuredProduct._id)
+    .slice(0, 3);
+});
 </script>

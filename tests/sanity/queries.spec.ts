@@ -1,5 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { executeGroq } from '../utils/groqRunner'
+import { PRODUCTS_WITH_SIZES_QUERY } from '~/queries/catalog'
+import { mockSanityDataset, mockProducts, mockSizeImage } from '../fixtures/sanityData'
 
 describe('Sanity GROQ Query Evaluation (SSG Data Fetching)', () => {
   // No isActive field exists on the category schema; filtering on it only ever passed because the
@@ -141,5 +143,43 @@ describe('Sanity GROQ Query Evaluation (SSG Data Fetching)', () => {
     expect(enquiry.customerName).toBe('John Smith')
     expect(enquiry.estimatedTotal).toBe(4900)
     expect(enquiry.itemCount).toBe(1)
+  })
+
+  describe('catalog fan-out query (app/queries/catalog.ts)', () => {
+    it('excludes a drafts.* twin of a published product', async () => {
+      const draftTwin = { ...mockProducts[0], _id: `drafts.${mockProducts[0]._id}` }
+      const dataset = [...mockSanityDataset, draftTwin]
+
+      const results = await executeGroq<any[]>(PRODUCTS_WITH_SIZES_QUERY, {}, dataset)
+
+      expect(results.filter((p) => p.name === mockProducts[0].name)).toHaveLength(1)
+      expect(results.some((p: any) => p._id.startsWith('drafts.'))).toBe(false)
+    })
+
+    it('selects the thumbnail by view name, not array position', async () => {
+      const withDiagonal = {
+        ...mockProducts[0],
+        _id: 'prod_with_diagonal',
+        sizes: [
+          {
+            ...mockProducts[0].sizes[0],
+            images: [
+              mockSizeImage('front', 'image-front-leading', 'front view'),
+              mockSizeImage('left-diagonal', 'image-diagonal', 'three-quarter view')
+            ]
+          }
+        ]
+      }
+      const dataset = [...mockSanityDataset, withDiagonal]
+
+      const results = await executeGroq<any[]>(PRODUCTS_WITH_SIZES_QUERY, {}, dataset)
+      const product = results.find((p: any) => p._id === 'prod_with_diagonal')
+
+      expect(product).toBeDefined()
+      // "front" is first in the array, but "left-diagonal" is named, so it wins the projection.
+      expect(product.sizes[0].thumbnail.view).toBe('left-diagonal')
+      expect(product.sizes[0].thumbnail.asset._ref).toBe('image-diagonal')
+      expect(product.sizes[0].fallbackThumbnail.asset._ref).toBe('image-front-leading')
+    })
   })
 })

@@ -39,7 +39,7 @@ export interface QuoteCustomizationItem {
 
 export interface QuoteItemSummary {
   productName: string
-  variantLabel?: string
+  sizeLabel?: string
   dimensions?: string
   imageUrl?: string
   quantity: number
@@ -419,7 +419,7 @@ function customizationsSubcard(item: QuoteItemSummary): string {
 
 function buildItemCardHtml(item: QuoteItemSummary): string {
   const { unitPrice, addonsTotal, itemTotal } = computeItemFinancials(item)
-  const dimsParts = [item.dimensions, item.variantLabel].filter((v): v is string => Boolean(v))
+  const dimsParts = [item.dimensions, item.sizeLabel].filter((v): v is string => Boolean(v))
   const dims = Array.from(new Set(dimsParts)).join(' &middot; ')
   const priceDisplay = item.isPoa ? 'POA' : fmtGBP(unitPrice)
   const baseLine = item.isPoa

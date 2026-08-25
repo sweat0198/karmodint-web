@@ -108,7 +108,8 @@ export function useAppSeo() {
     name: string;
     description?: string;
     image?: string;
-    price: number;
+    price?: number;
+    isPoa?: boolean;
     specs?: string[];
   }) {
     const imageUrl = product.image
@@ -116,6 +117,24 @@ export function useAppSeo() {
         ? product.image
         : `${siteUrl.replace(/\/$/, "")}${product.image.startsWith("/") ? product.image : `/${product.image}`}`
       : undefined;
+
+    // Every Size Option is POA today: publishing `price: 0` would advertise "From £0", so no
+    // `offers` block is emitted at all when a price hasn't been supplied.
+    const offers =
+      !product.isPoa && product.price !== undefined
+        ? {
+            "@type": "Offer",
+            price: product.price,
+            priceCurrency: "GBP",
+            availability: "https://schema.org/InStock",
+            itemCondition: "https://schema.org/NewCondition",
+            url: `${siteUrl.replace(/\/$/, "")}/catalog`,
+            seller: {
+              "@type": "Organization",
+              name: "Karmod International",
+            },
+          }
+        : undefined;
 
     return {
       "@context": "https://schema.org",
@@ -130,18 +149,7 @@ export function useAppSeo() {
         name: "Karmod International",
       },
       category: "Modular Buildings & Portable Cabins",
-      offers: {
-        "@type": "Offer",
-        price: product.price,
-        priceCurrency: "GBP",
-        availability: "https://schema.org/InStock",
-        itemCondition: "https://schema.org/NewCondition",
-        url: `${siteUrl.replace(/\/$/, "")}/catalog`,
-        seller: {
-          "@type": "Organization",
-          name: "Karmod International",
-        },
-      },
+      ...(offers ? { offers } : {}),
     };
   }
 

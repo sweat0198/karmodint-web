@@ -6,34 +6,29 @@
     <div
       class="bg-slate-50 h-48 p-4 flex items-center justify-center relative border-b border-slate-100"
     >
-      <img
-        :src="product.image"
-        :alt="product.name"
+      <SanityImage
+        :asset-id="card.thumbnail.asset?._ref"
+        :alt="card.thumbnail.alt"
+        w="400"
+        fit="max"
         class="max-h-40 w-auto object-contain mix-blend-multiply transition-transform hover:scale-105 duration-300"
       />
-      <div
-        v-if="product.categoryTag"
-        class="absolute top-3 right-3 bg-white/90 backdrop-blur-[2px] px-2 py-0.5 rounded-xs border border-slate-200 shadow-xs"
-      >
-        <span
-          class="text-brand-navy-heading text-[11px] font-semibold tracking-wider uppercase"
-        >
-          {{ product.categoryTag }}
-        </span>
-      </div>
     </div>
 
     <!-- Content Body -->
     <div class="p-6 flex flex-col flex-1 justify-between gap-6">
       <div>
-        <h3 class="text-brand-navy-heading text-xl font-bold mb-4 leading-snug">
-          {{ product.name }}
+        <h3 class="text-brand-navy-heading text-xl font-bold leading-snug">
+          {{ card.productName }}
         </h3>
+        <p class="text-brand-navy-heading text-sm font-bold mb-4 mt-1">
+          {{ card.sizeLabel }}
+        </p>
 
         <!-- Feature Specs List with Checkmarks -->
         <div class="space-y-3">
           <div
-            v-for="(spec, idx) in formattedSpecs"
+            v-for="(spec, idx) in card.specs"
             :key="idx"
             class="flex items-center gap-2 text-sm text-brand-slate-muted"
           >
@@ -58,14 +53,15 @@
       <!-- Pricing & Action Buttons -->
       <div class="pt-4 border-t border-slate-100 flex flex-col gap-3">
         <div>
-          <span
-            class="text-brand-slate-muted text-xs font-semibold tracking-wider uppercase block"
-          >
-            FROM
-          </span>
-          <div class="flex items-baseline gap-1.5 mt-0.5">
+          <template v-if="card.isPoa">
+            <span class="text-brand-navy-heading text-2xl font-bold">POA</span>
+            <div class="text-brand-slate-muted text-xs mt-0.5">
+              Price on application
+            </div>
+          </template>
+          <div v-else class="flex items-baseline gap-1.5 mt-0.5">
             <span class="text-brand-navy-heading text-2xl font-bold">
-              £{{ product.price.toLocaleString() }}
+              £{{ card.price.toLocaleString() }}
             </span>
             <span class="text-brand-slate-muted text-sm">+ VAT</span>
           </div>
@@ -124,55 +120,45 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import { useRuntimeConfig } from "#imports";
 import { useQuoteStore } from "~/stores/quote";
+import { sanityImageUrl } from "~/utils/sanityImageUrl";
+import type { SizeCard } from "~/utils/sizeCards";
 
 export interface ProductCardProps {
-  product: {
-    id: string;
-    name: string;
-    slug: string;
-    image: string;
-    price: number;
-    specs?: (string | { label?: string; key?: string; value: string })[];
-    categoryTag?: string;
-  };
-  variantLabel?: string;
+  card: SizeCard;
 }
 
 const props = defineProps<ProductCardProps>();
 const quoteStore = useQuoteStore();
 const router = useRouter();
 const route = useRoute();
+const config = useRuntimeConfig();
 
-const formattedSpecs = computed(() => {
-  if (!props.product.specs) return [];
-  return props.product.specs.map((spec) => {
-    if (typeof spec === "string") return spec;
-    if (spec.label && spec.value) return `${spec.label}: ${spec.value}`;
-    if (spec.key && spec.value) return `${spec.key}: ${spec.value}`;
-    return spec.value || "";
-  });
-});
+const quantityInBasket = computed(() =>
+  quoteStore.getItemQuantity(props.card.cardId),
+);
 
-const quantityInBasket = computed(() => {
-  return quoteStore.getItemQuantity(props.product.id);
-});
-
-function addItemToBasket() {
-  quoteStore.addItem({
-    productId: props.product.id,
-    productName: props.product.name,
-    productSlug: props.product.slug,
-    variantLabel:
-      props.variantLabel || props.product.categoryTag || "Standard Spec",
-    basePrice: props.product.price,
+function buildQuoteItemPayload() {
+  return {
+    productId: props.card.productId,
+    productName: props.card.productName,
+    productSlug: props.card.productSlug,
+    sizeKey: props.card.sizeKey,
+    sizeLabel: props.card.sizeLabel,
+    basePrice: props.card.price,
+    isPoa: props.card.isPoa,
     quantity: 1,
-    image: props.product.image,
-  });
+    image: sanityImageUrl(
+      props.card.thumbnail.asset?._ref,
+      config.public.sanityProjectId,
+      config.public.sanityDataset,
+    ),
+  };
 }
 
 function handleAdd() {
-  addItemToBasket();
+  quoteStore.addItem(buildQuoteItemPayload());
   if (route.path === "/" || !route.path.startsWith("/catalog")) {
     router.push("/catalog");
   }
@@ -180,25 +166,16 @@ function handleAdd() {
 
 function handleCustomize() {
   if (quantityInBasket.value === 0) {
-    addItemToBasket();
+    quoteStore.addItem(buildQuoteItemPayload());
   }
   router.push("/customize");
 }
 
 function handleIncrement() {
-  quoteStore.incrementProduct({
-    productId: props.product.id,
-    productName: props.product.name,
-    productSlug: props.product.slug,
-    variantLabel:
-      props.variantLabel || props.product.categoryTag || "Standard Spec",
-    basePrice: props.product.price,
-    quantity: 1,
-    image: props.product.image,
-  });
+  quoteStore.incrementProduct(buildQuoteItemPayload());
 }
 
 function handleDecrement() {
-  quoteStore.decrementProduct(props.product.id);
+  quoteStore.decrementItem(props.card.cardId);
 }
 </script>

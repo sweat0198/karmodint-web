@@ -43,7 +43,7 @@ describe('Quote Request API Endpoint', () => {
       items: [
         {
           productName: 'Site Office Cabin 20ft',
-          variantLabel: 'Standard Spec',
+          sizeLabel: '2.40m x 6.00m (Standard)',
           quantity: 1,
           unitPrice: 8500,
           customTotal: 8500,

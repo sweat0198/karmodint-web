@@ -58,20 +58,21 @@
           <ul class="space-y-6">
             <li
               v-for="(cat, idx) in categories"
-              :key="cat.name"
+              :key="cat._id"
               :class="{ 'border-t border-slate-100 pt-6': idx > 0 }"
             >
               <!-- Parent Category Toggle Button -->
               <button
                 type="button"
-                @click="onToggleCategory(cat.name)"
+                @click="onCategoryClick(cat)"
                 class="flex items-center justify-between w-full text-left text-lg font-medium active:scale-[0.99] transition-[color,transform] duration-150 [transition-timing-function:var(--ease-out)] cursor-pointer"
-                :class="activeCategory === cat.name ? 'text-gray-800 font-semibold' : 'text-slate-600 hover:text-gray-800'"
+                :class="activeCategory === cat.slug ? 'text-gray-800 font-semibold' : 'text-slate-600 hover:text-gray-800'"
               >
                 <span>{{ cat.name }}</span>
                 <svg
+                  v-if="cat.children.length"
                   class="w-5 h-5 transition-transform duration-200 [transition-timing-function:var(--ease-out)] shrink-0"
-                  :class="{ 'rotate-180': expandedCat === cat.name }"
+                  :class="{ 'rotate-180': expandedCat === cat.slug }"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -82,24 +83,24 @@
 
               <!-- Subcategories Accordion List -->
               <div
-                v-if="expandedCat === cat.name && cat.subcategories.length"
+                v-if="expandedCat === cat.slug && cat.children.length"
                 class="mt-4 ml-2 border-l-2 border-slate-100 space-y-2.5 transition-all"
               >
                 <div
-                  v-for="sub in cat.subcategories"
-                  :key="sub"
+                  v-for="sub in cat.children"
+                  :key="sub._id"
                 >
                   <button
                     type="button"
-                    @click="onSelectSubcategory(sub, cat.name)"
+                    @click="onSelectSubcategory(sub.slug, cat.slug)"
                     class="block w-full text-left pl-5 py-2.5 text-base rounded-r-md active:scale-[0.99] transition-[background-color,color,transform] duration-150 [transition-timing-function:var(--ease-out)] cursor-pointer"
                     :class="
-                      activeSubcategory === sub
+                      activeSubcategory === sub.slug
                         ? 'border-l-2 border-brand-red -ml-[2px] bg-[#f9e9ea] text-gray-800 font-bold'
                         : 'text-slate-600 hover:text-gray-800 hover:bg-slate-50 font-normal'
                     "
                   >
-                    {{ sub }}
+                    {{ sub.name }}
                   </button>
                 </div>
               </div>
@@ -124,23 +125,20 @@
 
 <script setup lang="ts">
 import { ref, watch, onMounted, onUnmounted } from "vue";
-
-export interface CategoryItem {
-  name: string;
-  subcategories: string[];
-}
+import type { CategoryTreeNode } from "~/queries/catalog";
 
 const props = defineProps<{
   isOpen: boolean;
-  categories: CategoryItem[];
-  activeCategory: string;
-  activeSubcategory: string;
-  expandedCategory?: string;
+  categories: CategoryTreeNode[];
+  activeCategory: string | null;
+  activeSubcategory: string | null;
+  expandedCategory?: string | null;
 }>();
 
 const emit = defineEmits<{
   (e: "update:isOpen", value: boolean): void;
-  (e: "select", subcategory: string, parentCategory: string): void;
+  (e: "select", subcategorySlug: string, categorySlug: string): void;
+  (e: "selectCategory", categorySlug: string): void;
   (e: "apply"): void;
 }>();
 
@@ -178,12 +176,15 @@ function closeDrawer() {
   emit("update:isOpen", false);
 }
 
-function onToggleCategory(catName: string) {
-  expandedCat.value = expandedCat.value === catName ? "" : catName;
+function onCategoryClick(category: CategoryTreeNode) {
+  expandedCat.value = expandedCat.value === category.slug ? "" : category.slug;
+  if (category.children.length === 0) {
+    emit("selectCategory", category.slug);
+  }
 }
 
-function onSelectSubcategory(sub: string, parentCategory: string) {
-  emit("select", sub, parentCategory);
+function onSelectSubcategory(subcategorySlug: string, categorySlug: string) {
+  emit("select", subcategorySlug, categorySlug);
 }
 
 function onApply() {

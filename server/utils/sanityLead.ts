@@ -10,7 +10,7 @@ export interface CustomerPayload {
 export interface QuoteItemPayload {
   productId?: string
   productName: string
-  variantLabel?: string
+  sizeLabel?: string
   quantity: number
   unitPrice?: number
   isPoa?: boolean
@@ -105,7 +105,7 @@ export function buildSanityQuoteEnquiry(input: QuoteEnquiryInput): SanityQuoteEn
       _type: 'quoteItem',
       _key: `item_${index}_${Date.now().toString(36)}`,
       productTitle: item.productName,
-      sizeLabel: item.variantLabel || 'Standard',
+      sizeLabel: item.sizeLabel || 'Standard',
       quantity: qty,
       unitPrice: unitPrice,
       isPoa: isItemPoa,

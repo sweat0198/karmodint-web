@@ -151,7 +151,7 @@
           @click="isCategoryDrawerOpen = true"
           class="hover:text-slate-900 active:opacity-70 cursor-pointer transition-opacity duration-150 shrink-0"
         >
-          {{ activeCategory }}
+          {{ activeCategoryName }}
         </span>
         <svg
           class="w-3 h-3 text-slate-400 shrink-0"
@@ -167,7 +167,7 @@
           />
         </svg>
         <span class="text-gray-800 font-bold shrink-0">
-          {{ activeSubcategory }}
+          {{ activeSubcategoryName }}
         </span>
       </nav>
     </div>
@@ -217,11 +217,13 @@
           />
         </svg>
         <span
+          v-if="selectedCategorySlug"
           class="hover:text-brand-navy-heading cursor-pointer transition-colors"
-          @click="toggleCategory(activeCategory)"
-          >{{ activeCategory }}</span
+          @click="toggleCategoryExpand(selectedCategorySlug)"
+          >{{ activeCategoryName }}</span
         >
         <svg
+          v-if="selectedCategorySlug"
           class="w-3 h-3 text-brand-slate-muted shrink-0"
           fill="none"
           stroke="currentColor"
@@ -235,7 +237,7 @@
           />
         </svg>
         <span class="text-brand-navy-heading font-bold">{{
-          activeSubcategory
+          activeSubcategoryName
         }}</span>
       </nav>
 
@@ -252,25 +254,34 @@
           </h2>
 
           <div class="space-y-4">
+            <button
+              v-if="selectedCategorySlug"
+              type="button"
+              @click="clearFilter"
+              class="text-xs font-semibold text-brand-red hover:text-brand-red-dark uppercase tracking-wider mb-2"
+            >
+              Show all products
+            </button>
             <div
-              v-for="cat in categories"
-              :key="cat.name"
+              v-for="cat in categoryTree"
+              :key="cat._id"
               class="flex flex-col"
             >
               <!-- Parent Category Header -->
               <button
-                @click="toggleCategory(cat.name)"
+                @click="onCategoryClick(cat)"
                 class="flex items-center justify-between w-full text-left py-1 text-lg font-medium transition-colors"
                 :class="
-                  activeCategory === cat.name
+                  selectedCategorySlug === cat.slug
                     ? 'text-brand-navy-heading font-semibold'
                     : 'text-brand-slate-muted hover:text-brand-navy-heading'
                 "
               >
                 <span>{{ cat.name }}</span>
                 <svg
+                  v-if="cat.children.length"
                   class="w-4 h-4 transition-transform duration-200"
-                  :class="{ 'rotate-180': expandedCategory === cat.name }"
+                  :class="{ 'rotate-180': expandedCategorySlug === cat.slug }"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -286,21 +297,21 @@
 
               <!-- Subcategories Accordion List -->
               <div
-                v-if="expandedCategory === cat.name && cat.subcategories.length"
+                v-if="expandedCategorySlug === cat.slug && cat.children.length"
                 class="ml-4 mt-2 border-l border-slate-200 space-y-1"
               >
                 <button
-                  v-for="sub in cat.subcategories"
-                  :key="sub"
-                  @click="selectSubcategory(sub, cat.name)"
+                  v-for="sub in cat.children"
+                  :key="sub._id"
+                  @click="selectSubcategory(sub.slug, cat.slug)"
                   class="w-full text-left py-2 px-4 text-sm transition-all block"
                   :class="
-                    activeSubcategory === sub
+                    selectedSubcategorySlug === sub.slug
                       ? 'bg-brand-rose-card border-l-2 border-brand-red text-brand-navy-heading font-bold'
                       : 'text-brand-slate-muted hover:text-brand-navy-heading font-normal'
                   "
                 >
-                  {{ sub }}
+                  {{ sub.name }}
                 </button>
               </div>
             </div>
@@ -314,7 +325,7 @@
             <h1
               class="text-brand-navy-heading text-3xl font-bold tracking-tight"
             >
-              {{ activeSubcategory }}
+              {{ activeSubcategoryName }}
             </h1>
             <p class="text-brand-slate-muted text-base leading-relaxed">
               Durable, high-performance modular units and cabins tailored for
@@ -322,13 +333,28 @@
             </p>
           </div>
 
+          <!-- Empty State: a real category with no Products yet -->
+          <div
+            v-if="visibleCards.length === 0"
+            class="bg-slate-50 border border-slate-200 rounded p-12 text-center flex flex-col items-center gap-3"
+          >
+            <p class="text-brand-navy-heading text-lg font-semibold">
+              No products in this category yet — talk to us.
+            </p>
+            <NuxtLink
+              to="/contact"
+              class="text-brand-red hover:text-brand-red-dark text-sm font-semibold underline underline-offset-2"
+            >
+              Contact us
+            </NuxtLink>
+          </div>
+
           <!-- Product Cards Grid (3 Columns) -->
-          <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          <div v-else class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
             <ProductCard
-              v-for="product in products"
-              :key="product.id"
-              :product="product"
-              :variant-label="activeSubcategory"
+              v-for="card in visibleCards"
+              :key="card.cardId"
+              :card="card"
             />
           </div>
         </main>
@@ -373,158 +399,102 @@
     <!-- Mobile Category Bottom Sheet Navigation Drawer (Stitch Screen) -->
     <CategoryDrawer
       v-model:is-open="isCategoryDrawerOpen"
-      :categories="categories"
-      :active-category="activeCategory"
-      :active-subcategory="activeSubcategory"
-      :expanded-category="expandedCategory"
+      :categories="categoryTree ?? []"
+      :active-category="selectedCategorySlug"
+      :active-subcategory="selectedSubcategorySlug"
+      :expanded-category="expandedCategorySlug"
       @select="selectSubcategory"
+      @select-category="selectCategory"
     />
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import { useRuntimeConfig, useSanityQuery } from "#imports";
 import { useQuoteStore } from "~/stores/quote";
 import { useAppSeo } from "~/composables/useAppSeo";
+import { sanityImageUrl } from "~/utils/sanityImageUrl";
+import { toSizeCards } from "~/utils/sizeCards";
+import {
+  CATEGORY_TREE_QUERY,
+  PRODUCTS_WITH_SIZES_QUERY,
+  type CategoryTreeNode,
+  type CatalogProduct,
+} from "~/queries/catalog";
 
 const router = useRouter();
 const route = useRoute();
 const quoteStore = useQuoteStore();
+const config = useRuntimeConfig();
 const { setPageSeo, getProductSchema, getBreadcrumbSchema } = useAppSeo();
 
 const isCategoryDrawerOpen = ref(false);
-const activeCategory = ref("Standard Units");
-const activeSubcategory = ref("Security Cabins");
-const expandedCategory = ref("Standard Units");
+// Which sidebar/drawer accordion is open — purely a UI affordance, independent of the filter below.
+const expandedCategorySlug = ref<string | null>(null);
 
-const categories = ref([
-  {
-    name: "Standard Units",
-    subcategories: ["Accommodation", "Security Cabins", "Sanitary Units"],
-  },
-  {
-    name: "Modular Buildings",
-    subcategories: ["Site Offices", "Classrooms", "Healthcare Units"],
-  },
-  {
-    name: "Container Conversions",
-    subcategories: ["Pop-up Shops", "Storage Units", "Workshops"],
-  },
-  {
-    name: "Flat Pack Solutions",
-    subcategories: ["K2004 Series", "Quick Build Cabins"],
-  },
-]);
+const { data: products } = await useSanityQuery<CatalogProduct[]>(PRODUCTS_WITH_SIZES_QUERY);
+const { data: categoryTree } = await useSanityQuery<CategoryTreeNode[]>(CATEGORY_TREE_QUERY);
 
-function toggleCategory(catName: string) {
-  expandedCategory.value = expandedCategory.value === catName ? "" : catName;
+const cards = computed(() => toSizeCards(products.value ?? []));
+
+// The filter lives in the URL (D10: `?category=cabin&subcategory=grp`), not local state, so it
+// survives a reload and is shareable.
+const selectedCategorySlug = computed(() => (route.query.category as string) || null);
+const selectedSubcategorySlug = computed(() => (route.query.subcategory as string) || null);
+
+const selectedCategory = computed(
+  () => categoryTree.value?.find((cat) => cat.slug === selectedCategorySlug.value) ?? null,
+);
+const selectedSubcategory = computed(
+  () =>
+    selectedCategory.value?.children.find((sub) => sub.slug === selectedSubcategorySlug.value) ??
+    null,
+);
+
+const activeCategoryName = computed(() => selectedCategory.value?.name ?? "All Categories");
+const activeSubcategoryName = computed(
+  () => selectedSubcategory.value?.name ?? selectedCategory.value?.name ?? "All Products",
+);
+
+// No selection = all cards. Otherwise the more specific slug (subcategory, if set) wins.
+const visibleCards = computed(() => {
+  const targetSlug = selectedSubcategorySlug.value ?? selectedCategorySlug.value;
+  if (!targetSlug) return cards.value;
+  return cards.value.filter((card) => card.categorySlugs.includes(targetSlug));
+});
+
+function selectCategory(categorySlug: string) {
+  router.replace({ query: { ...route.query, category: categorySlug, subcategory: undefined } });
 }
 
-function selectSubcategory(sub: string, parentCatName?: string) {
-  activeSubcategory.value = sub;
-  if (parentCatName) {
-    activeCategory.value = parentCatName;
-    expandedCategory.value = parentCatName;
-  } else {
-    const parent = categories.value.find((c) => c.subcategories.includes(sub));
-    if (parent) {
-      activeCategory.value = parent.name;
-      expandedCategory.value = parent.name;
-    }
-  }
-
+function selectSubcategory(subcategorySlug: string, categorySlug: string) {
   router.replace({
-    query: {
-      ...route.query,
-      category: activeCategory.value.toLowerCase().replace(/\s+/g, "-"),
-      subcategory: sub.toLowerCase().replace(/\s+/g, "-"),
-    },
+    query: { ...route.query, category: categorySlug, subcategory: subcategorySlug },
   });
+  expandedCategorySlug.value = categorySlug;
+}
+
+function toggleCategoryExpand(categorySlug: string) {
+  expandedCategorySlug.value = expandedCategorySlug.value === categorySlug ? null : categorySlug;
+}
+
+/** A category header both toggles its accordion and, for one with no children, selects it directly. */
+function onCategoryClick(category: CategoryTreeNode) {
+  toggleCategoryExpand(category.slug);
+  if (category.children.length === 0) {
+    selectCategory(category.slug);
+  }
+}
+
+function clearFilter() {
+  router.replace({ query: {} });
 }
 
 onMounted(() => {
-  quoteStore.setLastVisitedRoute('/catalog');
-  const queryCat = route.query.category as string;
-  const querySub = route.query.subcategory as string;
-
-  if (queryCat || querySub) {
-    categories.value.forEach((cat) => {
-      const matchCat = cat.name.toLowerCase().replace(/\s+/g, "-") === queryCat;
-      if (matchCat || querySub) {
-        cat.subcategories.forEach((sub) => {
-          if (sub.toLowerCase().replace(/\s+/g, "-") === querySub) {
-            activeSubcategory.value = sub;
-            activeCategory.value = cat.name;
-            expandedCategory.value = cat.name;
-          }
-        });
-      }
-    });
-  }
+  quoteStore.setLastVisitedRoute("/catalog");
 });
-
-const products = [
-  {
-    id: "sec-guard-house",
-    name: "Compact Guard House",
-    slug: "compact-guard-house",
-    image: "/images/product-security-cabin-110.png",
-    price: 2450,
-    specs: [
-      "1.5m x 1.5m External Dimensions",
-      "Standard EPS Sandwich Insulation",
-      "1 Security Door, 3 Windows",
-    ],
-  },
-  {
-    id: "sec-std-gatehouse",
-    name: "Standard Gatehouse",
-    slug: "standard-gatehouse",
-    image: "/images/product-service-cabin-135.png",
-    price: 3100,
-    specs: [
-      "2.0m x 2.0m External Dimensions",
-      "Premium PUR Thermal Insulation",
-      "1 Security Door, 3 Large Windows",
-    ],
-  },
-  {
-    id: "sec-ext-access",
-    name: "Extended Access Cabin",
-    slug: "extended-access-cabin",
-    image: "/images/product-container-k2004.png",
-    price: 4250,
-    specs: [
-      "2.5m x 2.5m External Dimensions",
-      "Integrated Electrics & Lighting",
-      "Optional WC Module Integration",
-    ],
-  },
-  {
-    id: "sec-multi-role",
-    name: "Multi-Role Security Office",
-    slug: "multi-role-security-office",
-    image: "/images/product-container-k2004.png",
-    price: 7800,
-    specs: [
-      "6.0m x 2.4m External Dimensions",
-      "High Security Steel Doors & Windows",
-      "2 Internal Compartments",
-    ],
-  },
-];
-
-function handleSelect(product: (typeof products)[0]) {
-  quoteStore.addItem({
-    productId: product.id,
-    productName: product.name,
-    productSlug: product.slug,
-    variantLabel: activeSubcategory.value,
-    basePrice: product.price,
-    quantity: 1,
-  });
-}
 
 setPageSeo({
   title: "Modular Buildings & Portable Cabins Catalog | Karmod International",
@@ -540,10 +510,20 @@ setPageSeo({
       "@context": "https://schema.org",
       "@type": "ItemList",
       name: "Modular Building Catalog",
-      itemListElement: products.map((prod, idx) => ({
+      itemListElement: cards.value.map((card, idx) => ({
         "@type": "ListItem",
         position: idx + 1,
-        item: getProductSchema(prod),
+        item: getProductSchema({
+          name: `${card.productName} ${card.sizeLabel}`,
+          image: sanityImageUrl(
+            card.thumbnail.asset?._ref,
+            config.public.sanityProjectId,
+            config.public.sanityDataset,
+          ),
+          price: card.price,
+          isPoa: card.isPoa,
+          specs: card.specs,
+        }),
       })),
     },
   ],

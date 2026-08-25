@@ -11,7 +11,8 @@ export interface QuoteItem {
   productId: string;
   productName: string;
   productSlug: string;
-  variantLabel: string;
+  sizeKey: string;
+  sizeLabel: string;
   basePrice?: number;
   priceModifier?: number;
   quantity: number;
@@ -85,18 +86,21 @@ export const useQuoteStore = defineStore("quote", {
       if (stepNumber === 4) return state.maxVisitedStep >= 4;
       return false;
     },
-    getItemQuantity: (state) => (productId: string) => {
-      const match = state.items.find((i) => i.productId === productId);
+    getItemQuantity: (state) => (id: string) => {
+      const match = state.items.find((i) => i.id === id);
       return match ? match.quantity : 0;
     },
-    getProductItem: (state) => (productId: string) => {
-      return state.items.find((i) => i.productId === productId);
+    getProductItem: (state) => (id: string) => {
+      return state.items.find((i) => i.id === id);
     },
   },
 
   actions: {
     addItem(newItem: Omit<QuoteItem, "id">) {
-      const compositeId = `${newItem.productId}-${newItem.variantLabel || "base"}-${(newItem.notes || "").trim().toLowerCase()}`;
+      // One Quote List line per Product + Size Option (D6). Re-adding increments the quantity.
+      // TODO: when customers ask to order the same size twice with different customizations,
+      // this id needs a configuration discriminator.
+      const compositeId = `${newItem.productId}-${newItem.sizeKey}`;
 
       const existing = this.items.find((i) => i.id === compositeId);
       if (existing) {
@@ -114,8 +118,8 @@ export const useQuoteStore = defineStore("quote", {
       this.addItem({ ...item, quantity: 1 });
     },
 
-    decrementProduct(productId: string) {
-      const existing = this.items.find((i) => i.productId === productId);
+    decrementItem(id: string) {
+      const existing = this.items.find((i) => i.id === id);
       if (existing) {
         if (existing.quantity > 1) {
           existing.quantity -= 1;
@@ -152,31 +156,6 @@ export const useQuoteStore = defineStore("quote", {
       }
     },
 
-    seedDefaultItems() {
-      if (this.items.length === 0) {
-        this.items = [
-          {
-            id: "sec-std-gatehouse-default",
-            productId: "sec-std-gatehouse",
-            productName: "Karmod Standard Security Gatehouse 2.0m",
-            productSlug: "standard-gatehouse",
-            variantLabel: "Security Cabins",
-            basePrice: 3100,
-            customTotal: 3100,
-            quantity: 1,
-            image: "/images/product-service-cabin-135.png",
-            specSummary: [
-              { label: "DIMENSIONS", value: "2.00m x 2.00m" },
-              { label: "WALL FINISH", value: "Standard White (RAL 9002)" },
-              { label: "WINDOWS", value: "3 Glazed Panes" },
-              { label: "ELECTRICS", value: "Integrated LED & Sockets" },
-            ],
-          },
-        ];
-        this.updateMaxVisitedStep(2);
-      }
-    },
-
     updateMaxVisitedStep(step: number) {
       if (step > this.maxVisitedStep) {
         this.maxVisitedStep = step;
@@ -204,6 +183,10 @@ export const useQuoteStore = defineStore("quote", {
   },
 
   persist: {
+    // Bumped from the unversioned default key so a cart persisted under the old shape (a
+    // `variantLabel` instead of `sizeKey`/`sizeLabel`, plus the fixture `sec-guard-house` items
+    // that match no Sanity Product) is dropped on load rather than surfacing dead items (D7).
+    key: "quote-v2",
     storage: piniaPluginPersistedstate.localStorage(),
   },
 });

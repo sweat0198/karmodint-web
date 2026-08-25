@@ -79,7 +79,7 @@ describe('Email Utility & Template Engine', () => {
       items: [
         {
           productName: 'Executive Modular Gatehouse 3x7m',
-          variantLabel: 'Standard Premium',
+          sizeLabel: 'Standard Premium',
           quantity: 2,
           unitPrice: 12500,
           customTotal: 12500,

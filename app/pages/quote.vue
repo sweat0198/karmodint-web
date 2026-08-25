@@ -115,7 +115,7 @@
             </div>
             <div>
               <h3 class="text-lg font-bold text-gray-800">{{ item.productName }}</h3>
-              <p class="label-caps text-brand-red mt-0.5">{{ item.variantLabel || 'Standard Spec' }}</p>
+              <p class="label-caps text-brand-red mt-0.5">{{ item.sizeLabel }}</p>
               
               <!-- Configured Spec Summary Badges -->
               <div v-if="item.specSummary && item.specSummary.length" class="flex flex-wrap gap-1.5 mt-2">

@@ -70,7 +70,7 @@ const handler = async (event: any) => {
         items: items.map((item: any) => ({
           productId: item.productId,
           productName: item.productName,
-          variantLabel: item.variantLabel,
+          sizeLabel: item.sizeLabel,
           quantity: item.quantity || 1,
           unitPrice: item.customTotal || item.unitPrice || item.basePrice,
           notes: item.notes,
