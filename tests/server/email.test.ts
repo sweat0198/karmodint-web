@@ -66,15 +66,11 @@ describe('Email Utility & Template Engine', () => {
         email: 'bob@builds.co.uk',
         phone: '+44 7987 654321',
         company: 'Johnson Ltd',
-        deliveryLocation: 'LE14 4AJ',
+        address: {
+          formattedAddress: '10 High Street, Nottingham, NG1 1AA',
+          postcode: 'NG1 1AA'
+        },
         notes: 'Forklift required for offloading',
-        deliveryEstimate: {
-          miles: 45.2,
-          km: 72.7,
-          duration: '52 mins',
-          originPostcode: 'LE14 4AJ',
-          destinationPostcode: 'NG1 1AA'
-        }
       },
       items: [
         {
@@ -97,12 +93,26 @@ describe('Email Utility & Template Engine', () => {
       expect(businessEmail.to).toEqual(['quotes@karmod-international.com'])
       expect(businessEmail.subject).toContain('New Quote Request from Bob Johnson (1 item)')
       expect(businessEmail.html).toContain('Executive Modular Gatehouse')
-      expect(businessEmail.html).toContain('45.2 miles')
       expect(businessEmail.html).toContain('25,000.00')
+      expect(businessEmail.html).toContain('Product estimate (ex. VAT)')
+      expect(businessEmail.html).toContain('Pending sales review')
+      expect(businessEmail.html).toContain('10 High Street, Nottingham, NG1 1AA')
 
       expect(customerEmail.to).toEqual(['bob@builds.co.uk'])
-      expect(customerEmail.subject).toContain('Your Karmod quote')
+      expect(customerEmail.subject).toContain('We received your Karmod quote request')
       expect(customerEmail.html).toContain('Executive Modular Gatehouse')
+      expect(customerEmail.html).toContain('The sales team will contact you about the delivery charge after reviewing your quote request.')
+      expect(customerEmail.html).toContain('Product estimate (ex. VAT)')
+
+      for (const email of [businessEmail, customerEmail]) {
+        expect(email.html).not.toContain('45.2 miles')
+        expect(email.html).not.toContain('&pound;450.00')
+        expect(email.html).not.toContain('VAT @ 20%')
+        expect(email.html).not.toContain('Total balance')
+        expect(email.html).not.toContain('Valid until')
+        expect(email.html).not.toContain('Accept Quote')
+        expect(email.html).not.toContain('Download PDF')
+      }
     })
   })
 

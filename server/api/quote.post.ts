@@ -1,5 +1,6 @@
 import { buildQuoteEmails, sendResendEmail } from '../utils/email'
 import { buildSanityQuoteEnquiry } from '../utils/sanityLead'
+import { isCompleteDeliveryAddress } from '../../shared/utils/deliveryAddress'
 
 const handler = async (event: any) => {
   let body: any
@@ -18,6 +19,14 @@ const handler = async (event: any) => {
     throw errorFn({
       statusCode: 400,
       statusMessage: 'Invalid quote submission payload. Missing contact details or quote items.'
+    })
+  }
+
+  if (!isCompleteDeliveryAddress(customer.address)) {
+    const errorFn = typeof createError !== 'undefined' ? createError : (err: any) => Object.assign(new Error(err.statusMessage), err)
+    throw errorFn({
+      statusCode: 400,
+      statusMessage: 'A delivery destination with town/city and postcode is required.'
     })
   }
 

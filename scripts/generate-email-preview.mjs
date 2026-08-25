@@ -14,22 +14,13 @@ const sampleQuoteData = {
     phone: '+44 7824 810226',
     company: 'Procurement Division',
     address: '100 Business Park Drive, London, SE1 2AB',
-    deliveryLocation: 'Silvertown, London',
+    deliveryLocation: '100 Business Park Drive, London, SE1 2AB',
     notes: 'Access route requires tail-lift or Hiab offloading. Ground preparation completed.',
-    deliveryEstimate: {
-      miles: 45,
-      km: 72.4,
-      duration: '4-6 weeks',
-      leadTime: '4-6 weeks',
-      deliveryCost: 450,
-      originPostcode: 'LE14 4AJ',
-      destinationPostcode: 'SE1 2AB'
-    }
   },
   items: [
     {
       productName: 'Standard Office Cabin',
-      variantLabel: 'Premium Modular Unit',
+      sizeLabel: 'Premium Modular Unit',
       dimensions: '6.0m x 2.4m',
       imageUrl: 'https://images.unsplash.com/photo-1577495508048-b635879837f1?auto=format&fit=crop&w=600&q=80',
       quantity: 1,

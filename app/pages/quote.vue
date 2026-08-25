@@ -58,9 +58,9 @@
     <BuyFlowHeader
       v-else
       :current-step="4"
-      step-label="Step 4 of 4 • Final Quote Confirmation"
+      step-label="Step 4 of 4 • Request Confirmation"
       title="Quote Request Submitted!"
-      description="Thank you for submitting your enquiry. A copy of your quote request has been dispatched to your email."
+      description="Thank you for submitting your enquiry. Our sales team will now review your request."
     >
       <template #actions>
         <NuxtLink
@@ -80,7 +80,7 @@
         </div>
         <h2 class="text-3xl font-bold text-brand-navy-heading mb-4">Quote Request Submitted!</h2>
         <p class="text-slate-600 mb-6 leading-relaxed">
-          Thank you for submitting your enquiry. A copy of your quote request has been dispatched to your email address (<strong>{{ customer.email }}</strong>), and our sales team is reviewing your specification.
+          Our sales team is reviewing your requested products and delivery destination. They will contact you about the delivery charge and any offload requirements before issuing a formal quote.
         </p>
         <div class="flex justify-center gap-4">
           <NuxtLink to="/catalog" class="btn-primary px-6 py-3 text-sm font-semibold">
@@ -102,6 +102,10 @@
         <div class="flex items-center justify-between pb-4 border-b border-slate-200">
           <h2 class="text-xl font-bold text-gray-800">Selected Units ({{ quoteStore.totalItemsCount }})</h2>
           <button @click="quoteStore.clearQuote()" class="text-xs text-brand-red hover:text-brand-red-dark font-semibold">Clear All</button>
+        </div>
+
+        <div class="rounded border border-brand-rose-border bg-brand-rose-bg px-4 py-3 text-sm leading-relaxed text-brand-rose-text">
+          Product estimates exclude VAT. Delivery and offload costs are not included; the sales team will confirm them in the formal quote.
         </div>
 
         <div 
@@ -157,7 +161,7 @@
       <!-- Contact Details Form (1 col) -->
       <div class="structural-card p-6 h-fit">
         <h2 class="text-xl font-bold text-gray-800 mb-2">Contact Details</h2>
-        <p class="text-xs text-slate-500 mb-6">Enter your details to receive an official quote by email.</p>
+        <p class="text-xs text-slate-500 mb-6">Enter your details so our sales team can prepare your formal quote.</p>
 
         <form @submit.prevent="submitQuote" class="space-y-4">
           <div>
@@ -202,22 +206,20 @@
             />
           </div>
 
-          <!-- Delivery Address Autocomplete & Logistics Distance Calculation -->
+          <!-- Delivery Address Autocomplete -->
           <div>
             <UkAddressAutocomplete
               v-model="customer.address"
               label="Delivery Site Address"
               placeholder="Search postcode or address (e.g. LE14 4AJ)..."
+              required
               :show-manual-toggle="true"
-              @select="onAddressSelected"
-              @clear="onAddressCleared"
             />
 
-            <!-- Real-time Logistics Distance Estimate -->
-            <DeliveryDistanceCard
-              :result="distanceResult"
-              :is-loading="isCalculatingDistance"
-            />
+            <div class="mt-3 rounded border border-brand-rose-border bg-brand-rose-bg px-3.5 py-3 text-xs leading-relaxed text-brand-rose-text">
+              <p class="font-semibold text-brand-navy-heading">Delivery charge confirmed after review</p>
+              <p class="mt-1">The sales team will contact you about the delivery charge after reviewing your quote request. Offload requirements and costs will also be confirmed during the review.</p>
+            </div>
           </div>
 
           <div>
@@ -234,13 +236,17 @@
             {{ errorMessage }}
           </div>
 
+          <p class="text-xs leading-relaxed text-slate-500">
+            Submitting this request is non-binding. The sales team will contact you about the delivery charge after reviewing your quote request. Your formal quote will confirm VAT, delivery, offload requirements, and the final payable total.
+          </p>
+
           <button 
             type="submit" 
             :disabled="submitting"
             class="btn-primary w-full py-3 text-sm font-semibold disabled:opacity-50 flex items-center justify-center gap-2"
           >
             <UIcon v-if="submitting" name="i-heroicons-arrow-path" class="w-5 h-5 animate-spin" />
-            <span>{{ submitting ? 'Submitting Request...' : 'Submit Combined Quote Request' }}</span>
+            <span>{{ submitting ? 'Submitting Request...' : 'Submit Quote Request' }}</span>
           </button>
         </form>
       </div>
@@ -252,7 +258,6 @@
 <script setup lang="ts">
 import { useQuoteStore } from '~/stores/quote'
 import { useAppSeo } from '~/composables/useAppSeo'
-import { useDeliveryDistance } from '~/composables/useDeliveryDistance'
 import type { ParsedUkAddress } from '~/composables/useGooglePlacesAutocomplete'
 
 const { setPageSeo } = useAppSeo()
@@ -265,12 +270,6 @@ setPageSeo({
 })
 
 const quoteStore = useQuoteStore()
-const {
-  distanceResult,
-  isLoading: isCalculatingDistance,
-  calculateDistance,
-  reset: resetDistance
-} = useDeliveryDistance()
 
 const customer = ref({
   name: '',
@@ -287,31 +286,7 @@ const errorMessage = ref('')
 
 onMounted(() => {
   quoteStore.setLastVisitedRoute('/quote')
-  if (customer.value.address) {
-    calculateDistance(customer.value.address, { immediate: true })
-  }
 })
-
-function onAddressSelected(address: ParsedUkAddress) {
-  calculateDistance(address, { immediate: true })
-}
-
-function onAddressCleared() {
-  resetDistance()
-}
-
-// Watch for manual address changes or dynamic updates
-watch(
-  () => customer.value.address,
-  (newAddress) => {
-    if (!newAddress) {
-      resetDistance()
-      return
-    }
-    calculateDistance(newAddress, { immediate: false, debounceMs: 450 })
-  },
-  { deep: true }
-)
 
 async function submitQuote() {
   if (!customer.value.name || !customer.value.email) return
@@ -324,17 +299,7 @@ async function submitQuote() {
       method: 'POST',
       body: {
         items: quoteStore.items,
-        customer: {
-          ...customer.value,
-          deliveryEstimate: distanceResult.value ? {
-            miles: distanceResult.value.distance.miles,
-            km: distanceResult.value.distance.km,
-            duration: distanceResult.value.duration.formatted,
-            originPostcode: distanceResult.value.origin.postcode,
-            destinationPostcode: distanceResult.value.destination.postcode,
-            provider: distanceResult.value.provider
-          } : undefined
-        }
+        customer: customer.value
       }
     })
 

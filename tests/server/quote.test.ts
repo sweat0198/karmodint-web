@@ -23,6 +23,19 @@ describe('Quote Request API Endpoint', () => {
     await expect(quoteHandler(event)).rejects.toThrow(/Invalid quote submission/i)
   })
 
+  it('rejects submissions without a delivery destination', async () => {
+    const event = createMockEvent({
+      customer: {
+        name: 'David Miller',
+        email: 'david@construction.co.uk',
+        address: ''
+      },
+      items: [{ productName: 'Site Office Cabin 20ft', quantity: 1 }]
+    })
+
+    await expect(quoteHandler(event)).rejects.toThrow(/delivery destination/i)
+  })
+
   it('successfully processes valid quote request in simulated mode', async () => {
     const event = createMockEvent({
       customer: {
@@ -30,15 +43,13 @@ describe('Quote Request API Endpoint', () => {
         email: 'david@construction.co.uk',
         phone: '+44 7111 222333',
         company: 'Miller Developments',
-        address: 'Melton Mowbray LE14 4AJ',
+        address: {
+          formattedAddress: '10 High Street, Nottingham, NG1 1AA',
+          addressLine1: '10 High Street',
+          townCity: 'Nottingham',
+          postcode: 'NG1 1AA'
+        },
         notes: 'Urgent delivery needed.',
-        deliveryEstimate: {
-          miles: 30,
-          km: 48,
-          duration: '35 mins',
-          originPostcode: 'LE14 4AJ',
-          destinationPostcode: 'LE14 4AJ'
-        }
       },
       items: [
         {

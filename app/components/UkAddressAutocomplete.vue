@@ -52,6 +52,8 @@
           :placeholder="placeholder"
           :disabled="disabled"
           :required="required && !hasValidAddress"
+          :pattern="required && !hasValidAddress ? '(?!)' : undefined"
+          :aria-invalid="required && displayQuery.length > 0 && !hasValidAddress"
           autocomplete="off"
           role="combobox"
           :aria-expanded="isDropdownOpen"
@@ -308,6 +310,7 @@ import {
   type AddressPrediction,
   type ParsedUkAddress,
 } from "~/composables/useGooglePlacesAutocomplete";
+import { isCompleteDeliveryAddress } from "~~/shared/utils/deliveryAddress";
 
 interface Props {
   modelValue?: string | ParsedUkAddress | null;
@@ -368,13 +371,8 @@ const manualAddress = ref({
 });
 
 const hasValidAddress = computed(() => {
-  if (selectedAddress.value && selectedAddress.value.postcode) return true;
-  if (
-    isManualMode.value &&
-    manualAddress.value.addressLine1 &&
-    manualAddress.value.postcode
-  )
-    return true;
+  if (selectedAddress.value) return isCompleteDeliveryAddress(selectedAddress.value);
+  if (isManualMode.value) return isCompleteDeliveryAddress(manualAddress.value);
   return false;
 });
 
@@ -531,6 +529,8 @@ function emitManualChange() {
     country: "United Kingdom",
   };
 
+  selectedAddress.value = payload;
+  displayQuery.value = formatted;
   emit("update:modelValue", payload);
   emit("select", payload);
 }

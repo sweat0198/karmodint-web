@@ -60,19 +60,9 @@ export interface QuoteEmailPayload {
     email: string
     phone?: string
     company?: string
-    address?: string | { formattedAddress?: string; postcode?: string }
+    address?: string | { formattedAddress?: string; townCity?: string; postcode?: string }
     deliveryLocation?: string
     notes?: string
-    deliveryEstimate?: {
-      miles: number
-      km: number
-      duration: string
-      originPostcode?: string
-      destinationPostcode?: string
-      deliveryCost?: number
-      leadTime?: string
-      provider?: string
-    }
   }
   items: QuoteItemSummary[]
 }
@@ -468,12 +458,10 @@ function addressDisplayFor(customer: QuoteEmailPayload['customer']): string {
 function buildPreparedForCardHtml(opts: {
   customer: QuoteEmailPayload['customer']
   refNumber: string
-  dateGenerated: string
-  validUntil: string
-  quoteTotal: number
+  submittedDate: string
   showConsultant: boolean
 }): string {
-  const { customer, refNumber, dateGenerated, validUntil, quoteTotal, showConsultant } = opts
+  const { customer, refNumber, submittedDate, showConsultant } = opts
   const addressDisplay = addressDisplayFor(customer)
   const phoneHref = customer.phone ? customer.phone.replace(/[^+\d]/g, '') : ''
 
@@ -493,26 +481,12 @@ function buildPreparedForCardHtml(opts: {
       </td>
       <td class="stack-gap hide-sm" width="0" style="font-size:1px;">&nbsp;</td>
       <td class="stack" width="48%" valign="top">
-        ${fieldLabel('Quote reference')}
+        ${fieldLabel('Request reference')}
         ${fieldValue(`<span style="font-weight:600;">${esc(refNumber)}</span>`)}
-        ${fieldLabel('Date generated')}
-        ${fieldValue(esc(dateGenerated))}
-        ${fieldLabel('Valid until')}
-        ${fieldValue(`${esc(validUntil)} <span style="color:#64748B;">(30 days)</span>`)}
+        ${fieldLabel('Submitted')}
+        ${fieldValue(esc(submittedDate))}
         ${showConsultant ? `${fieldLabel('Consultant')}${fieldValue(`UK Technical Desk &middot; ${esc(COMPANY_CONTACT.salesEmail)}`)}` : ''}
         ${customer.notes ? `${fieldLabel('Customer notes')}${fieldValue(esc(customer.notes))}` : ''}
-      </td>
-    </tr></table>
-    <div style="height:8px;line-height:8px;">&nbsp;</div>
-    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background:#FFE9E6;border:1px solid #E7BDB8;border-radius:8px;"><tr>
-      <td style="padding:16px 20px;font-family:${FONT};">
-        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"><tr>
-          <td class="stack center-sm" align="left" valign="middle">
-            ${microLabel('Quote total', '#E31E24')}
-            <div style="font-family:${FONT};font-size:12px;color:#8A5F5A;line-height:18px;padding-top:4px;">Incl. VAT, delivery and customisations</div>
-          </td>
-          <td class="stack center-sm" align="right" valign="middle" style="font-family:${FONT};font-size:28px;font-weight:700;color:#291715;line-height:34px;white-space:nowrap;text-align:right;">${fmtGBP(quoteTotal)}</td>
-        </tr></table>
       </td>
     </tr></table>
   `
@@ -520,14 +494,7 @@ function buildPreparedForCardHtml(opts: {
 }
 
 function buildLogisticsCardHtml(customer: QuoteEmailPayload['customer']): string {
-  const est = customer.deliveryEstimate
-  const destination = est?.destinationPostcode
-    || (typeof customer.address === 'object' ? customer.address?.postcode : undefined)
-    || customer.deliveryLocation
-    || 'To be confirmed'
-  const distance = est?.miles ? `${est.miles} miles` : 'To be confirmed'
-  const leadTime = est?.leadTime || '6&ndash;8 weeks from order'
-  const deliveryCost = est?.deliveryCost ?? 450
+  const destination = addressDisplayFor(customer)
 
   const inner = `
     ${microLabel('Logistics &amp; delivery')}
@@ -537,13 +504,11 @@ function buildLogisticsCardHtml(customer: QuoteEmailPayload['customer']): string
         <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"><tr>
           <td width="34" valign="top" style="padding-right:12px;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" style="display:inline-table;border-radius:4px;background:#FFE9E6;"><tr><td width="22" height="22" align="center" valign="middle" style="width:22px;height:22px;font-family:${FONT};font-size:11px;font-weight:700;color:#E31E24;line-height:22px;">&#9654;</td></tr></table></td>
           <td valign="top">
-            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"><tr>
-              <td class="stack" width="50%" valign="top" style="padding:0 12px 12px 0;">${fieldLabel('Destination')}${fieldValue(esc(destination))}</td>
-              <td class="stack" width="50%" valign="top" style="padding:0 0 12px 0;">${fieldLabel('Distance from works')}${fieldValue(esc(distance))}</td>
-            </tr><tr>
-              <td class="stack" width="50%" valign="top">${fieldLabel('Estimated lead time')}${fieldValue(leadTime)}</td>
-              <td class="stack" width="50%" valign="top">${fieldLabel('Delivery &amp; craneage')}${fieldValue(`<span style="font-weight:700;font-size:16px;color:#291715;">${fmtGBP(deliveryCost)}</span>`)}</td>
-            </tr></table>
+            ${fieldLabel('Delivery destination')}
+            ${fieldValue(esc(destination), 14)}
+            <div style="font-family:${FONT};font-size:14px;font-weight:600;color:#291715;line-height:22px;">The sales team will contact you about the delivery charge after reviewing your quote request.</div>
+            <div style="height:6px;line-height:6px;">&nbsp;</div>
+            <div style="font-family:${FONT};font-size:13px;color:#64748B;line-height:21px;">Offload requirements and costs will also be confirmed during the review.</div>
           </td>
         </tr></table>
       </td>
@@ -555,14 +520,11 @@ function buildLogisticsCardHtml(customer: QuoteEmailPayload['customer']): string
 function buildFinancialSummaryCardHtml(opts: {
   items: QuoteItemSummary[]
   itemFinancials: ReturnType<typeof computeItemFinancials>[]
-  deliveryCost: number
-  subtotal: number
-  vat: number
-  total: number
+  productEstimate: number
   hasPoaItems: boolean
   ctasHtml: string
 }): string {
-  const { items, itemFinancials, deliveryCost, subtotal, vat, total, hasPoaItems, ctasHtml } = opts
+  const { items, itemFinancials, productEstimate, hasPoaItems, ctasHtml } = opts
 
   const lineRows = items.map((item, i) => {
     const fin = itemFinancials[i] ?? { unitPrice: 0, baseTotal: 0, addonsTotal: 0, itemTotal: 0 }
@@ -574,30 +536,22 @@ function buildFinancialSummaryCardHtml(opts: {
   }).join('')
 
   const inner = `
-    ${microLabel('Financial summary')}
+    ${microLabel('Product estimate (ex. VAT)')}
     <div style="height:12px;line-height:12px;">&nbsp;</div>
     <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
       ${lineRows}
-      <tr>
-        <td style="padding:9px 0;font-family:${FONT};font-size:14px;font-weight:400;color:#64748B;line-height:22px;">Delivery &amp; craneage</td>
-        <td align="right" style="padding:9px 0;font-family:${FONT};font-size:15px;font-weight:600;color:#291715;line-height:22px;white-space:nowrap;">${fmtGBP(deliveryCost)}</td>
-      </tr>
       <tr><td colspan="2" style="border-top:1px solid #E2E8F0;height:1px;line-height:1px;font-size:1px;padding-top:6px;">&nbsp;</td></tr>
       <tr>
-        <td style="padding:9px 0;font-family:${FONT};font-size:14px;font-weight:600;color:#1F2937;line-height:22px;">Subtotal (ex. VAT)</td>
-        <td align="right" style="padding:9px 0;font-family:${FONT};font-size:15px;font-weight:600;color:#291715;line-height:22px;white-space:nowrap;">${fmtGBP(subtotal)}</td>
+        <td style="padding:9px 0;font-family:${FONT};font-size:14px;font-weight:600;color:#1F2937;line-height:22px;">Product estimate (ex. VAT)</td>
+        <td align="right" style="padding:9px 0;font-family:${FONT};font-size:18px;font-weight:700;color:#291715;line-height:24px;white-space:nowrap;">${hasPoaItems ? 'Part POA' : fmtGBP(productEstimate)}</td>
       </tr>
       <tr>
-        <td style="padding:9px 0;font-family:${FONT};font-size:14px;font-weight:400;color:#64748B;line-height:22px;">VAT @ 20%</td>
-        <td align="right" style="padding:9px 0;font-family:${FONT};font-size:15px;font-weight:600;color:#291715;line-height:22px;white-space:nowrap;">${fmtGBP(vat)}</td>
+        <td style="padding:9px 0;font-family:${FONT};font-size:14px;font-weight:400;color:#64748B;line-height:22px;">VAT, delivery &amp; offload</td>
+        <td align="right" style="padding:9px 0;font-family:${FONT};font-size:14px;font-weight:600;color:#E31E24;line-height:22px;">Pending sales review</td>
       </tr>
     </table>
-    <div style="height:14px;line-height:14px;">&nbsp;</div>
-    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-top:2px solid #291715;"><tr>
-      <td class="stack center-sm" valign="middle" style="padding-top:16px;font-family:${FONT};font-size:15px;font-weight:600;color:#1F2937;">Total balance</td>
-      <td class="stack center-sm" align="right" valign="middle" style="padding-top:16px;text-align:right;"><span class="total-num" style="font-family:${FONT};font-size:32px;font-weight:700;color:#291715;line-height:38px;white-space:nowrap;">${fmtGBP(total)}</span></td>
-    </tr></table>
-    ${hasPoaItems ? `<div style="height:10px;line-height:10px;">&nbsp;</div><div style="font-family:${FONT};font-size:12px;color:#64748B;line-height:18px;">Contains item(s) priced on application &mdash; final total to be confirmed by our team.</div>` : ''}
+    <div style="height:10px;line-height:10px;">&nbsp;</div>
+    <div style="font-family:${FONT};font-size:12px;color:#64748B;line-height:18px;">This is a non-binding product estimate. The formal sales quote will confirm VAT, delivery, offload requirements, and the final payable total.</div>
     <div style="height:24px;line-height:24px;">&nbsp;</div>
     ${ctasHtml}
   `
@@ -619,13 +573,9 @@ function replyButtonsHtml(customerEmail: string, refNumber: string): string {
   return `<table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td valign="top">${buttonHtml(href, 'Reply to customer', 'primary')}</td></tr></table>`
 }
 
-function acceptQuoteButtonsHtml(refNumber: string, siteUrl: string): string {
-  const acceptHref = `${siteUrl}/quote/${encodeURIComponent(refNumber)}/accept`
-  const pdfHref = `${siteUrl}/quote/${encodeURIComponent(refNumber)}.pdf`
-  return `<table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
-    <td valign="top" style="padding-right:12px;">${buttonHtml(acceptHref, 'Accept Quote', 'primary')}</td>
-    <td valign="top">${buttonHtml(pdfHref, 'Download PDF', 'secondary')}</td>
-  </tr></table>`
+function customerReplyButtonHtml(refNumber: string): string {
+  const href = `mailto:${encodeURIComponent(COMPANY_CONTACT.salesEmail)}?subject=${encodeURIComponent(`Quote request ${refNumber}`)}`
+  return `<table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td valign="top">${buttonHtml(href, 'Reply with a question', 'primary')}</td></tr></table>`
 }
 
 function buildWhatsNextCardHtml(): string {
@@ -633,9 +583,9 @@ function buildWhatsNextCardHtml(): string {
     ${microLabel('What happens next')}
     <div style="height:12px;line-height:12px;">&nbsp;</div>
     <div style="font-family:${FONT};font-size:14px;color:#1F2937;line-height:24px;">
-      1. Accept the quote online or by reply.<br>
-      2. We confirm your delivery window and issue the order pack.<br>
-      3. Manufacture begins &mdash; typically 6&ndash;8 weeks to site.
+      1. Our sales team reviews your requested products and delivery destination.<br>
+      2. The team contacts you about delivery and any offload requirements.<br>
+      3. You receive a formal quote confirming VAT and the final payable total.
     </div>
     <div style="height:14px;line-height:14px;">&nbsp;</div>
     <div style="font-family:${FONT};font-size:13px;color:#64748B;line-height:21px;">Questions? Call <a href="${COMPANY_CONTACT.phoneTelHref}" style="color:#E31E24;text-decoration:none;">${COMPANY_CONTACT.phoneDisplay}</a> or reply to this email.</div>
@@ -657,32 +607,23 @@ export function buildQuoteEmails(
   const refNumber = data.quoteReference || `KM-${Math.floor(1000 + Math.random() * 9000)}`
 
   const now = new Date()
-  const validUntilDate = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000)
-  const dateGenerated = fmtDateLong(now)
-  const validUntil = fmtDateLong(validUntilDate)
-  const submittedAt = `${now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}, ${dateGenerated}`
+  const submittedDate = fmtDateLong(now)
+  const submittedAt = `${now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}, ${submittedDate}`
 
   const itemFinancials = items.map(computeItemFinancials)
   const hasPoaItems = items.some(i => i.isPoa)
-  const deliveryCost = customer.deliveryEstimate?.deliveryCost ?? 450
-  const subtotal = itemFinancials.reduce((sum, f) => sum + f.itemTotal, 0) + deliveryCost
-  const vat = subtotal * 0.2
-  const total = subtotal + vat
+  const productEstimate = itemFinancials.reduce((sum, f) => sum + f.itemTotal, 0)
 
   const preparedForCardHtml = buildPreparedForCardHtml({
     customer,
     refNumber,
-    dateGenerated,
-    validUntil,
-    quoteTotal: total,
+    submittedDate,
     showConsultant: true
   })
   const preparedForCardHtmlCustomer = buildPreparedForCardHtml({
     customer,
     refNumber,
-    dateGenerated,
-    validUntil,
-    quoteTotal: total,
+    submittedDate,
     showConsultant: false
   })
   const itemCardsHtml = items.map(buildItemCardHtml).join(spacerRow(16))
@@ -690,26 +631,20 @@ export function buildQuoteEmails(
   const financialCardHtmlBusiness = buildFinancialSummaryCardHtml({
     items,
     itemFinancials,
-    deliveryCost,
-    subtotal,
-    vat,
-    total,
+    productEstimate,
     hasPoaItems,
     ctasHtml: replyButtonsHtml(customer.email, refNumber)
   })
   const financialCardHtmlCustomer = buildFinancialSummaryCardHtml({
     items,
     itemFinancials,
-    deliveryCost,
-    subtotal,
-    vat,
-    total,
+    productEstimate,
     hasPoaItems,
-    ctasHtml: acceptQuoteButtonsHtml(refNumber, siteUrl)
+    ctasHtml: customerReplyButtonHtml(refNumber)
   })
 
   const itemsBlockHtml = `
-    ${sectionLabelRow('Quoted items &amp; customisations')}
+    ${sectionLabelRow('Requested items &amp; customisations')}
     ${itemCardsHtml}
     ${spacerRow(16)}
     ${logisticsCardHtml}
@@ -733,9 +668,9 @@ export function buildQuoteEmails(
   const customerFirstName = customer.name.trim().split(/\s+/)[0] || customer.name
   const customerContentHtml = `
     ${buildCustomerIntroCardHtml({
-      eyebrow: 'Quote confirmation',
-      title: `Thank you, ${esc(customerFirstName)} &mdash; your quote is ready`,
-      message: 'We&rsquo;ve prepared the quotation below based on the configuration you submitted. It&rsquo;s held for 30 days &mdash; accept online, or reply to this email and one of our team will pick it up.'
+      eyebrow: 'Request received',
+      title: `Thank you, ${esc(customerFirstName)} &mdash; we received your quote request`,
+      message: 'This acknowledgement summarises the products you requested. The sales team will contact you about the delivery charge after reviewing your quote request.'
     })}
     ${spacerRow(16)}
     ${preparedForCardHtmlCustomer}
@@ -757,7 +692,7 @@ export function buildQuoteEmails(
       subject: `New Quote Request from ${customer.name} (${items.length} item${items.length > 1 ? 's' : ''})`,
       html: renderBrandedEmailTemplate({
         title: `New Quote Request &mdash; ${refNumber}`,
-        preheader: `New quote request from ${customer.name} — ${fmtGBP(total).replace('&pound;', '£')}. Reply to reach the customer.`,
+        preheader: `New quote request from ${customer.name}. Delivery and offload charges require sales review.`,
         contentHtml: businessContentHtml,
         footerNote: quoteDisclaimer,
         siteUrl
@@ -767,14 +702,15 @@ export function buildQuoteEmails(
     customerEmail: {
       from: fromEmail,
       to: [customer.email],
-      subject: `Your Karmod quote ${refNumber} is ready`,
+      subject: `We received your Karmod quote request ${refNumber}`,
       html: renderBrandedEmailTemplate({
-        title: `Your Karmod Quote &mdash; ${refNumber}`,
-        preheader: `Your Karmod quote ${refNumber} is ready — ${fmtGBP(total).replace('&pound;', '£')} incl. VAT, valid for 30 days.`,
+        title: `Quote Request Received &mdash; ${refNumber}`,
+        preheader: `We received your quote request ${refNumber}. Our sales team will review delivery and offload requirements.`,
         contentHtml: customerContentHtml,
         footerNote: quoteDisclaimer,
         siteUrl
-      })
+      }),
+      replyTo: COMPANY_CONTACT.salesEmail
     }
   }
 }

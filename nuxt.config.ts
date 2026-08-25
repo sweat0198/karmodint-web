@@ -114,13 +114,11 @@ export default defineNuxtConfig({
     resendApiKey: process.env.RESEND_API_KEY || "",
     businessEmail:
       process.env.BUSINESS_EMAIL || "enquiries@karmod-international.com",
-    mapboxAccessToken: process.env.MAPBOX_ACCESS_TOKEN || "",
     public: {
       siteUrl:
         process.env.NUXT_PUBLIC_SITE_URL || "https://www.karmodint.co.uk",
       sanityProjectId: process.env.SANITY_PROJECT_ID || "dummy_project_id",
       sanityDataset: process.env.SANITY_DATASET || "production",
-      mapboxAccessToken: process.env.MAPBOX_ACCESS_TOKEN || "",
       googleMapsApiKey: process.env.NUXT_PUBLIC_GOOGLE_MAPS_API_KEY || "",
     },
   },
