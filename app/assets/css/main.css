@@ -46,6 +46,18 @@
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
   --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+
+  /* Chrome heights, measured from the rendered `lg`+ AppHeader/PriceBar (devtools, not inferred
+     from classes). Feeds the customizer's sticky offset/cap (see ProductCustomizer.vue). */
+  --app-header-h: 71px;
+  --price-bar-h: 80px;
+  --customizer-sticky-top: calc(var(--app-header-h) + 1rem);
+  /* --price-bar-h is reserved unconditionally: PriceBar shows whenever the cart is non-empty,
+     and /customize renders EmptyQuoteState instead of any card when it's empty, so the bar is
+     always present alongside an expanded card. */
+  --customizer-sticky-max-h: calc(
+    100dvh - var(--customizer-sticky-top) - var(--price-bar-h) - 1rem
+  );
 }
 
 body {

@@ -81,8 +81,9 @@
         <!-- Accordion Item Card Loop -->
         <div
           v-for="item in quoteStore.items"
+          :id="`unit-${item.id}`"
           :key="item.id"
-          class="bg-white border rounded transition-[border-color,box-shadow] duration-200 overflow-hidden shadow-xs"
+          class="bg-white border rounded transition-[border-color,box-shadow] duration-200 overflow-clip shadow-xs"
           :class="[
             isExpanded(item.id)
               ? 'border-brand-red/80 ring-1 ring-brand-red/20 shadow-md'
@@ -252,6 +253,7 @@
                 :title="item.productName"
                 :subtitle="`${item.sizeLabel} • Engineering & Component Options`"
                 :preview-image="item.image || getFallbackImage(item.productId)"
+                :preview-images="item.images ?? []"
                 :spec-summary-items="getItemSpecSummary(item)"
                 :groups="DEMO_CUSTOMIZATION_GROUPS"
                 :model-value="getItemSelections(item.id)"
@@ -288,8 +290,62 @@ setPageSeo({
 
 const quoteStore = useQuoteStore();
 
-// Tracks which items are expanded in accordion
-const expandedItemIds = ref<Set<string>>(new Set());
+// Tracks which single item is expanded in the accordion
+const expandedItemId = ref<string | null>(null);
+
+const prefersReducedMotion = () =>
+  window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/**
+ * Scrolls the card's header to sit just under the sticky app header, once its layout has settled.
+ *
+ * `--customizer-sticky-top` itself is a `calc()` expression, and `getComputedStyle` returns an
+ * unregistered custom property's `calc()` text unevaluated rather than a resolved pixel value —
+ * so this re-derives the same `var(--app-header-h) + 1rem` formula from its plain-length parts
+ * instead of trying to parse the calc string.
+ *
+ * Single-open means the outgoing card's `.accordion-grid` collapses to `0fr` while the incoming
+ * one expands to `1fr` in the same 350ms transition (D7). Measuring right after Vue's `nextTick`
+ * catches both mid-animation, so the target position is off by however much of the transition
+ * hasn't run yet — waiting for the incoming card's `transitionend` measures the settled layout.
+ */
+function scrollCardIntoView(id: string) {
+  nextTick(() => {
+    const reduced = prefersReducedMotion();
+
+    const doScroll = () => {
+      const el = document.getElementById(`unit-${id}`);
+      if (!el) return;
+      const rootStyle = getComputedStyle(document.documentElement);
+      const headerH = Number.parseFloat(rootStyle.getPropertyValue("--app-header-h")) || 0;
+      const rem = Number.parseFloat(rootStyle.fontSize) || 16;
+      const stickyTop = headerH + rem;
+      const targetY = el.getBoundingClientRect().top + window.scrollY - stickyTop;
+      window.scrollTo({ top: targetY, behavior: reduced ? "auto" : "smooth" });
+    };
+
+    const grid = document.querySelector<HTMLElement>(`#unit-${id} .accordion-grid`);
+    if (reduced || !grid) {
+      doScroll();
+      return;
+    }
+
+    let settled = false;
+    const finish = () => {
+      if (settled) return;
+      settled = true;
+      grid.removeEventListener("transitionend", onTransitionEnd);
+      window.clearTimeout(fallback);
+      doScroll();
+    };
+    const onTransitionEnd = (e: TransitionEvent) => {
+      if (e.target === grid && e.propertyName === "grid-template-rows") finish();
+    };
+    grid.addEventListener("transitionend", onTransitionEnd);
+    // Fallback in case the transition is interrupted (e.g. another toggle) and never fires.
+    const fallback = window.setTimeout(finish, 400);
+  });
+}
 
 // Local reactive mapping for each item's live selections and notes
 const itemSelections = reactive<Record<string, CustomizationSelections>>({});
@@ -297,14 +353,15 @@ const itemNotes = reactive<Record<string, CustomizationNotes>>({});
 const itemPricingCache = new Map<string, ReturnType<typeof useCustomizationPricing>>();
 
 function isExpanded(id: string): boolean {
-  return expandedItemIds.value.has(id);
+  return expandedItemId.value === id;
 }
 
 function toggleExpand(id: string) {
-  if (expandedItemIds.value.has(id)) {
-    expandedItemIds.value.delete(id);
+  if (expandedItemId.value === id) {
+    expandedItemId.value = null;
   } else {
-    expandedItemIds.value.add(id);
+    expandedItemId.value = id;
+    scrollCardIntoView(id);
   }
 }
 
@@ -399,12 +456,12 @@ function handleProceedClick() {
   );
   if (!offendingItem) return;
 
-  expandedItemIds.value.add(offendingItem.id);
+  expandedItemId.value = offendingItem.id;
   const offendingGroup = getItemUnsatisfiedMandatory(offendingItem)[0];
   nextTick(() => {
     document
       .getElementById(`group-${offendingGroup?._id}`)
-      ?.scrollIntoView({ behavior: "smooth", block: "center" });
+      ?.scrollIntoView({ behavior: prefersReducedMotion() ? "auto" : "smooth", block: "center" });
   });
 }
 
@@ -413,7 +470,7 @@ onMounted(() => {
   // Expand the first item by default if items exist
   const first = quoteStore.items[0];
   if (first) {
-    expandedItemIds.value.add(first.id);
+    expandedItemId.value = first.id;
   }
 });
 </script>
@@ -435,7 +492,15 @@ onMounted(() => {
 }
 
 .accordion-inner {
-  overflow: hidden;
+  overflow: clip;
   min-height: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .accordion-grid {
+    /* Drop the row-height transition (it moves the rest of the page) but keep the opacity
+       fade — it aids comprehension of the swap without any motion. */
+    transition: opacity 300ms ease-in-out;
+  }
 }
 </style>

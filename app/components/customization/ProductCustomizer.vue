@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref } from "vue";
-import type { SanityCustomizationGroup } from "~/types/catalog";
+import { computed, ref } from "vue";
+import type { CarouselImage, SanityCustomizationGroup } from "~/types/catalog";
 import type {
   CustomizationNotes,
   CustomizationSelections,
@@ -13,6 +13,8 @@ interface Props {
   title: string;
   subtitle?: string;
   previewImage?: string;
+  /** Every angle of this size. Falls back to `previewImage` as a single frame when unsupplied. */
+  previewImages?: CarouselImage[];
   specSummaryItems?: SpecSummaryItem[];
   specSheetUrl?: string;
   currencySymbol?: string;
@@ -25,6 +27,7 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   subtitle: "",
   previewImage: "",
+  previewImages: () => [],
   specSummaryItems: () => [],
   specSheetUrl: "#",
   currencySymbol: "£",
@@ -38,9 +41,22 @@ const emit = defineEmits<{
   (e: "update:notes", value: CustomizationNotes): void;
 }>();
 
+/**
+ * The viewer's frames. A cart persisted before `images` existed — or any item carrying only a
+ * static fallback render — still shows its one image, just without arrows.
+ */
+const previewFrames = computed<CarouselImage[]>(() => {
+  if (props.previewImages.length) return props.previewImages;
+  return props.previewImage ? [{ src: props.previewImage, alt: props.title }] : [];
+});
+
 // 3D Viewer overlay controls
 const zoomLevel = ref(100);
 const rotateDegrees = ref(0);
+
+const viewerTransform = computed(() => ({
+  transform: `scale(${zoomLevel.value / 100}) rotate(${rotateDegrees.value}deg)`,
+}));
 
 const resetViewer = () => {
   zoomLevel.value = 100;
@@ -58,12 +74,12 @@ const zoomOut = () => {
 
 <template>
   <div
-    class="w-full bg-slate-50 flex flex-col lg:flex-row items-stretch"
+    class="w-full bg-slate-50 flex flex-col lg:flex-row lg:items-start"
     data-node-id="1:38"
   >
-    <!-- Left Column: 3D Preview Canvas & Product Info (3/5 width on desktop) -->
+    <!-- Left Column: 3D Preview Canvas & Product Info (55% width on desktop, sticky) -->
     <div
-      class="lg:w-3/5 border-b lg:border-b-0 lg:border-r border-brand-rose-border/30 p-6 md:p-8 flex flex-col justify-between relative min-h-[500px]"
+      class="lg:w-[55%] border-b lg:border-b-0 p-6 md:p-8 flex flex-col justify-between relative min-h-[500px] lg:min-h-0 lg:sticky lg:self-start lg:top-(--customizer-sticky-top) lg:max-h-(--customizer-sticky-max-h)"
     >
       <!-- Header / Breadcrumbs -->
       <div class="w-full z-10">
@@ -83,21 +99,24 @@ const zoomOut = () => {
         class="flex-1 flex items-center justify-center relative my-8 py-4 overflow-hidden"
       >
         <div
-          class="relative w-full max-w-[640px] aspect-video flex items-center justify-center transition-transform duration-300 ease-out"
-          :style="{
-            transform: `scale(${zoomLevel / 100}) rotate(${rotateDegrees}deg)`,
-          }"
+          class="relative w-full max-w-[640px] aspect-video max-h-full flex items-center justify-center"
         >
-          <!-- Image or 3D fallback visual -->
-          <img
-            v-if="previewImage"
-            :src="previewImage"
-            :alt="title"
-            class="max-h-full max-w-full object-contain drop-shadow-xl"
+          <!--
+            Image or 3D fallback visual. The viewer's zoom/rotate rides on the frames alone, so the
+            carousel's arrows and dots stay put and clear of the stage's `overflow-hidden`.
+          -->
+          <ProductImageCarousel
+            v-if="previewFrames.length"
+            :images="previewFrames"
+            persistent-controls
+            frame-class="drop-shadow-xl"
+            dots-placement="top"
+            :frame-style="viewerTransform"
           />
           <div
             v-else
-            class="w-full h-full bg-gradient-to-br from-slate-100 to-slate-200 rounded-lg flex items-center justify-center border border-slate-200/60 shadow-inner"
+            class="w-full h-full bg-gradient-to-br from-slate-100 to-slate-200 rounded-lg flex items-center justify-center border border-slate-200/60 shadow-inner transition-transform duration-300 ease-out"
+            :style="viewerTransform"
           >
             <div class="text-center p-6">
               <svg
@@ -213,9 +232,9 @@ const zoomOut = () => {
       </div>
     </div>
 
-    <!-- Right Column: Customization Panel (2/5 width on desktop) -->
-    <div class="lg:w-2/5 bg-white relative flex flex-col min-h-0">
-      <div class="lg:absolute lg:inset-0 p-6 md:p-8 overflow-y-auto">
+    <!-- Right Column: Customization Panel (45% width on desktop) -->
+    <div class="lg:w-[45%] bg-white lg:border-l border-brand-rose-border/30">
+      <div class="p-6 md:p-8">
         <div
           v-if="showDemoNotice"
           class="mb-6 flex items-start gap-2.5 rounded border border-amber-300 bg-amber-50 px-3.5 py-2.5 text-xs text-amber-900"

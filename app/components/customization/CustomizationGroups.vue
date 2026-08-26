@@ -34,7 +34,7 @@ function updateSelection(groupId: string, value: CustomizationSelections[string]
 </script>
 
 <template>
-  <div class="flex flex-col gap-8 max-w-[480px]">
+  <div class="flex flex-col gap-8">
     <p v-if="sortedGroups.length === 0" class="text-sm text-brand-slate-muted">
       Standard specification — no options for this unit
     </p>
