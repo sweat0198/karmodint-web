@@ -47,21 +47,17 @@ const emit = defineEmits<{
  */
 const previewFrames = computed<CarouselImage[]>(() => {
   if (props.previewImages.length) return props.previewImages;
-  return props.previewImage ? [{ src: props.previewImage, alt: props.title }] : [];
+  return props.previewImage
+    ? [{ src: props.previewImage, alt: props.title }]
+    : [];
 });
 
 // 3D Viewer overlay controls
 const zoomLevel = ref(100);
-const rotateDegrees = ref(0);
 
 const viewerTransform = computed(() => ({
-  transform: `scale(${zoomLevel.value / 100}) rotate(${rotateDegrees.value}deg)`,
+  transform: `scale(${zoomLevel.value / 100})`,
 }));
-
-const resetViewer = () => {
-  zoomLevel.value = 100;
-  rotateDegrees.value = 0;
-};
 
 const zoomIn = () => {
   if (zoomLevel.value < 160) zoomLevel.value += 20;
@@ -96,7 +92,7 @@ const zoomOut = () => {
 
       <!-- Interactive 3D Viewer / Image Stage -->
       <div
-        class="flex-1 flex items-center justify-center relative my-8 py-4 overflow-hidden"
+        class="flex-1 flex items-center justify-center relative mt-8 pt-4 pb-2 overflow-hidden"
       >
         <div
           class="relative w-full max-w-[640px] aspect-video max-h-full flex items-center justify-center"
@@ -139,33 +135,13 @@ const zoomOut = () => {
             </div>
           </div>
         </div>
+      </div>
 
-        <!-- Canvas Controls Overlay -->
+      <!-- Canvas Controls: below the image stage, clear of the artwork -->
+      <div class="flex items-center justify-center mt-2">
         <div
-          class="absolute bottom-4 left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur-md border border-brand-rose-border/20 rounded-xl shadow-md p-1.5 flex items-center gap-1.5 z-20"
+          class="bg-white border border-brand-rose-border/20 rounded-xl shadow-md p-1.5 flex items-center gap-1.5"
         >
-          <button
-            type="button"
-            class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-600 hover:bg-slate-100 transition-colors"
-            title="Reset View"
-            @click="resetViewer"
-          >
-            <svg
-              class="w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-              ></path>
-            </svg>
-          </button>
-          <div class="w-px h-6 bg-brand-rose-border/30"></div>
           <button
             type="button"
             class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-600 hover:bg-slate-100 transition-colors"
@@ -253,8 +229,9 @@ const zoomOut = () => {
             />
           </svg>
           <span>
-            <strong class="font-semibold">Demo data.</strong> Options and prices shown here are
-            placeholders, not the live catalogue. Do not send this quote to a customer.
+            <strong class="font-semibold">Demo data.</strong> Options and prices
+            shown here are placeholders, not the live catalogue. Do not send
+            this quote to a customer.
           </span>
         </div>
 
