@@ -29,7 +29,7 @@ export const CLIENT_REFERENCES: ClientReference[] = [
     name: 'Canary Wharf Management',
     location: 'London',
     category: 'Commercial & Infrastructure',
-    logoUrl: '/images/references/canary-wharf.svg',
+    logoUrl: '/images/references/canary-wharf-icon.png',
     logoAlt: 'Canary Wharf Management Logo',
   },
   {
