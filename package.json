@@ -17,6 +17,7 @@
     "typecheck:catalogue": "tsc -p tsconfig.catalogue.json",
     "references:import": "jiti scripts/references/import-references.ts",
     "references:patch-websites": "jiti scripts/references/patch-websites.ts",
+    "references:patch-logo": "jiti scripts/references/patch-logo.ts",
     "references:verify": "jiti scripts/references/verify-references.ts",
     "typecheck:references": "tsc -p tsconfig.references.json",
     "gallery:prepare": "jiti scripts/gallery/prepare-gallery.ts",
