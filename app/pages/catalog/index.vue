@@ -241,11 +241,52 @@
         }}</span>
       </nav>
 
-      <!-- Main Layout Container: Sidebar + Product Grid -->
+      <!-- Main Layout Container: Product Grid + Sidebar -->
       <div class="flex flex-col lg:flex-row gap-8 items-start w-full">
+        <!-- Main Product Grid Section -->
+        <main class="flex-1 w-full flex flex-col gap-6">
+          <!-- Category Title & Description -->
+          <div class="flex flex-col gap-2 pb-2">
+            <h1
+              class="text-brand-navy-heading text-3xl font-bold tracking-tight"
+            >
+              {{ activeSubcategoryName }}
+            </h1>
+            <p class="text-brand-slate-muted text-base leading-relaxed">
+              Durable, high-performance modular units and cabins tailored for
+              site facilities, offices, and custom requirements.
+            </p>
+          </div>
+
+          <!-- Empty State: a real category with no Products yet -->
+          <div
+            v-if="visibleCards.length === 0"
+            class="bg-slate-50 border border-slate-200 rounded p-12 text-center flex flex-col items-center gap-3"
+          >
+            <p class="text-brand-navy-heading text-lg font-semibold">
+              No products in this category yet — talk to us.
+            </p>
+            <NuxtLink
+              to="/contact"
+              class="text-brand-red hover:text-brand-red-dark text-sm font-semibold underline underline-offset-2"
+            >
+              Contact us
+            </NuxtLink>
+          </div>
+
+          <!-- Product Cards Grid (3 Columns) -->
+          <div v-else class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            <ProductCard
+              v-for="card in visibleCards"
+              :key="card.cardId"
+              :card="card"
+            />
+          </div>
+        </main>
+
         <!-- Sidebar - Categories (Desktop 290px width) -->
         <aside
-          class="hidden lg:block w-[290px] shrink-0 bg-white border border-slate-100 rounded p-6 shadow-sm"
+          class="hidden lg:block sticky top-24 self-start w-[290px] shrink-0 bg-white border border-slate-100 rounded p-6 shadow-sm"
         >
           <h2
             class="text-brand-navy-heading text-2xl font-semibold tracking-tight mb-6"
@@ -317,47 +358,6 @@
             </div>
           </div>
         </aside>
-
-        <!-- Main Product Grid Section -->
-        <main class="flex-1 w-full flex flex-col gap-6">
-          <!-- Category Title & Description -->
-          <div class="flex flex-col gap-2 pb-2">
-            <h1
-              class="text-brand-navy-heading text-3xl font-bold tracking-tight"
-            >
-              {{ activeSubcategoryName }}
-            </h1>
-            <p class="text-brand-slate-muted text-base leading-relaxed">
-              Durable, high-performance modular units and cabins tailored for
-              site facilities, offices, and custom requirements.
-            </p>
-          </div>
-
-          <!-- Empty State: a real category with no Products yet -->
-          <div
-            v-if="visibleCards.length === 0"
-            class="bg-slate-50 border border-slate-200 rounded p-12 text-center flex flex-col items-center gap-3"
-          >
-            <p class="text-brand-navy-heading text-lg font-semibold">
-              No products in this category yet — talk to us.
-            </p>
-            <NuxtLink
-              to="/contact"
-              class="text-brand-red hover:text-brand-red-dark text-sm font-semibold underline underline-offset-2"
-            >
-              Contact us
-            </NuxtLink>
-          </div>
-
-          <!-- Product Cards Grid (3 Columns) -->
-          <div v-else class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-            <ProductCard
-              v-for="card in visibleCards"
-              :key="card.cardId"
-              :card="card"
-            />
-          </div>
-        </main>
       </div>
 
       <!-- Footer CTA Section -->
