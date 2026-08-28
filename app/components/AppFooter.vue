@@ -1,5 +1,8 @@
 <template>
-  <footer class="bg-brand-navy text-white border-t border-brand-rose-border/20">
+  <footer
+    class="bg-brand-navy text-white border-t border-brand-rose-border/20"
+    :class="{ 'pb-36 sm:pb-24': hasPriceBar }"
+  >
     <div class="max-w-7xl mx-auto px-6 lg:px-12 py-12">
       <div class="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-12">
         <!-- Col 1: Brand & Description (Spans 2 cols on desktop) -->
@@ -172,6 +175,14 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { COMPANY_SOCIAL } from "~/constants/company";
+
+interface Props {
+  hasPriceBar?: boolean;
+}
+
+withDefaults(defineProps<Props>(), {
+  hasPriceBar: false,
+});
 
 const currentYear = computed(() => new Date().getFullYear());
 </script>

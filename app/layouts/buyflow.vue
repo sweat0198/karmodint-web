@@ -9,7 +9,7 @@
     </main>
 
     <!-- Footer -->
-    <AppFooter />
+    <AppFooter :has-price-bar="hasPriceBar" />
 
     <!-- Global Customization / Basket Price Bar -->
     <PriceBar />
