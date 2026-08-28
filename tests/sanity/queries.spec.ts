@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { executeGroq } from '../utils/groqRunner'
 import { PRODUCTS_WITH_SIZES_QUERY } from '~/queries/catalog'
+import { REFERENCES_QUERY } from '~/queries/references'
 import { mockSanityDataset, mockProducts, mockSizeImage } from '../fixtures/sanityData'
 
 describe('Sanity GROQ Query Evaluation (SSG Data Fetching)', () => {
@@ -181,5 +182,56 @@ describe('Sanity GROQ Query Evaluation (SSG Data Fetching)', () => {
       expect(product.sizes[0].thumbnail.asset._ref).toBe('image-diagonal')
       expect(product.sizes[0].fallbackThumbnail.asset._ref).toBe('image-front-leading')
     })
+
+    it('excludes the plan view from the carousel images, keeping every other angle', async () => {
+      const results = await executeGroq<any[]>(PRODUCTS_WITH_SIZES_QUERY)
+      const gatehouse = results.find((p: any) => p.slug === '1-50m-x-1-50m-security-cabin')
+
+      // The fixture size carries front + interior + top; only the plan drawing is dropped.
+      expect(gatehouse.sizes[0].images.map((i: any) => i.view)).toEqual(['front', 'interior'])
+    })
+  })
+})
+
+describe('homepage references query', () => {
+  it('excludes drafts and puts unordered references last alphabetically', async () => {
+    const dataset = [
+      {
+        _id: 'reference-zulu',
+        _type: 'clientReference',
+        companyName: 'Zulu Ltd',
+        displayOrder: 20,
+        logo: { _type: 'image', asset: { _type: 'reference', _ref: 'image-zulu-100x50-png' } }
+      },
+      {
+        _id: 'reference-beta',
+        _type: 'clientReference',
+        companyName: 'Beta Ltd',
+        logo: { _type: 'image', asset: { _type: 'reference', _ref: 'image-beta-100x50-png' } }
+      },
+      {
+        _id: 'reference-alpha',
+        _type: 'clientReference',
+        companyName: 'Alpha Ltd',
+        logo: { _type: 'image', asset: { _type: 'reference', _ref: 'image-alpha-100x50-png' } }
+      },
+      {
+        _id: 'drafts.reference-first',
+        _type: 'clientReference',
+        companyName: 'Draft Ltd',
+        displayOrder: 10,
+        logo: { _type: 'image', asset: { _type: 'reference', _ref: 'image-draft-100x50-png' } }
+      }
+    ]
+
+    const results = await executeGroq<any[]>(REFERENCES_QUERY, {}, dataset)
+
+    expect(results.map((reference) => reference.companyName)).toEqual([
+      'Zulu Ltd',
+      'Alpha Ltd',
+      'Beta Ltd'
+    ])
+    expect(results.some((reference) => reference._id.startsWith('drafts.'))).toBe(false)
+    expect(results[0].logo.asset._ref).toBe('image-zulu-100x50-png')
   })
 })

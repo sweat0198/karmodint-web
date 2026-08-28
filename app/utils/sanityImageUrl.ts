@@ -20,18 +20,33 @@ function parseAssetRef(
   };
 }
 
+/** CDN resize parameters. Omit both for the untransformed original. */
+export interface SanityImageTransform {
+  width?: number;
+  fit?: "max" | "crop" | "clip" | "fill";
+}
+
 /**
  * Builds the public CDN URL for a Sanity image asset reference. `<SanityImage>` handles the
  * rendered `<img>` markup itself — this is for the places that need a plain URL string instead,
- * such as JSON-LD `image` fields and outbound quote emails.
+ * such as JSON-LD `image` fields, outbound quote emails, and the image carousel.
  */
 export function sanityImageUrl(
   assetRef: string | undefined,
   projectId: string,
   dataset: string,
+  transform: SanityImageTransform = {},
 ): string | undefined {
   if (!assetRef) return undefined;
   const parsed = parseAssetRef(assetRef);
   if (!parsed) return undefined;
-  return `${SANITY_CDN_BASE}/${projectId}/${dataset}/${parsed.hash}-${parsed.width}x${parsed.height}.${parsed.format}`;
+
+  const base = `${SANITY_CDN_BASE}/${projectId}/${dataset}/${parsed.hash}-${parsed.width}x${parsed.height}.${parsed.format}`;
+
+  const params = new URLSearchParams();
+  if (transform.width) params.set("w", String(transform.width));
+  if (transform.fit) params.set("fit", transform.fit);
+  const query = params.toString();
+
+  return query ? `${base}?${query}` : base;
 }

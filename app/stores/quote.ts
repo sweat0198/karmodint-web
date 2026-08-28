@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import type { SanitySelectedCustomization } from "~/types/catalog";
+import type { CarouselImage, SanitySelectedCustomization } from "~/types/catalog";
 import type {
   CustomizationNotes,
   CustomizationSelections,
@@ -18,6 +18,11 @@ export interface QuoteItem {
   quantity: number;
   notes?: string;
   image?: string;
+  /**
+   * Every angle of this size, for the customize page's viewer. Optional: carts persisted before
+   * this field existed replay with only `image`, and the viewer falls back to that single render.
+   */
+  images?: CarouselImage[];
   configState?: CustomizationSelections;
   customizationNotes?: CustomizationNotes;
   customTotal?: number;
@@ -105,6 +110,11 @@ export const useQuoteStore = defineStore("quote", {
       const existing = this.items.find((i) => i.id === compositeId);
       if (existing) {
         existing.quantity += newItem.quantity;
+        // Renders are derived from the catalog, not from anything the customer chose, so re-adding
+        // refreshes them. This is what backfills `images` onto a line persisted before that field
+        // existed — without it such a line would never gain its extra angles.
+        existing.image = newItem.image;
+        existing.images = newItem.images;
       } else {
         this.items.push({
           ...newItem,

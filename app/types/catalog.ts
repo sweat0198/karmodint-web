@@ -53,6 +53,18 @@ export interface SanitySizeImage extends SanityImage {
   alt: string
 }
 
+/**
+ * One frame in an image carousel, already resolved to a URL.
+ *
+ * Resolution happens at the call site rather than inside the carousel, because the frames come
+ * from two unrelated places: Sanity asset refs on the catalog, and plain static paths for the
+ * customize page's fallback renders.
+ */
+export interface CarouselImage {
+  src: string
+  alt: string
+}
+
 export interface SanitySizeOption {
   _key?: string
   label: string

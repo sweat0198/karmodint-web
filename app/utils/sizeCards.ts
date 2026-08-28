@@ -15,6 +15,8 @@ export interface SizeCard {
   isPoa: boolean;
   price: number;
   thumbnail: SanitySizeImage;
+  /** Every angle available for this size, thumbnail first — the hover carousel cycles through these. */
+  images: SanitySizeImage[];
   /** Both parent and child category slugs, so a card matches a filter at either level. */
   categorySlugs: string[];
 }
@@ -77,6 +79,14 @@ function sortedSizes(sizes: CatalogSizeOption[]): CatalogSizeOption[] {
   return [...sizes].sort((a, b) => footprint(a) - footprint(b));
 }
 
+/** The carousel's frame order: the thumbnail leads (matching the static card view), then every other angle. */
+function carouselImages(size: CatalogSizeOption, thumbnail: SanitySizeImage): SanitySizeImage[] {
+  const rest = (size.images ?? []).filter(
+    (image) => image.asset?._ref !== thumbnail.asset?._ref,
+  );
+  return [thumbnail, ...rest];
+}
+
 /**
  * Flattens Products into one card per Size Option (D3), in display order (D11).
  *
@@ -105,6 +115,7 @@ export function toSizeCards(products: CatalogProduct[]): SizeCard[] {
         isPoa: Boolean(size.isPoa),
         price: size.price,
         thumbnail,
+        images: carouselImages(size, thumbnail),
         categorySlugs,
       });
     }

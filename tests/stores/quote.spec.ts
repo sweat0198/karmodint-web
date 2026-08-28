@@ -49,6 +49,23 @@ describe("useQuoteStore", () => {
     expect(store.items[0].quantity).toBe(2);
   });
 
+  it("re-adding refreshes the renders, backfilling a line persisted without its extra angles", () => {
+    const store = useQuoteStore();
+    // A line replayed from a cart saved before `images` existed: one static render, no angles.
+    store.addItem(grpItem({ image: "front.jpg" }));
+    expect(store.items[0].images).toBeUndefined();
+
+    store.addItem(
+      grpItem({
+        image: "front.jpg",
+        images: [{ src: "front.jpg" }, { src: "top.jpg" }],
+      }),
+    );
+
+    expect(store.items[0].images).toEqual([{ src: "front.jpg" }, { src: "top.jpg" }]);
+    expect(store.items[0].quantity).toBe(2);
+  });
+
   it("getItemQuantity returns 0 for a sibling size of the same Product", () => {
     const store = useQuoteStore();
     store.addItem(grpItem({ sizeKey: "150x150" }));

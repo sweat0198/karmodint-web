@@ -25,6 +25,7 @@ export interface CatalogSizeOption {
   isDefault?: boolean;
   thumbnail: SanitySizeImage | null;
   fallbackThumbnail: SanitySizeImage | null;
+  images: SanitySizeImage[];
 }
 
 export interface CatalogProduct {
@@ -56,6 +57,9 @@ export interface CategoryTreeNode extends CategoryTreeChild {
  *
  * The thumbnail is picked by view *name*, not array position (D8): `left-diagonal` first, falling
  * back to the first image if a size has no three-quarter render.
+ *
+ * `images` feeds the card's hover carousel and excludes the `top` view: every size carries exactly
+ * one, and it is a plan drawing rather than an angle of the unit.
  */
 export const PRODUCTS_WITH_SIZES_QUERY = `*[_type == "product" && status == "published" && !(_id in path("drafts.**"))] | order(isFeatured desc, name asc) {
   _id, name, "slug": slug.current, isFeatured, shortDescription,
@@ -64,7 +68,8 @@ export const PRODUCTS_WITH_SIZES_QUERY = `*[_type == "product" && status == "pub
   sizes[] {
     _key, label, lengthM, widthM, heightM, weightKg, price, isPoa, isDefault,
     "thumbnail": images[_key == "left-diagonal"][0] { asset, alt, view },
-    "fallbackThumbnail": images[0] { asset, alt, view }
+    "fallbackThumbnail": images[0] { asset, alt, view },
+    "images": images[view != "top"] { _key, asset, alt, view }
   }
 }`;
 

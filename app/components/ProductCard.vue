@@ -1,17 +1,18 @@
 <template>
   <div
     class="bg-white border border-slate-100 rounded shadow-sm hover:shadow-md transition-shadow overflow-hidden flex flex-col justify-between group"
+    @mouseenter="isHovering = true"
+    @mouseleave="isHovering = false"
   >
     <!-- Thumbnail Header -->
     <div
-      class="bg-slate-50 h-48 p-4 flex items-center justify-center relative border-b border-slate-100"
+      class="bg-slate-50 h-60 p-4 flex items-center justify-center relative border-b border-slate-100"
     >
-      <SanityImage
-        :asset-id="card.thumbnail.asset?._ref"
-        :alt="card.thumbnail.alt"
-        w="400"
-        fit="max"
-        class="max-h-40 w-auto object-contain mix-blend-multiply transition-transform hover:scale-105 duration-300"
+      <ProductImageCarousel
+        :images="carouselImages"
+        :active="isHovering"
+        zoom-on-hover
+        frame-class="mix-blend-multiply"
       />
     </div>
 
@@ -118,11 +119,12 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useRuntimeConfig } from "#imports";
 import { useQuoteStore } from "~/stores/quote";
 import { sanityImageUrl } from "~/utils/sanityImageUrl";
+import { toCarouselImages } from "~/utils/carouselImages";
 import type { SizeCard } from "~/utils/sizeCards";
 
 export interface ProductCardProps {
@@ -135,8 +137,29 @@ const router = useRouter();
 const route = useRoute();
 const config = useRuntimeConfig();
 
+const isHovering = ref(false);
+
 const quantityInBasket = computed(() =>
   quoteStore.getItemQuantity(props.card.cardId),
+);
+
+const carouselImages = computed(() =>
+  toCarouselImages(
+    props.card.images,
+    config.public.sanityProjectId,
+    config.public.sanityDataset,
+    600,
+  ),
+);
+
+/** Wider than the card's frames — the customize page shows these in a large primary viewer. */
+const quoteItemImages = computed(() =>
+  toCarouselImages(
+    props.card.images,
+    config.public.sanityProjectId,
+    config.public.sanityDataset,
+    1200,
+  ),
 );
 
 function buildQuoteItemPayload() {
@@ -154,6 +177,7 @@ function buildQuoteItemPayload() {
       config.public.sanityProjectId,
       config.public.sanityDataset,
     ),
+    images: quoteItemImages.value,
   };
 }
 

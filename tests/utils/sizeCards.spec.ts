@@ -40,6 +40,8 @@ const grpCabin: CatalogProduct = {
       isDefault: false,
       thumbnail: image("left-diagonal", "image-diagonal-300"),
       fallbackThumbnail: image("front", "image-front-300"),
+      // The query already strips the plan view, so a card's images are angles only.
+      images: [image("front", "image-front-300"), image("left-diagonal", "image-diagonal-300")],
     },
     {
       _key: "150x150",
@@ -53,6 +55,10 @@ const grpCabin: CatalogProduct = {
       isDefault: true,
       thumbnail: image("left-diagonal", "image-diagonal-150"),
       fallbackThumbnail: image("front", "image-front-150"),
+      images: [
+        image("front", "image-front-150"),
+        image("left-diagonal", "image-diagonal-150"),
+      ],
     },
   ],
 };
@@ -84,6 +90,7 @@ const panelCabin: CatalogProduct = {
       // No left-diagonal render for this size — the fallback must fire.
       thumbnail: null,
       fallbackThumbnail: image("front", "image-front-panel-200"),
+      images: [image("front", "image-front-panel-200"), image("door", "image-door-panel-200")],
     },
   ],
 };
@@ -106,6 +113,7 @@ const bulletproofBooth: CatalogProduct = {
       isDefault: true,
       thumbnail: image("left-diagonal", "image-diagonal-bulletproof"),
       fallbackThumbnail: image("front", "image-front-bulletproof"),
+      images: [image("left-diagonal", "image-diagonal-bulletproof")],
     },
   ],
 };
@@ -155,6 +163,22 @@ describe("toSizeCards", () => {
     const cards = toSizeCards([panelCabin]);
     expect(cards[0].thumbnail.view).toBe("front");
     expect(cards[0].thumbnail.asset?._ref).toBe("image-front-panel-200");
+  });
+
+  it("orders the carousel images with the thumbnail leading, then the remaining angles without duplicating it", () => {
+    const cards = toSizeCards([grpCabin]);
+    const compact = cards.find((c) => c.sizeKey === "150x150")!;
+
+    expect(compact.images.map((img) => img.view)).toEqual(["left-diagonal", "front"]);
+    expect(compact.images.filter((img) => img.asset?._ref === "image-diagonal-150")).toHaveLength(1);
+  });
+
+  it("leads the carousel with the fallback thumbnail when no left-diagonal render exists", () => {
+    const cards = toSizeCards([panelCabin]);
+    expect(cards[0].images.map((img) => img.asset?._ref)).toEqual([
+      "image-front-panel-200",
+      "image-door-panel-200",
+    ]);
   });
 
   it("carries both parent and child category slugs for filtering", () => {
