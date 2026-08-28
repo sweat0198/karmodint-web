@@ -37,7 +37,12 @@ sanity/.sanity/
 # The committed extract in sanity/catalogue/ is the reviewable artefact, not this.
 .cache/karmod-source/
 
+# Gallery preparation: local byte-preserving image copies; metadata remains tracked.
+sanity/gallery/source/
+
 # Agent tools & scratch
 .agents/seo-tools/
 .scratch/
+scratch/
+.pnpm-store/
 

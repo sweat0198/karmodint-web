@@ -6,7 +6,7 @@ Add a CMS-managed customer references section directly below the homepage hero. 
 
 ## Content model
 
-Each reference is a standalone Sanity `reference` document with:
+Each reference is a standalone Sanity `clientReference` document. Sanity reserves `reference` as a built-in type name. Each document has:
 
 - `companyName`: required string
 - `location`: optional string

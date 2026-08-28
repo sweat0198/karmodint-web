@@ -4,7 +4,7 @@
 
 **Goal:** Add a Sanity-managed homepage references marquee and migrate eight existing reference logos, keeping two unverified brands as drafts.
 
-**Architecture:** Standalone `reference` documents feed one draft-safe GROQ query. A data-owning section converts Sanity asset refs into presentation models, then a prop-driven marquee renders a duplicated, CSS-only track. A deterministic migration uploads local files and creates six published documents plus two drafts.
+**Architecture:** Standalone `clientReference` documents feed one draft-safe GROQ query. Sanity reserves `reference` as a built-in type name, so all document records use `clientReference`; asset reference values continue using Sanity's built-in `_type: 'reference'` shape. A data-owning section converts Sanity asset refs into presentation models, then a prop-driven marquee renders a duplicated, CSS-only track. A deterministic migration uploads local files and creates six published documents plus two drafts.
 
 **Tech Stack:** Nuxt 4, Vue 3, TypeScript, Tailwind CSS 4, scoped CSS keyframes, Sanity 6, GROQ, `@sanity/client`, Vitest 4, Vue Test Utils.
 
@@ -29,12 +29,12 @@
 
 **Step 1: Write failing schema tests**
 
-Import `referenceType`, add `reference` to the registration expectation, then add:
+Import `clientReferenceType`, add `clientReference` to the registration expectation, then add:
 
 ```ts
 describe('Reference Schema', () => {
   it('defines the agreed required and optional fields', () => {
-    const fields = Object.fromEntries(referenceType.fields.map((field: any) => [field.name, field]))
+    const fields = Object.fromEntries(clientReferenceType.fields.map((field: any) => [field.name, field]))
 
     expect(Object.keys(fields)).toEqual([
       'companyName',
@@ -52,7 +52,7 @@ describe('Reference Schema', () => {
   })
 
   it('provides display-order and alphabetical Studio orderings', () => {
-    expect(referenceType.orderings?.map((ordering) => ordering.name)).toEqual([
+    expect(clientReferenceType.orderings?.map((ordering) => ordering.name)).toEqual([
       'displayOrderAsc',
       'companyNameAsc'
     ])
@@ -68,7 +68,7 @@ Run:
 pnpm exec vitest run tests/sanity/schemas.spec.ts
 ```
 
-Expected: FAIL because `sanity/schemas/reference.ts` and `referenceType` do not exist.
+Expected: FAIL because `sanity/schemas/reference.ts` and `clientReferenceType` do not exist.
 
 **Step 3: Create the schema**
 
@@ -77,8 +77,8 @@ Create `sanity/schemas/reference.ts`:
 ```ts
 import { defineField, defineType } from 'sanity'
 
-export const referenceType = defineType({
-  name: 'reference',
+export const clientReferenceType = defineType({
+  name: 'clientReference',
   title: 'Reference',
   type: 'document',
   fields: [
@@ -137,22 +137,22 @@ export const referenceType = defineType({
   }
 })
 
-export default referenceType
+export default clientReferenceType
 ```
 
 **Step 4: Register the schema**
 
-In `sanity/schemas/index.ts`, import `referenceType` and add it with document types:
+In `sanity/schemas/index.ts`, import `clientReferenceType` and add it with document types:
 
 ```ts
-import { referenceType } from './reference'
+import { clientReferenceType } from './reference'
 
 export const schemaTypes = [
   productType,
   categoryType,
   customizationGroupType,
   quoteEnquiryType,
-  referenceType,
+  clientReferenceType,
   // existing object types remain unchanged
 ]
 ```
@@ -165,7 +165,7 @@ In `sanity/structure.ts`, insert this item between Categories and Customizations
 S.listItem()
   .title('References')
   .child(
-    S.documentTypeList('reference')
+    S.documentTypeList('clientReference')
       .title('References')
       .defaultOrdering([
         { field: 'displayOrder', direction: 'asc' },
@@ -210,26 +210,26 @@ describe('homepage references query', () => {
     const dataset = [
       {
         _id: 'reference-zulu',
-        _type: 'reference',
+        _type: 'clientReference',
         companyName: 'Zulu Ltd',
         displayOrder: 20,
         logo: { _type: 'image', asset: { _type: 'reference', _ref: 'image-zulu-100x50-png' } }
       },
       {
         _id: 'reference-beta',
-        _type: 'reference',
+        _type: 'clientReference',
         companyName: 'Beta Ltd',
         logo: { _type: 'image', asset: { _type: 'reference', _ref: 'image-beta-100x50-png' } }
       },
       {
         _id: 'reference-alpha',
-        _type: 'reference',
+        _type: 'clientReference',
         companyName: 'Alpha Ltd',
         logo: { _type: 'image', asset: { _type: 'reference', _ref: 'image-alpha-100x50-png' } }
       },
       {
         _id: 'drafts.reference-first',
-        _type: 'reference',
+        _type: 'clientReference',
         companyName: 'Draft Ltd',
         displayOrder: 10,
         logo: { _type: 'image', asset: { _type: 'reference', _ref: 'image-draft-100x50-png' } }
@@ -298,7 +298,7 @@ import type { ClientReference } from '~/types/reference'
 export type { ClientReference }
 
 export const REFERENCES_QUERY = `*[
-  _type == "reference" && !(_id in path("drafts.**"))
+  _type == "clientReference" && !(_id in path("drafts.**"))
 ] {
   _id,
   companyName,
@@ -861,7 +861,7 @@ export const REFERENCE_SEEDS: ReferenceSeed[] = [
 
 - use the base ID for published documents
 - prefix draft-only IDs with `drafts.`
-- attach `_type: 'reference'`
+- attach document `_type: 'clientReference'`
 - attach `logo: { _type: 'image', asset: { _type: 'reference', _ref } }`
 - copy optional fields only when defined
 - throw a path-specific error before returning any documents if an asset ID is missing
@@ -959,7 +959,7 @@ const documents = await client.fetch<Array<{
   companyName: string
   logo?: { asset?: { _ref?: string } }
 }>>(
-  `*[_type == "reference"] { _id, companyName, logo { asset } }`,
+  `*[_type == "clientReference"] { _id, companyName, logo { asset } }`,
   {},
   { perspective: 'raw' }
 )

@@ -1,0 +1,4844 @@
+[
+  {
+    "family": "others",
+    "useCase": "residential",
+    "project": "others",
+    "sourcePath": "Çelik Ev/1.jpg",
+    "preferredCanonical": true,
+    "categories": [
+      {
+        "family": "steel-houses",
+        "useCase": "residential",
+        "project": "others"
+      },
+      {
+        "family": "prefabricated-houses",
+        "useCase": "residential",
+        "project": "others"
+      }
+    ],
+    "title": "Two-storey residential villa",
+    "alt": "Exterior view of a modern two-storey residential villa with landscaped entrance.",
+    "order": 1,
+    "role": "hero",
+    "confidence": "medium",
+    "flags": [
+      "misclassified-source"
+    ],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "others",
+    "useCase": "residential",
+    "project": "others",
+    "sourcePath": "Prefabrik Ev/22.jpg",
+    "categories": [
+      {
+        "family": "prefabricated-houses",
+        "useCase": "residential",
+        "project": "others"
+      },
+      {
+        "family": "steel-houses",
+        "useCase": "residential",
+        "project": "others"
+      }
+    ],
+    "title": "Two-storey residential villa",
+    "alt": "Exterior view of a modern two-storey residential villa with landscaped entrance.",
+    "order": 1,
+    "role": "secondary",
+    "confidence": "medium",
+    "flags": [
+      "misclassified-source"
+    ],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "others",
+    "useCase": "residential",
+    "project": "others",
+    "sourcePath": "Çelik Ev/3.jpg",
+    "preferredCanonical": true,
+    "categories": [
+      {
+        "family": "steel-houses",
+        "useCase": "residential",
+        "project": "others"
+      },
+      {
+        "family": "prefabricated-houses",
+        "useCase": "residential",
+        "project": "others"
+      }
+    ],
+    "title": "Single-storey residential home",
+    "alt": "Exterior front view of a single-storey residential home with pitched roof.",
+    "order": 2,
+    "role": "alternate-exterior",
+    "confidence": "medium",
+    "flags": [
+      "misclassified-source"
+    ],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "others",
+    "useCase": "residential",
+    "project": "others",
+    "sourcePath": "Prefabrik Ev/17.jpg",
+    "categories": [
+      {
+        "family": "prefabricated-houses",
+        "useCase": "residential",
+        "project": "others"
+      },
+      {
+        "family": "steel-houses",
+        "useCase": "residential",
+        "project": "others"
+      }
+    ],
+    "title": "Single-storey residential home",
+    "alt": "Exterior front view of a single-storey residential home with pitched roof.",
+    "order": 2,
+    "role": "secondary",
+    "confidence": "medium",
+    "flags": [
+      "misclassified-source"
+    ],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "others",
+    "useCase": "residential",
+    "project": "others",
+    "sourcePath": "Çelik Ev/6.jpg",
+    "preferredCanonical": true,
+    "categories": [
+      {
+        "family": "steel-houses",
+        "useCase": "residential",
+        "project": "others"
+      },
+      {
+        "family": "prefabricated-houses",
+        "useCase": "residential",
+        "project": "others"
+      }
+    ],
+    "title": "Detached residential home",
+    "alt": "Two-storey detached residential house with modern exterior cladding and balconies.",
+    "order": 3,
+    "role": "alternate-exterior",
+    "confidence": "medium",
+    "flags": [
+      "misclassified-source"
+    ],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "others",
+    "useCase": "residential",
+    "project": "others",
+    "sourcePath": "Prefabrik Ev/20.jpg",
+    "categories": [
+      {
+        "family": "prefabricated-houses",
+        "useCase": "residential",
+        "project": "others"
+      },
+      {
+        "family": "steel-houses",
+        "useCase": "residential",
+        "project": "others"
+      }
+    ],
+    "title": "Detached residential home",
+    "alt": "Two-storey detached residential house with modern exterior cladding and balconies.",
+    "order": 3,
+    "role": "secondary",
+    "confidence": "medium",
+    "flags": [
+      "misclassified-source"
+    ],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "others",
+    "useCase": "residential",
+    "project": "others",
+    "sourcePath": "Çelik Ev/7.jpg",
+    "preferredCanonical": true,
+    "categories": [
+      {
+        "family": "steel-houses",
+        "useCase": "residential",
+        "project": "others"
+      },
+      {
+        "family": "prefabricated-houses",
+        "useCase": "residential",
+        "project": "others"
+      }
+    ],
+    "title": "Suburban residential house",
+    "alt": "Exterior shot of a two-storey residential building with tiled roof.",
+    "order": 4,
+    "role": "alternate-exterior",
+    "confidence": "medium",
+    "flags": [
+      "misclassified-source"
+    ],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "others",
+    "useCase": "residential",
+    "project": "others",
+    "sourcePath": "Prefabrik Ev/21.jpg",
+    "categories": [
+      {
+        "family": "prefabricated-houses",
+        "useCase": "residential",
+        "project": "others"
+      },
+      {
+        "family": "steel-houses",
+        "useCase": "residential",
+        "project": "others"
+      }
+    ],
+    "title": "Suburban residential house",
+    "alt": "Exterior shot of a two-storey residential building with tiled roof.",
+    "order": 4,
+    "role": "secondary",
+    "confidence": "medium",
+    "flags": [
+      "misclassified-source"
+    ],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "others",
+    "useCase": "residential",
+    "project": "others",
+    "sourcePath": "Çelik Ev/8.jpg",
+    "preferredCanonical": true,
+    "categories": [
+      {
+        "family": "steel-houses",
+        "useCase": "residential",
+        "project": "others"
+      },
+      {
+        "family": "prefabricated-houses",
+        "useCase": "residential",
+        "project": "others"
+      }
+    ],
+    "title": "Modern two-storey residence",
+    "alt": "Side and front perspective of a modern two-storey residential home.",
+    "order": 5,
+    "role": "alternate-exterior",
+    "confidence": "medium",
+    "flags": [
+      "misclassified-source"
+    ],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "others",
+    "useCase": "residential",
+    "project": "others",
+    "sourcePath": "Prefabrik Ev/12.jpg",
+    "categories": [
+      {
+        "family": "prefabricated-houses",
+        "useCase": "residential",
+        "project": "others"
+      },
+      {
+        "family": "steel-houses",
+        "useCase": "residential",
+        "project": "others"
+      }
+    ],
+    "title": "Modern two-storey residence",
+    "alt": "Side and front perspective of a modern two-storey residential home.",
+    "order": 5,
+    "role": "secondary",
+    "confidence": "medium",
+    "flags": [
+      "misclassified-source"
+    ],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "steel-houses",
+    "useCase": "residential",
+    "project": "others",
+    "categories": [],
+    "rightsStatus": "unknown",
+    "sourcePath": "Çelik Ev/2.jpg",
+    "order": 1,
+    "role": "hero",
+    "confidence": "high",
+    "flags": [],
+    "title": "Light steel villa exterior",
+    "alt": "Modern two-storey light steel frame residential villa with grey and wood exterior accents."
+  },
+  {
+    "family": "steel-houses",
+    "useCase": "residential",
+    "project": "others",
+    "categories": [],
+    "rightsStatus": "unknown",
+    "sourcePath": "Çelik Ev/4.jpg",
+    "order": 2,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "title": "Light steel residential home",
+    "alt": "Front facade of a single-storey light gauge steel frame house."
+  },
+  {
+    "family": "steel-houses",
+    "useCase": "residential",
+    "project": "others",
+    "categories": [],
+    "rightsStatus": "unknown",
+    "sourcePath": "Çelik Ev/5.jpg",
+    "order": 3,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "title": "Contemporary steel frame residence",
+    "alt": "Exterior view of a contemporary steel framed home with large windows."
+  },
+  {
+    "family": "steel-houses",
+    "useCase": "residential",
+    "project": "others",
+    "categories": [],
+    "rightsStatus": "unknown",
+    "sourcePath": "Çelik Ev/9.jpg",
+    "order": 4,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "title": "Two-storey steel frame villa",
+    "alt": "Exterior shot of a two-storey light steel residential building."
+  },
+  {
+    "family": "steel-houses",
+    "useCase": "residential",
+    "project": "others",
+    "categories": [],
+    "rightsStatus": "unknown",
+    "sourcePath": "Çelik Ev/10.JPG",
+    "order": 5,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "title": "Steel structure residential house",
+    "alt": "Finished exterior of a two-storey steel structured residential building with balcony."
+  },
+  {
+    "family": "steel-houses",
+    "useCase": "residential",
+    "project": "others",
+    "categories": [],
+    "rightsStatus": "unknown",
+    "sourcePath": "Çelik Ev/11.JPG",
+    "order": 6,
+    "role": "interior-wide",
+    "confidence": "high",
+    "flags": [],
+    "title": "Light steel home living area",
+    "alt": "Spacious open-plan living room interior inside a steel framed house."
+  },
+  {
+    "family": "steel-houses",
+    "useCase": "residential",
+    "project": "others",
+    "categories": [],
+    "rightsStatus": "unknown",
+    "sourcePath": "Çelik Ev/12.jpg",
+    "order": 7,
+    "role": "interior-wide",
+    "confidence": "high",
+    "flags": [],
+    "title": "Steel house modern kitchen and dining",
+    "alt": "Interior view of modern kitchen cabinets and dining space in a steel frame home."
+  },
+  {
+    "family": "steel-houses",
+    "useCase": "residential",
+    "project": "others",
+    "categories": [],
+    "rightsStatus": "unknown",
+    "sourcePath": "Çelik Ev/13.jpg",
+    "order": 8,
+    "role": "interior-detail",
+    "confidence": "high",
+    "flags": [],
+    "title": "Steel frame home bedroom interior",
+    "alt": "Finished bedroom interior with laminate flooring in a steel residential house."
+  },
+  {
+    "family": "steel-houses",
+    "useCase": "residential",
+    "project": "others",
+    "categories": [],
+    "rightsStatus": "unknown",
+    "sourcePath": "Çelik Ev/14.jpg",
+    "order": 9,
+    "role": "interior-detail",
+    "confidence": "high",
+    "flags": [],
+    "title": "Bathroom interior in steel frame house",
+    "alt": "Fitted bathroom with tiled walls and fixtures in a residential steel home."
+  },
+  {
+    "family": "steel-houses",
+    "useCase": "residential",
+    "project": "others",
+    "categories": [],
+    "rightsStatus": "unknown",
+    "sourcePath": "Çelik Ev/DSC_5816.JPG",
+    "order": 10,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "title": "Light steel house front facade",
+    "alt": "High-resolution photograph of a light steel home with entrance porch."
+  },
+  {
+    "family": "steel-houses",
+    "useCase": "residential",
+    "project": "others",
+    "categories": [],
+    "rightsStatus": "unknown",
+    "sourcePath": "Çelik Ev/DSC_5937.JPG",
+    "order": 11,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "title": "Steel frame residential building angle view",
+    "alt": "Angle exterior view of a completed steel frame residential building."
+  },
+  {
+    "family": "steel-houses",
+    "useCase": "residential",
+    "project": "others",
+    "categories": [],
+    "rightsStatus": "unknown",
+    "sourcePath": "Çelik Ev/WhatsApp Image 2024-07-04 at 12.11.28 (1).jpeg",
+    "order": 12,
+    "role": "alternate-exterior",
+    "confidence": "medium",
+    "flags": [
+      "nonstandard-aspect"
+    ],
+    "title": "Steel residential home panoramic view",
+    "alt": "Wide panoramic exterior view of a modern single-storey steel frame residence."
+  },
+  {
+    "family": "prefabricated-houses",
+    "useCase": "residential",
+    "project": "others",
+    "categories": [],
+    "rightsStatus": "unknown",
+    "sourcePath": "Prefabrik Ev/1.jpg",
+    "order": 1,
+    "role": "hero",
+    "confidence": "high",
+    "flags": [],
+    "title": "Prefabricated family house",
+    "alt": "Exterior shot of a two-storey prefabricated residential house with garden."
+  },
+  {
+    "family": "prefabricated-houses",
+    "useCase": "residential",
+    "project": "others",
+    "categories": [],
+    "rightsStatus": "unknown",
+    "sourcePath": "Prefabrik Ev/2.jpg",
+    "order": 2,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "title": "Single-storey prefabricated bungalow",
+    "alt": "Prefabricated single-storey house with pitched roof and front veranda."
+  },
+  {
+    "family": "prefabricated-houses",
+    "useCase": "residential",
+    "project": "others",
+    "categories": [],
+    "rightsStatus": "unknown",
+    "sourcePath": "Prefabrik Ev/3.jpg",
+    "order": 3,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "title": "Two-storey prefabricated villa",
+    "alt": "Two-storey modular prefabricated residential home with balcony."
+  },
+  {
+    "family": "prefabricated-houses",
+    "useCase": "residential",
+    "project": "others",
+    "categories": [],
+    "rightsStatus": "unknown",
+    "sourcePath": "Prefabrik Ev/4.JPG",
+    "order": 4,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "possibleDuplicateSources": [
+      "Prefabrik Ev/5.JPG"
+    ],
+    "title": "Modern prefabricated home exterior",
+    "alt": "Front angle view of a contemporary prefabricated home in daylight."
+  },
+  {
+    "family": "prefabricated-houses",
+    "useCase": "residential",
+    "project": "others",
+    "categories": [],
+    "rightsStatus": "unknown",
+    "sourcePath": "Prefabrik Ev/5.JPG",
+    "order": 5,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "possibleDuplicateSources": [
+      "Prefabrik Ev/4.JPG"
+    ],
+    "title": "Prefabricated home angle view",
+    "alt": "Alternative angle exterior view of the contemporary prefabricated house."
+  },
+  {
+    "family": "prefabricated-houses",
+    "useCase": "residential",
+    "project": "others",
+    "categories": [],
+    "rightsStatus": "unknown",
+    "sourcePath": "Prefabrik Ev/6.jpg",
+    "order": 6,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "title": "Modular residential home",
+    "alt": "Detached single-storey prefabricated residential house."
+  },
+  {
+    "family": "prefabricated-houses",
+    "useCase": "residential",
+    "project": "others",
+    "categories": [],
+    "rightsStatus": "unknown",
+    "sourcePath": "Prefabrik Ev/7.jpg",
+    "order": 7,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "title": "Prefabricated duplex house",
+    "alt": "Two-storey prefabricated duplex house exterior with cream siding."
+  },
+  {
+    "family": "prefabricated-houses",
+    "useCase": "residential",
+    "project": "others",
+    "categories": [],
+    "rightsStatus": "unknown",
+    "sourcePath": "Prefabrik Ev/8.jpg",
+    "order": 8,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "title": "Prefabricated cottage exterior",
+    "alt": "Compact single-storey prefabricated house suitable for countryside living."
+  },
+  {
+    "family": "prefabricated-houses",
+    "useCase": "residential",
+    "project": "others",
+    "categories": [],
+    "rightsStatus": "unknown",
+    "sourcePath": "Prefabrik Ev/9.jpg",
+    "order": 9,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "title": "Modern prefab home with porch",
+    "alt": "Single-storey prefabricated home featuring an integrated front porch."
+  },
+  {
+    "family": "prefabricated-houses",
+    "useCase": "residential",
+    "project": "others",
+    "categories": [],
+    "rightsStatus": "unknown",
+    "sourcePath": "Prefabrik Ev/10.jpg",
+    "order": 10,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "title": "Prefabricated residential villa",
+    "alt": "Exterior facade of a modern prefabricated family residence."
+  },
+  {
+    "family": "prefabricated-houses",
+    "useCase": "residential",
+    "project": "others",
+    "categories": [],
+    "rightsStatus": "unknown",
+    "sourcePath": "Prefabrik Ev/11.jpg",
+    "order": 11,
+    "role": "interior-wide",
+    "confidence": "high",
+    "flags": [],
+    "title": "Prefabricated home living room",
+    "alt": "Interior living room space with wooden flooring inside a prefabricated house."
+  },
+  {
+    "family": "prefabricated-houses",
+    "useCase": "residential",
+    "project": "others",
+    "categories": [],
+    "rightsStatus": "unknown",
+    "sourcePath": "Prefabrik Ev/13.JPG",
+    "order": 12,
+    "role": "interior-wide",
+    "confidence": "high",
+    "flags": [],
+    "title": "Modular house interior living area",
+    "alt": "Spacious interior salon inside a completed prefabricated residence."
+  },
+  {
+    "family": "prefabricated-houses",
+    "useCase": "residential",
+    "project": "others",
+    "categories": [],
+    "rightsStatus": "unknown",
+    "sourcePath": "Prefabrik Ev/14.JPG",
+    "order": 13,
+    "role": "interior-detail",
+    "confidence": "high",
+    "flags": [],
+    "title": "Fitted kitchen in prefabricated house",
+    "alt": "Fitted kitchen area with countertop and cabinets in a prefabricated house."
+  },
+  {
+    "family": "prefabricated-houses",
+    "useCase": "residential",
+    "project": "others",
+    "categories": [],
+    "rightsStatus": "unknown",
+    "sourcePath": "Prefabrik Ev/15.jpg",
+    "order": 14,
+    "role": "interior-detail",
+    "confidence": "high",
+    "flags": [],
+    "title": "Prefabricated house bedroom",
+    "alt": "Finished bedroom interior with window and laminate floor in a prefab home."
+  },
+  {
+    "family": "prefabricated-houses",
+    "useCase": "residential",
+    "project": "others",
+    "categories": [],
+    "rightsStatus": "unknown",
+    "sourcePath": "Prefabrik Ev/16.jpg",
+    "order": 15,
+    "role": "interior-detail",
+    "confidence": "high",
+    "flags": [],
+    "title": "Prefabricated home bathroom",
+    "alt": "Modern bathroom interior with shower stall and washbasin in a prefab home."
+  },
+  {
+    "family": "prefabricated-houses",
+    "useCase": "residential",
+    "project": "others",
+    "categories": [],
+    "rightsStatus": "unknown",
+    "sourcePath": "Prefabrik Ev/18.jpg",
+    "order": 16,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "title": "Two-storey prefab house exterior",
+    "alt": "Side exterior perspective of a two-storey prefabricated house."
+  },
+  {
+    "family": "prefabricated-houses",
+    "useCase": "residential",
+    "project": "others",
+    "categories": [],
+    "rightsStatus": "unknown",
+    "sourcePath": "Prefabrik Ev/19.jpg",
+    "order": 17,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "title": "Single-family prefabricated home",
+    "alt": "Completed single-family prefabricated residence on a prepared foundation."
+  },
+  {
+    "family": "prefabricated-houses",
+    "useCase": "residential",
+    "project": "others",
+    "categories": [],
+    "rightsStatus": "unknown",
+    "sourcePath": "Prefabrik Ev/c5acd9d4-fa17-4378-a9f9-7f148b316a48.jpg",
+    "order": 18,
+    "role": "alternate-exterior",
+    "confidence": "medium",
+    "flags": [],
+    "title": "Modular residential building exterior",
+    "alt": "Exterior perspective of a modular prefabricated residential building."
+  },
+  {
+    "family": "prefabricated-houses",
+    "useCase": "residential",
+    "project": "others",
+    "categories": [],
+    "rightsStatus": "unknown",
+    "sourcePath": "Prefabrik Ev/DSC_5760.JPG",
+    "order": 19,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "title": "Detailed facade of prefabricated house",
+    "alt": "Detailed high-resolution photograph of the front facade of a prefabricated house."
+  },
+  {
+    "family": "prefabricated-houses",
+    "useCase": "residential",
+    "project": "others",
+    "categories": [],
+    "rightsStatus": "unknown",
+    "sourcePath": "Prefabrik Ev/DSC_5986.JPG",
+    "order": 20,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "title": "Prefabricated house garden view",
+    "alt": "Exterior shot of a prefabricated home surrounded by green landscape."
+  },
+  {
+    "family": "prefabricated-houses",
+    "useCase": "residential",
+    "project": "others",
+    "categories": [],
+    "rightsStatus": "unknown",
+    "sourcePath": "Prefabrik Ev/DSC_6113.JPG",
+    "order": 21,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "title": "Prefabricated residence corner view",
+    "alt": "Corner perspective of a finished prefabricated residential building."
+  },
+  {
+    "family": "prefabricated-houses",
+    "useCase": "residential",
+    "project": "others",
+    "categories": [],
+    "rightsStatus": "unknown",
+    "sourcePath": "Prefabrik Ev/DSC_6313.JPG",
+    "order": 22,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "title": "Contemporary prefabricated villa facade",
+    "alt": "High-resolution exterior view of a contemporary modular residential villa."
+  },
+  {
+    "family": "cabins",
+    "useCase": "retail-event-kiosk",
+    "project": "bordeaux",
+    "sourcePath": "Kabin/bordeaux-00.jpg",
+    "categories": [],
+    "title": "FC Girondins de Bordeaux retail kiosk front view",
+    "alt": "Exterior view of the branded FC Girondins de Bordeaux ticket and merchandise kiosk cabin outside the stadium.",
+    "order": 1,
+    "role": "hero",
+    "confidence": "high",
+    "flags": [
+      "people-or-privacy"
+    ],
+    "rightsStatus": "review-required",
+    "possibleDuplicateSources": [
+      "Kabin/bordeaux-01.jpg",
+      "Kabin/bordeaux-02.jpg",
+      "Kabin/bordeaux-03.jpg"
+    ]
+  },
+  {
+    "family": "cabins",
+    "useCase": "retail-event-kiosk",
+    "project": "bordeaux",
+    "sourcePath": "Kabin/bordeaux-01.jpg",
+    "categories": [],
+    "title": "FC Girondins de Bordeaux retail kiosk view 2",
+    "alt": "Exterior view of the branded FC Girondins de Bordeaux ticket and merchandise kiosk cabin outside the stadium.",
+    "order": 2,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [
+      "people-or-privacy"
+    ],
+    "rightsStatus": "review-required",
+    "possibleDuplicateSources": [
+      "Kabin/bordeaux-00.jpg",
+      "Kabin/bordeaux-02.jpg",
+      "Kabin/bordeaux-03.jpg"
+    ]
+  },
+  {
+    "family": "cabins",
+    "useCase": "retail-event-kiosk",
+    "project": "bordeaux",
+    "sourcePath": "Kabin/bordeaux-02.jpg",
+    "categories": [],
+    "title": "FC Girondins de Bordeaux retail kiosk view 3",
+    "alt": "Exterior view of the branded FC Girondins de Bordeaux ticket and merchandise kiosk cabin outside the stadium.",
+    "order": 3,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [
+      "people-or-privacy"
+    ],
+    "rightsStatus": "review-required",
+    "possibleDuplicateSources": [
+      "Kabin/bordeaux-00.jpg",
+      "Kabin/bordeaux-01.jpg",
+      "Kabin/bordeaux-03.jpg"
+    ]
+  },
+  {
+    "family": "cabins",
+    "useCase": "retail-event-kiosk",
+    "project": "bordeaux",
+    "sourcePath": "Kabin/bordeaux-03.jpg",
+    "categories": [],
+    "title": "FC Girondins de Bordeaux retail kiosk view 4",
+    "alt": "Exterior view of the branded FC Girondins de Bordeaux ticket and merchandise kiosk cabin outside the stadium.",
+    "order": 4,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [
+      "people-or-privacy"
+    ],
+    "rightsStatus": "review-required",
+    "possibleDuplicateSources": [
+      "Kabin/bordeaux-00.jpg",
+      "Kabin/bordeaux-01.jpg",
+      "Kabin/bordeaux-02.jpg"
+    ]
+  },
+  {
+    "family": "cabins",
+    "useCase": "retail-event-kiosk",
+    "project": "camp-nou",
+    "sourcePath": "Kabin/camp-nou-stor-magaza-karmod-kabin.jpg",
+    "preferredCanonical": true,
+    "categories": [],
+    "title": "FC Barcelona official store kiosk at Camp Nou",
+    "alt": "Exterior shot of the FC Barcelona official store retail kiosk cabin at Camp Nou stadium.",
+    "order": 1,
+    "role": "hero",
+    "confidence": "high",
+    "flags": [
+      "people-or-privacy"
+    ],
+    "rightsStatus": "review-required"
+  },
+  {
+    "family": "cabins",
+    "useCase": "retail-event-kiosk",
+    "project": "camp-nou",
+    "sourcePath": "Kabin/kioscos.jpg",
+    "categories": [],
+    "title": "FC Barcelona official store kiosk at Camp Nou",
+    "alt": "Exterior shot of the FC Barcelona official store retail kiosk cabin at Camp Nou stadium.",
+    "order": 1,
+    "role": "secondary",
+    "confidence": "high",
+    "flags": [
+      "people-or-privacy"
+    ],
+    "rightsStatus": "review-required"
+  },
+  {
+    "family": "cabins",
+    "useCase": "retail-event-kiosk",
+    "project": "manchester-united",
+    "sourcePath": "Kabin/manchester-united-store-satis-magazasi-karmod-kabin.jpg",
+    "categories": [],
+    "title": "Manchester United official merchandise kiosk",
+    "alt": "Branded Manchester United Megastore merchandise kiosk cabin exterior in front of Old Trafford stadium.",
+    "order": 1,
+    "role": "hero",
+    "confidence": "high",
+    "flags": [
+      "people-or-privacy"
+    ],
+    "rightsStatus": "review-required"
+  },
+  {
+    "family": "cabins",
+    "useCase": "retail-event-kiosk",
+    "project": "paris-saint-germain",
+    "sourcePath": "Kabin/paris-st-germain-store-satis-magazasi-karmod-kabin-00.jpg",
+    "categories": [],
+    "title": "Paris Saint-Germain official merchandise store kiosk",
+    "alt": "Exterior view of the Paris Saint-Germain stadium retail kiosk cabin at Parc des Princes.",
+    "order": 1,
+    "role": "hero",
+    "confidence": "high",
+    "flags": [
+      "people-or-privacy"
+    ],
+    "rightsStatus": "review-required",
+    "possibleDuplicateSources": [
+      "Kabin/paris-st-germain-store-satis-magazasi-karmod-kabin-01.jpg",
+      "Kabin/Paris St Germain Loaded and heading to France_1.jpg",
+      "Kabin/Paris St Germain Loaded and heading to France_2.jpg",
+      "Kabin/Paris St Germain Loaded and heading to France_3.jpg"
+    ]
+  },
+  {
+    "family": "cabins",
+    "useCase": "retail-event-kiosk",
+    "project": "paris-saint-germain",
+    "sourcePath": "Kabin/paris-st-germain-store-satis-magazasi-karmod-kabin-01.jpg",
+    "categories": [],
+    "title": "Paris Saint-Germain store kiosk side angle",
+    "alt": "Alternative angle showing the PSG branded retail kiosk unit installed at the stadium.",
+    "order": 2,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [
+      "people-or-privacy"
+    ],
+    "rightsStatus": "review-required",
+    "possibleDuplicateSources": [
+      "Kabin/paris-st-germain-store-satis-magazasi-karmod-kabin-00.jpg",
+      "Kabin/Paris St Germain Loaded and heading to France_1.jpg",
+      "Kabin/Paris St Germain Loaded and heading to France_2.jpg",
+      "Kabin/Paris St Germain Loaded and heading to France_3.jpg"
+    ]
+  },
+  {
+    "family": "cabins",
+    "useCase": "retail-event-kiosk",
+    "project": "paris-saint-germain",
+    "sourcePath": "Kabin/Paris St Germain Loaded and heading to France_1.jpg",
+    "categories": [],
+    "title": "Paris Saint-Germain kiosks loaded for transport",
+    "alt": "Flatbed truck loaded with wrapped PSG retail kiosks ready for transport to France.",
+    "order": 81,
+    "role": "transport-loading",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "review-required",
+    "possibleDuplicateSources": [
+      "Kabin/paris-st-germain-store-satis-magazasi-karmod-kabin-00.jpg",
+      "Kabin/paris-st-germain-store-satis-magazasi-karmod-kabin-01.jpg",
+      "Kabin/Paris St Germain Loaded and heading to France_2.jpg",
+      "Kabin/Paris St Germain Loaded and heading to France_3.jpg"
+    ]
+  },
+  {
+    "family": "cabins",
+    "useCase": "retail-event-kiosk",
+    "project": "paris-saint-germain",
+    "sourcePath": "Kabin/Paris St Germain Loaded and heading to France_2.jpg",
+    "categories": [],
+    "title": "Paris Saint-Germain kiosks transport logistics",
+    "alt": "Side view of transport trailer carrying Paris Saint-Germain branded modular kiosk cabins.",
+    "order": 82,
+    "role": "transport-loading",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "review-required",
+    "possibleDuplicateSources": [
+      "Kabin/paris-st-germain-store-satis-magazasi-karmod-kabin-00.jpg",
+      "Kabin/paris-st-germain-store-satis-magazasi-karmod-kabin-01.jpg",
+      "Kabin/Paris St Germain Loaded and heading to France_1.jpg",
+      "Kabin/Paris St Germain Loaded and heading to France_3.jpg"
+    ]
+  },
+  {
+    "family": "cabins",
+    "useCase": "retail-event-kiosk",
+    "project": "paris-saint-germain",
+    "sourcePath": "Kabin/Paris St Germain Loaded and heading to France_3.jpg",
+    "categories": [],
+    "title": "Paris Saint-Germain kiosk loading departure",
+    "alt": "Rear angle of the haulage vehicle transporting PSG kiosks.",
+    "order": 83,
+    "role": "transport-loading",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "review-required",
+    "possibleDuplicateSources": [
+      "Kabin/paris-st-germain-store-satis-magazasi-karmod-kabin-00.jpg",
+      "Kabin/paris-st-germain-store-satis-magazasi-karmod-kabin-01.jpg",
+      "Kabin/Paris St Germain Loaded and heading to France_1.jpg",
+      "Kabin/Paris St Germain Loaded and heading to France_2.jpg"
+    ]
+  },
+  {
+    "family": "cabins",
+    "useCase": "retail-event-kiosk",
+    "project": "bailey-cooper-uk-kiosks",
+    "sourcePath": "Kabin/cf8d0bcc44e8c943a1fdf597f480da32.jpg",
+    "categories": [],
+    "title": "Commercial retail kiosk cabin view 1",
+    "alt": "Commercial modular retail kiosk unit installed in a public outdoor precinct.",
+    "caption": "Source photo carries third-party provenance (Bailey Cooper / UK Kiosks); rights review required before public use.",
+    "order": 1,
+    "role": "hero",
+    "confidence": "low",
+    "flags": [
+      "people-or-privacy"
+    ],
+    "rightsStatus": "review-required"
+  },
+  {
+    "family": "cabins",
+    "useCase": "retail-event-kiosk",
+    "project": "bailey-cooper-uk-kiosks",
+    "sourcePath": "Kabin/kiosks-smoking-shelters.jpg",
+    "categories": [],
+    "title": "Commercial retail kiosk cabin view 2",
+    "alt": "Commercial modular retail kiosk unit installed in a public outdoor precinct.",
+    "caption": "Source photo carries third-party provenance (Bailey Cooper / UK Kiosks); rights review required before public use.",
+    "order": 2,
+    "role": "alternate-exterior",
+    "confidence": "low",
+    "flags": [
+      "people-or-privacy"
+    ],
+    "rightsStatus": "review-required"
+  },
+  {
+    "family": "cabins",
+    "useCase": "retail-event-kiosk",
+    "project": "bailey-cooper-uk-kiosks",
+    "sourcePath": "Kabin/modular-kiosk-price.jpg",
+    "categories": [],
+    "title": "Commercial retail kiosk cabin view 3",
+    "alt": "Commercial modular retail kiosk unit installed in a public outdoor precinct.",
+    "caption": "Source photo carries third-party provenance (Bailey Cooper / UK Kiosks); rights review required before public use.",
+    "order": 3,
+    "role": "alternate-exterior",
+    "confidence": "low",
+    "flags": [
+      "people-or-privacy"
+    ],
+    "rightsStatus": "review-required"
+  },
+  {
+    "family": "cabins",
+    "useCase": "retail-event-kiosk",
+    "project": "polyester-bufe",
+    "sourcePath": "Kabin/polyester_ctp_kabin_bufe_marka (1).jpg",
+    "categories": [],
+    "title": "Modular buffet and sales kiosk cabin",
+    "alt": "Branded fiberglass polyester modular sales and refreshment kiosk cabin.",
+    "order": 1,
+    "role": "hero",
+    "confidence": "medium",
+    "flags": [
+      "overlay-or-watermark"
+    ],
+    "rightsStatus": "review-required",
+    "possibleDuplicateSources": [
+      "Kabin/polyester_ctp_kabin_bufe_marka (1).png"
+    ]
+  },
+  {
+    "family": "cabins",
+    "useCase": "retail-event-kiosk",
+    "project": "polyester-bufe",
+    "sourcePath": "Kabin/polyester_ctp_kabin_bufe_marka (1).png",
+    "categories": [],
+    "title": "Modular buffet kiosk illustration",
+    "alt": "Graphic illustration and render of a modular retail buffet kiosk cabin.",
+    "order": 2,
+    "role": "secondary",
+    "confidence": "medium",
+    "flags": [
+      "low-resolution",
+      "portrait",
+      "overlay-or-watermark"
+    ],
+    "rightsStatus": "review-required",
+    "possibleDuplicateSources": [
+      "Kabin/polyester_ctp_kabin_bufe_marka (1).jpg"
+    ]
+  },
+  {
+    "family": "cabins",
+    "useCase": "retail-event-kiosk",
+    "project": "polyester-bufe",
+    "sourcePath": "Kabin/polyester_ctp_kabin_bufe_marka (2).jpg",
+    "categories": [],
+    "title": "Fiberglass food and beverage kiosk",
+    "alt": "Commercial fiberglass food and drink serving kiosk with open serving counter.",
+    "order": 3,
+    "role": "alternate-exterior",
+    "confidence": "medium",
+    "flags": [
+      "overlay-or-watermark"
+    ],
+    "rightsStatus": "review-required"
+  },
+  {
+    "family": "cabins",
+    "useCase": "retail-event-kiosk",
+    "project": "polyester-bufe",
+    "sourcePath": "Kabin/polyester_ctp_kabin_bufe_marka (3).jpg",
+    "categories": [],
+    "title": "Compact modular ticket kiosk",
+    "alt": "Compact modular fiberglass ticket and information booth.",
+    "order": 4,
+    "role": "secondary",
+    "confidence": "medium",
+    "flags": [
+      "low-resolution",
+      "overlay-or-watermark"
+    ],
+    "rightsStatus": "review-required"
+  },
+  {
+    "family": "cabins",
+    "useCase": "retail-event-kiosk",
+    "project": "polyester-bufe",
+    "sourcePath": "Kabin/polyester_ctp_kabin_bufe_marka (4).jpg",
+    "categories": [],
+    "title": "Modular fast food kiosk cabin",
+    "alt": "Modular street food kiosk cabin with roller shutter counter.",
+    "order": 5,
+    "role": "secondary",
+    "confidence": "medium",
+    "flags": [
+      "low-resolution",
+      "overlay-or-watermark"
+    ],
+    "rightsStatus": "review-required"
+  },
+  {
+    "family": "cabins",
+    "useCase": "retail-event-kiosk",
+    "project": "polyester-bufe",
+    "sourcePath": "Kabin/polyester_ctp_kabin_bufe_marka (5).JPG",
+    "categories": [],
+    "title": "Outdoor retail kiosk cabin",
+    "alt": "Outdoor fiberglass polyester retail kiosk cabin with serving canopy.",
+    "order": 6,
+    "role": "secondary",
+    "confidence": "medium",
+    "flags": [
+      "low-resolution",
+      "overlay-or-watermark"
+    ],
+    "rightsStatus": "review-required"
+  },
+  {
+    "family": "cabins",
+    "useCase": "retail-event-kiosk",
+    "project": "polyester-bufe",
+    "sourcePath": "Kabin/polyester_ctp_kabin_bufe_marka (6).jpg",
+    "categories": [],
+    "title": "Commercial service kiosk unit",
+    "alt": "Small commercial modular kiosk unit for newspaper and snack retail.",
+    "order": 7,
+    "role": "secondary",
+    "confidence": "medium",
+    "flags": [
+      "low-resolution",
+      "overlay-or-watermark"
+    ],
+    "rightsStatus": "review-required"
+  },
+  {
+    "family": "cabins",
+    "useCase": "retail-event-kiosk",
+    "project": "polyester-bufe",
+    "sourcePath": "Kabin/polyester_ctp_kabin_bufe_marka (7).jpg",
+    "categories": [],
+    "title": "Modular sales booth cabin",
+    "alt": "Fiberglass modular sales booth with large glass service windows.",
+    "order": 8,
+    "role": "alternate-exterior",
+    "confidence": "medium",
+    "flags": [
+      "overlay-or-watermark"
+    ],
+    "rightsStatus": "review-required"
+  },
+  {
+    "family": "cabins",
+    "useCase": "retail-event-kiosk",
+    "project": "polyester-bufe",
+    "sourcePath": "Kabin/polyester_ctp_kabin_bufe_marka (8).jpg",
+    "categories": [],
+    "title": "Street retail kiosk unit",
+    "alt": "Finished polyester cabin unit equipped for street retail sales.",
+    "order": 9,
+    "role": "alternate-exterior",
+    "confidence": "medium",
+    "flags": [
+      "overlay-or-watermark"
+    ],
+    "rightsStatus": "review-required"
+  },
+  {
+    "family": "cabins",
+    "useCase": "retail-event-kiosk",
+    "project": "polyester-bufe",
+    "sourcePath": "Kabin/polyester_ctp_kabin_bufe_marka (9).jpg",
+    "categories": [],
+    "title": "Compact polyester sales kiosk",
+    "alt": "Compact polyester retail cabin with front serving counter.",
+    "order": 10,
+    "role": "secondary",
+    "confidence": "medium",
+    "flags": [
+      "low-resolution",
+      "overlay-or-watermark"
+    ],
+    "rightsStatus": "review-required"
+  },
+  {
+    "family": "cabins",
+    "useCase": "retail-event-kiosk",
+    "project": "others",
+    "sourcePath": "Kabin/02.jpg",
+    "categories": [],
+    "title": "Modular retail and event kiosk cabin 1",
+    "alt": "Exterior photograph of a modular retail and event kiosk cabin in an urban public environment.",
+    "order": 1,
+    "role": "hero",
+    "confidence": "medium",
+    "flags": [
+      "people-or-privacy"
+    ],
+    "rightsStatus": "review-required"
+  },
+  {
+    "family": "cabins",
+    "useCase": "retail-event-kiosk",
+    "project": "others",
+    "sourcePath": "Kabin/04.jpg",
+    "categories": [],
+    "title": "Modular retail and event kiosk cabin 2",
+    "alt": "Exterior photograph of a modular retail and event kiosk cabin in an urban public environment.",
+    "order": 2,
+    "role": "alternate-exterior",
+    "confidence": "medium",
+    "flags": [
+      "people-or-privacy"
+    ],
+    "rightsStatus": "review-required"
+  },
+  {
+    "family": "cabins",
+    "useCase": "retail-event-kiosk",
+    "project": "others",
+    "sourcePath": "Kabin/06.jpg",
+    "categories": [],
+    "title": "Modular retail and event kiosk cabin 3",
+    "alt": "Exterior photograph of a modular retail and event kiosk cabin in an urban public environment.",
+    "order": 3,
+    "role": "alternate-exterior",
+    "confidence": "medium",
+    "flags": [
+      "people-or-privacy"
+    ],
+    "rightsStatus": "review-required"
+  },
+  {
+    "family": "cabins",
+    "useCase": "retail-event-kiosk",
+    "project": "others",
+    "sourcePath": "Kabin/08.jpg",
+    "categories": [],
+    "title": "Modular retail and event kiosk cabin 4",
+    "alt": "Exterior photograph of a modular retail and event kiosk cabin in an urban public environment.",
+    "order": 4,
+    "role": "alternate-exterior",
+    "confidence": "medium",
+    "flags": [
+      "people-or-privacy"
+    ],
+    "rightsStatus": "review-required"
+  },
+  {
+    "family": "cabins",
+    "useCase": "retail-event-kiosk",
+    "project": "others",
+    "sourcePath": "Kabin/09.jpg",
+    "categories": [],
+    "title": "Modular retail and event kiosk cabin 5",
+    "alt": "Exterior photograph of a modular retail and event kiosk cabin in an urban public environment.",
+    "order": 5,
+    "role": "alternate-exterior",
+    "confidence": "medium",
+    "flags": [
+      "people-or-privacy"
+    ],
+    "rightsStatus": "review-required"
+  },
+  {
+    "family": "cabins",
+    "useCase": "retail-event-kiosk",
+    "project": "others",
+    "sourcePath": "Kabin/10.jpg",
+    "categories": [],
+    "title": "Modular retail and event kiosk cabin 6",
+    "alt": "Exterior photograph of a modular retail and event kiosk cabin in an urban public environment.",
+    "order": 6,
+    "role": "alternate-exterior",
+    "confidence": "medium",
+    "flags": [
+      "people-or-privacy"
+    ],
+    "rightsStatus": "review-required"
+  },
+  {
+    "family": "cabins",
+    "useCase": "retail-event-kiosk",
+    "project": "others",
+    "sourcePath": "Kabin/11.jpg",
+    "categories": [],
+    "title": "Modular retail and event kiosk cabin 7",
+    "alt": "Exterior photograph of a modular retail and event kiosk cabin in an urban public environment.",
+    "order": 7,
+    "role": "alternate-exterior",
+    "confidence": "medium",
+    "flags": [
+      "people-or-privacy"
+    ],
+    "rightsStatus": "review-required"
+  },
+  {
+    "family": "cabins",
+    "useCase": "retail-event-kiosk",
+    "project": "others",
+    "sourcePath": "Kabin/12.jpg",
+    "categories": [],
+    "title": "Modular retail and event kiosk cabin 8",
+    "alt": "Exterior photograph of a modular retail and event kiosk cabin in an urban public environment.",
+    "order": 8,
+    "role": "alternate-exterior",
+    "confidence": "medium",
+    "flags": [
+      "people-or-privacy"
+    ],
+    "rightsStatus": "review-required"
+  },
+  {
+    "family": "cabins",
+    "useCase": "retail-event-kiosk",
+    "project": "others",
+    "sourcePath": "Kabin/13.jpg",
+    "categories": [],
+    "title": "Modular retail and event kiosk cabin 9",
+    "alt": "Exterior photograph of a modular retail and event kiosk cabin in an urban public environment.",
+    "order": 9,
+    "role": "alternate-exterior",
+    "confidence": "medium",
+    "flags": [
+      "people-or-privacy"
+    ],
+    "rightsStatus": "review-required"
+  },
+  {
+    "family": "cabins",
+    "useCase": "retail-event-kiosk",
+    "project": "others",
+    "sourcePath": "Kabin/14.jpg",
+    "categories": [],
+    "title": "Modular retail and event kiosk cabin 10",
+    "alt": "Exterior photograph of a modular retail and event kiosk cabin in an urban public environment.",
+    "order": 10,
+    "role": "alternate-exterior",
+    "confidence": "medium",
+    "flags": [
+      "people-or-privacy"
+    ],
+    "rightsStatus": "review-required"
+  },
+  {
+    "family": "cabins",
+    "useCase": "retail-event-kiosk",
+    "project": "others",
+    "sourcePath": "Kabin/15.jpg",
+    "categories": [],
+    "title": "Modular retail and event kiosk cabin 11",
+    "alt": "Exterior photograph of a modular retail and event kiosk cabin in an urban public environment.",
+    "order": 11,
+    "role": "alternate-exterior",
+    "confidence": "medium",
+    "flags": [
+      "people-or-privacy"
+    ],
+    "rightsStatus": "review-required"
+  },
+  {
+    "family": "cabins",
+    "useCase": "retail-event-kiosk",
+    "project": "others",
+    "sourcePath": "Kabin/16.jpg",
+    "categories": [],
+    "title": "Modular retail and event kiosk cabin 12",
+    "alt": "Exterior photograph of a modular retail and event kiosk cabin in an urban public environment.",
+    "order": 12,
+    "role": "alternate-exterior",
+    "confidence": "medium",
+    "flags": [
+      "people-or-privacy"
+    ],
+    "rightsStatus": "review-required"
+  },
+  {
+    "family": "cabins",
+    "useCase": "retail-event-kiosk",
+    "project": "others",
+    "sourcePath": "Kabin/17.jpg",
+    "categories": [],
+    "title": "Modular retail and event kiosk cabin 13",
+    "alt": "Exterior photograph of a modular retail and event kiosk cabin in an urban public environment.",
+    "order": 13,
+    "role": "alternate-exterior",
+    "confidence": "medium",
+    "flags": [
+      "people-or-privacy"
+    ],
+    "rightsStatus": "review-required"
+  },
+  {
+    "family": "cabins",
+    "useCase": "retail-event-kiosk",
+    "project": "others",
+    "sourcePath": "Kabin/18.jpg",
+    "categories": [],
+    "title": "Modular retail and event kiosk cabin 14",
+    "alt": "Exterior photograph of a modular retail and event kiosk cabin in an urban public environment.",
+    "order": 14,
+    "role": "alternate-exterior",
+    "confidence": "medium",
+    "flags": [
+      "people-or-privacy"
+    ],
+    "rightsStatus": "review-required"
+  },
+  {
+    "family": "cabins",
+    "useCase": "retail-event-kiosk",
+    "project": "others",
+    "sourcePath": "Kabin/19.jpg",
+    "categories": [],
+    "title": "Modular retail and event kiosk cabin 15",
+    "alt": "Exterior photograph of a modular retail and event kiosk cabin in an urban public environment.",
+    "order": 15,
+    "role": "alternate-exterior",
+    "confidence": "medium",
+    "flags": [
+      "people-or-privacy"
+    ],
+    "rightsStatus": "review-required"
+  },
+  {
+    "family": "cabins",
+    "useCase": "retail-event-kiosk",
+    "project": "others",
+    "sourcePath": "Kabin/21.jpg",
+    "categories": [],
+    "title": "Modular retail and event kiosk cabin 16",
+    "alt": "Exterior photograph of a modular retail and event kiosk cabin in an urban public environment.",
+    "order": 16,
+    "role": "alternate-exterior",
+    "confidence": "medium",
+    "flags": [
+      "people-or-privacy"
+    ],
+    "rightsStatus": "review-required"
+  },
+  {
+    "family": "cabins",
+    "useCase": "retail-event-kiosk",
+    "project": "others",
+    "sourcePath": "Kabin/22.jpg",
+    "categories": [],
+    "title": "Modular retail and event kiosk cabin 17",
+    "alt": "Exterior photograph of a modular retail and event kiosk cabin in an urban public environment.",
+    "order": 17,
+    "role": "alternate-exterior",
+    "confidence": "medium",
+    "flags": [
+      "people-or-privacy"
+    ],
+    "rightsStatus": "review-required"
+  },
+  {
+    "family": "cabins",
+    "useCase": "retail-event-kiosk",
+    "project": "others",
+    "sourcePath": "Kabin/23.jpg",
+    "categories": [],
+    "title": "Modular retail and event kiosk cabin 18",
+    "alt": "Exterior photograph of a modular retail and event kiosk cabin in an urban public environment.",
+    "order": 18,
+    "role": "alternate-exterior",
+    "confidence": "medium",
+    "flags": [
+      "people-or-privacy"
+    ],
+    "rightsStatus": "review-required"
+  },
+  {
+    "family": "cabins",
+    "useCase": "retail-event-kiosk",
+    "project": "others",
+    "sourcePath": "Kabin/24.jpg",
+    "categories": [],
+    "title": "Modular retail and event kiosk cabin 19",
+    "alt": "Exterior photograph of a modular retail and event kiosk cabin in an urban public environment.",
+    "order": 19,
+    "role": "alternate-exterior",
+    "confidence": "medium",
+    "flags": [
+      "people-or-privacy"
+    ],
+    "rightsStatus": "review-required"
+  },
+  {
+    "family": "cabins",
+    "useCase": "retail-event-kiosk",
+    "project": "others",
+    "sourcePath": "Kabin/IMG_0173.JPEG",
+    "categories": [],
+    "title": "Modular retail and event kiosk cabin 20",
+    "alt": "Exterior photograph of a modular retail and event kiosk cabin in an urban public environment.",
+    "order": 20,
+    "role": "alternate-exterior",
+    "confidence": "medium",
+    "flags": [
+      "people-or-privacy"
+    ],
+    "rightsStatus": "review-required",
+    "possibleDuplicateSources": [
+      "Kabin/IMG_0188.JPEG",
+      "Kabin/IMG_0189.JPEG",
+      "Kabin/IMG_0201.JPEG",
+      "Kabin/IMG_0202.JPEG",
+      "Kabin/IMG_0203.JPEG",
+      "Kabin/IMG_0204.JPEG",
+      "Kabin/IMG_0205.JPEG",
+      "Kabin/IMG_0206.JPEG",
+      "Kabin/IMG_0208.JPEG"
+    ]
+  },
+  {
+    "family": "cabins",
+    "useCase": "retail-event-kiosk",
+    "project": "others",
+    "sourcePath": "Kabin/IMG_0188.JPEG",
+    "categories": [],
+    "title": "Modular retail and event kiosk cabin 21",
+    "alt": "Exterior photograph of a modular retail and event kiosk cabin in an urban public environment.",
+    "order": 21,
+    "role": "alternate-exterior",
+    "confidence": "medium",
+    "flags": [
+      "people-or-privacy"
+    ],
+    "rightsStatus": "review-required",
+    "possibleDuplicateSources": [
+      "Kabin/IMG_0173.JPEG",
+      "Kabin/IMG_0189.JPEG",
+      "Kabin/IMG_0201.JPEG",
+      "Kabin/IMG_0202.JPEG",
+      "Kabin/IMG_0203.JPEG",
+      "Kabin/IMG_0204.JPEG",
+      "Kabin/IMG_0205.JPEG",
+      "Kabin/IMG_0206.JPEG",
+      "Kabin/IMG_0208.JPEG"
+    ]
+  },
+  {
+    "family": "cabins",
+    "useCase": "retail-event-kiosk",
+    "project": "others",
+    "sourcePath": "Kabin/IMG_0189.JPEG",
+    "categories": [],
+    "title": "Modular retail and event kiosk cabin 22",
+    "alt": "Exterior photograph of a modular retail and event kiosk cabin in an urban public environment.",
+    "order": 22,
+    "role": "alternate-exterior",
+    "confidence": "medium",
+    "flags": [
+      "people-or-privacy"
+    ],
+    "rightsStatus": "review-required",
+    "possibleDuplicateSources": [
+      "Kabin/IMG_0173.JPEG",
+      "Kabin/IMG_0188.JPEG",
+      "Kabin/IMG_0201.JPEG",
+      "Kabin/IMG_0202.JPEG",
+      "Kabin/IMG_0203.JPEG",
+      "Kabin/IMG_0204.JPEG",
+      "Kabin/IMG_0205.JPEG",
+      "Kabin/IMG_0206.JPEG",
+      "Kabin/IMG_0208.JPEG"
+    ]
+  },
+  {
+    "family": "cabins",
+    "useCase": "retail-event-kiosk",
+    "project": "others",
+    "sourcePath": "Kabin/IMG_0201.JPEG",
+    "categories": [],
+    "title": "Modular retail and event kiosk cabin 23",
+    "alt": "Exterior photograph of a modular retail and event kiosk cabin in an urban public environment.",
+    "order": 23,
+    "role": "alternate-exterior",
+    "confidence": "medium",
+    "flags": [
+      "people-or-privacy"
+    ],
+    "rightsStatus": "review-required",
+    "possibleDuplicateSources": [
+      "Kabin/IMG_0173.JPEG",
+      "Kabin/IMG_0188.JPEG",
+      "Kabin/IMG_0189.JPEG",
+      "Kabin/IMG_0202.JPEG",
+      "Kabin/IMG_0203.JPEG",
+      "Kabin/IMG_0204.JPEG",
+      "Kabin/IMG_0205.JPEG",
+      "Kabin/IMG_0206.JPEG",
+      "Kabin/IMG_0208.JPEG"
+    ]
+  },
+  {
+    "family": "cabins",
+    "useCase": "retail-event-kiosk",
+    "project": "others",
+    "sourcePath": "Kabin/IMG_0202.JPEG",
+    "categories": [],
+    "title": "Modular retail and event kiosk cabin 24",
+    "alt": "Exterior photograph of a modular retail and event kiosk cabin in an urban public environment.",
+    "order": 24,
+    "role": "alternate-exterior",
+    "confidence": "medium",
+    "flags": [
+      "people-or-privacy"
+    ],
+    "rightsStatus": "review-required",
+    "possibleDuplicateSources": [
+      "Kabin/IMG_0173.JPEG",
+      "Kabin/IMG_0188.JPEG",
+      "Kabin/IMG_0189.JPEG",
+      "Kabin/IMG_0201.JPEG",
+      "Kabin/IMG_0203.JPEG",
+      "Kabin/IMG_0204.JPEG",
+      "Kabin/IMG_0205.JPEG",
+      "Kabin/IMG_0206.JPEG",
+      "Kabin/IMG_0208.JPEG"
+    ]
+  },
+  {
+    "family": "cabins",
+    "useCase": "retail-event-kiosk",
+    "project": "others",
+    "sourcePath": "Kabin/IMG_0203.JPEG",
+    "categories": [],
+    "title": "Modular retail and event kiosk cabin 25",
+    "alt": "Exterior photograph of a modular retail and event kiosk cabin in an urban public environment.",
+    "order": 25,
+    "role": "alternate-exterior",
+    "confidence": "medium",
+    "flags": [
+      "people-or-privacy"
+    ],
+    "rightsStatus": "review-required",
+    "possibleDuplicateSources": [
+      "Kabin/IMG_0173.JPEG",
+      "Kabin/IMG_0188.JPEG",
+      "Kabin/IMG_0189.JPEG",
+      "Kabin/IMG_0201.JPEG",
+      "Kabin/IMG_0202.JPEG",
+      "Kabin/IMG_0204.JPEG",
+      "Kabin/IMG_0205.JPEG",
+      "Kabin/IMG_0206.JPEG",
+      "Kabin/IMG_0208.JPEG"
+    ]
+  },
+  {
+    "family": "cabins",
+    "useCase": "retail-event-kiosk",
+    "project": "others",
+    "sourcePath": "Kabin/IMG_0204.JPEG",
+    "categories": [],
+    "title": "Modular retail and event kiosk cabin 26",
+    "alt": "Exterior photograph of a modular retail and event kiosk cabin in an urban public environment.",
+    "order": 26,
+    "role": "alternate-exterior",
+    "confidence": "medium",
+    "flags": [
+      "people-or-privacy"
+    ],
+    "rightsStatus": "review-required",
+    "possibleDuplicateSources": [
+      "Kabin/IMG_0173.JPEG",
+      "Kabin/IMG_0188.JPEG",
+      "Kabin/IMG_0189.JPEG",
+      "Kabin/IMG_0201.JPEG",
+      "Kabin/IMG_0202.JPEG",
+      "Kabin/IMG_0203.JPEG",
+      "Kabin/IMG_0205.JPEG",
+      "Kabin/IMG_0206.JPEG",
+      "Kabin/IMG_0208.JPEG"
+    ]
+  },
+  {
+    "family": "cabins",
+    "useCase": "retail-event-kiosk",
+    "project": "others",
+    "sourcePath": "Kabin/IMG_0205.JPEG",
+    "categories": [],
+    "title": "Modular retail and event kiosk cabin 27",
+    "alt": "Exterior photograph of a modular retail and event kiosk cabin in an urban public environment.",
+    "order": 27,
+    "role": "alternate-exterior",
+    "confidence": "medium",
+    "flags": [
+      "people-or-privacy"
+    ],
+    "rightsStatus": "review-required",
+    "possibleDuplicateSources": [
+      "Kabin/IMG_0173.JPEG",
+      "Kabin/IMG_0188.JPEG",
+      "Kabin/IMG_0189.JPEG",
+      "Kabin/IMG_0201.JPEG",
+      "Kabin/IMG_0202.JPEG",
+      "Kabin/IMG_0203.JPEG",
+      "Kabin/IMG_0204.JPEG",
+      "Kabin/IMG_0206.JPEG",
+      "Kabin/IMG_0208.JPEG"
+    ]
+  },
+  {
+    "family": "cabins",
+    "useCase": "retail-event-kiosk",
+    "project": "others",
+    "sourcePath": "Kabin/IMG_0206.JPEG",
+    "categories": [],
+    "title": "Modular retail and event kiosk cabin 28",
+    "alt": "Exterior photograph of a modular retail and event kiosk cabin in an urban public environment.",
+    "order": 28,
+    "role": "alternate-exterior",
+    "confidence": "medium",
+    "flags": [
+      "people-or-privacy"
+    ],
+    "rightsStatus": "review-required",
+    "possibleDuplicateSources": [
+      "Kabin/IMG_0173.JPEG",
+      "Kabin/IMG_0188.JPEG",
+      "Kabin/IMG_0189.JPEG",
+      "Kabin/IMG_0201.JPEG",
+      "Kabin/IMG_0202.JPEG",
+      "Kabin/IMG_0203.JPEG",
+      "Kabin/IMG_0204.JPEG",
+      "Kabin/IMG_0205.JPEG",
+      "Kabin/IMG_0208.JPEG"
+    ]
+  },
+  {
+    "family": "cabins",
+    "useCase": "retail-event-kiosk",
+    "project": "others",
+    "sourcePath": "Kabin/IMG_0208.JPEG",
+    "categories": [],
+    "title": "Modular retail and event kiosk cabin 29",
+    "alt": "Exterior photograph of a modular retail and event kiosk cabin in an urban public environment.",
+    "order": 29,
+    "role": "alternate-exterior",
+    "confidence": "medium",
+    "flags": [
+      "people-or-privacy"
+    ],
+    "rightsStatus": "review-required",
+    "possibleDuplicateSources": [
+      "Kabin/IMG_0173.JPEG",
+      "Kabin/IMG_0188.JPEG",
+      "Kabin/IMG_0189.JPEG",
+      "Kabin/IMG_0201.JPEG",
+      "Kabin/IMG_0202.JPEG",
+      "Kabin/IMG_0203.JPEG",
+      "Kabin/IMG_0204.JPEG",
+      "Kabin/IMG_0205.JPEG",
+      "Kabin/IMG_0206.JPEG"
+    ]
+  },
+  {
+    "family": "cabins",
+    "useCase": "wc-shower",
+    "project": "others",
+    "sourcePath": "Kabin/WC/150x270_Kabin_WC__Dus_DSC_0149.JPG",
+    "categories": [],
+    "title": "Modular WC and shower cabin exterior",
+    "alt": "Front exterior shot of a 150x270 cm portable fiberglass toilet and shower cabin.",
+    "order": 1,
+    "role": "hero",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "cabins",
+    "useCase": "wc-shower",
+    "project": "others",
+    "sourcePath": "Kabin/WC/150x270_Kabin_WC__Dus_DSC_0153.JPG",
+    "categories": [],
+    "title": "Modular WC and shower unit angle view",
+    "alt": "Angle exterior perspective of the portable sanitary cabin unit.",
+    "order": 2,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "cabins",
+    "useCase": "wc-shower",
+    "project": "others",
+    "sourcePath": "Kabin/WC/150x270_Kabin_WC__Dus_DSC_0155.JPG",
+    "categories": [],
+    "title": "Sanitary cabin side view",
+    "alt": "Side exterior view of the portable polyester WC and shower cabin.",
+    "order": 3,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "cabins",
+    "useCase": "wc-shower",
+    "project": "others",
+    "sourcePath": "Kabin/WC/DSC_2043.JPG",
+    "categories": [],
+    "title": "Fiberglass toilet cabin high resolution view",
+    "alt": "High resolution exterior photograph of a freestanding fiberglass toilet unit.",
+    "order": 4,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "cabins",
+    "useCase": "wc-shower",
+    "project": "others",
+    "sourcePath": "Kabin/WC/polyester-ctp-kabin-seyyar-tuvalet-ve-dus-35271.jpg",
+    "categories": [],
+    "title": "Portable fiberglass WC cabin",
+    "alt": "Freestanding fiberglass mobile toilet cabin with ventilation louvers.",
+    "order": 5,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "cabins",
+    "useCase": "wc-shower",
+    "project": "others",
+    "sourcePath": "Kabin/WC/polyester-ctp-kabin-seyyar-tuvalet-ve-dus-35271_2.jpg",
+    "categories": [],
+    "title": "Portable toilet cabin interior fixtures",
+    "alt": "Interior view of portable toilet cabin showing toilet bowl and washbasin fixtures.",
+    "order": 6,
+    "role": "interior-wide",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "cabins",
+    "useCase": "wc-shower",
+    "project": "others",
+    "sourcePath": "Kabin/WC/polyester-ctp-kabin-seyyar-tuvalet-ve-dus-35271_52.jpg",
+    "categories": [],
+    "title": "Mobile shower cabin interior",
+    "alt": "Interior view of mobile shower cabin unit showing shower tray and tap fixtures.",
+    "order": 7,
+    "role": "interior-detail",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "cabins",
+    "useCase": "wc-shower",
+    "project": "others",
+    "sourcePath": "Kabin/WC/seyyar-tuvalet-444.jpg",
+    "categories": [],
+    "title": "Mobile portable toilet cabin unit",
+    "alt": "Single mobile toilet cabin unit installed on a paved ground.",
+    "order": 8,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "disaster-relief",
+    "project": "malatya-konteyner-kent",
+    "sourcePath": "Konteyner/Deprem Afet/Malatya_Konteyner_Kent3.jpeg",
+    "categories": [],
+    "title": "Malatya emergency container city camp",
+    "alt": "Wide view of emergency disaster relief container housing camp in Malatya.",
+    "order": 1,
+    "role": "secondary",
+    "confidence": "high",
+    "flags": [
+      "low-resolution",
+      "nonstandard-aspect"
+    ],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "disaster-relief",
+    "project": "others",
+    "sourcePath": "Konteyner/Deprem Afet/DJI_0021.JPG",
+    "categories": [],
+    "title": "Disaster relief container settlement aerial view",
+    "alt": "High altitude aerial drone photograph of a large disaster relief container city settlement.",
+    "order": 1,
+    "role": "aerial-context",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "disaster-relief",
+    "project": "others",
+    "sourcePath": "Konteyner/Deprem Afet/FpUIvxkWIAIUCkQ.jpg",
+    "categories": [],
+    "title": "Emergency relief container housing rows",
+    "alt": "Rows of white emergency relief container units installed for temporary shelter.",
+    "order": 2,
+    "role": "hero",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "disaster-relief",
+    "project": "others",
+    "sourcePath": "Konteyner/Deprem Afet/IMG-20230825-WA0080.jpg",
+    "categories": [],
+    "title": "Emergency shelter container living unit",
+    "alt": "Ground level view of residential container shelter units deployed in disaster zone.",
+    "order": 3,
+    "role": "alternate-exterior",
+    "confidence": "medium",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "disaster-relief",
+    "project": "others",
+    "sourcePath": "Konteyner/Deprem Afet/IMG-20230825-WA0086.jpg",
+    "categories": [],
+    "title": "Emergency container community street layout",
+    "alt": "Perspective down a temporary street formed by emergency container accommodation units.",
+    "order": 4,
+    "role": "alternate-exterior",
+    "confidence": "medium",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "disaster-relief",
+    "project": "others",
+    "sourcePath": "Konteyner/Deprem Afet/WhatsApp Image 2023-02-20 at 08.25.06.jpeg",
+    "categories": [],
+    "title": "Disaster response container assembly on site",
+    "alt": "Rapid deployment container housing units during on-site installation after earthquake.",
+    "order": 5,
+    "role": "secondary",
+    "confidence": "medium",
+    "flags": [
+      "portrait"
+    ],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "residential",
+    "project": "sevindikli",
+    "sourcePath": "Konteyner/Konteyner Ev/35_Konteyner_Ev_Sevindikli_3.jpeg",
+    "categories": [],
+    "title": "Container house in Sevindikli",
+    "alt": "Residential container house with wooden deck veranda in Sevindikli.",
+    "order": 1,
+    "role": "secondary",
+    "confidence": "high",
+    "flags": [
+      "portrait"
+    ],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "residential",
+    "project": "akalan-catalca",
+    "sourcePath": "Konteyner/Konteyner Ev/42_Konteyner_Ev_Cem_Kilerci_Akalan_Catalca_7.JPG",
+    "categories": [],
+    "title": "Custom container house in Akalan Catalca",
+    "alt": "Modern customized residential container house with large sliding glass doors in Catalca.",
+    "order": 1,
+    "role": "hero",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "residential",
+    "project": "ankara",
+    "sourcePath": "Konteyner/Konteyner Ev/4x8_Konteyner_Ev_Ankara_DSC_0467.JPG",
+    "categories": [],
+    "title": "4x8m container house in Ankara exterior",
+    "alt": "Exterior shot of a 4x8 meter custom living container house located in Ankara.",
+    "order": 1,
+    "role": "hero",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown",
+    "possibleDuplicateSources": [
+      "Konteyner/Konteyner Ev/Konteyner_Ev_42_Ankara_DSC_0360.JPG"
+    ]
+  },
+  {
+    "family": "containers",
+    "useCase": "residential",
+    "project": "ankara",
+    "sourcePath": "Konteyner/Konteyner Ev/Konteyner_Ev_42_Ankara_DSC_0360.JPG",
+    "categories": [],
+    "title": "42 sqm container house in Ankara veranda view",
+    "alt": "Angled perspective of the 42 square meter residential container home with front porch in Ankara.",
+    "order": 2,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown",
+    "possibleDuplicateSources": [
+      "Konteyner/Konteyner Ev/4x8_Konteyner_Ev_Ankara_DSC_0467.JPG"
+    ]
+  },
+  {
+    "family": "containers",
+    "useCase": "residential",
+    "project": "almanya-ciftlik",
+    "sourcePath": "Konteyner/Konteyner Ev/Almanya_ciftlik_Misafirhane_konteyner2.jpeg",
+    "categories": [],
+    "title": "Container guesthouse on German farm",
+    "alt": "Modular container guesthouse unit placed in a rural farm setting in Germany.",
+    "order": 1,
+    "role": "hero",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "residential",
+    "project": "others",
+    "sourcePath": "Konteyner/Konteyner Ev/1.jpg",
+    "categories": [],
+    "title": "Modular residential container home",
+    "alt": "Exterior view of a modern modular residential container home with grey panelling.",
+    "order": 1,
+    "role": "hero",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "residential",
+    "project": "others",
+    "sourcePath": "Konteyner/Konteyner Ev/2.jpg",
+    "categories": [],
+    "title": "Container home with patio",
+    "alt": "Single living container house with extended patio terrace.",
+    "order": 2,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "residential",
+    "project": "others",
+    "sourcePath": "Konteyner/Konteyner Ev/3.jpg",
+    "categories": [],
+    "title": "Container villa exterior facade",
+    "alt": "Two combined container units converted into a modern residential home.",
+    "order": 3,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "residential",
+    "project": "others",
+    "sourcePath": "Konteyner/Konteyner Ev/4.jpg",
+    "categories": [],
+    "title": "Compact living container house",
+    "alt": "Compact modular container home placed in a garden setting.",
+    "order": 4,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "residential",
+    "project": "others",
+    "sourcePath": "Konteyner/Konteyner Ev/5.jpg",
+    "categories": [],
+    "title": "Container house interior living room",
+    "alt": "Modern finished interior of a residential container house showing lounge and kitchenette.",
+    "order": 5,
+    "role": "interior-wide",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "residential",
+    "project": "others",
+    "sourcePath": "Konteyner/Konteyner Ev/DSC_4961.JPG",
+    "categories": [],
+    "title": "High resolution container house exterior",
+    "alt": "Crisp exterior photograph of a contemporary residential container home.",
+    "order": 6,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "residential",
+    "project": "others",
+    "sourcePath": "Konteyner/Konteyner Ev/WhatsApp Image 2021-09-10 at 14.27.12.jpeg",
+    "categories": [],
+    "title": "Modern container house in garden",
+    "alt": "Finished residential container house unit installed on private land.",
+    "order": 7,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "residential",
+    "project": "others",
+    "sourcePath": "Konteyner/Konteyner Ev/WhatsApp Image 2021-09-10 at 14.27.21.jpeg",
+    "categories": [],
+    "title": "Container home side angle",
+    "alt": "Side exterior perspective of the modular living container unit.",
+    "order": 8,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "residential",
+    "project": "others",
+    "sourcePath": "Konteyner/Konteyner Ev/WhatsApp Image 2022-05-24 at 13.33.53 (2).jpeg",
+    "categories": [],
+    "title": "Container house with panoramic windows",
+    "alt": "Residential container structure with large glass facade windows.",
+    "order": 9,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "cabins",
+    "useCase": "security-guard",
+    "project": "cemile-sultan-korusu",
+    "sourcePath": "Konteyner/Metropol/Metropol_CemileSultanKorusu_Yesil_WhatsApp55.jpeg",
+    "categories": [],
+    "title": "Metropol security cabin at Cemile Sultan Korusu",
+    "alt": "Green metropol executive security cabin cabin nestled in parkland trees.",
+    "order": 1,
+    "role": "hero",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "cabins",
+    "useCase": "security-guard",
+    "project": "feshane-assan",
+    "sourcePath": "Konteyner/Metropol/Metropol_Feshane_Assan3.jpeg",
+    "categories": [],
+    "title": "Metropol security cabin at Feshane",
+    "alt": "Executive security cabin unit installed at Feshane facility entrance.",
+    "order": 1,
+    "role": "hero",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "cabins",
+    "useCase": "security-guard",
+    "project": "alken-sitesi",
+    "sourcePath": "Konteyner/Metropol/Metropol_Kabin_Alken_Sitesi_1.jpg",
+    "categories": [],
+    "title": "Metropol guard booth at Alken Sitesi",
+    "alt": "Residential site entrance security cabin at Alken Sitesi housing complex.",
+    "order": 1,
+    "role": "hero",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "cabins",
+    "useCase": "security-guard",
+    "project": "bakirkoy-adalet-sarayi",
+    "sourcePath": "Konteyner/Metropol/Metropol_Kabin_Bakirkoy_Adalet_Sarayi_1.JPG",
+    "categories": [],
+    "title": "Security cabin at Bakirkoy Courthouse",
+    "alt": "Heavy duty security guard cabin installed outside Bakirkoy Courthouse.",
+    "order": 1,
+    "role": "hero",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "cabins",
+    "useCase": "security-guard",
+    "project": "double-park",
+    "sourcePath": "Konteyner/Metropol/Metropol_Kabin_Double_Park_1.JPG",
+    "categories": [],
+    "title": "Metropol cabin at Double Park",
+    "alt": "Executive guard and attendant cabin unit at Double Park.",
+    "order": 1,
+    "role": "hero",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "cabins",
+    "useCase": "security-guard",
+    "project": "koc-muzesi",
+    "sourcePath": "Konteyner/Metropol/Metropol_Kabin_Guvenlik_Koc_Muzesi_2.JPG",
+    "categories": [],
+    "title": "Security guard booth at Rahmi M. Koc Museum",
+    "alt": "Metropol security cabin at the entrance gate of Rahmi M. Koc Museum.",
+    "order": 1,
+    "role": "hero",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "cabins",
+    "useCase": "security-guard",
+    "project": "sariyer-hastane",
+    "sourcePath": "Konteyner/Metropol/Metropol_Kabin_Sariyer_Hastane_2.JPG",
+    "categories": [],
+    "title": "Hospital entrance security booth in Sariyer",
+    "alt": "Security guard booth installed at the hospital entrance in Sariyer.",
+    "order": 1,
+    "role": "hero",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "cabins",
+    "useCase": "security-guard",
+    "project": "negmar",
+    "sourcePath": "Konteyner/Metropol/Negmar_04.jpg",
+    "categories": [],
+    "title": "Toll and security booth at Negmar Port",
+    "alt": "Metropol cabin unit deployed as a toll and security control point at Negmar port terminal.",
+    "order": 1,
+    "role": "hero",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "cabins",
+    "useCase": "security-guard",
+    "project": "others",
+    "sourcePath": "Konteyner/Metropol/1.jpg",
+    "categories": [],
+    "title": "Metropol executive security cabin",
+    "alt": "Exterior view of a modern metropol executive security cabin with sleek facade.",
+    "order": 1,
+    "role": "hero",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "cabins",
+    "useCase": "security-guard",
+    "project": "others",
+    "sourcePath": "Konteyner/Metropol/DSC_0273.JPG",
+    "categories": [],
+    "title": "Executive guard cabin front view",
+    "alt": "Front perspective of an insulated executive security guard booth.",
+    "order": 2,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "cabins",
+    "useCase": "security-guard",
+    "project": "others",
+    "sourcePath": "Konteyner/Metropol/DSC_1833.JPG",
+    "categories": [],
+    "title": "Modern security booth with canopy",
+    "alt": "High resolution photo of a modern security booth with entrance overhang.",
+    "order": 3,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "cabins",
+    "useCase": "security-guard",
+    "project": "others",
+    "sourcePath": "Konteyner/Metropol/DSC_1923.JPG",
+    "categories": [],
+    "title": "Security cabin angle perspective",
+    "alt": "Crisp angle view of a finished metropol security guard cabin.",
+    "order": 4,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "cabins",
+    "useCase": "security-guard",
+    "project": "others",
+    "sourcePath": "Konteyner/Metropol/DSC_3300.JPG",
+    "categories": [],
+    "title": "Insulated security post cabin",
+    "alt": "Insulated security post cabin unit with glazed observation windows.",
+    "order": 5,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "cabins",
+    "useCase": "security-guard",
+    "project": "others",
+    "sourcePath": "Konteyner/Metropol/DSC_5453.JPG",
+    "categories": [],
+    "title": "Executive gatehouse cabin unit",
+    "alt": "Executive modular gatehouse cabin unit with composite exterior panelling.",
+    "order": 6,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "cabins",
+    "useCase": "security-guard",
+    "project": "others",
+    "sourcePath": "Konteyner/Metropol/Escritórios Modulares.jpg",
+    "categories": [],
+    "title": "Metropol modular cabin exterior",
+    "alt": "Commercial modular security cabin unit installed on a paved square.",
+    "order": 7,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "cabins",
+    "useCase": "security-guard",
+    "project": "others",
+    "sourcePath": "Konteyner/Metropol/IMG_20240211_152451.jpg",
+    "categories": [],
+    "title": "Site guard booth with tinted windows",
+    "alt": "On-site photograph of a modern guard booth featuring tinted glass panels.",
+    "order": 8,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "cabins",
+    "useCase": "security-guard",
+    "project": "others",
+    "sourcePath": "Konteyner/Metropol/WhatsApp Image 2023-06-04 at 00.25.56.jpeg",
+    "categories": [],
+    "title": "Compact security gatehouse cabin",
+    "alt": "Compact security gatehouse cabin positioned at entrance gates.",
+    "order": 9,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "cabins",
+    "useCase": "security-guard",
+    "project": "others",
+    "sourcePath": "Konteyner/Metropol/WhatsApp Image 2024-04-22 at 16.15.18 (1).jpeg",
+    "categories": [],
+    "title": "Contemporary security booth installation",
+    "alt": "Contemporary security booth installed outside a commercial facility.",
+    "order": 10,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "office",
+    "project": "cagdas-makine",
+    "sourcePath": "Konteyner/Ofis/Konteyner_Arge_Ofisi_Cagdas_Makine_2.JPG",
+    "categories": [],
+    "title": "Container R&D office for Cagdas Makine",
+    "alt": "Two-storey container office building for Cagdas Makine R&D department.",
+    "order": 1,
+    "role": "hero",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "office",
+    "project": "bilgi-universitesi",
+    "sourcePath": "Konteyner/Ofis/Konteyner_Ofis_Bilgi_universitesi_3.JPG",
+    "categories": [],
+    "title": "Container campus office at Bilgi University",
+    "alt": "Modular container office building installed on the Bilgi University campus.",
+    "order": 1,
+    "role": "hero",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "office",
+    "project": "romanya-austed",
+    "sourcePath": "Konteyner/Ofis/Konteyner_Romanya_Bayi_AUSTED.jpeg",
+    "preferredCanonical": true,
+    "categories": [
+      {
+        "family": "containers",
+        "useCase": "construction-site",
+        "project": "romanya-austed"
+      }
+    ],
+    "title": "Modular container office for Austed dealership in Romania",
+    "alt": "Two-storey modular container office building with external staircase for Austed Romania.",
+    "order": 1,
+    "role": "hero",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "office",
+    "project": "ispanya-baba",
+    "sourcePath": "Konteyner/Ofis/WhatsApp Image2021_ispanya_Baba15.jpeg",
+    "categories": [],
+    "title": "Container office installation in Spain",
+    "alt": "Modular container office units assembled on site in Spain.",
+    "order": 1,
+    "role": "hero",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "office",
+    "project": "others",
+    "sourcePath": "Konteyner/Ofis/5.jpg",
+    "preferredCanonical": true,
+    "categories": [
+      {
+        "family": "containers",
+        "useCase": "dormitory",
+        "project": "others"
+      }
+    ],
+    "title": "Modular container office building exterior",
+    "alt": "Two-storey container building complex with covered walkway and exterior staircase.",
+    "order": 5,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "dormitory",
+    "project": "others",
+    "sourcePath": "Konteyner/Yatakhane/8.jpg",
+    "categories": [
+      {
+        "family": "containers",
+        "useCase": "office",
+        "project": "others"
+      }
+    ],
+    "title": "Modular container office building exterior",
+    "alt": "Two-storey container building complex with covered walkway and exterior staircase.",
+    "order": 8,
+    "role": "secondary",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "office",
+    "project": "others",
+    "sourcePath": "Konteyner/Ofis/1.jpg",
+    "categories": [],
+    "title": "Modern container sales office",
+    "alt": "Exterior view of a modern modular container sales office with dark finish.",
+    "order": 1,
+    "role": "hero",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "office",
+    "project": "others",
+    "sourcePath": "Konteyner/Ofis/2.jpg",
+    "categories": [],
+    "title": "Two-storey container office complex",
+    "alt": "Multi-unit two-storey container office building with external staircase.",
+    "order": 2,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "office",
+    "project": "others",
+    "sourcePath": "Konteyner/Ofis/3.jpg",
+    "categories": [],
+    "title": "Modular site office container",
+    "alt": "Prefabricated container office unit on concrete foundations.",
+    "order": 3,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "office",
+    "project": "others",
+    "sourcePath": "Konteyner/Ofis/4.jpg",
+    "categories": [],
+    "title": "Modular container office with glazing",
+    "alt": "Front perspective of an office container featuring full-height glass entrance doors.",
+    "order": 4,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "office",
+    "project": "others",
+    "sourcePath": "Konteyner/Ofis/6.jpg",
+    "categories": [],
+    "title": "Combined container office suite",
+    "alt": "Interconnected container office units forming an administrative workspace.",
+    "order": 6,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "office",
+    "project": "others",
+    "sourcePath": "Konteyner/Ofis/12.jpg",
+    "categories": [],
+    "title": "Open-plan container office interior",
+    "alt": "Open-plan interior workspace with office desks inside a container building.",
+    "order": 7,
+    "role": "interior-wide",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown",
+    "possibleDuplicateSources": [
+      "Konteyner/Ofis/14.jpg"
+    ]
+  },
+  {
+    "family": "containers",
+    "useCase": "office",
+    "project": "others",
+    "sourcePath": "Konteyner/Ofis/14.jpg",
+    "categories": [],
+    "title": "Container office workstation setup",
+    "alt": "Alternative view of workstation desks and lighting inside modular container office.",
+    "order": 8,
+    "role": "interior-wide",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown",
+    "possibleDuplicateSources": [
+      "Konteyner/Ofis/12.jpg"
+    ]
+  },
+  {
+    "family": "containers",
+    "useCase": "office",
+    "project": "others",
+    "sourcePath": "Konteyner/Ofis/3x12_Konteyner_WhatsApp2022-47.jpg",
+    "categories": [],
+    "title": "3x12m extra wide office container",
+    "alt": "Exterior shot of an extra-wide 3x12 meter modular office container.",
+    "order": 9,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "office",
+    "project": "others",
+    "sourcePath": "Konteyner/Ofis/DSC_2753.JPG",
+    "categories": [],
+    "title": "Administrative container building facade",
+    "alt": "High resolution photo of an administrative modular container facility.",
+    "order": 10,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "office",
+    "project": "others",
+    "sourcePath": "Konteyner/Ofis/DSC_3304.JPG",
+    "categories": [],
+    "title": "Modular office container corner view",
+    "alt": "Corner view of a finished modular office container structure.",
+    "order": 11,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "office",
+    "project": "others",
+    "sourcePath": "Konteyner/Ofis/IMG_20170104_170300.jpg",
+    "categories": [],
+    "title": "Commercial container office installation",
+    "alt": "Commercial container office installation in industrial yard.",
+    "order": 12,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "office",
+    "project": "others",
+    "sourcePath": "Konteyner/Ofis/IMG-20220204-WA0019.jpg",
+    "categories": [],
+    "title": "Two-unit container office setup",
+    "alt": "Two joined container office modules with anthracite trim.",
+    "order": 13,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "office",
+    "project": "others",
+    "sourcePath": "Konteyner/Ofis/WhatsApp Image 2019-11-15 at 15.24.45.jpeg",
+    "categories": [],
+    "title": "Field container office building",
+    "alt": "Field container office building installed on a construction site.",
+    "order": 14,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "office",
+    "project": "others",
+    "sourcePath": "Konteyner/Ofis/WhatsApp Image 2022-07-06 at 17.52.50.jpeg",
+    "categories": [],
+    "title": "Site administration container unit",
+    "alt": "Modular administration container unit with entrance canopy.",
+    "order": 15,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "construction-site",
+    "project": "romanya-austed",
+    "sourcePath": "Konteyner/Şantiye/Konteyner_Romanya_Bayi_AUSTED.jpeg",
+    "categories": [
+      {
+        "family": "containers",
+        "useCase": "office",
+        "project": "romanya-austed"
+      }
+    ],
+    "title": "Modular container office for Austed dealership in Romania",
+    "alt": "Two-storey modular container office building with external staircase for Austed Romania.",
+    "order": 1,
+    "role": "secondary",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "construction-site",
+    "project": "kiptas-vaditepe",
+    "sourcePath": "Konteyner/Şantiye/Kiptas_Vaditepe_DSCF1603.JPG",
+    "preferredCanonical": true,
+    "categories": [
+      {
+        "family": "containers",
+        "useCase": "dormitory",
+        "project": "kiptas-vaditepe"
+      }
+    ],
+    "title": "Construction worker camp containers at Kiptas Vaditepe",
+    "alt": "Multi-storey container dormitory and site office complex at Kiptas Vaditepe construction site.",
+    "order": 1,
+    "role": "hero",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "dormitory",
+    "project": "kiptas-vaditepe",
+    "sourcePath": "Konteyner/Yatakhane/Kiptas_Vaditepe_DSCF1603.JPG",
+    "categories": [
+      {
+        "family": "containers",
+        "useCase": "construction-site",
+        "project": "kiptas-vaditepe"
+      }
+    ],
+    "title": "Construction worker camp containers at Kiptas Vaditepe",
+    "alt": "Multi-storey container dormitory and site office complex at Kiptas Vaditepe construction site.",
+    "order": 1,
+    "role": "secondary",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "construction-site",
+    "project": "others",
+    "sourcePath": "Konteyner/Şantiye/11.jpg",
+    "preferredCanonical": true,
+    "categories": [
+      {
+        "family": "containers",
+        "useCase": "dormitory",
+        "project": "others"
+      }
+    ],
+    "title": "Construction worker container camp buildings",
+    "alt": "Two-storey container accommodation blocks arranged on gravel ground at a construction site.",
+    "order": 11,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "dormitory",
+    "project": "others",
+    "sourcePath": "Konteyner/Yatakhane/5.jpg",
+    "categories": [
+      {
+        "family": "containers",
+        "useCase": "construction-site",
+        "project": "others"
+      }
+    ],
+    "title": "Construction worker container camp buildings",
+    "alt": "Two-storey container accommodation blocks arranged on gravel ground at a construction site.",
+    "order": 5,
+    "role": "secondary",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "construction-site",
+    "project": "atasehir-maliye",
+    "sourcePath": "Konteyner/Şantiye/Konteyner_Yatakhane_Atasehir_Maliye_7.JPG",
+    "categories": [
+      {
+        "family": "containers",
+        "useCase": "dormitory",
+        "project": "atasehir-maliye"
+      }
+    ],
+    "title": "Worker container dormitory at Atasehir Maliye project",
+    "alt": "Three-storey container dormitory block with exterior steel staircases at Atasehir Maliye construction site.",
+    "order": 1,
+    "role": "hero",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "construction-site",
+    "project": "gebze-toki-m-eksi",
+    "sourcePath": "Konteyner/Şantiye/Konteyner_Yatakhane_Gebze_Toki_M_Eksi_5.JPG",
+    "categories": [
+      {
+        "family": "containers",
+        "useCase": "dormitory",
+        "project": "gebze-toki-m-eksi"
+      }
+    ],
+    "title": "Container site camp complex at Gebze TOKI M. Eksi",
+    "alt": "Two-storey container camp complex with covered corridors at Gebze TOKI project site.",
+    "order": 1,
+    "role": "hero",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "construction-site",
+    "project": "pasifik-gyo",
+    "sourcePath": "Konteyner/Şantiye/Pasifik_gyo.jpeg",
+    "categories": [],
+    "title": "Construction site container office for Pasifik GYO",
+    "alt": "Multi-container site office and worker welfare complex at Pasifik GYO development project.",
+    "order": 1,
+    "role": "hero",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "construction-site",
+    "project": "others",
+    "sourcePath": "Konteyner/Şantiye/DJI_20260602120507_0054_D.JPG",
+    "categories": [],
+    "title": "Large scale container construction camp aerial view",
+    "alt": "High resolution aerial drone perspective of a vast multi-building container construction campsite.",
+    "order": 20,
+    "role": "aerial-context",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "construction-site",
+    "project": "others",
+    "sourcePath": "Konteyner/Şantiye/DJI_20260610160154_0129_D.JPG",
+    "categories": [],
+    "title": "Container camp aerial layout overview",
+    "alt": "Aerial overview of container dormitory and administrative blocks on active construction site.",
+    "order": 21,
+    "role": "aerial-context",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "construction-site",
+    "project": "others",
+    "sourcePath": "Konteyner/Şantiye/DJI_20260713125622_0022_D.JPG",
+    "categories": [],
+    "title": "Construction camp aerial panorama",
+    "alt": "Drone aerial view showing the layout of multiple modular container buildings.",
+    "order": 22,
+    "role": "aerial-context",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "construction-site",
+    "project": "others",
+    "sourcePath": "Konteyner/Şantiye/DJI_20260713141340_0060_D.JPG",
+    "categories": [],
+    "title": "Modular site camp drone survey",
+    "alt": "Overhead drone photograph surveying worker container accommodations and access roads.",
+    "order": 23,
+    "role": "aerial-context",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "construction-site",
+    "project": "others",
+    "sourcePath": "Konteyner/Şantiye/DJI_20260713141648_0079_D.JPG",
+    "categories": [],
+    "title": "Container site infrastructure aerial shot",
+    "alt": "Aerial view of modular construction camp containers and surrounding infrastructure.",
+    "order": 24,
+    "role": "aerial-context",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "construction-site",
+    "project": "others",
+    "sourcePath": "Konteyner/Şantiye/DJI_20260713160657_0125_D.JPG",
+    "categories": [],
+    "title": "Evening aerial view of container camp complex",
+    "alt": "Late afternoon aerial view of complete container camp complex on construction site.",
+    "order": 25,
+    "role": "aerial-context",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "construction-site",
+    "project": "others",
+    "sourcePath": "Konteyner/Şantiye/1.jpg",
+    "categories": [],
+    "title": "Construction site container office complex",
+    "alt": "Two-storey modular container building used as main site office on an active build site.",
+    "order": 1,
+    "role": "hero",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "construction-site",
+    "project": "others",
+    "sourcePath": "Konteyner/Şantiye/2.jpg",
+    "categories": [],
+    "title": "Site container units in two rows",
+    "alt": "Parallel rows of white modular containers on construction site foundation.",
+    "order": 2,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "construction-site",
+    "project": "others",
+    "sourcePath": "Konteyner/Şantiye/3.jpg",
+    "categories": [],
+    "title": "Multi-storey site accommodation container block",
+    "alt": "Three-storey container block with exterior steel emergency stairs.",
+    "order": 3,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "construction-site",
+    "project": "others",
+    "sourcePath": "Konteyner/Şantiye/4.jpg",
+    "categories": [],
+    "title": "Construction worker container camp",
+    "alt": "Container accommodation units arranged with covered walkways.",
+    "order": 4,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "construction-site",
+    "project": "others",
+    "sourcePath": "Konteyner/Şantiye/5.jpg",
+    "categories": [],
+    "title": "Site office container modules",
+    "alt": "Modular site office containers with external lighting and entrance canopies.",
+    "order": 5,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "construction-site",
+    "project": "others",
+    "sourcePath": "Konteyner/Şantiye/6.jpg",
+    "categories": [],
+    "title": "Two-storey construction office building",
+    "alt": "Finished two-storey container building complex for construction site management.",
+    "order": 6,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "construction-site",
+    "project": "others",
+    "sourcePath": "Konteyner/Şantiye/7.jpg",
+    "categories": [],
+    "title": "Modular site welfare containers",
+    "alt": "Welfare and dining container units installed on heavy construction project.",
+    "order": 7,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "construction-site",
+    "project": "others",
+    "sourcePath": "Konteyner/Şantiye/8.jpg",
+    "categories": [],
+    "title": "Container camp residential row",
+    "alt": "Row of single-storey accommodation containers with windows and security grilles.",
+    "order": 8,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "construction-site",
+    "project": "others",
+    "sourcePath": "Konteyner/Şantiye/9.JPG",
+    "categories": [],
+    "title": "Field office container installation",
+    "alt": "Field office container unit positioned next to site machinery.",
+    "order": 9,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "construction-site",
+    "project": "others",
+    "sourcePath": "Konteyner/Şantiye/10.jpg",
+    "categories": [],
+    "title": "Large scale container site compound",
+    "alt": "Compound of modular containers arranged for multi-contractor site coordination.",
+    "order": 10,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "construction-site",
+    "project": "others",
+    "sourcePath": "Konteyner/Şantiye/DSC_5470.JPG",
+    "categories": [],
+    "title": "High resolution site office facade",
+    "alt": "High resolution photograph of a freshly installed container site office.",
+    "order": 12,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "construction-site",
+    "project": "others",
+    "sourcePath": "Konteyner/Şantiye/IMG-20231018-WA0050.jpg",
+    "categories": [],
+    "title": "Container site cabin deployment",
+    "alt": "Container cabins positioned along site boundary.",
+    "order": 13,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "construction-site",
+    "project": "others",
+    "sourcePath": "Konteyner/Şantiye/WhatsApp Image 2022-10-11 at 15.42.09.jpeg",
+    "categories": [],
+    "title": "Modular construction camp setup",
+    "alt": "Modular construction camp setup on levelled terrain.",
+    "order": 14,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "dormitory",
+    "project": "others",
+    "sourcePath": "Konteyner/Standart/9.jpg",
+    "preferredCanonical": true,
+    "categories": [
+      {
+        "family": "containers",
+        "useCase": "standard-product",
+        "project": "others"
+      }
+    ],
+    "title": "Standard modular container dormitory building",
+    "alt": "Exterior shot of a two-storey standard modular container dormitory building.",
+    "order": 9,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "dormitory",
+    "project": "others",
+    "sourcePath": "Konteyner/Yatakhane/9.jpg",
+    "categories": [
+      {
+        "family": "containers",
+        "useCase": "standard-product",
+        "project": "others"
+      }
+    ],
+    "title": "Standard modular container dormitory building",
+    "alt": "Exterior shot of a two-storey standard modular container dormitory building.",
+    "order": 9,
+    "role": "secondary",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "standard-product",
+    "project": "others",
+    "sourcePath": "Konteyner/Standart/1.JPG",
+    "categories": [],
+    "title": "Standard flatpack container unit",
+    "alt": "Single standard prefabricated container unit with sandwich panel walls.",
+    "order": 1,
+    "role": "hero",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "standard-product",
+    "project": "others",
+    "sourcePath": "Konteyner/Standart/2.JPG",
+    "categories": [],
+    "title": "Standard container side view",
+    "alt": "Side exterior view of a standard modular container.",
+    "order": 2,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "standard-product",
+    "project": "others",
+    "sourcePath": "Konteyner/Standart/3.JPG",
+    "categories": [],
+    "title": "Modular container with door and windows",
+    "alt": "Front facade of a standard container module showing insulated door and double windows.",
+    "order": 3,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "standard-product",
+    "project": "others",
+    "sourcePath": "Konteyner/Standart/4.JPG",
+    "categories": [],
+    "title": "Standard container angle perspective",
+    "alt": "Angle exterior perspective of a white modular container unit.",
+    "order": 4,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "standard-product",
+    "project": "others",
+    "sourcePath": "Konteyner/Standart/5.JPG",
+    "categories": [],
+    "title": "Standard multi-purpose container module",
+    "alt": "Finished multi-purpose standard container on flat ground.",
+    "order": 5,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "standard-product",
+    "project": "others",
+    "sourcePath": "Konteyner/Standart/6.JPG",
+    "categories": [],
+    "title": "Demountable container unit",
+    "alt": "Demountable flatpack modular container unit.",
+    "order": 6,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "standard-product",
+    "project": "others",
+    "sourcePath": "Konteyner/Standart/7.JPG",
+    "categories": [],
+    "title": "Standard utility container unit",
+    "alt": "Standard utility container unit with corner castings and lifting points.",
+    "order": 7,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "standard-product",
+    "project": "others",
+    "sourcePath": "Konteyner/Standart/8.JPG",
+    "categories": [],
+    "title": "Standard container structure overview",
+    "alt": "Overview of a standard container module structure.",
+    "order": 8,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "standard-product",
+    "project": "others",
+    "sourcePath": "Konteyner/Standart/10.jpg",
+    "categories": [],
+    "title": "Standard container unit side profile",
+    "alt": "Side profile of a standard sandwich panel container unit.",
+    "order": 10,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "standard-product",
+    "project": "others",
+    "sourcePath": "Konteyner/Standart/11.jpg",
+    "categories": [],
+    "title": "Prefabricated container corner detail",
+    "alt": "Corner exterior view of a prefabricated modular container.",
+    "order": 11,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "standard-product",
+    "project": "others",
+    "sourcePath": "Konteyner/Standart/12.jpg",
+    "categories": [],
+    "title": "Standard container building element",
+    "alt": "Exterior view of a modular standard container unit ready for installation.",
+    "order": 12,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "dormitory",
+    "project": "iceland",
+    "sourcePath": "Konteyner/Yatakhane/Container Cabins For Sale Iceland.jpg",
+    "categories": [],
+    "title": "Container accommodation cabins for Iceland project",
+    "alt": "Modular container accommodation cabin complex deployed in Iceland.",
+    "order": 1,
+    "role": "hero",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown",
+    "possibleDuplicateSources": [
+      "Konteyner/Yatakhane/Container Offices for Sale Iceland.jpg"
+    ]
+  },
+  {
+    "family": "containers",
+    "useCase": "dormitory",
+    "project": "iceland",
+    "sourcePath": "Konteyner/Yatakhane/Container Offices for Sale Iceland.jpg",
+    "categories": [
+      {
+        "family": "containers",
+        "useCase": "office",
+        "project": "iceland"
+      }
+    ],
+    "title": "Container offices and camp in Iceland",
+    "alt": "Container office and accommodation buildings in snowy landscape in Iceland.",
+    "order": 2,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown",
+    "possibleDuplicateSources": [
+      "Konteyner/Yatakhane/Container Cabins For Sale Iceland.jpg"
+    ]
+  },
+  {
+    "family": "containers",
+    "useCase": "dormitory",
+    "project": "atak-lojistik",
+    "sourcePath": "Konteyner/Yatakhane/Konteyner_Yatakhane_Atak_Lojistik_1.JPG",
+    "categories": [],
+    "title": "Worker dormitory container for Atak Lojistik",
+    "alt": "Modular worker dormitory container facility for Atak Lojistik.",
+    "order": 1,
+    "role": "hero",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "dormitory",
+    "project": "atasehir-maliye",
+    "sourcePath": "Konteyner/Yatakhane/Konteyner_Yatakhane_Atasehir_Maliye_2.JPG",
+    "categories": [
+      {
+        "family": "containers",
+        "useCase": "construction-site",
+        "project": "atasehir-maliye"
+      }
+    ],
+    "title": "Container dormitory building at Atasehir Maliye",
+    "alt": "Three-storey worker container dormitory building at Atasehir Maliye project.",
+    "order": 2,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "dormitory",
+    "project": "gebze-toki-m-eksi",
+    "sourcePath": "Konteyner/Yatakhane/Konteyner_Yatakhane_Gebze_Toki_M_Eksi_6.JPG",
+    "categories": [
+      {
+        "family": "containers",
+        "useCase": "construction-site",
+        "project": "gebze-toki-m-eksi"
+      }
+    ],
+    "title": "Worker dormitory container corridors at Gebze TOKI",
+    "alt": "Exterior corridor and staircase of worker dormitory container blocks at Gebze TOKI.",
+    "order": 2,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown",
+    "possibleDuplicateSources": [
+      "Konteyner/Yatakhane/Konteyner_Yatakhane_Gebze_Toki_M_Eksi_9.JPG"
+    ]
+  },
+  {
+    "family": "containers",
+    "useCase": "dormitory",
+    "project": "gebze-toki-m-eksi",
+    "sourcePath": "Konteyner/Yatakhane/Konteyner_Yatakhane_Gebze_Toki_M_Eksi_9.JPG",
+    "categories": [
+      {
+        "family": "containers",
+        "useCase": "construction-site",
+        "project": "gebze-toki-m-eksi"
+      }
+    ],
+    "title": "Worker dormitory container blocks at Gebze TOKI",
+    "alt": "Angled perspective of the two-storey container dormitory complex at Gebze TOKI.",
+    "order": 3,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown",
+    "possibleDuplicateSources": [
+      "Konteyner/Yatakhane/Konteyner_Yatakhane_Gebze_Toki_M_Eksi_6.JPG"
+    ]
+  },
+  {
+    "family": "containers",
+    "useCase": "dormitory",
+    "project": "others",
+    "sourcePath": "Konteyner/Yatakhane/02.jpg",
+    "categories": [],
+    "title": "Modular container dormitory complex",
+    "alt": "Two-storey modular container worker dormitory complex with steel canopy and staircase.",
+    "order": 1,
+    "role": "hero",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "dormitory",
+    "project": "others",
+    "sourcePath": "Konteyner/Yatakhane/06.jpg",
+    "categories": [],
+    "title": "Container dormitory row exterior",
+    "alt": "Row of single-storey container dormitory units on concrete footing.",
+    "order": 2,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "dormitory",
+    "project": "others",
+    "sourcePath": "Konteyner/Yatakhane/07.jpg",
+    "categories": [],
+    "title": "Container dormitory bunk bed bedroom",
+    "alt": "Interior of a container dormitory room furnished with steel bunk beds and lockers.",
+    "order": 3,
+    "role": "interior-wide",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown",
+    "possibleDuplicateSources": [
+      "Konteyner/Yatakhane/08.jpg"
+    ]
+  },
+  {
+    "family": "containers",
+    "useCase": "dormitory",
+    "project": "others",
+    "sourcePath": "Konteyner/Yatakhane/08.jpg",
+    "categories": [],
+    "title": "Worker accommodation room interior",
+    "alt": "Alternative angle of the worker dormitory room showing bedding and window.",
+    "order": 4,
+    "role": "interior-wide",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown",
+    "possibleDuplicateSources": [
+      "Konteyner/Yatakhane/07.jpg"
+    ]
+  },
+  {
+    "family": "containers",
+    "useCase": "dormitory",
+    "project": "others",
+    "sourcePath": "Konteyner/Yatakhane/DSC_1646.JPG",
+    "categories": [],
+    "title": "Insulated container dormitory building",
+    "alt": "High resolution exterior photograph of an insulated multi-container worker living block.",
+    "order": 6,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "containers",
+    "useCase": "dormitory",
+    "project": "others",
+    "sourcePath": "Konteyner/Yatakhane/DSC_2240.JPG",
+    "categories": [],
+    "title": "Two-storey worker camp container building",
+    "alt": "Side perspective of a two-storey container accommodation facility.",
+    "order": 7,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "office",
+    "project": "cinardere-beyaz",
+    "sourcePath": "Prefabrik yapı/Prefabrik Ofis/Celik_Ofis_Cinardere_Beyaz_1.JPG",
+    "categories": [],
+    "title": "Cinardere prefabricated office building front facade",
+    "alt": "Front exterior view of two-storey white prefabricated office building at Cinardere.",
+    "order": 1,
+    "role": "hero",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown",
+    "possibleDuplicateSources": [
+      "Prefabrik yapı/Prefabrik Ofis/Celik_Ofis_Cinardere_Beyaz_7.JPG"
+    ]
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "office",
+    "project": "cinardere-beyaz",
+    "sourcePath": "Prefabrik yapı/Prefabrik Ofis/Celik_Ofis_Cinardere_Beyaz_7.JPG",
+    "categories": [],
+    "title": "Cinardere office building angle perspective",
+    "alt": "Angle view of the two-storey prefabricated commercial office at Cinardere.",
+    "order": 2,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown",
+    "possibleDuplicateSources": [
+      "Prefabrik yapı/Prefabrik Ofis/Celik_Ofis_Cinardere_Beyaz_1.JPG"
+    ]
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "office",
+    "project": "marmara-kule",
+    "sourcePath": "Prefabrik yapı/Prefabrik Ofis/Celik_Ofis_Marmara_Kule_8.JPG",
+    "categories": [],
+    "title": "Marmara Kule sales office building exterior",
+    "alt": "Modern prefabricated sales office building exterior with glass curtain walls for Marmara Kule.",
+    "order": 1,
+    "role": "hero",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown",
+    "possibleDuplicateSources": [
+      "Prefabrik yapı/Prefabrik Ofis/Celik_Ofis_Marmara_Kule_10.JPG"
+    ]
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "office",
+    "project": "marmara-kule",
+    "sourcePath": "Prefabrik yapı/Prefabrik Ofis/Celik_Ofis_Marmara_Kule_10.JPG",
+    "categories": [],
+    "title": "Marmara Kule sales office entrance view",
+    "alt": "Entrance facade perspective of the Marmara Kule prefabricated office building.",
+    "order": 2,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown",
+    "possibleDuplicateSources": [
+      "Prefabrik yapı/Prefabrik Ofis/Celik_Ofis_Marmara_Kule_8.JPG"
+    ]
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "office",
+    "project": "sinpas-is-modern",
+    "sourcePath": "Prefabrik yapı/Prefabrik Ofis/Celik_Ofis_Sinpas_is_Modern_34.JPG",
+    "categories": [],
+    "title": "Sinpas Is Modern site office building facade",
+    "alt": "Finished two-storey prefabricated commercial office building for Sinpas Is Modern.",
+    "order": 1,
+    "role": "hero",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown",
+    "possibleDuplicateSources": [
+      "Prefabrik yapı/Prefabrik Ofis/Celik_Ofis_Sinpas_is_Modern_35.JPG"
+    ]
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "office",
+    "project": "sinpas-is-modern",
+    "sourcePath": "Prefabrik yapı/Prefabrik Ofis/Celik_Ofis_Sinpas_is_Modern_35.JPG",
+    "categories": [],
+    "title": "Sinpas Is Modern office side perspective",
+    "alt": "Side view of the prefabricated site management office at Sinpas Is Modern.",
+    "order": 2,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown",
+    "possibleDuplicateSources": [
+      "Prefabrik yapı/Prefabrik Ofis/Celik_Ofis_Sinpas_is_Modern_34.JPG"
+    ]
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "office",
+    "project": "others",
+    "sourcePath": "Prefabrik yapı/Prefabrik Ofis/1.jpg",
+    "categories": [],
+    "title": "Prefabricated administrative office building",
+    "alt": "Exterior view of a two-storey modular prefabricated administrative office building.",
+    "order": 1,
+    "role": "hero",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "office",
+    "project": "others",
+    "sourcePath": "Prefabrik yapı/Prefabrik Ofis/2.jpg",
+    "categories": [],
+    "title": "Prefabricated office front entrance",
+    "alt": "Front entrance porch of a single-storey prefabricated commercial office.",
+    "order": 2,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "office",
+    "project": "others",
+    "sourcePath": "Prefabrik yapı/Prefabrik Ofis/3.jpg",
+    "categories": [],
+    "title": "Commercial prefabricated office facade",
+    "alt": "Modern exterior facade of a prefabricated business headquarters.",
+    "order": 3,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "office",
+    "project": "others",
+    "sourcePath": "Prefabrik yapı/Prefabrik Ofis/4.jpg",
+    "categories": [],
+    "title": "Modular office building angle shot",
+    "alt": "Angled perspective of a two-storey prefabricated office facility.",
+    "order": 4,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "office",
+    "project": "others",
+    "sourcePath": "Prefabrik yapı/Prefabrik Ofis/5.jpg",
+    "categories": [],
+    "title": "Prefabricated company office exterior",
+    "alt": "Exterior facade of a prefabricated commercial workspace with decorative cladding.",
+    "order": 5,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "office",
+    "project": "others",
+    "sourcePath": "Prefabrik yapı/Prefabrik Ofis/6.jpg",
+    "categories": [],
+    "title": "Prefabricated office building side view",
+    "alt": "Side exterior perspective of a two-storey prefabricated office building.",
+    "order": 6,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "office",
+    "project": "others",
+    "sourcePath": "Prefabrik yapı/Prefabrik Ofis/7.jpg",
+    "categories": [],
+    "title": "Prefabricated office reception interior",
+    "alt": "Interior reception and lobby area inside a prefabricated corporate office.",
+    "order": 7,
+    "role": "interior-wide",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "office",
+    "project": "others",
+    "sourcePath": "Prefabrik yapı/Prefabrik Ofis/8.jpg",
+    "categories": [],
+    "title": "Prefabricated office conference room",
+    "alt": "Spacious meeting room interior with conference table inside a prefabricated building.",
+    "order": 8,
+    "role": "interior-wide",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "office",
+    "project": "others",
+    "sourcePath": "Prefabrik yapı/Prefabrik Ofis/DSC_0167.JPG",
+    "categories": [],
+    "title": "Completed prefabricated office complex",
+    "alt": "High resolution photograph of a large completed prefabricated office complex.",
+    "order": 9,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "office",
+    "project": "others",
+    "sourcePath": "Prefabrik yapı/Prefabrik Ofis/DSC_3201.JPG",
+    "categories": [],
+    "title": "Prefabricated administrative building facade",
+    "alt": "Detailed facade of a modular prefabricated administrative building.",
+    "order": 10,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "office",
+    "project": "others",
+    "sourcePath": "Prefabrik yapı/Prefabrik Ofis/DSC_3344.JPG",
+    "categories": [],
+    "title": "Modern prefabricated office exterior",
+    "alt": "Modern exterior design of a prefabricated corporate building.",
+    "order": 11,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "office",
+    "project": "others",
+    "sourcePath": "Prefabrik yapı/Prefabrik Ofis/DSC_3357.JPG",
+    "categories": [],
+    "title": "Two-storey prefabricated office wing",
+    "alt": "Side wing perspective of a two-storey modular office building.",
+    "order": 12,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "office",
+    "project": "others",
+    "sourcePath": "Prefabrik yapı/Prefabrik Ofis/DSC_3358.JPG",
+    "categories": [],
+    "title": "Prefabricated corporate headquarters view",
+    "alt": "Alternative angle view of the prefabricated corporate headquarters.",
+    "order": 13,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "office",
+    "project": "others",
+    "sourcePath": "Prefabrik yapı/Prefabrik Ofis/DSC_5382.JPG",
+    "categories": [],
+    "title": "Prefabricated field management office",
+    "alt": "Crisp photograph of a prefabricated site management office.",
+    "order": 14,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "office",
+    "project": "others",
+    "sourcePath": "Prefabrik yapı/Prefabrik Ofis/IMG_7741.jpg",
+    "categories": [],
+    "title": "Prefabricated office building installation",
+    "alt": "Prefabricated office building structure during final site handover.",
+    "order": 15,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "office",
+    "project": "others",
+    "sourcePath": "Prefabrik yapı/Prefabrik Ofis/WhatsApp Image 2023-05-23 at 14.12.43 (1).jpeg",
+    "categories": [],
+    "title": "Prefabricated commercial unit exterior",
+    "alt": "Exterior view of a modular prefabricated commercial office unit.",
+    "order": 16,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "office",
+    "project": "others",
+    "sourcePath": "Prefabrik yapı/Prefabrik Ofis/WhatsApp Image 2024-01-16 at 18.56.37.jpeg",
+    "categories": [],
+    "title": "Modular office installation overview",
+    "alt": "Overview of a multi-room prefabricated office structure.",
+    "order": 17,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "office",
+    "project": "others",
+    "sourcePath": "Prefabrik yapı/Prefabrik Ofis/WhatsApp Image 2024-01-16 at 18.56.38.jpeg",
+    "categories": [],
+    "title": "Prefabricated office entrance steps",
+    "alt": "Entrance steps and veranda of a modular office building.",
+    "order": 18,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "office",
+    "project": "others",
+    "sourcePath": "Prefabrik yapı/Prefabrik Ofis/WhatsApp Image 2024-01-16 at 18.56.41.jpeg",
+    "categories": [],
+    "title": "Prefabricated business facility side view",
+    "alt": "Side perspective of the modular business office facility.",
+    "order": 19,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "education",
+    "project": "nallihan-anaokulu",
+    "sourcePath": "Prefabrik yapı/Prefabrik Okul/Nallihan_Anaokulu_Melih_1.jpeg",
+    "categories": [],
+    "title": "Prefabricated kindergarten school in Nallihan",
+    "alt": "Exterior facade of the colourful prefabricated nursery and kindergarten building in Nallihan.",
+    "order": 1,
+    "role": "hero",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "education",
+    "project": "golcuk-anaokulu",
+    "sourcePath": "Prefabrik yapı/Prefabrik Okul/Prefabrik_Anaokulu_Golcuk_2.JPG",
+    "categories": [],
+    "title": "Prefabricated primary school building in Golcuk",
+    "alt": "Exterior view of the single-storey prefabricated primary school building in Golcuk.",
+    "order": 1,
+    "role": "hero",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "education",
+    "project": "others",
+    "sourcePath": "Prefabrik yapı/Prefabrik Okul/image_6483441-5.JPG",
+    "categories": [],
+    "title": "Schoolyard with children outside prefabricated school",
+    "alt": "Children gathered in the schoolyard in front of a prefabricated classroom building.",
+    "caption": "Photo contains visible children in schoolyard; rights and privacy review required before public upload.",
+    "order": 10,
+    "role": "secondary",
+    "confidence": "medium",
+    "flags": [
+      "low-resolution",
+      "people-or-privacy"
+    ],
+    "rightsStatus": "review-required"
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "education",
+    "project": "others",
+    "sourcePath": "Prefabrik yapı/Prefabrik Okul/10.jpg",
+    "categories": [],
+    "title": "Prefabricated school building complex",
+    "alt": "Two-storey prefabricated school building complex with large classroom windows.",
+    "order": 1,
+    "role": "hero",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "education",
+    "project": "others",
+    "sourcePath": "Prefabrik yapı/Prefabrik Okul/12.jpg",
+    "categories": [],
+    "title": "Modular school building entrance",
+    "alt": "Main entrance of a single-storey modular school facility.",
+    "order": 2,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "education",
+    "project": "others",
+    "sourcePath": "Prefabrik yapı/Prefabrik Okul/14.jpg",
+    "categories": [],
+    "title": "Prefabricated classroom building facade",
+    "alt": "Classroom wing facade of a modern prefabricated educational facility.",
+    "order": 3,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "education",
+    "project": "others",
+    "sourcePath": "Prefabrik yapı/Prefabrik Okul/15.jpg",
+    "categories": [],
+    "title": "Prefabricated school hallway corridor",
+    "alt": "Bright interior hallway corridor connecting classrooms in a prefabricated school.",
+    "order": 4,
+    "role": "interior-wide",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "education",
+    "project": "others",
+    "sourcePath": "Prefabrik yapı/Prefabrik Okul/16.jpg",
+    "categories": [],
+    "title": "Prefabricated classroom interior",
+    "alt": "Finished classroom interior equipped with desks, chairs, and whiteboards.",
+    "order": 5,
+    "role": "interior-wide",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "education",
+    "project": "others",
+    "sourcePath": "Prefabrik yapı/Prefabrik Okul/DSC_2787.JPG",
+    "categories": [],
+    "title": "High resolution prefabricated school exterior",
+    "alt": "High resolution photograph of a prefabricated educational building exterior.",
+    "order": 6,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "education",
+    "project": "others",
+    "sourcePath": "Prefabrik yapı/Prefabrik Okul/DSC_5149.JPG",
+    "categories": [],
+    "title": "Modular education building angle view",
+    "alt": "Angled perspective of an insulated modular school building.",
+    "order": 7,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "education",
+    "project": "others",
+    "sourcePath": "Prefabrik yapı/Prefabrik Okul/DSC_5159.JPG",
+    "categories": [],
+    "title": "School building front perspective",
+    "alt": "Front perspective of a prefabricated school campus building.",
+    "order": 8,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "education",
+    "project": "others",
+    "sourcePath": "Prefabrik yapı/Prefabrik Okul/DSC_5494.JPG",
+    "categories": [],
+    "title": "Contemporary modular school facade",
+    "alt": "Contemporary modular school facade with finished landscaping.",
+    "order": 9,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "sports-social",
+    "project": "artspor",
+    "sourcePath": "Prefabrik yapı/Prefabrik Otel/Prefabrik_Spor_Tesisi_Artspor_1.JPG",
+    "categories": [],
+    "title": "Artspor prefabricated sports facility building",
+    "alt": "Exterior view of the prefabricated sports club and locker room building for Artspor.",
+    "order": 1,
+    "role": "hero",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown",
+    "possibleDuplicateSources": [
+      "Prefabrik yapı/Prefabrik Otel/Prefabrik_Spor_Tesisi_Artspor_4.JPG"
+    ]
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "sports-social",
+    "project": "artspor",
+    "sourcePath": "Prefabrik yapı/Prefabrik Otel/Prefabrik_Spor_Tesisi_Artspor_4.JPG",
+    "categories": [],
+    "title": "Artspor sports building entrance facade",
+    "alt": "Entrance facade of the Artspor prefabricated sports facility.",
+    "order": 2,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown",
+    "possibleDuplicateSources": [
+      "Prefabrik yapı/Prefabrik Otel/Prefabrik_Spor_Tesisi_Artspor_1.JPG"
+    ]
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "accommodation",
+    "project": "others",
+    "sourcePath": "Prefabrik yapı/Prefabrik Otel/13.jpg",
+    "categories": [],
+    "title": "Prefabricated hotel and holiday resort building",
+    "alt": "Exterior shot of a two-storey prefabricated holiday resort accommodation lodge.",
+    "order": 5,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "accommodation",
+    "project": "others",
+    "sourcePath": "Prefabrik yapı/Prefabrik Otel/17.jpg",
+    "categories": [],
+    "title": "Resort hotel bedroom interior",
+    "alt": "Spacious furnished bedroom interior with double bed in a prefabricated hotel unit.",
+    "order": 6,
+    "role": "interior-wide",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "accommodation",
+    "project": "others",
+    "sourcePath": "Prefabrik yapı/Prefabrik Otel/DSC_2934.JPG",
+    "categories": [],
+    "title": "Modular hospitality lodge exterior",
+    "alt": "High resolution exterior view of a modular hospitality lodge building.",
+    "order": 7,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "accommodation",
+    "project": "others",
+    "sourcePath": "Prefabrik yapı/Prefabrik Otel/DSC_5224.JPG",
+    "categories": [],
+    "title": "Prefabricated accommodation complex facade",
+    "alt": "Two-storey prefabricated guest accommodation complex with modern balconies.",
+    "order": 8,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "accommodation",
+    "project": "others",
+    "sourcePath": "Prefabrik yapı/Prefabrik Otel/DSC_5655.JPG",
+    "categories": [],
+    "title": "Modular guest house building view",
+    "alt": "Exterior perspective of a multi-room modular guest house.",
+    "order": 9,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "accommodation",
+    "project": "others",
+    "sourcePath": "Prefabrik yapı/Prefabrik Otel/WhatsApp Image 2021-07-09 at 15.51.48.jpeg",
+    "categories": [],
+    "title": "Prefabricated motel units on site",
+    "alt": "Prefabricated motel accommodation units installed in landscaped grounds.",
+    "order": 10,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "accommodation",
+    "project": "others",
+    "sourcePath": "Prefabrik yapı/Prefabrik Otel/WhatsApp Image 2022-06-10 at 11.25.00.jpeg",
+    "categories": [],
+    "title": "Holiday village prefabricated bungalows",
+    "alt": "Row of prefabricated bungalows in a holiday village setting.",
+    "order": 11,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "construction-site",
+    "project": "abu-hamed-altin-madeni-sudan",
+    "sourcePath": "Prefabrik yapı/Prefabrik Şantiye/ABU_HAMED_ALTIN_Madeni_Sudan_21Bina_3628m2 .jpg",
+    "categories": [],
+    "title": "Abu Hamed gold mine prefabricated camp in Sudan",
+    "alt": "21-building prefabricated worker camp complex totaling 3628 sqm at Abu Hamed gold mine in Sudan.",
+    "order": 1,
+    "role": "hero",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "construction-site",
+    "project": "bp-azfen-sahdeniz-2",
+    "sourcePath": "Prefabrik yapı/Prefabrik Şantiye/BP_Azfen_Sahdeniz_2_IMG_6896.JPG",
+    "categories": [],
+    "title": "BP Azfen Shah Deniz 2 prefabricated site buildings",
+    "alt": "Prefabricated construction site management buildings for BP Azfen at Shah Deniz 2 project.",
+    "order": 1,
+    "role": "hero",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "construction-site",
+    "project": "istanbul-havaalani-orkun",
+    "sourcePath": "Prefabrik yapı/Prefabrik Şantiye/istanbul_havaalani_orkun_hava_5.JPG",
+    "categories": [],
+    "title": "Prefabricated site camp at Istanbul Airport project",
+    "alt": "Prefabricated construction worker camp facilities for Orkun at the new Istanbul Airport site.",
+    "order": 1,
+    "role": "hero",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "construction-site",
+    "project": "mavi-istanbul",
+    "sourcePath": "Prefabrik yapı/Prefabrik Şantiye/Prefabrik_Yatakhane_Mavi_istanbul_2.JPG",
+    "categories": [
+      {
+        "family": "prefabricated-buildings",
+        "useCase": "accommodation",
+        "project": "mavi-istanbul"
+      }
+    ],
+    "title": "Mavi Istanbul prefabricated construction worker dormitory",
+    "alt": "Two-storey prefabricated worker dormitory building at Mavi Istanbul construction project.",
+    "order": 1,
+    "role": "hero",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "construction-site",
+    "project": "sudiarabistan-tureyf-epsa",
+    "sourcePath": "Prefabrik yapı/Prefabrik Şantiye/Sudiarabistan_Tureyf_Prefabrik_Kamp_EPSA_4.jpeg",
+    "categories": [],
+    "title": "EPSA prefabricated camp in Turaif Saudi Arabia",
+    "alt": "Prefabricated worker and engineer accommodation camp for EPSA in Turaif, Saudi Arabia.",
+    "order": 1,
+    "role": "hero",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "construction-site",
+    "project": "others",
+    "sourcePath": "Prefabrik yapı/Prefabrik Şantiye/DSC_4386.JPG",
+    "categories": [],
+    "title": "Prefabricated construction camp complex",
+    "alt": "High resolution photograph of multi-building prefabricated site camp setup.",
+    "order": 1,
+    "role": "hero",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "construction-site",
+    "project": "others",
+    "sourcePath": "Prefabrik yapı/Prefabrik Şantiye/IMG-20191231-WA0007.jpg",
+    "categories": [],
+    "title": "Mining camp prefabricated buildings",
+    "alt": "Prefabricated accommodation and office buildings installed for a mining operation.",
+    "order": 2,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "construction-site",
+    "project": "others",
+    "sourcePath": "Prefabrik yapı/Prefabrik Şantiye/MONAJ RESòM 01 03 2021 (9).jpeg",
+    "categories": [],
+    "title": "Prefabricated site building assembly progress",
+    "alt": "Workers assembling prefabricated steel frame and sandwich panels on site.",
+    "order": 80,
+    "role": "construction-progress",
+    "confidence": "high",
+    "flags": [
+      "construction-progress"
+    ],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "construction-site",
+    "project": "others",
+    "sourcePath": "Prefabrik yapı/Prefabrik Şantiye/WhatsApp Image 2018-03-05 at 04.34.54.jpeg",
+    "categories": [],
+    "title": "Field project prefabricated facility",
+    "alt": "Prefabricated field project facility on desert terrain.",
+    "order": 3,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "construction-site",
+    "project": "others",
+    "sourcePath": "Prefabrik yapı/Prefabrik Şantiye/WhatsApp Image 2022-11-07 at 13.15.32.jpeg",
+    "categories": [],
+    "title": "Industrial site prefabricated building",
+    "alt": "Prefabricated industrial site building with external air conditioning units.",
+    "order": 4,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "sanitary",
+    "project": "others",
+    "sourcePath": "Prefabrik yapı/Prefabrik Wc/DSC_2970.JPG",
+    "categories": [],
+    "title": "Prefabricated commercial sanitary building",
+    "alt": "Exterior shot of a modular prefabricated public toilet and sanitary facility.",
+    "order": 1,
+    "role": "hero",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "sanitary",
+    "project": "others",
+    "sourcePath": "Prefabrik yapı/Prefabrik Wc/DSC_2975.JPG",
+    "categories": [],
+    "title": "Prefabricated WC facility entrance",
+    "alt": "Entrance doors to male and female sections of a prefabricated sanitary building.",
+    "order": 2,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "sanitary",
+    "project": "others",
+    "sourcePath": "Prefabrik yapı/Prefabrik Wc/DSC_3408.JPG",
+    "categories": [],
+    "title": "Prefabricated washroom hand wash basins",
+    "alt": "Stainless steel and ceramic washbasin row inside a prefabricated communal sanitary facility.",
+    "order": 3,
+    "role": "interior-wide",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown",
+    "possibleDuplicateSources": [
+      "Prefabrik yapı/Prefabrik Wc/DSC_3409.JPG",
+      "Prefabrik yapı/Prefabrik Wc/DSC_3410.JPG",
+      "Prefabrik yapı/Prefabrik Wc/DSC_3411.JPG",
+      "Prefabrik yapı/Prefabrik Wc/DSC_3412.JPG",
+      "Prefabrik yapı/Prefabrik Wc/DSC_3413.JPG"
+    ]
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "sanitary",
+    "project": "others",
+    "sourcePath": "Prefabrik yapı/Prefabrik Wc/DSC_3409.JPG",
+    "categories": [],
+    "title": "Prefabricated sanitary cubicles interior",
+    "alt": "Row of privacy toilet cubicles with clean tiled walls in prefabricated washroom.",
+    "order": 4,
+    "role": "interior-wide",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown",
+    "possibleDuplicateSources": [
+      "Prefabrik yapı/Prefabrik Wc/DSC_3408.JPG",
+      "Prefabrik yapı/Prefabrik Wc/DSC_3410.JPG",
+      "Prefabrik yapı/Prefabrik Wc/DSC_3411.JPG",
+      "Prefabrik yapı/Prefabrik Wc/DSC_3412.JPG",
+      "Prefabrik yapı/Prefabrik Wc/DSC_3413.JPG"
+    ]
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "sanitary",
+    "project": "others",
+    "sourcePath": "Prefabrik yapı/Prefabrik Wc/DSC_3410.JPG",
+    "categories": [],
+    "title": "Prefabricated toilet stall interior",
+    "alt": "Inside view of an individual toilet cubicle fitted with mirror and accessories.",
+    "order": 5,
+    "role": "interior-detail",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown",
+    "possibleDuplicateSources": [
+      "Prefabrik yapı/Prefabrik Wc/DSC_3408.JPG",
+      "Prefabrik yapı/Prefabrik Wc/DSC_3409.JPG",
+      "Prefabrik yapı/Prefabrik Wc/DSC_3411.JPG",
+      "Prefabrik yapı/Prefabrik Wc/DSC_3412.JPG",
+      "Prefabrik yapı/Prefabrik Wc/DSC_3413.JPG"
+    ]
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "sanitary",
+    "project": "others",
+    "sourcePath": "Prefabrik yapı/Prefabrik Wc/DSC_3411.JPG",
+    "categories": [],
+    "title": "Communal urinal installation",
+    "alt": "Wall-mounted stainless steel and ceramic urinals with sensor flushes in prefabricated facility.",
+    "order": 6,
+    "role": "interior-detail",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown",
+    "possibleDuplicateSources": [
+      "Prefabrik yapı/Prefabrik Wc/DSC_3408.JPG",
+      "Prefabrik yapı/Prefabrik Wc/DSC_3409.JPG",
+      "Prefabrik yapı/Prefabrik Wc/DSC_3410.JPG",
+      "Prefabrik yapı/Prefabrik Wc/DSC_3412.JPG",
+      "Prefabrik yapı/Prefabrik Wc/DSC_3413.JPG"
+    ]
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "sanitary",
+    "project": "others",
+    "sourcePath": "Prefabrik yapı/Prefabrik Wc/DSC_3412.JPG",
+    "categories": [],
+    "title": "Prefabricated shower stalls area",
+    "alt": "Partitioned shower stalls in a communal worker sanitary building.",
+    "order": 7,
+    "role": "interior-detail",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown",
+    "possibleDuplicateSources": [
+      "Prefabrik yapı/Prefabrik Wc/DSC_3408.JPG",
+      "Prefabrik yapı/Prefabrik Wc/DSC_3409.JPG",
+      "Prefabrik yapı/Prefabrik Wc/DSC_3410.JPG",
+      "Prefabrik yapı/Prefabrik Wc/DSC_3411.JPG",
+      "Prefabrik yapı/Prefabrik Wc/DSC_3413.JPG"
+    ]
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "sanitary",
+    "project": "others",
+    "sourcePath": "Prefabrik yapı/Prefabrik Wc/DSC_3413.JPG",
+    "categories": [],
+    "title": "Commercial washroom mirrors and vanity",
+    "alt": "Commercial vanity counter and mirrors in prefabricated ablution block.",
+    "order": 8,
+    "role": "interior-detail",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown",
+    "possibleDuplicateSources": [
+      "Prefabrik yapı/Prefabrik Wc/DSC_3408.JPG",
+      "Prefabrik yapı/Prefabrik Wc/DSC_3409.JPG",
+      "Prefabrik yapı/Prefabrik Wc/DSC_3410.JPG",
+      "Prefabrik yapı/Prefabrik Wc/DSC_3411.JPG",
+      "Prefabrik yapı/Prefabrik Wc/DSC_3412.JPG"
+    ]
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "sanitary",
+    "project": "others",
+    "sourcePath": "Prefabrik yapı/Prefabrik Wc/DSC_5387.JPG",
+    "categories": [],
+    "title": "Modular WC unit exterior perspective",
+    "alt": "High resolution exterior view of a standalone prefabricated WC building.",
+    "order": 9,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "sanitary",
+    "project": "others",
+    "sourcePath": "Prefabrik yapı/Prefabrik Wc/WhatsApp Image 2022-06-16 at 13.08.11.jpeg",
+    "categories": [],
+    "title": "Prefabricated ablution block on site",
+    "alt": "Prefabricated ablution block installed at event grounds.",
+    "order": 10,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "accommodation",
+    "project": "espa-sili",
+    "sourcePath": "Prefabrik yapı/Prefabrik Yatakhane/Prefabrik_Yatakhane_Espa_Sili_3.jpeg",
+    "categories": [],
+    "title": "ESPA prefabricated worker dormitory in Chile",
+    "alt": "Prefabricated two-storey worker accommodation dormitory building for ESPA in Chile.",
+    "order": 1,
+    "role": "hero",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "accommodation",
+    "project": "mavi-istanbul",
+    "sourcePath": "Prefabrik yapı/Prefabrik Yatakhane/Prefabrik_Yatakhane_Mavi_istanbul_1.JPG",
+    "categories": [
+      {
+        "family": "prefabricated-buildings",
+        "useCase": "construction-site",
+        "project": "mavi-istanbul"
+      }
+    ],
+    "title": "Mavi Istanbul prefabricated accommodation block",
+    "alt": "Large prefabricated multi-storey worker accommodation block at Mavi Istanbul project.",
+    "order": 2,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "sports-social",
+    "project": "mahmutbey-sosyal-tesis",
+    "sourcePath": "Prefabrik yapı/Prefabrik Yatakhane/Sosyal_Tesis_Prefabrik_Mahmutbey_1.JPG",
+    "categories": [],
+    "title": "Mahmutbey prefabricated community social facility",
+    "alt": "Exterior facade of the prefabricated community social and recreational building in Mahmutbey.",
+    "order": 1,
+    "role": "hero",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "accommodation",
+    "project": "others",
+    "sourcePath": "Prefabrik yapı/Prefabrik Yatakhane/11.jpg",
+    "categories": [],
+    "title": "Prefabricated worker dormitory building",
+    "alt": "Two-storey modular prefabricated worker dormitory with covered entrance.",
+    "order": 1,
+    "role": "hero",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "accommodation",
+    "project": "others",
+    "sourcePath": "Prefabrik yapı/Prefabrik Yatakhane/DSC_4389.JPG",
+    "categories": [],
+    "title": "Prefabricated camp accommodation block",
+    "alt": "High resolution exterior photograph of prefabricated camp accommodation units.",
+    "order": 2,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "accommodation",
+    "project": "others",
+    "sourcePath": "Prefabrik yapı/Prefabrik Yatakhane/Resim 102.jpg",
+    "categories": [],
+    "title": "Prefabricated dormitory complex on gravel site",
+    "alt": "Prefabricated dormitory complex installed on gravel foundation.",
+    "order": 3,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "accommodation",
+    "project": "others",
+    "sourcePath": "Prefabrik yapı/Prefabrik Yatakhane/WhatsApp Image 2022-11-27 at 18.53.56.jpeg",
+    "categories": [],
+    "title": "Prefabricated residential building tall facade",
+    "alt": "Tall front facade of a multi-storey prefabricated residential dormitory.",
+    "order": 4,
+    "role": "secondary",
+    "confidence": "high",
+    "flags": [
+      "portrait"
+    ],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "dining",
+    "project": "istanbul-havaalani-orkun",
+    "sourcePath": "Prefabrik yapı/Prefabrik Yemekhane/istanbul_havaalani_orkun_hava_7.JPG",
+    "categories": [],
+    "title": "Istanbul Airport project worker dining hall interior",
+    "alt": "Spacious prefabricated dining hall interior equipped with dining tables for workers at Istanbul Airport.",
+    "order": 1,
+    "role": "hero",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "dining",
+    "project": "mahmut-bayram-ihl",
+    "sourcePath": "Prefabrik yapı/Prefabrik Yemekhane/Okul_Kantini_Mahmut_Bayram_ihl_3.JPG",
+    "categories": [
+      {
+        "family": "prefabricated-buildings",
+        "useCase": "education",
+        "project": "mahmut-bayram-ihl"
+      }
+    ],
+    "title": "Mahmut Bayram IHL school cafeteria building",
+    "alt": "Exterior facade of the prefabricated school cafeteria and canteen building at Mahmut Bayram IHL.",
+    "order": 1,
+    "role": "hero",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "dining",
+    "project": "others",
+    "sourcePath": "Prefabrik yapı/Prefabrik Yemekhane/9.jpg",
+    "categories": [],
+    "title": "Prefabricated cafeteria dining hall building",
+    "alt": "Exterior view of a modular prefabricated dining hall facility for workforce dining.",
+    "order": 1,
+    "role": "hero",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "dining",
+    "project": "others",
+    "sourcePath": "Prefabrik yapı/Prefabrik Yemekhane/DSC_2255.JPG",
+    "categories": [],
+    "title": "Prefabricated dining hall serving line",
+    "alt": "Interior view of food service counters and tables in a large prefabricated dining facility.",
+    "order": 2,
+    "role": "interior-wide",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown",
+    "possibleDuplicateSources": [
+      "Prefabrik yapı/Prefabrik Yemekhane/DSC_2257.JPG",
+      "Prefabrik yapı/Prefabrik Yemekhane/DSC_2272.JPG"
+    ]
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "dining",
+    "project": "others",
+    "sourcePath": "Prefabrik yapı/Prefabrik Yemekhane/DSC_2257.JPG",
+    "categories": [],
+    "title": "Worker dining hall seating area",
+    "alt": "Wide interior view of dining tables and chairs inside a prefabricated worker cafeteria.",
+    "order": 3,
+    "role": "interior-wide",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown",
+    "possibleDuplicateSources": [
+      "Prefabrik yapı/Prefabrik Yemekhane/DSC_2255.JPG",
+      "Prefabrik yapı/Prefabrik Yemekhane/DSC_2272.JPG"
+    ]
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "dining",
+    "project": "others",
+    "sourcePath": "Prefabrik yapı/Prefabrik Yemekhane/DSC_2272.JPG",
+    "categories": [],
+    "title": "Commercial dining facility interior finish",
+    "alt": "Perspective showing clean floor and ceiling ventilation in prefabricated commercial dining hall.",
+    "order": 4,
+    "role": "interior-detail",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown",
+    "possibleDuplicateSources": [
+      "Prefabrik yapı/Prefabrik Yemekhane/DSC_2255.JPG",
+      "Prefabrik yapı/Prefabrik Yemekhane/DSC_2257.JPG"
+    ]
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "dining",
+    "project": "others",
+    "sourcePath": "Prefabrik yapı/Prefabrik Yemekhane/DSC_3374.JPG",
+    "categories": [],
+    "title": "Prefabricated mess hall building exterior",
+    "alt": "High resolution exterior view of a modular prefabricated mess hall building.",
+    "order": 5,
+    "role": "alternate-exterior",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown"
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "dining",
+    "project": "others",
+    "sourcePath": "Prefabrik yapı/Prefabrik Yemekhane/DSC02441.JPG",
+    "categories": [],
+    "title": "Large scale camp dining hall interior",
+    "alt": "Spacious interior of a large prefabricated workforce dining hall.",
+    "order": 6,
+    "role": "interior-wide",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown",
+    "possibleDuplicateSources": [
+      "Prefabrik yapı/Prefabrik Yemekhane/DSC02479.JPG"
+    ]
+  },
+  {
+    "family": "prefabricated-buildings",
+    "useCase": "dining",
+    "project": "others",
+    "sourcePath": "Prefabrik yapı/Prefabrik Yemekhane/DSC02479.JPG",
+    "categories": [],
+    "title": "Camp dining hall seating rows",
+    "alt": "Rows of dining tables and chairs inside a prefabricated workforce mess hall.",
+    "order": 7,
+    "role": "interior-wide",
+    "confidence": "high",
+    "flags": [],
+    "rightsStatus": "unknown",
+    "possibleDuplicateSources": [
+      "Prefabrik yapı/Prefabrik Yemekhane/DSC02441.JPG"
+    ]
+  }
+]

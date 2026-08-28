@@ -4,6 +4,7 @@ import { productType } from '../../sanity/schemas/product'
 import { categoryType } from '../../sanity/schemas/category'
 import { customizationGroupType, validateBooleanGroup } from '../../sanity/schemas/customizationGroup'
 import { quoteEnquiryType } from '../../sanity/schemas/quoteEnquiry'
+import { clientReferenceType } from '../../sanity/schemas/reference'
 import { customizationItem } from '../../sanity/schemas/objects/customizationItem'
 import { sizeOption } from '../../sanity/schemas/objects/sizeOption'
 
@@ -14,11 +15,46 @@ describe('Sanity Schemas Structure & Validation Rules', () => {
     expect(typeNames).toContain('category')
     expect(typeNames).toContain('customizationGroup')
     expect(typeNames).toContain('quoteEnquiry')
+    expect(typeNames).toContain('clientReference')
     expect(typeNames).toContain('sizeOption')
     expect(typeNames).toContain('quoteItem')
     expect(typeNames).toContain('customizationItem')
     expect(typeNames).toContain('specItem')
     expect(typeNames).toContain('seo')
+  })
+
+  it('uses a non-reserved name for the reference document type', () => {
+    const typeNames = schemaTypes.map((t: any) => t.name)
+
+    expect(typeNames).not.toContain('reference')
+    expect(typeNames).toContain('clientReference')
+  })
+
+  describe('Reference Schema', () => {
+    it('defines the agreed required and optional fields', () => {
+      const fields = Object.fromEntries(clientReferenceType.fields.map((field: any) => [field.name, field]))
+
+      expect(Object.keys(fields)).toEqual([
+        'companyName',
+        'location',
+        'logo',
+        'website',
+        'displayOrder'
+      ])
+      expect(fields.companyName.type).toBe('string')
+      expect(fields.location.type).toBe('string')
+      expect(fields.logo.type).toBe('image')
+      expect(fields.website.type).toBe('url')
+      expect(fields.displayOrder.type).toBe('number')
+      expect(fields.displayOrder.initialValue).toBeUndefined()
+    })
+
+    it('provides display-order and alphabetical Studio orderings', () => {
+      expect(clientReferenceType.orderings?.map((ordering) => ordering.name)).toEqual([
+        'displayOrderAsc',
+        'companyNameAsc'
+      ])
+    })
   })
 
   describe('Product Schema', () => {

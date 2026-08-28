@@ -375,10 +375,10 @@
           reinforced panels, and integrated facilities.
         </p>
         <NuxtLink
-          :to="quoteStore.continueRoute"
+          to="/contact"
           class="mt-2 border border-brand-navy-heading text-brand-navy-heading hover:bg-brand-navy-heading hover:text-white px-8 py-3 rounded-xs text-xs font-semibold tracking-wider uppercase transition-colors inline-flex items-center gap-2"
         >
-          <span>Continue Buy Flow</span>
+          <span>Contact Us</span>
           <svg
             class="w-4 h-4 shrink-0"
             fill="none"

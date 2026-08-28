@@ -4,7 +4,9 @@
     aria-labelledby="references-heading"
     class="w-full overflow-hidden bg-white py-12 lg:py-16"
   >
-    <div class="mx-auto flex w-full max-w-[1184px] flex-col gap-8 px-6 lg:px-12">
+    <div
+      class="mx-auto flex w-full max-w-[1184px] flex-col gap-8 px-6 lg:px-12"
+    >
       <h2
         id="references-heading"
         class="text-center text-2xl font-semibold tracking-[-0.24px] text-brand-navy-heading"
@@ -30,23 +32,34 @@
               :href="reference.website"
               :target="reference.website ? '_blank' : undefined"
               :rel="reference.website ? 'noopener noreferrer' : undefined"
-              :tabindex="copy === 'duplicate' && reference.website ? -1 : undefined"
-              class="group flex w-60 shrink-0 flex-col items-center justify-center rounded-lg bg-slate-100 px-5 py-5 text-center md:w-72"
-              :class="reference.website ? 'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-red' : ''"
+              :tabindex="
+                copy === 'duplicate' && reference.website ? -1 : undefined
+              "
+              class="group flex w-60 shrink-0 flex-col items-center justify-center rounded-lg bg-slate-100 border-brand-rose-border px-5 py-5 text-center md:w-72"
+              :class="
+                reference.website
+                  ? 'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-red'
+                  : ''
+              "
             >
-              <div class="flex h-24 w-full items-center justify-center overflow-hidden">
+              <div
+                class="flex h-24 w-full items-center justify-center overflow-hidden"
+              >
                 <img
                   :src="reference.logoUrl"
                   alt=""
                   class="max-h-20 w-full object-contain transition-transform duration-300 group-hover:scale-105"
                   loading="lazy"
                   decoding="async"
-                >
+                />
               </div>
               <p class="mt-4 text-sm font-semibold text-brand-navy-heading">
                 {{ reference.companyName }}
               </p>
-              <p v-if="reference.location" class="mt-1 text-xs text-brand-slate-muted">
+              <p
+                v-if="reference.location"
+                class="mt-1 text-xs text-brand-slate-muted"
+              >
                 {{ reference.location }}
               </p>
             </component>
@@ -58,15 +71,27 @@
 </template>
 
 <script setup lang="ts">
-import type { ReferenceTile } from '~/types/reference'
+import type { ReferenceTile } from "~/types/reference";
 
-defineProps<{ references: ReferenceTile[] }>()
+defineProps<{ references: ReferenceTile[] }>();
 </script>
 
 <style scoped>
 .references-mask {
-  -webkit-mask-image: linear-gradient(to right, transparent, black 6%, black 94%, transparent);
-  mask-image: linear-gradient(to right, transparent, black 6%, black 94%, transparent);
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 6%,
+    black 94%,
+    transparent
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 6%,
+    black 94%,
+    transparent
+  );
 }
 
 .references-track {

@@ -125,6 +125,20 @@ export const structure: StructureResolver = (S) =>
 
       S.divider(),
 
+      // References Section
+      S.listItem()
+        .title('References')
+        .child(
+          S.documentTypeList('clientReference')
+            .title('References')
+            .defaultOrdering([
+              { field: 'displayOrder', direction: 'asc' },
+              { field: 'companyName', direction: 'asc' }
+            ])
+        ),
+
+      S.divider(),
+
       // Customizations Section
       S.listItem()
         .title('Customizations & Add-ons')

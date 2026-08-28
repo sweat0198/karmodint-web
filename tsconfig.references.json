@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "noEmit": true,
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "skipLibCheck": true,
+    "types": ["node"],
+    "resolveJsonModule": true,
+    "esModuleInterop": true
+  },
+  "include": [
+    "scripts/references/**/*.ts",
+    "scripts/catalogue/lib/paths.ts",
+    "scripts/catalogue/lib/sanityEnv.ts"
+  ]
+}

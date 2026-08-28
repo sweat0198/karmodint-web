@@ -113,7 +113,11 @@ export default defineNuxtConfig({
   runtimeConfig: {
     resendApiKey: process.env.RESEND_API_KEY || "",
     businessEmail:
-      process.env.BUSINESS_EMAIL || "enquiries@karmod-international.com",
+      process.env.BUSINESS_EMAIL || "info@karmodint.co.uk",
+    fromEmail:
+      process.env.RESEND_FROM_EMAIL ||
+      "Karmod International <info@karmodint.co.uk>",
+    sanityApiToken: process.env.SANITY_API_TOKEN || "",
     public: {
       siteUrl:
         process.env.NUXT_PUBLIC_SITE_URL || "https://www.karmodint.co.uk",

@@ -12,7 +12,7 @@
           class="relative min-h-[380px] lg:min-h-[580px] flex flex-col justify-end p-8 lg:p-12 overflow-hidden"
         >
           <img
-            src="/images/get-in-touch.jpg"
+            src="/images/get-in-touch-uk.jpg"
             alt="Modular Building Architecture"
             class="absolute inset-0 w-full h-full object-cover object-center"
           />
@@ -128,15 +128,44 @@
               ></textarea>
             </div>
 
+            <!-- Error Alert -->
+            <div
+              v-if="errorMessage"
+              class="p-3 bg-red-50 border border-red-200 text-brand-red text-xs rounded"
+            >
+              {{ errorMessage }}
+            </div>
+
+            <!-- Success Alert -->
+            <div
+              v-if="submitted"
+              class="p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm rounded flex items-center gap-2"
+            >
+              <svg class="w-5 h-5 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+              <span>Thank you! Your project consultation request has been submitted. Our engineering team will contact you shortly.</span>
+            </div>
+
             <!-- Row 4: Submit Button -->
             <div class="flex justify-end pt-2">
               <button
                 type="submit"
-                :disabled="submitted"
-                class="bg-brand-red hover:bg-brand-red-hover text-white text-xs font-semibold uppercase tracking-[1.2px] px-8 py-4 rounded transition-colors inline-flex items-center gap-2 shadow-sm disabled:opacity-50"
+                :disabled="isSubmitting || submitted"
+                class="bg-brand-red hover:bg-brand-red-hover text-white text-xs font-semibold uppercase tracking-[1.2px] px-8 py-4 rounded transition-colors inline-flex items-center gap-2 shadow-sm disabled:opacity-50 cursor-pointer"
               >
-                <span>{{ submitted ? "REQUEST SENT" : "SUBMIT REQUEST" }}</span>
                 <svg
+                  v-if="isSubmitting"
+                  class="w-4 h-4 animate-spin"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                </svg>
+                <span>{{ isSubmitting ? "SENDING..." : submitted ? "REQUEST SENT" : "SUBMIT REQUEST" }}</span>
+                <svg
+                  v-if="!isSubmitting"
                   class="w-3.5 h-3.5"
                   fill="none"
                   stroke="currentColor"
@@ -151,13 +180,6 @@
                 </svg>
               </button>
             </div>
-
-            <p
-              v-if="submitted"
-              class="text-emerald-600 text-sm text-right font-medium"
-            >
-              Thank you! Your request has been submitted.
-            </p>
           </form>
         </div>
       </div>
@@ -314,18 +336,44 @@ const form = ref({
   details: "",
 });
 
+const isSubmitting = ref(false);
 const submitted = ref(false);
+const errorMessage = ref("");
 
-function handleSubmit() {
-  submitted.value = true;
-  setTimeout(() => {
-    form.value = {
-      fullName: "",
-      companyName: "",
-      email: "",
-      phone: "",
-      details: "",
-    };
-  }, 3000);
+async function handleSubmit() {
+  if (!form.value.fullName || !form.value.email || !form.value.details) return;
+
+  isSubmitting.value = true;
+  errorMessage.value = "";
+
+  try {
+    const res: any = await $fetch("/api/contact", {
+      method: "POST",
+      body: {
+        fullName: form.value.fullName,
+        companyName: form.value.companyName,
+        email: form.value.email,
+        phone: form.value.phone,
+        details: form.value.details,
+      },
+    });
+
+    if (res?.success) {
+      submitted.value = true;
+      form.value = {
+        fullName: "",
+        companyName: "",
+        email: "",
+        phone: "",
+        details: "",
+      };
+    } else {
+      errorMessage.value = res?.message || "Failed to submit request. Please try again.";
+    }
+  } catch (err: any) {
+    errorMessage.value = err?.data?.statusMessage || err?.message || "Failed to send consultation request. Please try again or call our direct line.";
+  } finally {
+    isSubmitting.value = false;
+  }
 }
 </script>
