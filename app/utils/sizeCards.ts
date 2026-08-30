@@ -55,7 +55,7 @@ function buildSpecs(size: CatalogSizeOption): string[] {
 }
 
 /** Compact and spaced forms of measurement values, deduplicated within a unit. */
-function unitValueTerms(values: number[], unit: string): string[] {
+function unitValueTerms(values: Array<number | string>, unit: string): string[] {
   return [...new Set(values.flatMap((value) => [`${value}${unit}`, `${value} ${unit}`]))];
 }
 
@@ -67,9 +67,13 @@ function displayedMeasurementSearchTerms(size: CatalogSizeOption): string[] {
     ...(size.heightM ? [size.heightM] : []),
   ];
   const imperialDimensions = metricDimensions.map(metersToFeet);
+  const metricDisplayValues = metricDimensions.flatMap((value) => [
+    String(value),
+    value.toFixed(2),
+  ]);
 
   return [
-    ...unitValueTerms(metricDimensions, "m"),
+    ...unitValueTerms(metricDisplayValues, "m"),
     ...unitValueTerms(imperialDimensions, "ft"),
     ...(size.weightKg ? unitValueTerms([size.weightKg], "kg") : []),
   ];
