@@ -32,6 +32,7 @@ function normalizeSearchText(value: string): string {
 }
 
 interface NumericToken {
+  text: string;
   value: number;
   unit?: string;
 }
@@ -41,7 +42,7 @@ const MEASUREMENT_UNITS = new Set(["m", "ft", "kg"]);
 function numericToken(value: string): NumericToken | null {
   const match = value.match(/^(\d+(?:\.\d+)?)([a-z]+)?$/);
   if (!match) return null;
-  return { value: Number(match[1]), unit: match[2] };
+  return { text: match[1]!, value: Number(match[1]), unit: match[2] };
 }
 
 function searchTokens(value: string): string[] {
@@ -69,9 +70,12 @@ function matchesToken(normalizedText: string, token: string): boolean {
 
   return normalizedText.split(" ").some((term) => {
     const candidate = numericToken(term);
+    const matchingValue = expected.text.includes(".")
+      ? candidate?.text.startsWith(expected.text)
+      : candidate?.value === expected.value;
     return (
       candidate !== null &&
-      candidate.value === expected.value &&
+      matchingValue &&
       (!expected.unit || candidate.unit === expected.unit)
     );
   });
@@ -130,7 +134,6 @@ export function filterCatalog({
     ? cards.filter((card) => {
         const productText = [
           card.productName,
-          card.shortDescription,
           ...card.categoryNames,
         ].join(" ");
         return (

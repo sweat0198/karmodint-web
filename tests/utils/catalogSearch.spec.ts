@@ -17,8 +17,20 @@ const measurementProduct: CatalogProduct = {
   _id: "measurement-cabin",
   name: "Measurement Cabin",
   slug: "measurement-cabin",
+  shortDescription: "Available in five sizes from 1.50m × 1.50m up to 2.70m × 2.70m.",
   categories: [],
   sizes: [
+    {
+      _key: "135x210",
+      label: "1.35m x 2.10m",
+      lengthM: 1.35,
+      widthM: 2.1,
+      weightKg: 0,
+      price: 0,
+      thumbnail: frontImage("image-front-135"),
+      fallbackThumbnail: frontImage("image-front-135"),
+      images: [frontImage("image-front-135")],
+    },
     {
       _key: "150x150",
       label: "1.50m x 1.50m",
@@ -151,17 +163,23 @@ describe("filterCatalog", () => {
     ]);
   });
 
-  it("matches tokens across product, category, and description fields for every product size", () => {
+  it("matches tokens across visible product and category fields for every product size", () => {
     const result = filterCatalog({
       cards,
       categories,
-      query: "izmir portable yapi",
+      query: "izmir portable",
     });
 
     expect(result.visibleCards.map((item) => item.cardId)).toEqual([
       "izmir-small",
       "izmir-large",
     ]);
+  });
+
+  it("does not match product descriptions hidden from catalog cards", () => {
+    const result = filterCatalog({ cards, categories, query: "yapi" });
+
+    expect(result.visibleCards).toEqual([]);
   });
 
   it("shows only the size card whose raw label or key matches", () => {
@@ -200,6 +218,16 @@ describe("filterCatalog", () => {
         (card) => card.sizeKey,
       ),
     ).toEqual(["150x150"]);
+  });
+
+  it("matches a decimal prefix at the start of a displayed measurement", () => {
+    const projectedCards = toSizeCards([measurementProduct]);
+
+    expect(
+      filterCatalog({ cards: projectedCards, categories, query: "1.3" }).visibleCards.map(
+        (card) => card.sizeKey,
+      ),
+    ).toEqual(["135x210"]);
   });
 
   it("requires a matching unit when a decimal query includes one", () => {
