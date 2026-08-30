@@ -45,4 +45,4 @@ sanity/gallery/source/
 .scratch/
 scratch/
 .pnpm-store/
-
+.worktrees/
