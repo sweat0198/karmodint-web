@@ -1,4 +1,8 @@
-import { formatMetricAndImperialDimension, type SanitySizeImage } from "~/types/catalog";
+import {
+  formatMetricAndImperialDimension,
+  metersToFeet,
+  type SanitySizeImage,
+} from "~/types/catalog";
 import type { CatalogProduct, CatalogSizeOption } from "~/queries/catalog";
 
 /** One purchasable Size Option, presented as its own product card (D3). */
@@ -23,7 +27,7 @@ export interface SizeCard {
   categorySlugs: string[];
   /** Both parent and child category names, preserving Sanity assignment order. */
   categoryNames: string[];
-  /** Raw size label/key. Generated display dimensions intentionally stay out of search. */
+  /** Raw size label/key and displayed measurement terms for catalog search. */
   sizeSearchTerms: string[];
 }
 
@@ -48,6 +52,31 @@ function buildSpecs(size: CatalogSizeOption): string[] {
     specs.push(`Weight: ${size.weightKg}kg`);
   }
   return specs;
+}
+
+/** Compact and spaced forms of measurement values, deduplicated within a unit. */
+function unitValueTerms(values: Array<number | string>, unit: string): string[] {
+  return [...new Set(values.flatMap((value) => [`${value}${unit}`, `${value} ${unit}`]))];
+}
+
+/** Bare measurement values shown on the card, without source-only dimension names. */
+function displayedMeasurementSearchTerms(size: CatalogSizeOption): string[] {
+  const metricDimensions = [
+    size.lengthM,
+    size.widthM,
+    ...(size.heightM ? [size.heightM] : []),
+  ];
+  const imperialDimensions = metricDimensions.map(metersToFeet);
+  const metricDisplayValues = metricDimensions.flatMap((value) => [
+    String(value),
+    value.toFixed(2),
+  ]);
+
+  return [
+    ...unitValueTerms(metricDisplayValues, "m"),
+    ...unitValueTerms(imperialDimensions, "ft"),
+    ...(size.weightKg ? unitValueTerms([size.weightKg], "kg") : []),
+  ];
 }
 
 /** The lowest `displayOrder` among a product's categories and their parents (D11). */
@@ -117,6 +146,8 @@ export function toSizeCards(products: CatalogProduct[]): SizeCard[] {
       const sizeKey = size._key ?? "";
       const thumbnail = size.thumbnail ?? size.fallbackThumbnail;
       if (!thumbnail) continue;
+      const sizeLabel = formatFootprintLabel(size);
+      const specs = buildSpecs(size);
 
       cards.push({
         cardId: `${product._id}-${sizeKey}`,
@@ -125,15 +156,21 @@ export function toSizeCards(products: CatalogProduct[]): SizeCard[] {
         productSlug: product.slug,
         shortDescription: product.shortDescription ?? "",
         sizeKey,
-        sizeLabel: formatFootprintLabel(size),
-        specs: buildSpecs(size),
+        sizeLabel,
+        specs,
         isPoa: Boolean(size.isPoa),
         price: size.price,
         thumbnail,
         images: carouselImages(size, thumbnail),
         categorySlugs: categoryMetadata.slugs,
         categoryNames: categoryMetadata.names,
-        sizeSearchTerms: [size.label, sizeKey].filter(Boolean),
+        sizeSearchTerms: [
+          size.label,
+          sizeKey,
+          sizeLabel,
+          ...specs,
+          ...displayedMeasurementSearchTerms(size),
+        ].filter(Boolean),
       });
     }
   }

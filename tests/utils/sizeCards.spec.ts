@@ -153,6 +153,28 @@ describe("toSizeCards", () => {
     expect(compact.sizeLabel).toBe("1.50m × 1.50m (4.9ft × 4.9ft)");
   });
 
+  it("indexes the displayed measurement terms for search", () => {
+    const cards = toSizeCards([grpCabin]);
+    const large = cards.find((card) => card.sizeKey === "300x300")!;
+
+    expect(large.sizeSearchTerms).toEqual(
+      expect.arrayContaining([
+        large.sizeLabel,
+        "Height: 2.40m (7.9ft)",
+        "Weight: 450kg",
+        "3m",
+        "3 m",
+        "3.00m",
+        "3.00 m",
+        "2.40m",
+        "2.40 m",
+        "9.8ft",
+        "9.8 ft",
+        "450 kg",
+      ]),
+    );
+  });
+
   it("selects the left-diagonal thumbnail over the fallback when both are present", () => {
     const cards = toSizeCards([grpCabin]);
     const compact = cards.find((c) => c.sizeKey === "150x150")!;
@@ -198,7 +220,7 @@ describe("toSizeCards", () => {
 
     expect(compact.shortDescription).toBe("A durable fibreglass guard cabin.");
     expect(compact.categoryNames).toEqual(["GRP", "Cabin"]);
-    expect(compact.sizeSearchTerms).toEqual(["1.50m x 1.50m", "150x150"]);
+    expect(compact.sizeSearchTerms.slice(0, 2)).toEqual(["1.50m x 1.50m", "150x150"]);
   });
 
   it("builds the cardId as `${productId}-${sizeKey}`, matching the Quote List id", () => {
