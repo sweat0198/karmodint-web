@@ -42,6 +42,28 @@ const measurementProduct: CatalogProduct = {
       fallbackThumbnail: frontImage("image-front-300"),
       images: [frontImage("image-front-300")],
     },
+    {
+      _key: "215x270",
+      label: "2.15m x 2.70m",
+      lengthM: 2.15,
+      widthM: 2.7,
+      weightKg: 550,
+      price: 0,
+      thumbnail: frontImage("image-front-215"),
+      fallbackThumbnail: frontImage("image-front-215"),
+      images: [frontImage("image-front-215")],
+    },
+    {
+      _key: "1150x200",
+      label: "11.50m x 2.00m",
+      lengthM: 11.5,
+      widthM: 2,
+      weightKg: 0,
+      price: 0,
+      thumbnail: frontImage("image-front-1150"),
+      fallbackThumbnail: frontImage("image-front-1150"),
+      images: [frontImage("image-front-1150")],
+    },
   ],
 };
 
@@ -162,6 +184,39 @@ describe("filterCatalog", () => {
     expect(compactTerms.some((term) => term.startsWith("Weight"))).toBe(false);
     expect(
       filterCatalog({ cards: projectedCards, categories, query: "length 3m" }).visibleCards,
+    ).toEqual([]);
+  });
+
+  it("matches decimal measurements by value rather than digit fragments", () => {
+    const projectedCards = toSizeCards([measurementProduct]);
+
+    expect(
+      filterCatalog({ cards: projectedCards, categories, query: "1.5" }).visibleCards.map(
+        (card) => card.sizeKey,
+      ),
+    ).toEqual(["150x150"]);
+    expect(
+      filterCatalog({ cards: projectedCards, categories, query: "1,5" }).visibleCards.map(
+        (card) => card.sizeKey,
+      ),
+    ).toEqual(["150x150"]);
+  });
+
+  it("requires a matching unit when a decimal query includes one", () => {
+    const projectedCards = toSizeCards([measurementProduct]);
+
+    expect(
+      filterCatalog({ cards: projectedCards, categories, query: "1.5m" }).visibleCards.map(
+        (card) => card.sizeKey,
+      ),
+    ).toEqual(["150x150"]);
+    expect(
+      filterCatalog({ cards: projectedCards, categories, query: "1.5 m" }).visibleCards.map(
+        (card) => card.sizeKey,
+      ),
+    ).toEqual(["150x150"]);
+    expect(
+      filterCatalog({ cards: projectedCards, categories, query: "1.5ft" }).visibleCards,
     ).toEqual([]);
   });
 

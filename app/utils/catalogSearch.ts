@@ -26,13 +26,60 @@ function normalizeSearchText(value: string): string {
     .replaceAll("ç", "c")
     .normalize("NFKD")
     .replace(/\p{M}/gu, "")
-    .replace(/[^a-z0-9]+/g, " ")
+    .replace(/(\d),(\d)/g, "$1.$2")
+    .replace(/[^a-z0-9.]+/g, " ")
     .trim();
+}
+
+interface NumericToken {
+  value: number;
+  unit?: string;
+}
+
+const MEASUREMENT_UNITS = new Set(["m", "ft", "kg"]);
+
+function numericToken(value: string): NumericToken | null {
+  const match = value.match(/^(\d+(?:\.\d+)?)([a-z]+)?$/);
+  if (!match) return null;
+  return { value: Number(match[1]), unit: match[2] };
+}
+
+function searchTokens(value: string): string[] {
+  const terms = normalizeSearchText(value).split(" ").filter(Boolean);
+  const tokens: string[] = [];
+
+  for (let index = 0; index < terms.length; index += 1) {
+    const term = terms[index];
+    const nextTerm = terms[index + 1];
+    const numeric = numericToken(term);
+    if (numeric && !numeric.unit && nextTerm && MEASUREMENT_UNITS.has(nextTerm)) {
+      tokens.push(`${term}${nextTerm}`);
+      index += 1;
+    } else {
+      tokens.push(term);
+    }
+  }
+
+  return tokens;
+}
+
+function matchesToken(normalizedText: string, token: string): boolean {
+  const expected = numericToken(token);
+  if (!expected) return normalizedText.includes(token);
+
+  return normalizedText.split(" ").some((term) => {
+    const candidate = numericToken(term);
+    return (
+      candidate !== null &&
+      candidate.value === expected.value &&
+      (!expected.unit || candidate.unit === expected.unit)
+    );
+  });
 }
 
 function includesEveryToken(text: string, tokens: string[]): boolean {
   const normalized = normalizeSearchText(text);
-  return tokens.every((token) => normalized.includes(token));
+  return tokens.every((token) => matchesToken(normalized, token));
 }
 
 function filterCategoryTree(
@@ -78,7 +125,7 @@ export function filterCatalog({
   selectedCategorySlug,
   selectedSubcategorySlug,
 }: CatalogFilterOptions): CatalogFilterResult {
-  const tokens = normalizeSearchText(query).split(" ").filter(Boolean);
+  const tokens = searchTokens(query);
   const searchCards = tokens.length
     ? cards.filter((card) => {
         const productText = [
