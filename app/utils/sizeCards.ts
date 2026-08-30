@@ -8,6 +8,8 @@ export interface SizeCard {
   productId: string;
   productName: string;
   productSlug: string;
+  /** Product-level description used only by catalog search. */
+  shortDescription: string;
   sizeKey: string;
   /** The footprint, e.g. `2.15m × 2.70m (7.1ft × 8.9ft)`. Shown as the bold sub-line under the title. */
   sizeLabel: string;
@@ -19,6 +21,10 @@ export interface SizeCard {
   images: SanitySizeImage[];
   /** Both parent and child category slugs, so a card matches a filter at either level. */
   categorySlugs: string[];
+  /** Both parent and child category names, preserving Sanity assignment order. */
+  categoryNames: string[];
+  /** Raw size label/key. Generated display dimensions intentionally stay out of search. */
+  sizeSearchTerms: string[];
 }
 
 function footprint(size: CatalogSizeOption): number {
@@ -54,13 +60,21 @@ function categoryDisplayOrder(product: CatalogProduct): number {
   return orders.length ? Math.min(...orders) : Number.MAX_SAFE_INTEGER;
 }
 
-function categorySlugsFor(product: CatalogProduct): string[] {
+function categoryMetadataFor(product: CatalogProduct): {
+  slugs: string[];
+  names: string[];
+} {
   const slugs = new Set<string>();
+  const names = new Set<string>();
   for (const category of product.categories) {
     slugs.add(category.slug);
-    if (category.parent) slugs.add(category.parent.slug);
+    names.add(category.name);
+    if (category.parent) {
+      slugs.add(category.parent.slug);
+      names.add(category.parent.name);
+    }
   }
-  return [...slugs];
+  return { slugs: [...slugs], names: [...names] };
 }
 
 function sortedProducts(products: CatalogProduct[]): CatalogProduct[] {
@@ -97,7 +111,7 @@ export function toSizeCards(products: CatalogProduct[]): SizeCard[] {
   const cards: SizeCard[] = [];
 
   for (const product of sortedProducts(products)) {
-    const categorySlugs = categorySlugsFor(product);
+    const categoryMetadata = categoryMetadataFor(product);
 
     for (const size of sortedSizes(product.sizes)) {
       const sizeKey = size._key ?? "";
@@ -109,6 +123,7 @@ export function toSizeCards(products: CatalogProduct[]): SizeCard[] {
         productId: product._id,
         productName: product.name,
         productSlug: product.slug,
+        shortDescription: product.shortDescription ?? "",
         sizeKey,
         sizeLabel: formatFootprintLabel(size),
         specs: buildSpecs(size),
@@ -116,7 +131,9 @@ export function toSizeCards(products: CatalogProduct[]): SizeCard[] {
         price: size.price,
         thumbnail,
         images: carouselImages(size, thumbnail),
-        categorySlugs,
+        categorySlugs: categoryMetadata.slugs,
+        categoryNames: categoryMetadata.names,
+        sizeSearchTerms: [size.label, sizeKey].filter(Boolean),
       });
     }
   }

@@ -17,6 +17,7 @@ const grpCabin: CatalogProduct = {
   _id: "product-grp-cabin",
   name: "GRP Cabin",
   slug: "grp-cabin",
+  shortDescription: "A durable fibreglass guard cabin.",
   isFeatured: true,
   categories: [
     {
@@ -189,6 +190,15 @@ describe("toSizeCards", () => {
   it("carries only its own slug for a top-level category with no parent", () => {
     const cards = toSizeCards([bulletproofBooth]);
     expect(cards[0].categorySlugs).toEqual(["bulletproof"]);
+  });
+
+  it("carries product, category, and raw size metadata for catalog search", () => {
+    const cards = toSizeCards([grpCabin]);
+    const compact = cards.find((card) => card.sizeKey === "150x150")!;
+
+    expect(compact.shortDescription).toBe("A durable fibreglass guard cabin.");
+    expect(compact.categoryNames).toEqual(["GRP", "Cabin"]);
+    expect(compact.sizeSearchTerms).toEqual(["1.50m x 1.50m", "150x150"]);
   });
 
   it("builds the cardId as `${productId}-${sizeKey}`, matching the Quote List id", () => {

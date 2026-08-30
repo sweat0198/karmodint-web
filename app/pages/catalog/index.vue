@@ -170,81 +170,97 @@
           {{ activeSubcategoryName }}
         </span>
       </nav>
+
+      <CatalogSearchField
+        v-model="searchInput"
+        input-id="catalog-search-mobile"
+        @clear="clearSearch"
+      />
     </div>
 
     <div
       class="max-w-7xl w-full mx-auto px-6 lg:px-12 pt-6 flex flex-col gap-6"
     >
       <!-- Breadcrumbs in Main Catalog Layout (Desktop) -->
-      <nav
-        aria-label="Breadcrumb"
-        class="hidden lg:flex items-center gap-2 text-xs font-semibold tracking-wider text-brand-slate-muted uppercase flex-wrap"
-      >
-        <NuxtLink
-          to="/"
-          class="hover:text-brand-navy-heading transition-colors"
-          >Home</NuxtLink
+      <div class="hidden lg:flex items-center justify-between gap-6">
+        <nav
+          aria-label="Breadcrumb"
+          class="flex min-w-0 flex-1 items-center gap-2 text-xs font-semibold tracking-wider text-brand-slate-muted uppercase flex-wrap"
         >
-        <svg
-          class="w-3 h-3 text-brand-slate-muted shrink-0"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M9 5l7 7-7 7"
+          <NuxtLink
+            to="/"
+            class="hover:text-brand-navy-heading transition-colors"
+            >Home</NuxtLink
+          >
+          <svg
+            class="w-3 h-3 text-brand-slate-muted shrink-0"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 5l7 7-7 7"
+            />
+          </svg>
+          <NuxtLink
+            to="/catalog"
+            class="hover:text-brand-navy-heading transition-colors"
+            >Products</NuxtLink
+          >
+          <svg
+            class="w-3 h-3 text-brand-slate-muted shrink-0"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 5l7 7-7 7"
+            />
+          </svg>
+          <span
+            v-if="selectedCategorySlug"
+            class="hover:text-brand-navy-heading cursor-pointer transition-colors"
+            @click="toggleCategoryExpand(selectedCategorySlug)"
+            >{{ activeCategoryName }}</span
+          >
+          <svg
+            v-if="selectedCategorySlug"
+            class="w-3 h-3 text-brand-slate-muted shrink-0"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 5l7 7-7 7"
+            />
+          </svg>
+          <span class="text-brand-navy-heading font-bold">{{
+            activeSubcategoryName
+          }}</span>
+        </nav>
+
+        <div class="w-full max-w-sm shrink-0">
+          <CatalogSearchField
+            v-model="searchInput"
+            input-id="catalog-search-desktop"
+            @clear="clearSearch"
           />
-        </svg>
-        <NuxtLink
-          to="/catalog"
-          class="hover:text-brand-navy-heading transition-colors"
-          >Products</NuxtLink
-        >
-        <svg
-          class="w-3 h-3 text-brand-slate-muted shrink-0"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M9 5l7 7-7 7"
-          />
-        </svg>
-        <span
-          v-if="selectedCategorySlug"
-          class="hover:text-brand-navy-heading cursor-pointer transition-colors"
-          @click="toggleCategoryExpand(selectedCategorySlug)"
-          >{{ activeCategoryName }}</span
-        >
-        <svg
-          v-if="selectedCategorySlug"
-          class="w-3 h-3 text-brand-slate-muted shrink-0"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M9 5l7 7-7 7"
-          />
-        </svg>
-        <span class="text-brand-navy-heading font-bold">{{
-          activeSubcategoryName
-        }}</span>
-      </nav>
+        </div>
+      </div>
 
       <!-- Main Layout Container: Product Grid + Sidebar -->
       <div class="flex flex-col lg:flex-row gap-8 items-start w-full">
         <!-- Main Product Grid Section -->
-        <main class="flex-1 w-full flex flex-col gap-6">
+        <main class="flex-1 w-full flex flex-col gap-6" id="catalog-results">
           <!-- Category Title & Description -->
           <div class="flex flex-col gap-2 pb-2">
             <h1
@@ -256,6 +272,20 @@
               Durable, high-performance modular units and cabins tailored for
               site facilities, offices, and custom requirements.
             </p>
+            <p
+              v-if="hasSearchQuery"
+              class="text-sm font-medium text-brand-slate-muted"
+            >
+              {{ catalogSearchStatus }}
+            </p>
+            <p
+              id="catalog-search-status"
+              class="sr-only"
+              aria-live="polite"
+              aria-atomic="true"
+            >
+              {{ catalogSearchStatus }}
+            </p>
           </div>
 
           <!-- Empty State: a real category with no Products yet -->
@@ -263,15 +293,29 @@
             v-if="visibleCards.length === 0"
             class="bg-slate-50 border border-slate-200 rounded p-12 text-center flex flex-col items-center gap-3"
           >
-            <p class="text-brand-navy-heading text-lg font-semibold">
-              No products in this category yet — talk to us.
-            </p>
-            <NuxtLink
-              to="/contact"
-              class="text-brand-red hover:text-brand-red-dark text-sm font-semibold underline underline-offset-2"
-            >
-              Contact us
-            </NuxtLink>
+            <template v-if="hasSearchQuery">
+              <p class="text-brand-navy-heading text-lg font-semibold">
+                {{ searchEmptyStateMessage }}
+              </p>
+              <button
+                type="button"
+                class="text-brand-red hover:text-brand-red-dark text-sm font-semibold underline underline-offset-2"
+                @click="clearSearch"
+              >
+                Clear search
+              </button>
+            </template>
+            <template v-else>
+              <p class="text-brand-navy-heading text-lg font-semibold">
+                No products in this category yet — talk to us.
+              </p>
+              <NuxtLink
+                to="/contact"
+                class="text-brand-red hover:text-brand-red-dark text-sm font-semibold underline underline-offset-2"
+              >
+                Contact us
+              </NuxtLink>
+            </template>
           </div>
 
           <!-- Product Cards Grid (3 Columns) -->
@@ -304,7 +348,7 @@
               Show all products
             </button>
             <div
-              v-for="cat in categoryTree"
+              v-for="cat in filteredCategories"
               :key="cat._id"
               class="flex flex-col"
             >
@@ -399,7 +443,7 @@
     <!-- Mobile Category Bottom Sheet Navigation Drawer (Stitch Screen) -->
     <CategoryDrawer
       v-model:is-open="isCategoryDrawerOpen"
-      :categories="categoryTree ?? []"
+      :categories="filteredCategories"
       :active-category="selectedCategorySlug"
       :active-subcategory="selectedSubcategorySlug"
       :expanded-category="expandedCategorySlug"
@@ -410,12 +454,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
+import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useRuntimeConfig, useSanityQuery } from "#imports";
 import { useQuoteStore } from "~/stores/quote";
 import { useAppSeo } from "~/composables/useAppSeo";
 import { sanityImageUrl } from "~/utils/sanityImageUrl";
+import { filterCatalog } from "~/utils/catalogSearch";
 import { toSizeCards } from "~/utils/sizeCards";
 import {
   CATEGORY_TREE_QUERY,
@@ -429,8 +474,15 @@ const route = useRoute();
 const quoteStore = useQuoteStore();
 const config = useRuntimeConfig();
 const { setPageSeo, getProductSchema, getBreadcrumbSchema } = useAppSeo();
+const SEARCH_DEBOUNCE_MS = 350;
+
+function singleRouteQueryValue(value: unknown): string {
+  return typeof value === "string" ? value : "";
+}
 
 const isCategoryDrawerOpen = ref(false);
+const searchInput = ref(singleRouteQueryValue(route.query.search));
+let searchDebounceTimer: ReturnType<typeof setTimeout> | undefined;
 // Which sidebar/drawer accordion is open — purely a UI affordance, independent of the filter below.
 const expandedCategorySlug = ref<string | null>(null);
 
@@ -438,6 +490,7 @@ const { data: products } = await useSanityQuery<CatalogProduct[]>(PRODUCTS_WITH_
 const { data: categoryTree } = await useSanityQuery<CategoryTreeNode[]>(CATEGORY_TREE_QUERY);
 
 const cards = computed(() => toSizeCards(products.value ?? []));
+const committedSearchQuery = computed(() => singleRouteQueryValue(route.query.search).trim());
 
 // The filter lives in the URL (D10: `?category=cabin&subcategory=grp`), not local state, so it
 // survives a reload and is shareable.
@@ -458,12 +511,61 @@ const activeSubcategoryName = computed(
   () => selectedSubcategory.value?.name ?? selectedCategory.value?.name ?? "All Products",
 );
 
-// No selection = all cards. Otherwise the more specific slug (subcategory, if set) wins.
-const visibleCards = computed(() => {
-  const targetSlug = selectedSubcategorySlug.value ?? selectedCategorySlug.value;
-  if (!targetSlug) return cards.value;
-  return cards.value.filter((card) => card.categorySlugs.includes(targetSlug));
+const catalogResults = computed(() =>
+  filterCatalog({
+    cards: cards.value,
+    categories: categoryTree.value ?? [],
+    query: committedSearchQuery.value,
+    selectedCategorySlug: selectedCategorySlug.value,
+    selectedSubcategorySlug: selectedSubcategorySlug.value,
+  }),
+);
+const visibleCards = computed(() => catalogResults.value.visibleCards);
+const filteredCategories = computed(() => catalogResults.value.categories);
+const hasSearchQuery = computed(() => committedSearchQuery.value.length > 0);
+const catalogSearchStatus = computed(() => {
+  if (!hasSearchQuery.value) return "";
+  const count = visibleCards.value.length;
+  const label = count === 1 ? "size" : "sizes";
+  return `${count} ${label} found for “${committedSearchQuery.value}”.`;
 });
+const searchEmptyStateMessage = computed(() =>
+  catalogResults.value.searchCards.length > 0
+    ? `No products in ${activeSubcategoryName.value} found for “${committedSearchQuery.value}”.`
+    : `No products or categories found for “${committedSearchQuery.value}”.`,
+);
+
+function replaceSearchQuery(value: string) {
+  const search = value.trim();
+  if (search === committedSearchQuery.value) return;
+  void router.replace({
+    query: { ...route.query, search: search || undefined },
+  });
+}
+
+watch(searchInput, (value) => {
+  if (searchDebounceTimer) clearTimeout(searchDebounceTimer);
+  if (value.trim() === committedSearchQuery.value) return;
+  searchDebounceTimer = setTimeout(() => {
+    replaceSearchQuery(value);
+    searchDebounceTimer = undefined;
+  }, SEARCH_DEBOUNCE_MS);
+});
+
+watch(
+  () => route.query.search,
+  (value) => {
+    const nextSearch = singleRouteQueryValue(value);
+    if (nextSearch !== searchInput.value) searchInput.value = nextSearch;
+  },
+);
+
+function clearSearch() {
+  if (searchDebounceTimer) clearTimeout(searchDebounceTimer);
+  searchDebounceTimer = undefined;
+  searchInput.value = "";
+  replaceSearchQuery("");
+}
 
 function selectCategory(categorySlug: string) {
   router.replace({ query: { ...route.query, category: categorySlug, subcategory: undefined } });
@@ -489,8 +591,14 @@ function onCategoryClick(category: CategoryTreeNode) {
 }
 
 function clearFilter() {
-  router.replace({ query: {} });
+  router.replace({
+    query: { ...route.query, category: undefined, subcategory: undefined },
+  });
 }
+
+onBeforeUnmount(() => {
+  if (searchDebounceTimer) clearTimeout(searchDebounceTimer);
+});
 
 onMounted(() => {
   quoteStore.setLastVisitedRoute("/catalog");
