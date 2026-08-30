@@ -49,7 +49,7 @@ function searchTokens(value: string): string[] {
   const tokens: string[] = [];
 
   for (let index = 0; index < terms.length; index += 1) {
-    const term = terms[index];
+    const term = terms[index]!;
     const nextTerm = terms[index + 1];
     const numeric = numericToken(term);
     if (numeric && !numeric.unit && nextTerm && MEASUREMENT_UNITS.has(nextTerm)) {
