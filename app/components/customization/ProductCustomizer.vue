@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, onBeforeUnmount, onMounted, ref } from "vue";
+import { usePanZoom } from "~/composables/usePanZoom";
 import type { CarouselImage, SanityCustomizationGroup } from "~/types/catalog";
 import type {
   CustomizationNotes,
@@ -53,19 +54,30 @@ const previewFrames = computed<CarouselImage[]>(() => {
 });
 
 // 3D Viewer overlay controls
-const zoomLevel = ref(100);
+const stage = ref<HTMLElement | null>(null);
 
-const viewerTransform = computed(() => ({
-  transform: `scale(${zoomLevel.value / 100})`,
+const {
+  zoom,
+  isPanning,
+  canPan,
+  isDefaultView,
+  frameStyle,
+  zoomIn,
+  zoomOut,
+  resetView,
+  refreshView,
+  onPointerDown,
+  onPointerMove,
+  onPointerEnd,
+  onKeydown,
+} = usePanZoom(() => ({
+  width: stage.value?.clientWidth ?? 0,
+  height: stage.value?.clientHeight ?? 0,
 }));
 
-const zoomIn = () => {
-  if (zoomLevel.value < 160) zoomLevel.value += 20;
-};
-
-const zoomOut = () => {
-  if (zoomLevel.value > 60) zoomLevel.value -= 20;
-};
+// The stage is fluid, so a narrower viewport shrinks the travel the current offset was clamped to.
+onMounted(() => window.addEventListener("resize", refreshView));
+onBeforeUnmount(() => window.removeEventListener("resize", refreshView));
 </script>
 
 <template>
@@ -94,8 +106,33 @@ const zoomOut = () => {
       <div
         class="flex-1 flex items-center justify-center relative mt-8 pt-4 pb-2 overflow-hidden"
       >
+        <!--
+          The pan surface. It is only interactive once the frame overflows it: at 100% there is
+          nothing to drag to, so it takes no cursor, no tab stop and no arrow keys.
+        -->
         <div
-          class="relative w-full max-w-[640px] aspect-video max-h-full flex items-center justify-center"
+          ref="stage"
+          data-testid="viewer-stage"
+          role="group"
+          class="relative w-full max-w-[640px] aspect-video max-h-full flex items-center justify-center select-none rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-red"
+          :class="
+            canPan
+              ? ['touch-none', isPanning ? 'cursor-grabbing' : 'cursor-grab']
+              : ''
+          "
+          :tabindex="canPan ? 0 : -1"
+          :aria-label="
+            canPan
+              ? `${title} preview, zoomed to ${zoom}%. Drag or use the arrow keys to move the image.`
+              : `${title} preview`
+          "
+          @pointerdown="onPointerDown"
+          @pointermove="onPointerMove"
+          @pointerup="onPointerEnd"
+          @pointercancel="onPointerEnd"
+          @pointerleave="onPointerEnd"
+          @lostpointercapture="onPointerEnd"
+          @keydown="onKeydown"
         >
           <!--
             Image or 3D fallback visual. The viewer's zoom/rotate rides on the frames alone, so the
@@ -107,12 +144,13 @@ const zoomOut = () => {
             persistent-controls
             frame-class="drop-shadow-xl"
             dots-placement="top"
-            :frame-style="viewerTransform"
+            :frame-style="frameStyle"
+            @frame-change="resetView"
           />
           <div
             v-else
-            class="w-full h-full bg-gradient-to-br from-slate-100 to-slate-200 rounded-lg flex items-center justify-center border border-slate-200/60 shadow-inner transition-transform duration-300 ease-out"
-            :style="viewerTransform"
+            class="w-full h-full bg-gradient-to-br from-slate-100 to-slate-200 rounded-lg flex items-center justify-center border border-slate-200/60 shadow-inner transition-transform duration-200 [transition-timing-function:var(--ease-out)] motion-reduce:transition-none"
+            :style="frameStyle"
           >
             <div class="text-center p-6">
               <svg
@@ -144,6 +182,7 @@ const zoomOut = () => {
         >
           <button
             type="button"
+            data-testid="viewer-zoom-in"
             class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-600 hover:bg-slate-100 transition-colors"
             title="Zoom In"
             @click="zoomIn"
@@ -165,6 +204,7 @@ const zoomOut = () => {
           </button>
           <button
             type="button"
+            data-testid="viewer-zoom-out"
             class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-600 hover:bg-slate-100 transition-colors"
             title="Zoom Out"
             @click="zoomOut"
@@ -184,8 +224,53 @@ const zoomOut = () => {
               ></path>
             </svg>
           </button>
+
+          <span class="w-px h-5 bg-slate-200" aria-hidden="true"></span>
+          <span
+            class="w-10 text-center text-[11px] font-medium text-slate-500 tabular-nums"
+            aria-live="polite"
+          >
+            {{ zoom }}%
+          </span>
+
+          <!--
+            Always rendered, disabled while there is nothing to undo: a control that comes and goes
+            would shift the rest of the cluster sideways under the pointer.
+          -->
+          <button
+            type="button"
+            data-testid="viewer-reset"
+            class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-600 transition-colors enabled:hover:bg-slate-100 disabled:text-slate-300 disabled:cursor-default"
+            title="Reset view"
+            aria-label="Reset view"
+            :disabled="isDefaultView"
+            @click="resetView"
+          >
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 4v5h5M20 20v-5h-5M20 9A8 8 0 006.3 6.3L4 9m16 6a8 8 0 01-13.7 2.7L4 15"
+              ></path>
+            </svg>
+          </button>
         </div>
       </div>
+
+      <p
+        v-if="canPan"
+        class="text-[11px] text-brand-slate-muted text-center mt-1.5"
+        aria-hidden="true"
+      >
+        Drag the image to move around
+      </p>
 
       <!-- Features Summary Overlay at Bottom -->
       <div

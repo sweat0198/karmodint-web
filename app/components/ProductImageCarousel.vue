@@ -2,7 +2,7 @@
   <div class="relative w-full h-full">
     <!-- Frame stack. Transforms as a unit, so the arrows and dots stay put under zoom and rotate. -->
     <div
-      class="relative w-full h-full transition-transform duration-300 ease-out"
+      class="relative w-full h-full transition-transform duration-200 [transition-timing-function:var(--ease-out)] motion-reduce:transition-none"
       :class="{ 'group-hover:scale-105': zoomOnHover }"
       :style="frameStyle"
     >
@@ -12,6 +12,7 @@
         :src="image.src"
         :alt="image.alt"
         data-testid="carousel-frame"
+        draggable="false"
         class="absolute inset-0 m-auto max-h-full max-w-full w-auto object-contain transition-opacity duration-500 ease-in-out"
         :class="[
           idx === activeIndex ? 'opacity-100' : 'opacity-0',
@@ -111,6 +112,11 @@ const props = withDefaults(defineProps<ProductImageCarouselProps>(), {
   frameStyle: () => ({}),
 });
 
+const emit = defineEmits<{
+  /** A viewer-driven frame change, so a host can drop whatever view state belonged to the old frame. */
+  (e: "frame-change", index: number): void;
+}>();
+
 const activeIndex = ref(0);
 /** Set once an arrow is used: the viewer has taken over, so auto-advance stops until they leave. */
 const isUserControlled = ref(false);
@@ -134,6 +140,7 @@ function goTo(index: number) {
   // Auto-advance would otherwise pull the frame away mid-inspection.
   isUserControlled.value = true;
   clearTimer();
+  emit("frame-change", activeIndex.value);
 }
 
 // A shrinking gallery must not strand the index past the end.
