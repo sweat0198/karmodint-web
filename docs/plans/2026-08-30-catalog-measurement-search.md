@@ -2,15 +2,15 @@
 
 > **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
 
-**Goal:** Make catalog size cards searchable by length, width, height, and weight using metric, imperial, compact, spaced, and field-qualified terms.
+**Goal:** Make catalog size cards searchable using the footprint, Height, and Weight terms displayed on each card.
 
-**Architecture:** Extend `toSizeCards` so each projected card owns canonical search terms for its exact size. Keep `filterCatalog` unchanged; its existing token-AND logic and size-specific matching will consume the richer `sizeSearchTerms` automatically.
+**Architecture:** Extend `toSizeCards` so each projected card owns display-derived search terms for its exact size. Keep `filterCatalog` unchanged; its existing token-AND logic and size-specific matching consume the richer `sizeSearchTerms` automatically.
 
 **Tech Stack:** TypeScript, Nuxt 4, Vue 3, Vitest
 
 ---
 
-### Task 1: Add bare metric and imperial dimension terms
+### Task 1: Index displayed measurement terms
 
 **Files:**
 - Modify: `tests/utils/sizeCards.spec.ts`
@@ -18,20 +18,23 @@
 
 **Step 1: Write the failing test**
 
-Add this test inside `describe("toSizeCards", ...)`:
+Add a test inside `describe("toSizeCards", ...)` proving one projected card keeps its displayed strings searchable:
 
 ```ts
-it("carries bare metric and imperial length and width search terms", () => {
-  const cards = toSizeCards([panelCabin]);
+it("carries rendered footprint, Height, and Weight terms for catalog search", () => {
+  const cards = toSizeCards([grpCabin]);
+  const card = cards.find((item) => item.sizeKey === "300x300")!;
 
-  expect(cards[0].sizeSearchTerms).toEqual(
+  expect(card.sizeSearchTerms).toEqual(
     expect.arrayContaining([
-      "2m",
-      "2 m",
-      "2.00m",
-      "2.00 m",
-      "6.6ft",
-      "6.6 ft",
+      card.sizeLabel,
+      "Height: 2.40m (7.9ft)",
+      "Weight: 450kg",
+      "3m",
+      "3 m",
+      "9.8ft",
+      "9.8 ft",
+      "450 kg",
     ]),
   );
 });
@@ -43,7 +46,7 @@ Run: `pnpm test tests/utils/sizeCards.spec.ts`
 
 Expected: FAIL because `sizeSearchTerms` contains only the raw label and key.
 
-**Step 3: Implement minimal bare dimension terms**
+**Step 3: Implement display-derived measurement terms**
 
 Update the import in `app/utils/sizeCards.ts`:
 
@@ -55,7 +58,7 @@ import {
 } from "~/types/catalog";
 ```
 
-Add helpers near `formatFootprintLabel`:
+Add helpers near `formatFootprintLabel`. Do not add `length` or `width` labels; neither appears on the catalog card:
 
 ```ts
 function unitValueTerms(values: string[], unit: string): string[] {
@@ -65,22 +68,37 @@ function unitValueTerms(values: string[], unit: string): string[] {
   ]);
 }
 
-function bareDimensionSearchTerms(meters: number): string[] {
+function displayedMeasurementSearchTerms(size: CatalogSizeOption): string[] {
   return [
-    ...unitValueTerms([String(meters), meters.toFixed(2)], "m"),
-    ...unitValueTerms([String(metersToFeet(meters))], "ft"),
+    ...unitValueTerms([String(size.lengthM), size.lengthM.toFixed(2)], "m"),
+    ...unitValueTerms([String(metersToFeet(size.lengthM))], "ft"),
+    ...unitValueTerms([String(size.widthM), size.widthM.toFixed(2)], "m"),
+    ...unitValueTerms([String(metersToFeet(size.widthM))], "ft"),
+    ...(size.heightM
+      ? unitValueTerms([String(size.heightM), size.heightM.toFixed(2)], "m")
+      : []),
+    ...(size.heightM ? unitValueTerms([String(metersToFeet(size.heightM))], "ft") : []),
+    ...(size.weightKg ? unitValueTerms([String(size.weightKg)], "kg") : []),
   ];
 }
 ```
 
-Change card projection:
+Within `toSizeCards`, compute the rendered values once before `cards.push`:
+
+```ts
+const sizeLabel = formatFootprintLabel(size);
+const specs = buildSpecs(size);
+```
+
+Then change card projection:
 
 ```ts
 sizeSearchTerms: [
   size.label,
   sizeKey,
-  ...bareDimensionSearchTerms(size.lengthM),
-  ...bareDimensionSearchTerms(size.widthM),
+  sizeLabel,
+  ...specs,
+  ...displayedMeasurementSearchTerms(size),
 ].filter(Boolean),
 ```
 
@@ -94,88 +112,101 @@ Expected: PASS.
 
 ```bash
 git add app/utils/sizeCards.ts tests/utils/sizeCards.spec.ts docs/plans/2026-08-30-catalog-measurement-search.md
-git commit -m "feat(catalog): search footprint measurements"
+git commit -m "feat(catalog): search displayed measurements"
 ```
 
-### Task 2: Add field-qualified height and weight search
+### Task 2: Prove displayed terms drive filtering
 
 **Files:**
 - Modify: `tests/utils/catalogSearch.spec.ts`
-- Modify: `app/utils/sizeCards.ts`
 
 **Step 1: Write the failing integration test**
 
-Import `toSizeCards`, `CatalogProduct`, and `SanitySizeImage`. Add a minimal two-size product fixture with valid thumbnails. The first size should be `lengthM: 1.5`, `widthM: 1.5`, no height/weight; the second should be `lengthM: 3`, `widthM: 3`, `heightM: 2.4`, `weightKg: 450`.
-
-Add this behavior test:
+Import `toSizeCards`, `CatalogProduct`, and `SanitySizeImage`. Add this fixture and helper after `cards`:
 
 ```ts
-it("matches combined field-qualified measurements on one projected size", () => {
+function measurementImage(assetId: string): SanitySizeImage {
+  return {
+    _key: assetId,
+    view: "front",
+    alt: "Front view",
+    asset: { _type: "reference", _ref: assetId },
+  };
+}
+
+const measurementProduct: CatalogProduct = {
+  _id: "measurement-cabin",
+  name: "Measurement Cabin",
+  slug: "measurement-cabin",
+  isFeatured: false,
+  categories: [],
+  sizes: [
+    {
+      _key: "150x150",
+      label: "1.50m x 1.50m",
+      lengthM: 1.5,
+      widthM: 1.5,
+      weightKg: 0,
+      isPoa: true,
+      price: 0,
+      isDefault: true,
+      thumbnail: measurementImage("measurement-small"),
+      fallbackThumbnail: null,
+      images: [measurementImage("measurement-small")],
+    },
+    {
+      _key: "300x300",
+      label: "3.00m x 3.00m",
+      lengthM: 3,
+      widthM: 3,
+      heightM: 2.4,
+      weightKg: 450,
+      isPoa: true,
+      price: 0,
+      isDefault: false,
+      thumbnail: measurementImage("measurement-large"),
+      fallbackThumbnail: null,
+      images: [measurementImage("measurement-large")],
+    },
+  ],
+};
+```
+
+Add this behavior test; `height` and `weight` are rendered labels, while `length` and `width` must remain unsupported:
+
+```ts
+it("matches combined displayed measurements on one projected size", () => {
   const projectedCards = toSizeCards([measurementProduct]);
   const result = filterCatalog({
     cards: projectedCards,
     categories,
-    query: "length 3m width 3m height 7.9ft weight 450 kg",
+    query: "3m height 7.9ft weight 450 kg",
   });
 
   expect(result.visibleCards.map((item) => item.sizeKey)).toEqual(["300x300"]);
 });
 ```
 
-Also assert missing optional measurements do not leak onto the smaller size:
+Also assert missing optional measurements do not leak onto the smaller size and non-rendered labels do not match:
 
 ```ts
 expect(projectedCards.find((card) => card.sizeKey === "150x150")!.sizeSearchTerms)
-  .not.toEqual(expect.arrayContaining(["height", "weight"]));
+  .not.toEqual(expect.arrayContaining(["Height: 2.40m (7.9ft)", "Weight: 450kg"]));
+
+expect(
+  filterCatalog({ cards: projectedCards, categories, query: "length 3m" }).visibleCards,
+).toEqual([]);
 ```
 
 **Step 2: Run test to verify red**
 
 Run: `pnpm test tests/utils/catalogSearch.spec.ts`
 
-Expected: FAIL because field labels, height, and weight terms are absent.
+Expected: FAIL because the projected cards lack displayed measurement terms.
 
-**Step 3: Implement labeled measurement terms**
+**Step 3: Keep filtering unchanged**
 
-Replace the Task 1 helpers with:
-
-```ts
-function unitValueTerms(label: string, values: string[], unit: string): string[] {
-  return [...new Set(values)].flatMap((value) => {
-    const compact = `${value}${unit}`;
-    const spaced = `${value} ${unit}`;
-    return [compact, spaced, `${label} ${compact}`, `${label} ${spaced}`];
-  });
-}
-
-function dimensionSearchTerms(label: "length" | "width" | "height", meters: number): string[] {
-  return [
-    ...unitValueTerms(label, [String(meters), meters.toFixed(2)], "m"),
-    ...unitValueTerms(label, [String(metersToFeet(meters))], "ft"),
-  ];
-}
-
-function measurementSearchTerms(size: CatalogSizeOption): string[] {
-  return [
-    ...dimensionSearchTerms("length", size.lengthM),
-    ...dimensionSearchTerms("width", size.widthM),
-    ...(size.heightM ? dimensionSearchTerms("height", size.heightM) : []),
-    ...(size.weightKg
-      ? unitValueTerms("weight", [String(size.weightKg)], "kg")
-      : []),
-  ];
-}
-```
-
-Update projection:
-
-```ts
-sizeSearchTerms: [
-  size.label,
-  sizeKey,
-  ...measurementSearchTerms(size),
-].filter(Boolean),
-```
+Do not modify `app/utils/catalogSearch.ts`. Its normalized token-AND matching already searches `sizeSearchTerms` at individual-card scope. Use the Task 1 projection only.
 
 **Step 4: Run focused tests**
 
@@ -186,8 +217,8 @@ Expected: PASS.
 **Step 5: Commit slice**
 
 ```bash
-git add app/utils/sizeCards.ts tests/utils/catalogSearch.spec.ts
-git commit -m "feat(catalog): search height and weight"
+git add tests/utils/catalogSearch.spec.ts docs/plans/2026-08-30-catalog-measurement-search.md
+git commit -m "test(catalog): cover displayed measurement search"
 ```
 
 ### Task 3: Verify and refresh graphs
