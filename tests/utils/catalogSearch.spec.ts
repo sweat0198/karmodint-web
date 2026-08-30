@@ -158,8 +158,8 @@ describe("filterCatalog", () => {
 
     expect(result.visibleCards.map((item) => item.sizeKey)).toEqual(["300x300"]);
     const compactTerms = projectedCards.find((card) => card.sizeKey === "150x150")!.sizeSearchTerms;
-    expect(compactTerms).not.toContain("Height: 2.40m (7.9ft)");
-    expect(compactTerms).not.toContain("Weight: 450kg");
+    expect(compactTerms.some((term) => term.startsWith("Height"))).toBe(false);
+    expect(compactTerms.some((term) => term.startsWith("Weight"))).toBe(false);
     expect(
       filterCatalog({ cards: projectedCards, categories, query: "length 3m" }).visibleCards,
     ).toEqual([]);
