@@ -77,7 +77,7 @@ export const COMPANY_SOCIAL = {
 
 export const COMPANY_MAPS = {
   googleMapsEmbedUrl:
-    'https://maps.google.com/maps?q=Unit+4+Fairfield+Industrial+Estate,+Fair+Farm+Drive,+Melton+Road,+Waltham+On+The+Wolds,+Melton+Mowbray+LE14+4AJ&t=&z=14&ie=UTF8&iwloc=&output=embed',
+    'https://maps.google.com/maps?q=Karmod+International,+Unit+4+Fairfield+Industrial+Estate,+Fair+Farm+Drive,+Melton+Road,+Waltham+On+The+Wolds,+Melton+Mowbray+LE14+4AJ&t=&z=14&ie=UTF8&iwloc=&output=embed',
   googleMapsDirectionsUrl:
     'https://www.google.com/maps/dir/?api=1&destination=LE14+4AJ'
 } as const
