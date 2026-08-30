@@ -3,7 +3,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { mount } from '@vue/test-utils'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import ReferencesMarquee from '~/components/ReferencesMarquee.vue'
 import type { ReferenceTile } from '~/types/reference'
 
@@ -59,7 +59,37 @@ describe('ReferencesMarquee', () => {
     )
 
     expect(source).toContain('@media (prefers-reduced-motion: reduce)')
-    expect(source).toContain('animation-play-state: paused')
-    expect(source).toContain('40s linear infinite')
+    expect(source).toContain('prefers-reduced-motion: reduce')
+    expect(source).toContain('SCROLL_SPEED = 40')
+  })
+
+  it('renders labelled slide buttons on both sides', () => {
+    const wrapper = mount(ReferencesMarquee, { props: { references: tiles } })
+
+    expect(wrapper.get('[data-reference-prev]').attributes('aria-label')).toBe(
+      'Show previous references'
+    )
+    expect(wrapper.get('[data-reference-next]').attributes('aria-label')).toBe(
+      'Show next references'
+    )
+    expect(wrapper.get('[data-reference-prev]').attributes('type')).toBe('button')
+  })
+
+  it('slides the scroller in both directions when arrows are clicked', async () => {
+    const wrapper = mount(ReferencesMarquee, {
+      props: { references: tiles },
+      attachTo: document.body
+    })
+    const scroller = wrapper.get('[data-reference-scroller]').element as HTMLElement
+    const scrollBy = vi.fn()
+    scroller.scrollBy = scrollBy
+
+    await wrapper.get('[data-reference-next]').trigger('click')
+    expect(scrollBy).toHaveBeenLastCalledWith({ left: 288, behavior: 'smooth' })
+
+    await wrapper.get('[data-reference-prev]').trigger('click')
+    expect(scrollBy).toHaveBeenLastCalledWith({ left: -288, behavior: 'smooth' })
+
+    wrapper.unmount()
   })
 })
