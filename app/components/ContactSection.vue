@@ -2,7 +2,7 @@
   <section
     class="w-full py-12 lg:py-20 px-6 lg:px-12 bg-slate-50 flex justify-center"
   >
-    <div class="max-w-7xl w-full flex flex-col gap-12">
+    <div class="max-w-[1184px] w-full flex flex-col gap-12">
       <!-- 1. Top Split Section (Hero Visual + Consultation Form) -->
       <div
         class="bg-white border border-brand-rose-border rounded-lg shadow-md overflow-hidden grid grid-cols-1 lg:grid-cols-2"
