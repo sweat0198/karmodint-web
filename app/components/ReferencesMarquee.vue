@@ -2,11 +2,9 @@
   <section
     v-if="references.length"
     aria-labelledby="references-heading"
-    class="w-full overflow-hidden bg-white py-12 lg:py-16"
+    class="w-full overflow-hidden bg-white py-12 lg:py-16 px-6 lg:px-12 flex justify-center"
   >
-    <div
-      class="mx-auto flex w-full max-w-[1184px] flex-col gap-8 px-6 lg:px-12"
-    >
+    <div class="flex w-full max-w-[1184px] flex-col gap-8">
       <h2
         id="references-heading"
         class="text-center text-2xl font-semibold tracking-[-0.24px] text-brand-navy-heading"
