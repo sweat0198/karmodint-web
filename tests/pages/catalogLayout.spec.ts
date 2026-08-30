@@ -60,4 +60,15 @@ describe("catalog desktop layout", () => {
     expect(source).toContain("No products in ${activeSubcategoryName.value}");
     expect(source).toContain("No products or categories found");
   });
+
+  it("scrolls to top, respecting reduced motion, when the category selection changes", () => {
+    const watchStart = source.indexOf(
+      "watch([selectedCategorySlug, selectedSubcategorySlug]",
+    );
+    const watchSource = source.slice(watchStart, watchStart + 260);
+
+    expect(watchStart).toBeGreaterThan(-1);
+    expect(watchSource).toContain("prefers-reduced-motion: reduce");
+    expect(watchSource).toContain("window.scrollTo({ top: 0, behavior: reduced ? \"auto\" : \"smooth\" })");
+  });
 });
