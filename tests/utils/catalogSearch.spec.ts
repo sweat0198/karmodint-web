@@ -1,7 +1,49 @@
 import { describe, expect, it } from "vitest";
-import type { CategoryTreeNode } from "~/queries/catalog";
-import type { SizeCard } from "~/utils/sizeCards";
+import type { CatalogProduct, CategoryTreeNode } from "~/queries/catalog";
+import type { SanitySizeImage } from "~/types/catalog";
+import { toSizeCards, type SizeCard } from "~/utils/sizeCards";
 import { filterCatalog } from "~/utils/catalogSearch";
+
+function frontImage(assetId: string): SanitySizeImage {
+  return {
+    _key: "front",
+    view: "front",
+    alt: "Front view",
+    asset: { _type: "reference", _ref: assetId },
+  };
+}
+
+const measurementProduct: CatalogProduct = {
+  _id: "measurement-cabin",
+  name: "Measurement Cabin",
+  slug: "measurement-cabin",
+  categories: [],
+  sizes: [
+    {
+      _key: "150x150",
+      label: "1.50m x 1.50m",
+      lengthM: 1.5,
+      widthM: 1.5,
+      weightKg: 0,
+      price: 0,
+      thumbnail: frontImage("image-front-150"),
+      fallbackThumbnail: frontImage("image-front-150"),
+      images: [frontImage("image-front-150")],
+    },
+    {
+      _key: "300x300",
+      label: "3.00m x 3.00m",
+      lengthM: 3,
+      widthM: 3,
+      heightM: 2.4,
+      weightKg: 450,
+      price: 0,
+      thumbnail: frontImage("image-front-300"),
+      fallbackThumbnail: frontImage("image-front-300"),
+      images: [frontImage("image-front-300")],
+    },
+  ],
+};
 
 function card(overrides: Partial<SizeCard> & Pick<SizeCard, "cardId" | "productId">): SizeCard {
   return {
@@ -104,6 +146,23 @@ describe("filterCatalog", () => {
     const result = filterCatalog({ cards, categories, query: "Büyük" });
 
     expect(result.visibleCards.map((item) => item.cardId)).toEqual(["izmir-large"]);
+  });
+
+  it("matches combined displayed measurements on one projected size", () => {
+    const projectedCards = toSizeCards([measurementProduct]);
+    const result = filterCatalog({
+      cards: projectedCards,
+      categories,
+      query: "3m height 7.9ft weight 450 kg",
+    });
+
+    expect(result.visibleCards.map((item) => item.sizeKey)).toEqual(["300x300"]);
+    const compactTerms = projectedCards.find((card) => card.sizeKey === "150x150")!.sizeSearchTerms;
+    expect(compactTerms).not.toContain("Height: 2.40m (7.9ft)");
+    expect(compactTerms).not.toContain("Weight: 450kg");
+    expect(
+      filterCatalog({ cards: projectedCards, categories, query: "length 3m" }).visibleCards,
+    ).toEqual([]);
   });
 
   it("intersects global search results with the active category filter", () => {
