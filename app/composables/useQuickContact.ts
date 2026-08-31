@@ -5,6 +5,7 @@ import { COMPANY_CONTACT } from '~/constants/company'
 export const BUSINESS_PHONE_RAW = COMPANY_CONTACT.phoneRaw
 export const BUSINESS_PHONE_DISPLAY = COMPANY_CONTACT.phoneDisplay
 export const BUSINESS_WHATSAPP_NUMBER = COMPANY_CONTACT.whatsAppNumber
+export const BUSINESS_WHATSAPP_DISPLAY = COMPANY_CONTACT.whatsAppDisplay
 
 export function useQuickContact() {
   const quoteStore = useQuoteStore()
@@ -55,6 +56,7 @@ export function useQuickContact() {
   return {
     phoneDisplay: BUSINESS_PHONE_DISPLAY,
     phoneTelHref,
+    whatsAppDisplay: BUSINESS_WHATSAPP_DISPLAY,
     whatsAppUrl,
     whatsAppMessage,
     hasQuoteItems: computed(() => quoteStore.totalItemsCount > 0),

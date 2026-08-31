@@ -60,9 +60,9 @@ export const COMPANY_CONTACT = {
   phoneDisplay: '0116 403 0143',
   phoneRaw: '+441164030143',
   phoneTelHref: 'tel:+441164030143',
-  whatsAppNumber: '447824810226',
-  whatsAppDisplay: '+44 7824 810226',
-  whatsAppUrl: 'https://wa.me/447824810226',
+  whatsAppNumber: '447359538937',
+  whatsAppDisplay: '+44 7359 538937',
+  whatsAppUrl: 'https://wa.me/447359538937',
   salesEmail: 'info@karmodint.co.uk',
   supportEmail: 'info@karmodint.co.uk',
   openingHours: 'Mon - Fri, 8:00 AM - 6:00 PM GMT'
