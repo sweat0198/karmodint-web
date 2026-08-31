@@ -51,23 +51,11 @@
               :data-reference-copy="copy"
               :aria-hidden="copy === 'duplicate' ? 'true' : undefined"
             >
-              <component
-                :is="reference.website ? 'a' : 'div'"
+              <div
                 v-for="reference in references"
                 :key="`${copy}-${reference._id}`"
                 data-reference-tile
-                :href="reference.website"
-                :target="reference.website ? '_blank' : undefined"
-                :rel="reference.website ? 'noopener noreferrer' : undefined"
-                :tabindex="
-                  copy === 'duplicate' && reference.website ? -1 : undefined
-                "
                 class="group flex w-60 shrink-0 flex-col items-center justify-center rounded-lg bg-slate-100 border-brand-rose-border px-5 py-5 text-center md:w-72"
-                :class="
-                  reference.website
-                    ? 'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-red'
-                    : ''
-                "
               >
                 <div
                   class="flex h-24 w-full items-center justify-center overflow-hidden"
@@ -89,7 +77,7 @@
                 >
                   {{ reference.location }}
                 </p>
-              </component>
+              </div>
             </div>
           </div>
         </div>

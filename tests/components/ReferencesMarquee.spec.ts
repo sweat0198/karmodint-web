@@ -35,20 +35,13 @@ describe('ReferencesMarquee', () => {
     expect(wrapper.findAll('[data-reference-copy="original"] [data-reference-tile]')).toHaveLength(2)
     expect(wrapper.findAll('[data-reference-copy="duplicate"] [data-reference-tile]')).toHaveLength(2)
     expect(wrapper.get('[data-reference-copy="duplicate"]').attributes('aria-hidden')).toBe('true')
-    expect(wrapper.get('[data-reference-copy="duplicate"] a').attributes('tabindex')).toBe('-1')
   })
 
-  it('opens websites safely and leaves missing websites non-interactive', () => {
+  it('never renders tiles as links, even when a website is supplied', () => {
     const wrapper = mount(ReferencesMarquee, { props: { references: tiles } })
     const original = wrapper.get('[data-reference-copy="original"]')
-    const link = original.get('a')
 
-    expect(link.attributes()).toMatchObject({
-      href: 'https://example.com',
-      target: '_blank',
-      rel: 'noopener noreferrer'
-    })
-    expect(original.findAll('a')).toHaveLength(1)
+    expect(original.findAll('a')).toHaveLength(0)
     expect(original.text()).toContain('London')
   })
 
