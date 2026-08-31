@@ -64,7 +64,7 @@ export const COMPANY_CONTACT = {
   whatsAppDisplay: '+44 7824 810226',
   whatsAppUrl: 'https://wa.me/447824810226',
   salesEmail: 'info@karmodint.co.uk',
-  supportEmail: 'enquiries@karmod-international.com',
+  supportEmail: 'info@karmodint.co.uk',
   openingHours: 'Mon - Fri, 8:00 AM - 6:00 PM GMT'
 } as const satisfies ContactPointDefinition
 
