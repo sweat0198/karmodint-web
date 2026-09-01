@@ -113,6 +113,34 @@
             {{ quoteCount }}
           </span>
         </a>
+
+        <!-- Location / Map Scroll (Secondary) -->
+        <button
+          type="button"
+          @click="scrollToLocation"
+          class="hidden xl:flex -ml-2 items-center justify-center w-10 h-10 rounded-full hover:text-white hover:bg-slate-800/80 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 cursor-pointer transition-colors duration-150 group"
+          title="View Our Location"
+          aria-label="Scroll to Location Map"
+        >
+          <div
+            class="w-7 h-7 rounded-full bg-sky-500/20 text-sky-400 flex items-center justify-center shrink-0 transition-transform duration-200 group-hover:scale-110"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+              />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+              />
+            </svg>
+          </div>
+        </button>
       </div>
 
       <!-- Mobile Menu Toggle Button -->
@@ -222,14 +250,25 @@
 
 <script setup lang="ts">
 import { computed, ref } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { useQuickContact } from "~/composables/useQuickContact";
 
 const route = useRoute();
+const router = useRouter();
 const { phoneDisplay, phoneTelHref, whatsAppDisplay, whatsAppUrl, hasQuoteItems, quoteCount } = useQuickContact();
 const isMobileMenuOpen = ref(false);
 
 const isCatalogActive = computed(() => {
   return route.path.startsWith("/catalog");
 });
+
+function scrollToLocation() {
+  const mapSection = document.getElementById("map-section");
+  if (mapSection) {
+    mapSection.scrollIntoView({ behavior: "smooth", block: "center" });
+    return;
+  }
+
+  router.push("/contact#map-section");
+}
 </script>
