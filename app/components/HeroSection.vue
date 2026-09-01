@@ -239,14 +239,14 @@ import { onMounted, onUnmounted, ref } from "vue";
 
 const slides = [
   {
-    image: "/images/hero/hero-modular-containers.jpg",
-    title: "Modular Office & Storage Containers",
-    subtitle: "Site offices (2.3x6m to 3x7m), storage depots & living units",
+    image: "/images/hero/hero-container-2-3x6-uk.webp",
+    title: "2.3 × 6 m Modular Container",
+    subtitle: "Compact 2.3 × 6 m site office for UK projects",
   },
   {
-    image: "/images/hero/hero-grp-cabin.jpg",
-    title: "GRP Polyester Modular Cabins",
-    subtitle: "Weatherproof kiosks & guard booths (150x150 to 270x270)",
+    image: "/images/hero/hero-container-3x7-uk.webp",
+    title: "3 × 7 m Modular Container",
+    subtitle: "Spacious 3 × 7 m site office for larger teams",
   },
   {
     image: "/images/hero/hero-panel-cabin.jpg",
