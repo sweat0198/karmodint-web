@@ -31,12 +31,12 @@
         <!-- Badges Row -->
         <div class="w-full pt-2">
           <div
-            class="border-t border-brand-rose-border/50 pt-6 flex flex-wrap items-center gap-6"
+            class="border-t border-brand-rose-border/50 pt-5 flex flex-wrap sm:flex-nowrap items-center gap-y-2.5 gap-x-4 sm:gap-x-3 lg:gap-x-2.5 xl:gap-x-4"
           >
             <!-- Badge 1 -->
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-1.5 shrink-0">
               <svg
-                class="w-[22px] h-[21px] text-brand-slate-muted"
+                class="w-4 h-4 text-brand-slate-muted shrink-0"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -49,15 +49,15 @@
                 />
               </svg>
               <span
-                class="text-brand-slate-muted text-xs font-semibold tracking-[1.2px] uppercase"
+                class="text-brand-slate-muted text-xs sm:text-[10.5px] xl:text-xs font-semibold tracking-wider sm:tracking-[0.5px] xl:tracking-[1px] uppercase whitespace-nowrap"
                 >ISO 9001</span
               >
             </div>
 
             <!-- Badge 2 -->
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-1.5 shrink-0">
               <svg
-                class="w-4.5 h-4.5 text-brand-slate-muted"
+                class="w-4 h-4 text-brand-slate-muted shrink-0"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -70,15 +70,15 @@
                 />
               </svg>
               <span
-                class="text-brand-slate-muted text-xs font-semibold tracking-[1.2px] uppercase"
+                class="text-brand-slate-muted text-xs sm:text-[10.5px] xl:text-xs font-semibold tracking-wider sm:tracking-[0.5px] xl:tracking-[1px] uppercase whitespace-nowrap"
                 >UK Regs Compliant</span
               >
             </div>
 
             <!-- Badge 3 -->
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-1.5 shrink-0 w-full sm:w-auto">
               <svg
-                class="w-4.5 h-4.5 text-brand-slate-muted"
+                class="w-4 h-4 text-brand-slate-muted shrink-0"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -87,12 +87,18 @@
                   stroke-linecap="round"
                   stroke-linejoin="round"
                   stroke-width="2"
-                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"
+                />
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1"
                 />
               </svg>
               <span
-                class="text-brand-slate-muted text-xs font-semibold tracking-[1.2px] uppercase"
-                >Est. 1986</span
+                class="text-brand-slate-muted text-xs sm:text-[10.5px] xl:text-xs font-semibold tracking-wider sm:tracking-[0.5px] xl:tracking-[1px] uppercase whitespace-nowrap"
+                >Nationwide UK Delivery</span
               >
             </div>
           </div>
@@ -153,10 +159,10 @@
             <p
               class="text-brand-navy-heading text-xs font-semibold tracking-wide uppercase"
             >
-              {{ slides[currentIndex].title }}
+              {{ slides[currentIndex]?.title }}
             </p>
             <p class="text-brand-slate-muted text-[11px] font-medium">
-              {{ slides[currentIndex].subtitle }}
+              {{ slides[currentIndex]?.subtitle }}
             </p>
           </div>
         </div>
