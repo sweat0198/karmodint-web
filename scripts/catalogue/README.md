@@ -48,8 +48,8 @@ re-upload against `sanity/catalogue/assets/production.json`.
 
 `pnpm catalogue:verify` reads the catalogue back out of `$SANITY_DATASET` with one GROQ query and
 checks it against the seed the repo would import — totals, cross-product uniqueness, category
-resolution, POA pricing, the weight and height sentinels, and the guarantee that no size shows a
-render it does not own. It exits non-zero on any failure, so it works as a gate as well as a report.
+resolution, fixed pricing, owner-supplied weights and heights, and the guarantee that no size shows
+a render it does not own. It exits non-zero on any failure, so it works as a gate as well as a report.
 
 Two renders sharing one asset is expected, not a fault: Sanity derives asset ids from the content
 hash, and the source publishes the same door photograph for two MetroCity sizes. That is why 120

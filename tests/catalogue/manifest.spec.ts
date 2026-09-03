@@ -184,16 +184,17 @@ describe('GRP Cabin manifest rows', () => {
     expect(sizeLabel(wide)).toBe('1.50m × 2.70m')
   })
 
-  it('carries the four published weights and the 0 sentinel on the size the source never specced', () => {
-    expect(grp.sizes.map((size) => size.weightKg)).toEqual([280, 350, 450, 550, 0])
+  it('carries the five owner-supplied weights', () => {
+    expect(grp.sizes.map((size) => size.weightKg)).toEqual([280, 350, 450, 550, 650])
   })
 
-  it('omits height on 270x270 and publishes 2.40m on the four confirmed sizes', () => {
-    expect(grp.sizes.map((size) => size.heightM)).toEqual([2.4, 2.4, 2.4, 2.4, undefined])
+  it('carries the five owner-supplied heights', () => {
+    expect(grp.sizes.map((size) => size.heightM)).toEqual([2.4, 2.4, 2.4, 2.4, 2.45])
   })
 
-  it('prices every size POA', () => {
-    expect(grp.sizes.every((size) => size.isPoa && size.price === 0)).toBe(true)
+  it('carries the five owner-supplied fixed prices', () => {
+    expect(grp.sizes.map((size) => size.price)).toEqual([1361, 1595, 1639, 2059, 2208])
+    expect(grp.sizes.every((size) => size.isPoa === false)).toBe(true)
   })
 
   it('references both the parent category and the GRP subcategory', () => {
@@ -215,5 +216,63 @@ describe('GRP Cabin manifest rows', () => {
     )
     expect(referenced).toBe(23)
     expect(onDisk).toBe(23)
+  })
+})
+
+describe('Owner price request', () => {
+  it('stores the supplied price, height and weight for every requested size', () => {
+    const requested = Object.fromEntries(
+      manifest.products.map((product) => [
+        product.slug,
+        product.sizes.map((size) => ({
+          key: size.key,
+          heightM: size.heightM,
+          weightKg: size.weightKg,
+          price: size.price,
+          isPoa: size.isPoa
+        }))
+      ])
+    )
+
+    expect(requested).toMatchObject({
+      'bulletproof-security-cabin': [
+        { key: '150x150', heightM: 3, weightKg: 3000, price: 29000, isPoa: false },
+        { key: '150x200', heightM: 3, weightKg: 3800, price: 34323, isPoa: false },
+        { key: '200x200', heightM: 3, weightKg: 4500, price: 39000, isPoa: false },
+        { key: '200x300', heightM: 3, weightKg: 5800, price: 43800, isPoa: false },
+        { key: '200x400', heightM: 3, weightKg: 7500, price: 49000, isPoa: false },
+        { key: '300x300', heightM: 3, weightKg: 8000, price: 51600, isPoa: false },
+        { key: '300x400', heightM: 3, weightKg: 8800, price: 57000, isPoa: false },
+        { key: '300x500', heightM: 3, weightKg: 10500, price: 64000, isPoa: false }
+      ],
+      'kompocity-composite-cabin': [
+        { key: '140x140', heightM: 2.75, weightKg: 850, price: 3098, isPoa: false },
+        { key: '140x215', heightM: 2.75, weightKg: 1100, price: 3623, isPoa: false },
+        { key: '215x215', heightM: 2.75, weightKg: 1500, price: 4370, isPoa: false },
+        { key: '215x265', heightM: 2.75, weightKg: 1750, price: 4900, isPoa: false },
+        { key: '265x265', heightM: 2.75, weightKg: 1900, price: 5500, isPoa: false }
+      ],
+      'grp-cabin': [
+        { key: '150x150', heightM: 2.4, weightKg: 280, price: 1361, isPoa: false },
+        { key: '150x215', heightM: 2.4, weightKg: 350, price: 1595, isPoa: false },
+        { key: '150x270', heightM: 2.4, weightKg: 450, price: 1639, isPoa: false },
+        { key: '215x270', heightM: 2.4, weightKg: 550, price: 2059, isPoa: false },
+        { key: '270x270', heightM: 2.45, weightKg: 650, price: 2208, isPoa: false }
+      ],
+      'metrocity-modular-cabin': [
+        { key: '140x140', heightM: 2.75, weightKg: 700, price: 2519, isPoa: false },
+        { key: '140x215', heightM: 2.75, weightKg: 950, price: 2946, isPoa: false },
+        { key: '215x215', heightM: 2.75, weightKg: 1100, price: 3553, isPoa: false },
+        { key: '215x265', heightM: 2.75, weightKg: 1250, price: 3938, isPoa: false },
+        { key: '265x265', heightM: 2.75, weightKg: 1400, price: 4416, isPoa: false }
+      ],
+      'insulated-panel-cabin': [
+        { key: '110x110', heightM: 2.35, weightKg: 100, price: 800, isPoa: false },
+        { key: '135x135', heightM: 2.35, weightKg: 125, price: 928, isPoa: false },
+        { key: '135x210', heightM: 2.35, weightKg: 225, price: 1265, isPoa: false },
+        { key: '210x210', heightM: 2.35, weightKg: 280, price: 1429, isPoa: false },
+        { key: '260x260', heightM: 2.35, weightKg: 380, price: 1647, isPoa: false }
+      ]
+    })
   })
 })

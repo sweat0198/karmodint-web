@@ -91,11 +91,41 @@ describe('The catalogue as a whole', () => {
     // These literals are the second opinion the dataset is held against. If they ever have to be
     // edited to make a run pass, that edit is the thing to review.
     expect(EXPECTED_CATALOGUE).toEqual({
-      'grp-cabin': { sizes: 5, images: 23, subcategory: true, weights: [280, 350, 450, 550] },
-      'insulated-panel-cabin': { sizes: 5, images: 23, subcategory: true, weights: [] },
-      'metrocity-modular-cabin': { sizes: 5, images: 22, subcategory: true, weights: [] },
-      'kompocity-composite-cabin': { sizes: 5, images: 20, subcategory: true, weights: [] },
-      'bulletproof-security-cabin': { sizes: 8, images: 32, subcategory: false, weights: [] }
+      'grp-cabin': {
+        sizes: 5,
+        images: 23,
+        subcategory: true,
+        weights: [280, 350, 450, 550, 650],
+        heights: [2.4, 2.4, 2.4, 2.4, 2.45]
+      },
+      'insulated-panel-cabin': {
+        sizes: 5,
+        images: 23,
+        subcategory: true,
+        weights: [100, 125, 225, 280, 380],
+        heights: [2.35, 2.35, 2.35, 2.35, 2.35]
+      },
+      'metrocity-modular-cabin': {
+        sizes: 5,
+        images: 22,
+        subcategory: true,
+        weights: [700, 950, 1100, 1250, 1400],
+        heights: [2.75, 2.75, 2.75, 2.75, 2.75]
+      },
+      'kompocity-composite-cabin': {
+        sizes: 5,
+        images: 20,
+        subcategory: true,
+        weights: [850, 1100, 1500, 1750, 1900],
+        heights: [2.75, 2.75, 2.75, 2.75, 2.75]
+      },
+      'bulletproof-security-cabin': {
+        sizes: 8,
+        images: 32,
+        subcategory: false,
+        weights: [3000, 3800, 4500, 5800, 7500, 8000, 8800, 10500],
+        heights: [3, 3, 3, 3, 3, 3, 3, 3]
+      }
     })
     expect(EXPECTED_SHARED_RENDERS).toBe(1)
   })
@@ -166,17 +196,12 @@ describe('The catalogue as a whole', () => {
     expect(result.detail).toContain('differ but both map to')
   })
 
-  it('names four weights, all of them GRP, and reads the other 24 as unsupplied', () => {
+  it('reads owner-supplied weights and heights on all 28 sizes', () => {
     const weighted = committed.products.flatMap((product) =>
       product.sizes.filter((size) => size.weightKg > 0).map((size) => [product.slug, size.weightKg]))
-    expect(weighted).toEqual([
-      ['grp-cabin', 280],
-      ['grp-cabin', 350],
-      ['grp-cabin', 450],
-      ['grp-cabin', 550]
-    ])
-    expect(committed.products.flatMap((product) => product.sizes).filter((size) => size.hasHeight))
-      .toHaveLength(4)
+    expect(weighted).toHaveLength(28)
+    expect(committed.products.flatMap((product) => product.sizes).filter((size) => size.heightM !== null))
+      .toHaveLength(28)
   })
 
   it('reads the same however the API orders its projection keys', () => {
@@ -331,14 +356,14 @@ describe('Catalogue verification', () => {
     expect(failures(checks)).toContain('Every image reference resolves to an asset')
   })
 
-  it('catches a size that has stopped being POA', async () => {
+  it('catches a size that has lost its fixed price', async () => {
     const checks = await checksFor((products) => {
       const size = productIn(products, 'kompocity-composite-cabin').sizes[0]
-      size.isPoa = false
-      size.price = 4200
+      size.isPoa = true
+      size.price = 0
     })
 
-    expect(failures(checks)).toContain('Every size is POA at a placeholder price of 0')
+    expect(failures(checks)).toContain('Every size has an owner-supplied fixed price')
   })
 
   it('catches a weight that has appeared without passing through the manifest', async () => {
@@ -346,7 +371,15 @@ describe('Catalogue verification', () => {
       productIn(products, 'bulletproof-security-cabin').sizes[0].weightKg = 900
     })
 
-    expect(failures(checks)).toContain('Weights: the published values, and the 0 sentinel everywhere else')
+    expect(failures(checks)).toContain('Owner-supplied weight on every size')
+  })
+
+  it('catches an incorrect owner-supplied height', async () => {
+    const checks = await checksFor((products) => {
+      productIn(products, 'bulletproof-security-cabin').sizes[0].heightM = 99
+    })
+
+    expect(failures(checks)).toContain('Owner-supplied height on every size')
   })
 
   it('catches a specification table someone has started filling in by hand', async () => {

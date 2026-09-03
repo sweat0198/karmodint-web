@@ -42,10 +42,10 @@ describe('Seed document construction', () => {
     ])
   })
 
-  it('omits heightM entirely where the source published none', () => {
+  it('includes the owner-supplied height and weight', () => {
     const wide = document.sizes.find((size) => size._key === '270x270')!
-    expect('heightM' in wide).toBe(false)
-    expect(wide.weightKg).toBe(0)
+    expect(wide.heightM).toBe(2.45)
+    expect(wide.weightKg).toBe(650)
   })
 
   it('keys each image by its view, making a duplicate view structurally impossible', () => {

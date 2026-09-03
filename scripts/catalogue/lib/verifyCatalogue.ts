@@ -48,7 +48,7 @@ export const CATALOGUE_QUERY = `{
       isPoa,
       price,
       weightKg,
-      "hasHeight": defined(heightM),
+      heightM,
       "views": images[].view,
       "assetIds": images[].asset._ref,
       "resolvedAssetIds": images[].asset->_id
@@ -72,7 +72,7 @@ export interface CatalogueSize {
   isPoa: boolean
   price: number
   weightKg: number
-  hasHeight: boolean
+  heightM: number | null
   views: ProductImageView[]
   assetIds: string[]
 }
@@ -115,8 +115,10 @@ export interface ExpectedProduct {
   images: number
   /** Whether the family sits under a subcategory and so must name its parent as well. */
   subcategory: boolean
-  /** Weights the source publishes, in size order. Every other size carries the `0` sentinel. */
+  /** Owner-supplied weights, in size order. */
   weights: number[]
+  /** Owner-supplied heights, in size order. */
+  heights: number[]
 }
 
 /**
@@ -126,15 +128,45 @@ export interface ExpectedProduct {
  * happens to say — including a manifest that has quietly dropped a size. Written by hand, they are
  * a second opinion, and the only numbers here that a code change cannot move on its own.
  *
- * GRP is the only family whose source pages publish a spec list, which is why it is the only one
- * with weights.
+ * Commercial data comes from the owner price request, independently encoded here so a manifest
+ * edit cannot silently redefine its own expected totals or weights.
  */
 export const EXPECTED_CATALOGUE: Record<string, ExpectedProduct> = {
-  'grp-cabin': { sizes: 5, images: 23, subcategory: true, weights: [280, 350, 450, 550] },
-  'insulated-panel-cabin': { sizes: 5, images: 23, subcategory: true, weights: [] },
-  'metrocity-modular-cabin': { sizes: 5, images: 22, subcategory: true, weights: [] },
-  'kompocity-composite-cabin': { sizes: 5, images: 20, subcategory: true, weights: [] },
-  'bulletproof-security-cabin': { sizes: 8, images: 32, subcategory: false, weights: [] }
+  'grp-cabin': {
+    sizes: 5,
+    images: 23,
+    subcategory: true,
+    weights: [280, 350, 450, 550, 650],
+    heights: [2.4, 2.4, 2.4, 2.4, 2.45]
+  },
+  'insulated-panel-cabin': {
+    sizes: 5,
+    images: 23,
+    subcategory: true,
+    weights: [100, 125, 225, 280, 380],
+    heights: [2.35, 2.35, 2.35, 2.35, 2.35]
+  },
+  'metrocity-modular-cabin': {
+    sizes: 5,
+    images: 22,
+    subcategory: true,
+    weights: [700, 950, 1100, 1250, 1400],
+    heights: [2.75, 2.75, 2.75, 2.75, 2.75]
+  },
+  'kompocity-composite-cabin': {
+    sizes: 5,
+    images: 20,
+    subcategory: true,
+    weights: [850, 1100, 1500, 1750, 1900],
+    heights: [2.75, 2.75, 2.75, 2.75, 2.75]
+  },
+  'bulletproof-security-cabin': {
+    sizes: 8,
+    images: 32,
+    subcategory: false,
+    weights: [3000, 3800, 4500, 5800, 7500, 8000, 8800, 10500],
+    heights: [3, 3, 3, 3, 3, 3, 3, 3]
+  }
 }
 
 /**
@@ -228,7 +260,7 @@ export function projectSeed(documents: readonly SeedProduct[]): CatalogueProduct
         isPoa: size.isPoa,
         price: size.price,
         weightKg: size.weightKg,
-        hasHeight: size.heightM !== undefined,
+        heightM: size.heightM ?? null,
         views: size.images.map((image) => image.view),
         assetIds: size.images.map((image) => image.asset._ref)
       }))
@@ -354,7 +386,7 @@ function checkIntegrity(dataset: DatasetCatalogue): Check[] {
   const categorySlugs = new Set(dataset.categories.map((category) => category.slug))
   const collidingSlugs = dataset.products.map((product) => product.slug).filter((slug) => categorySlugs.has(slug))
 
-  const notPoa = sizes.filter((entry) => !entry.size.isPoa || entry.size.price !== 0)
+  const withoutFixedPrice = sizes.filter((entry) => entry.size.isPoa || entry.size.price <= 0)
 
   return [
     check(
@@ -386,11 +418,11 @@ function checkIntegrity(dataset: DatasetCatalogue): Check[] {
         : list(collidingSlugs.map((slug) => `"${slug}" is also a category slug`))
     ),
     check(
-      'Every size is POA at a placeholder price of 0',
-      notPoa.length === 0,
-      notPoa.length === 0
-        ? `all ${sizes.length} sizes read POA`
-        : list(notPoa.map((entry) =>
+      'Every size has an owner-supplied fixed price',
+      withoutFixedPrice.length === 0,
+      withoutFixedPrice.length === 0
+        ? `all ${sizes.length} sizes carry a positive fixed price`
+        : list(withoutFixedPrice.map((entry) =>
           `${entry.ref} (isPoa ${entry.size.isPoa}, price ${entry.size.price})`))
     )
   ]
@@ -452,42 +484,40 @@ function checkCategories(dataset: DatasetCatalogue): Check[] {
 }
 
 /**
- * The gaps ticket 07 records as accepted rather than defective.
+ * Owner-supplied physical details and deliberately empty specification tables.
  *
- * They are checked, not just written down, because each is indistinguishable from a bug once the
- * frontend renders it: a `weightKg` of `0` means unknown, and reading it as "0 kg" on a live page
- * is the failure this check is here to keep visible.
- *
- * The weights are compared against `EXPECTED_CATALOGUE` rather than the seed, so a weight invented
- * in the manifest fails rather than becoming its own expectation.
+ * Weights are compared against `EXPECTED_CATALOGUE` rather than the seed, so a value invented in
+ * the manifest fails rather than becoming its own expectation.
  */
-function checkKnownGaps(dataset: DatasetCatalogue): Check[] {
+function checkCommercialDetails(dataset: DatasetCatalogue): Check[] {
   const sizes = allSizes(dataset.products)
 
   const wrongWeights = dataset.products.filter((product) =>
     canonicalJson(product.sizes.map((size) => size.weightKg).filter((weight) => weight > 0))
     !== canonicalJson(EXPECTED_CATALOGUE[product.slug]?.weights ?? [])
   )
+  const wrongHeights = dataset.products.filter((product) =>
+    canonicalJson(product.sizes.map((size) => size.heightM))
+    !== canonicalJson(EXPECTED_CATALOGUE[product.slug]?.heights ?? [])
+  )
   const weighted = sizes.filter((entry) => entry.size.weightKg > 0)
-  const withHeight = sizes.filter((entry) => entry.size.hasHeight)
+  const withHeight = sizes.filter((entry) => typeof entry.size.heightM === 'number')
   const withSpecs = dataset.products.filter((product) => product.specificationCount > 0)
 
   return [
     check(
-      'Weights: the published values, and the 0 sentinel everywhere else',
+      'Owner-supplied weight on every size',
       wrongWeights.length === 0,
       wrongWeights.length > 0
         ? list(wrongWeights.map((product) => `${product.slug} publishes unexpected weights`))
-        : `${weighted.length} of ${sizes.length} sizes carry a weight `
-          + `(${list(weighted.map((entry) => `${entry.ref} ${entry.size.weightKg}kg`))}); `
-          + `the other ${sizes.length - weighted.length} hold the 0 sentinel, meaning unsupplied`
+        : `${weighted.length} of ${sizes.length} sizes carry an owner-supplied weight`
     ),
     check(
-      'Heights: published only where the source specced one',
-      withHeight.length === weighted.length,
-      `${withHeight.length} of ${sizes.length} sizes carry a height `
-      + `(${list(withHeight.map((entry) => entry.ref))}); `
-      + `the other ${sizes.length - withHeight.length} omit the field entirely`
+      'Owner-supplied height on every size',
+      wrongHeights.length === 0,
+      wrongHeights.length > 0
+        ? list(wrongHeights.map((product) => `${product.slug} publishes unexpected heights`))
+        : `${withHeight.length} of ${sizes.length} sizes carry the expected owner-supplied height`
     ),
     check(
       'specifications[] is empty on every product, by decision',
@@ -567,7 +597,7 @@ export function verifyCatalogue(
     ...checkImageryIsolation(expected, dataset),
     ...checkIntegrity(dataset),
     ...checkCategories(dataset),
-    ...checkKnownGaps(dataset),
+    ...checkCommercialDetails(dataset),
     ...checkNoDrift(expected, dataset)
   ]
 }
