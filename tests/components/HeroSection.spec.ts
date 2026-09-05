@@ -96,4 +96,68 @@ describe("HeroSection", () => {
 
     wrapper.unmount();
   });
+
+  it("advances to the next slide on a left swipe and back on a right swipe", async () => {
+    const wrapper = mount(HeroSection, {
+      global: {
+        stubs: {
+          NuxtLink: { template: "<a><slot /></a>" },
+        },
+      },
+    });
+
+    const slider = wrapper.get(".group");
+
+    await slider.trigger("touchstart", {
+      touches: [{ clientX: 300, clientY: 200 }],
+    });
+    await slider.trigger("touchend", {
+      changedTouches: [{ clientX: 200, clientY: 200 }],
+    });
+
+    expect(wrapper.text()).toContain("3 × 7 m Modular Container");
+
+    await slider.trigger("touchstart", {
+      touches: [{ clientX: 200, clientY: 200 }],
+    });
+    await slider.trigger("touchend", {
+      changedTouches: [{ clientX: 300, clientY: 200 }],
+    });
+
+    expect(wrapper.text()).toContain("2.3 × 6 m Modular Container");
+
+    wrapper.unmount();
+  });
+
+  it("ignores a swipe that is shorter than the threshold or mostly vertical", async () => {
+    const wrapper = mount(HeroSection, {
+      global: {
+        stubs: {
+          NuxtLink: { template: "<a><slot /></a>" },
+        },
+      },
+    });
+
+    const slider = wrapper.get(".group");
+
+    await slider.trigger("touchstart", {
+      touches: [{ clientX: 300, clientY: 200 }],
+    });
+    await slider.trigger("touchend", {
+      changedTouches: [{ clientX: 280, clientY: 200 }],
+    });
+
+    expect(wrapper.text()).toContain("2.3 × 6 m Modular Container");
+
+    await slider.trigger("touchstart", {
+      touches: [{ clientX: 300, clientY: 200 }],
+    });
+    await slider.trigger("touchend", {
+      changedTouches: [{ clientX: 200, clientY: 320 }],
+    });
+
+    expect(wrapper.text()).toContain("2.3 × 6 m Modular Container");
+
+    wrapper.unmount();
+  });
 });

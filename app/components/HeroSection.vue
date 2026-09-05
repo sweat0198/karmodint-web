@@ -107,9 +107,12 @@
 
       <!-- Right Image Carousel Block (Span 7) -->
       <div
-        class="lg:col-span-7 h-95 sm:h-120 lg:h-130 bg-brand-rose-card rounded-xl overflow-hidden shadow-xl border border-brand-rose-border/40 relative group"
+        class="lg:col-span-7 h-95 sm:h-120 lg:h-130 bg-brand-rose-card rounded-xl overflow-hidden shadow-xl border border-brand-rose-border/40 relative group touch-pan-y"
         @mouseenter="pauseAutoplay"
         @mouseleave="startAutoplay"
+        @touchstart.passive="handleTouchStart"
+        @touchend.passive="handleTouchEnd"
+        @touchcancel.passive="handleTouchCancel"
       >
         <!-- Slides Container -->
         <div class="w-full h-full relative">
@@ -307,6 +310,49 @@ function pauseAutoplay() {
     clearInterval(timer);
     timer = null;
   }
+}
+
+const swipeThreshold = 50;
+let touchStartX: number | null = null;
+let touchStartY: number | null = null;
+
+function handleTouchStart(event: TouchEvent) {
+  const touch = event.touches[0];
+  if (!touch) return;
+  touchStartX = touch.clientX;
+  touchStartY = touch.clientY;
+  pauseAutoplay();
+}
+
+function handleTouchEnd(event: TouchEvent) {
+  if (touchStartX === null || touchStartY === null) {
+    startAutoplay();
+    return;
+  }
+
+  const touch = event.changedTouches[0];
+  if (touch) {
+    const deltaX = touch.clientX - touchStartX;
+    const deltaY = touch.clientY - touchStartY;
+
+    if (Math.abs(deltaX) >= swipeThreshold && Math.abs(deltaX) > Math.abs(deltaY)) {
+      if (deltaX < 0) {
+        nextSlide();
+      } else {
+        prevSlide();
+      }
+    }
+  }
+
+  touchStartX = null;
+  touchStartY = null;
+  startAutoplay();
+}
+
+function handleTouchCancel() {
+  touchStartX = null;
+  touchStartY = null;
+  startAutoplay();
 }
 
 onMounted(() => {
