@@ -245,14 +245,14 @@ import { onMounted, onUnmounted, ref } from "vue";
 
 const slides = [
   {
-    image: "/images/hero/hero-container-2-3x6-uk.webp",
-    title: "2.3 × 6 m Modular Container",
-    subtitle: "Compact 2.3 × 6 m site office for UK projects",
-  },
-  {
     image: "/images/hero/hero-container-3x7-uk.webp",
     title: "3 × 7 m Modular Container",
     subtitle: "Spacious 3 × 7 m site office for larger teams",
+  },
+  {
+    image: "/images/hero/hero-container-2-3x6-uk.webp",
+    title: "2.3 × 6 m Modular Container",
+    subtitle: "Compact 2.3 × 6 m site office for UK projects",
   },
   {
     image: "/images/hero/hero-grp-1-5x1-5-uk.webp",
