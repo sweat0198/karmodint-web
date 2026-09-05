@@ -83,4 +83,34 @@ describe("AppHeader location button", () => {
 
     wrapper.unmount();
   });
+
+  it("closes mobile drawer and scrolls when mobile location button is clicked", async () => {
+    const mapSection = document.createElement("div");
+    mapSection.id = "map-section";
+    mapSection.scrollIntoView = vi.fn();
+    document.body.appendChild(mapSection);
+
+    const { wrapper } = await mountHeader("/");
+
+    // Open mobile menu
+    await wrapper.get('button[aria-label="Toggle Navigation Menu"]').trigger("click");
+
+    // Multiple location buttons now exist (desktop + mobile drawer)
+    const locationButtons = wrapper.findAll('button[aria-label="Scroll to Location Map"]');
+    expect(locationButtons).toHaveLength(2);
+
+    // Click the mobile drawer location button (the 2nd one)
+    await locationButtons[1].trigger("click");
+
+    expect(mapSection.scrollIntoView).toHaveBeenCalledWith({
+      behavior: "smooth",
+      block: "center",
+    });
+
+    // Drawer should now be closed
+    expect(wrapper.findAll('button[aria-label="Scroll to Location Map"]')).toHaveLength(1);
+
+    document.body.removeChild(mapSection);
+    wrapper.unmount();
+  });
 });
