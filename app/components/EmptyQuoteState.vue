@@ -37,8 +37,8 @@ withDefaults(
     title: "Your Quote List is Empty",
     description:
       "Browse our portable cabins, kiosks, and security gatehouses to add items.",
-    buttonText: "Browse Catalog",
-    buttonTo: "/catalog",
+    buttonText: "Browse Products",
+    buttonTo: "/products",
   },
 );
 </script>

@@ -17,7 +17,7 @@ function makeRouter(initialPath: string) {
     routes: [
       { path: "/", component: { template: "<div />" } },
       { path: "/contact", component: { template: "<div />" } },
-      { path: "/catalog", component: { template: "<div />" } },
+      { path: "/products", component: { template: "<div />" } },
     ],
   });
   router.push(initialPath);
@@ -72,7 +72,7 @@ describe("AppHeader location button", () => {
   });
 
   it("navigates to the contact page's map section when it isn't on the current page", async () => {
-    const { wrapper, router } = await mountHeader("/catalog");
+    const { wrapper, router } = await mountHeader("/products");
     const pushSpy = vi.spyOn(router, "push");
 
     await wrapper.get('button[aria-label="Scroll to Location Map"]').trigger("click");
@@ -80,6 +80,15 @@ describe("AppHeader location button", () => {
 
     expect(pushSpy).toHaveBeenCalledWith("/contact#map-section");
     expect(router.currentRoute.value.fullPath).toBe("/contact#map-section");
+
+    wrapper.unmount();
+  });
+
+  it("uses Products terminology on the products route", async () => {
+    const { wrapper } = await mountHeader("/products");
+
+    expect(wrapper.text()).toContain("Products");
+    expect(wrapper.text()).not.toContain("Catalog");
 
     wrapper.unmount();
   });

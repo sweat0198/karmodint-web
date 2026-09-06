@@ -11,7 +11,7 @@ export default defineEventHandler((event) => {
       priority: "1.0",
     },
     {
-      loc: "/catalog",
+      loc: "/products",
       lastmod: now,
       changefreq: "daily",
       priority: "0.9",

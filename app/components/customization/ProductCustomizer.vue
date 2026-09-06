@@ -315,7 +315,7 @@ onBeforeUnmount(() => window.removeEventListener("resize", refreshView));
           </svg>
           <span>
             <strong class="font-semibold">Demo data.</strong> Options and prices
-            shown here are placeholders, not the live catalogue. Do not send
+            shown here are placeholders, not the live product data. Do not send
             this quote to a customer.
           </span>
         </div>

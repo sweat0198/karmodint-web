@@ -129,7 +129,7 @@
           />
         </svg>
         <NuxtLink
-          to="/catalog"
+          to="/products"
           class="hover:text-slate-900 active:opacity-70 transition-opacity duration-150 shrink-0"
         >
           Products
@@ -206,7 +206,7 @@
             />
           </svg>
           <NuxtLink
-            to="/catalog"
+            to="/products"
             class="hover:text-brand-navy-heading transition-colors"
             >Products</NuxtLink
           >
@@ -606,23 +606,23 @@ onBeforeUnmount(() => {
 });
 
 onMounted(() => {
-  quoteStore.setLastVisitedRoute("/catalog");
+  quoteStore.setLastVisitedRoute("/products");
 });
 
 setPageSeo({
-  title: "Modular Buildings & Portable Cabins Catalog | Karmod International",
+  title: "Modular Buildings & Portable Cabins | Karmod International",
   description:
-    "Explore Karmod's full catalog of modular buildings, portable cabins, security gatehouses, retail kiosks, and sanitary units with customizable engineering options.",
-  canonicalPath: "/catalog",
+    "Explore Karmod's full range of modular buildings, portable cabins, security gatehouses, retail kiosks, and sanitary units with customizable engineering options.",
+  canonicalPath: "/products",
   jsonLd: [
     getBreadcrumbSchema([
       { name: "Home", path: "/" },
-      { name: "Modular Products Catalog", path: "/catalog" },
+      { name: "Modular Products", path: "/products" },
     ]),
     {
       "@context": "https://schema.org",
       "@type": "ItemList",
-      name: "Modular Building Catalog",
+      name: "Modular Building Products",
       itemListElement: cards.value.map((card, idx) => ({
         "@type": "ListItem",
         position: idx + 1,

@@ -59,6 +59,24 @@ function activeFrameIndex(wrapper: Customizer): number {
 }
 
 describe("ProductCustomizer", () => {
+  it("uses Products terminology in the demo-data notice", () => {
+    const wrapper = mount(ProductCustomizer, {
+      props: {
+        title: "Test product",
+        previewImages: [{ src: "front.jpg", alt: "Front view" }],
+        groups: [],
+        showDemoNotice: true,
+      },
+      global: {
+        components: { ProductImageCarousel },
+        stubs: { CustomizationGroups: true },
+      },
+    });
+
+    expect(wrapper.text()).toContain("not the live product data");
+    expect(wrapper.text().toLowerCase()).not.toContain("catalog");
+  });
+
   it("insets the carousel indicator from the clipped top edge", () => {
     const wrapper = mountCustomizer();
 

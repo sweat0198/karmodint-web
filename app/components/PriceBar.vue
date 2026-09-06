@@ -61,7 +61,7 @@ const formattedTotal = computed(() => {
 // Dynamic continuation text based on current location
 const actionText = computed(() => {
   if (props.quoteLabel) return props.quoteLabel;
-  if (route.path.startsWith("/catalog")) {
+  if (route.path.startsWith("/products")) {
     return "Customize Selected";
   }
   if (route.path.startsWith("/customize")) {
@@ -72,7 +72,7 @@ const actionText = computed(() => {
 
 // Destination route to continue where the user left off
 const destinationRoute = computed(() => {
-  if (route.path.startsWith("/catalog")) {
+  if (route.path.startsWith("/products")) {
     return "/customize";
   }
   if (route.path.startsWith("/customize")) {

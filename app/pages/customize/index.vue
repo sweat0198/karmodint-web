@@ -10,7 +10,7 @@
       <template #actions>
         <div class="flex flex-wrap items-center gap-3">
           <NuxtLink
-            to="/catalog"
+            to="/products"
             class="flex items-center justify-center gap-2 px-6 py-3 bg-white hover:bg-slate-100 text-brand-navy-heading border border-slate-300 font-semibold text-xs tracking-wider uppercase rounded-xs transition-colors duration-150 shadow-sm"
           >
             <span>+ Add Products</span>
@@ -51,7 +51,7 @@
       <!-- Empty State View (Shown only if user clears all items) -->
       <EmptyQuoteState
         v-if="quoteStore.isEmpty"
-        button-to="/catalog"
+        button-to="/products"
       />
 
       <!-- Multi-Item Expandable List View -->

@@ -128,7 +128,7 @@ export function useAppSeo() {
             priceCurrency: "GBP",
             availability: "https://schema.org/InStock",
             itemCondition: "https://schema.org/NewCondition",
-            url: `${siteUrl.replace(/\/$/, "")}/catalog`,
+            url: `${siteUrl.replace(/\/$/, "")}/products`,
             seller: {
               "@type": "Organization",
               name: "Karmod International",

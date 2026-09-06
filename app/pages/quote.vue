@@ -11,7 +11,7 @@
       <template #actions>
         <div class="flex flex-wrap items-center gap-3">
           <NuxtLink
-            to="/catalog"
+            to="/products"
             class="flex items-center justify-center gap-2 px-6 sm:px-8 py-3 bg-white hover:bg-slate-100 text-brand-navy-heading border border-slate-300 font-semibold text-xs tracking-wider uppercase rounded-xs transition-colors duration-150 shadow-sm hover:shadow"
           >
             <svg
@@ -64,10 +64,10 @@
     >
       <template #actions>
         <NuxtLink
-          to="/catalog"
+          to="/products"
           class="flex items-center justify-center gap-2 px-8 py-3 bg-brand-navy-heading hover:bg-brand-navy text-white font-semibold text-xs tracking-wider uppercase rounded-xs transition-colors duration-150 shadow-sm hover:shadow"
         >
-          <span>Return to Catalog</span>
+          <span>Return to Products</span>
         </NuxtLink>
       </template>
     </BuyFlowHeader>
@@ -83,8 +83,8 @@
           Our sales team is reviewing your requested products and delivery destination. They will contact you about the delivery charge and any offload requirements before issuing a formal quote.
         </p>
         <div class="flex justify-center gap-4">
-          <NuxtLink to="/catalog" class="btn-primary px-6 py-3 text-sm font-semibold">
-            Return to Catalog
+          <NuxtLink to="/products" class="btn-primary px-6 py-3 text-sm font-semibold">
+            Return to Products
           </NuxtLink>
         </div>
       </div>
@@ -92,7 +92,7 @@
       <!-- Empty State -->
       <EmptyQuoteState
         v-else-if="quoteStore.isEmpty"
-        button-to="/catalog"
+        button-to="/products"
       />
 
     <!-- Active Quote List & Contact Form -->

@@ -183,8 +183,8 @@ function buildQuoteItemPayload() {
 
 function handleAdd() {
   quoteStore.addItem(buildQuoteItemPayload());
-  if (route.path === "/" || !route.path.startsWith("/catalog")) {
-    router.push("/catalog");
+  if (route.path === "/" || !route.path.startsWith("/products")) {
+    router.push("/products");
   }
 }
 

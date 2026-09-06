@@ -28,15 +28,15 @@
           Home
         </NuxtLink>
         <NuxtLink
-          to="/catalog"
+          to="/products"
           class="text-base transition-colors py-1 relative"
           :class="
-            isCatalogActive
+            isProductsActive
               ? 'text-white font-bold border-b-2 border-brand-red pb-1.5'
               : 'text-brand-slate-light hover:text-white font-medium'
           "
         >
-          Catalog
+          Products
         </NuxtLink>
         <NuxtLink
           to="/about"
@@ -186,11 +186,11 @@
         Home
       </NuxtLink>
       <NuxtLink
-        to="/catalog"
+        to="/products"
         @click="isMobileMenuOpen = false"
         class="block text-base font-medium text-brand-slate-light hover:text-white"
       >
-        Catalog
+        Products
       </NuxtLink>
       <NuxtLink
         to="/about"
@@ -284,8 +284,8 @@ const router = useRouter();
 const { phoneDisplay, phoneTelHref, whatsAppDisplay, whatsAppUrl, hasQuoteItems, quoteCount } = useQuickContact();
 const isMobileMenuOpen = ref(false);
 
-const isCatalogActive = computed(() => {
-  return route.path.startsWith("/catalog");
+const isProductsActive = computed(() => {
+  return route.path.startsWith("/products");
 });
 
 function scrollToLocation() {

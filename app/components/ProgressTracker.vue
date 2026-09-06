@@ -123,7 +123,7 @@ const props = withDefaults(
         number: 1,
         label: "SELECT PRODUCTS",
         mobileLabel: "SELECT",
-        route: "/catalog",
+        route: "/products",
       },
       { number: 2, label: "CUSTOMIZE", route: "/customize" },
       { number: 3, label: "REVIEW", route: "/quote" },

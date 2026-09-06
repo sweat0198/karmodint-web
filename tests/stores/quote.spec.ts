@@ -28,6 +28,12 @@ describe("useQuoteStore", () => {
     setActivePinia(createPinia());
   });
 
+  it("starts the quote journey at the products route", () => {
+    const store = useQuoteStore();
+
+    expect(store.lastVisitedRoute).toBe("/products");
+  });
+
   it("gives two Size Options of the same Product distinct lines", () => {
     const store = useQuoteStore();
     store.addItem(grpItem({ sizeKey: "150x150" }));

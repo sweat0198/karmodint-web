@@ -22,7 +22,7 @@
         :id="inputId"
         :value="modelValue"
         type="search"
-        placeholder="Search catalog…"
+        placeholder="Search products…"
         autocomplete="off"
         :spellcheck="false"
         aria-controls="catalog-results"
@@ -34,7 +34,7 @@
         v-if="modelValue"
         type="button"
         class="absolute right-1.5 rounded p-2 text-slate-400 hover:text-brand-navy-heading focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-red"
-        aria-label="Clear catalog search"
+        aria-label="Clear product search"
         @click="emit('clear')"
       >
         <svg

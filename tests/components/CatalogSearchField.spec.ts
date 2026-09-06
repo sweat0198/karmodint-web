@@ -12,7 +12,7 @@ describe("CatalogSearchField", () => {
 
     const input = wrapper.get('input[type="search"]');
     expect(input.attributes("id")).toBe("catalog-search-test");
-    expect(input.attributes("placeholder")).toBe("Search catalog…");
+    expect(input.attributes("placeholder")).toBe("Search products…");
     expect(wrapper.get('label[for="catalog-search-test"]').text()).toBe(
       "Search products and categories",
     );
@@ -26,10 +26,10 @@ describe("CatalogSearchField", () => {
       props: { modelValue: "panel", inputId: "catalog-search-clear" },
     });
 
-    await wrapper.get('button[aria-label="Clear catalog search"]').trigger("click");
+    await wrapper.get('button[aria-label="Clear product search"]').trigger("click");
     expect(wrapper.emitted("clear")).toEqual([[]]);
 
     await wrapper.setProps({ modelValue: "" });
-    expect(wrapper.find('button[aria-label="Clear catalog search"]').exists()).toBe(false);
+    expect(wrapper.find('button[aria-label="Clear product search"]').exists()).toBe(false);
   });
 });

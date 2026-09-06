@@ -2,9 +2,9 @@ import fs from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 
-describe("catalog desktop layout", () => {
+describe("products desktop layout", () => {
   const source = fs.readFileSync(
-    path.resolve(process.cwd(), "app/pages/catalog/index.vue"),
+    path.resolve(process.cwd(), "app/pages/products/index.vue"),
     "utf8",
   );
 
@@ -23,7 +23,7 @@ describe("catalog desktop layout", () => {
     );
   });
 
-  it("places catalog search after breadcrumbs on mobile and at the desktop row end", () => {
+  it("places product search after breadcrumbs on mobile and at the desktop row end", () => {
     const mobileBreadcrumbs = source.indexOf("<!-- Breadcrumbs (Figma 50:11) -->");
     const mobileSearch = source.indexOf('input-id="catalog-search-mobile"');
     const desktopBreadcrumbs = source.indexOf(
