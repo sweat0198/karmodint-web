@@ -366,7 +366,7 @@
                 <svg
                   v-if="cat.children.length"
                   class="w-4 h-4 transition-transform duration-200"
-                  :class="{ 'rotate-180': expandedCategorySlug === cat.slug }"
+                  :class="{ 'rotate-180': isCategoryExpanded(cat.slug) }"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -382,7 +382,7 @@
 
               <!-- Subcategories Accordion List -->
               <div
-                v-if="expandedCategorySlug === cat.slug && cat.children.length"
+                v-if="isCategoryExpanded(cat.slug) && cat.children.length"
                 class="ml-4 mt-2 border-l border-slate-200 space-y-1"
               >
                 <button
@@ -446,7 +446,8 @@
       :categories="filteredCategories"
       :active-category="selectedCategorySlug"
       :active-subcategory="selectedSubcategorySlug"
-      :expanded-category="expandedCategorySlug"
+      :collapsed-categories="collapsedCategories"
+      @toggle-category="toggleCategoryExpand"
       @select="selectSubcategory"
       @select-category="selectCategory"
     />
@@ -476,8 +477,12 @@ const config = useRuntimeConfig();
 const { setPageSeo, getProductSchema, getBreadcrumbSchema } = useAppSeo();
 
 const isCategoryDrawerOpen = ref(false);
-// Which sidebar/drawer accordion is open — purely a UI affordance, independent of the filter below.
-const expandedCategorySlug = ref<string | null>(null);
+// Categories section is expanded by default. Stores explicitly collapsed categories: { [slug]: true }
+const collapsedCategories = ref<Record<string, boolean>>({});
+
+function isCategoryExpanded(categorySlug: string): boolean {
+  return !collapsedCategories.value[categorySlug];
+}
 
 const { data: products } = await useSanityQuery<CatalogProduct[]>(PRODUCTS_WITH_SIZES_QUERY);
 const { data: categoryTree } = await useSanityQuery<CategoryTreeNode[]>(CATEGORY_TREE_QUERY);
@@ -498,7 +503,7 @@ const {
   visibleCards,
   filteredCategories,
   clearSearch,
-  selectCategory,
+  selectCategory: selectCategoryBrowse,
   selectSubcategory: selectSubcategoryBrowse,
   clearFilter,
   dispose: disposeCatalogBrowse,
@@ -509,13 +514,27 @@ const {
   setQuery: (patch) => void router.replace({ query: { ...route.query, ...patch } }),
 });
 
+function selectCategory(categorySlug: string) {
+  selectCategoryBrowse(categorySlug);
+  isCategoryDrawerOpen.value = false;
+}
+
 function selectSubcategory(subcategorySlug: string, categorySlug: string) {
   selectSubcategoryBrowse(subcategorySlug, categorySlug);
-  expandedCategorySlug.value = categorySlug;
+  isCategoryDrawerOpen.value = false;
+  if (collapsedCategories.value[categorySlug]) {
+    collapsedCategories.value = {
+      ...collapsedCategories.value,
+      [categorySlug]: false,
+    };
+  }
 }
 
 function toggleCategoryExpand(categorySlug: string) {
-  expandedCategorySlug.value = expandedCategorySlug.value === categorySlug ? null : categorySlug;
+  collapsedCategories.value = {
+    ...collapsedCategories.value,
+    [categorySlug]: !collapsedCategories.value[categorySlug],
+  };
 }
 
 /** A category header both toggles its accordion and, for one with no children, selects it directly. */

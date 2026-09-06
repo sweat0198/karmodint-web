@@ -72,7 +72,7 @@
                 <svg
                   v-if="cat.children.length"
                   class="w-5 h-5 transition-transform duration-200 [transition-timing-function:var(--ease-out)] shrink-0"
-                  :class="{ 'rotate-180': expandedCat === cat.slug }"
+                  :class="{ 'rotate-180': isCategoryExpanded(cat.slug) }"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -83,7 +83,7 @@
 
               <!-- Subcategories Accordion List -->
               <div
-                v-if="expandedCat === cat.slug && cat.children.length"
+                v-if="isCategoryExpanded(cat.slug) && cat.children.length"
                 class="mt-4 ml-2 border-l-2 border-slate-100 space-y-2.5 transition-all"
               >
                 <div
@@ -107,17 +107,6 @@
             </li>
           </ul>
         </div>
-
-        <!-- Drawer Footer CTA -->
-        <div class="p-5 border-t border-slate-100 bg-white shrink-0">
-          <button
-            type="button"
-            @click="onApply"
-            class="w-full block text-center bg-brand-red hover:bg-brand-red-dark active:scale-[0.98] text-white font-semibold text-xs tracking-wider uppercase py-4 rounded-lg transition-transform duration-150 [transition-timing-function:var(--ease-out)] shadow-sm cursor-pointer focus-visible:ring-2 focus-visible:ring-brand-navy focus:outline-none"
-          >
-            Apply Categories
-          </button>
-        </div>
       </div>
     </Transition>
   </Teleport>
@@ -133,30 +122,24 @@ const props = defineProps<{
   activeCategory: string | null;
   activeSubcategory: string | null;
   expandedCategory?: string | null;
+  collapsedCategories?: Record<string, boolean>;
 }>();
 
 const emit = defineEmits<{
   (e: "update:isOpen", value: boolean): void;
   (e: "select", subcategorySlug: string, categorySlug: string): void;
   (e: "selectCategory", categorySlug: string): void;
-  (e: "apply"): void;
+  (e: "toggleCategory", categorySlug: string): void;
 }>();
 
-const expandedCat = ref(props.expandedCategory || props.activeCategory || "");
+const internalCollapsed = ref<Record<string, boolean>>({});
 
-watch(
-  () => props.expandedCategory,
-  (newVal) => {
-    if (newVal) expandedCat.value = newVal;
+function isCategoryExpanded(slug: string): boolean {
+  if (props.collapsedCategories) {
+    return !props.collapsedCategories[slug];
   }
-);
-
-watch(
-  () => props.activeCategory,
-  (newVal) => {
-    if (newVal && !expandedCat.value) expandedCat.value = newVal;
-  }
-);
+  return !internalCollapsed.value[slug];
+}
 
 // Lock body scroll while open
 watch(
@@ -177,18 +160,20 @@ function closeDrawer() {
 }
 
 function onCategoryClick(category: CategoryTreeNode) {
-  expandedCat.value = expandedCat.value === category.slug ? "" : category.slug;
   if (category.children.length === 0) {
     emit("selectCategory", category.slug);
+    closeDrawer();
+  } else {
+    emit("toggleCategory", category.slug);
+    internalCollapsed.value = {
+      ...internalCollapsed.value,
+      [category.slug]: isCategoryExpanded(category.slug),
+    };
   }
 }
 
 function onSelectSubcategory(subcategorySlug: string, categorySlug: string) {
   emit("select", subcategorySlug, categorySlug);
-}
-
-function onApply() {
-  emit("apply");
   closeDrawer();
 }
 
