@@ -108,35 +108,27 @@
       <!-- Right Image Carousel Block (Span 7) -->
       <div class="lg:col-span-7 lg:relative">
         <div
-          class="h-95 sm:h-120 lg:h-130 bg-brand-rose-card rounded-xl overflow-hidden shadow-xl border border-brand-rose-border/40 relative group touch-pan-y"
-          @mouseenter="pauseAutoplay"
-          @mouseleave="startAutoplay"
-          @touchstart.passive="handleTouchStart"
-          @touchend.passive="handleTouchEnd"
-          @touchcancel.passive="handleTouchCancel"
+          class="h-95 sm:h-120 lg:h-130 bg-brand-rose-card rounded-xl overflow-hidden shadow-xl border border-brand-rose-border/40 relative group"
+          @mouseenter="isHovering = true"
+          @mouseleave="isHovering = false"
         >
-          <!-- Slides Container -->
-          <div class="w-full h-full relative">
-            <div
-              v-for="(slide, index) in slides"
-              :key="index"
-              class="absolute inset-0 transition-opacity duration-700 ease-in-out"
-              :class="
-                currentIndex === index
-                  ? 'opacity-100 z-10'
-                  : 'opacity-0 z-0 pointer-events-none'
-              "
-            >
-              <img
-                :src="slide.image"
-                :alt="slide.title"
-                class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
-              />
-              <div
-                class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/10"
-              ></div>
-            </div>
-          </div>
+          <ProductImageCarousel
+            ref="carousel"
+            :images="carouselImages"
+            :active="!isHovering"
+            :interval-ms="5000"
+            persistent-controls
+            swipeable
+            zoom-on-hover
+            fit="cover"
+            :frame-style="{ transitionDuration: '1000ms' }"
+            :show-arrows="false"
+            :show-dots="false"
+            @frame-change="currentIndex = $event"
+          />
+          <div
+            class="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/10"
+          ></div>
 
           <!-- Floating Live Indicator Badge Top-Right -->
           <div
@@ -151,7 +143,7 @@
           <!-- Carousel Navigation Controls -->
           <!-- Prev Arrow -->
           <button
-            @click="prevSlide"
+            @click="carousel?.goTo(currentIndex - 1)"
             aria-label="Previous Slide"
             class="absolute left-3 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full backdrop-blur-md bg-white/70 hover:bg-white text-brand-navy-heading flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 shadow-md border border-white/40"
           >
@@ -172,7 +164,7 @@
 
           <!-- Next Arrow -->
           <button
-            @click="nextSlide"
+            @click="carousel?.goTo(currentIndex + 1)"
             aria-label="Next Slide"
             class="absolute right-3 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full backdrop-blur-md bg-white/70 hover:bg-white text-brand-navy-heading flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 shadow-md border border-white/40"
           >
@@ -196,7 +188,7 @@
             <button
               v-for="(_, idx) in slides"
               :key="idx"
-              @click="goToSlide(idx)"
+              @click="carousel?.goTo(idx)"
               :aria-label="`Go to slide ${idx + 1}`"
               class="h-2 rounded-full transition-all duration-300"
               :class="
@@ -246,122 +238,20 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from "vue";
+import { computed, ref } from "vue";
+import ProductImageCarousel from "~/components/ProductImageCarousel.vue";
+import type { HeroSlide } from "~/constants/heroSlides";
 
-const slides = [
-  {
-    image: "/images/hero/hero-container-3x7-uk.webp",
-    title: "3 × 7 m Modular Container",
-    subtitle: "Spacious 3 × 7 m site office for larger teams",
-  },
-  {
-    image: "/images/hero/hero-container-2-3x6-uk.webp",
-    title: "2.3 × 6 m Modular Container",
-    subtitle: "Compact 2.3 × 6 m site office for UK projects",
-  },
-  {
-    image: "/images/hero/hero-grp-1-5x1-5-uk.webp",
-    title: "1.5 × 1.5 m GRP Cabin",
-    subtitle: "Compact weatherproof gatehouse for schools and sports grounds",
-  },
-  {
-    image: "/images/hero/hero-panel-1-35x2-1-uk.webp",
-    title: "1.35 × 2.1 m Panel Cabin",
-    subtitle: "Insulated site gatehouse for year-round UK projects",
-  },
-  {
-    image: "/images/hero/hero-metrocity-2-15x2-65-uk.webp",
-    title: "2.15 × 2.65 m MetroCity Modular Cabin",
-    subtitle: "Architectural security office for premium developments",
-  },
-  {
-    image: "/images/hero/hero-kompocity-2-65x2-65-uk.webp",
-    title: "2.65 × 2.65 m KompoCity Composite Cabin",
-    subtitle: "Composite-clad reception cabin for commercial entrances",
-  },
-  {
-    image: "/images/hero/hero-bulletproof-2x4-uk.webp",
-    title: "2.00 × 4.00 m Bulletproof Security Cabin",
-    subtitle: "Armoured checkpoint for critical infrastructure sites",
-  },
-];
+const props = defineProps<{
+  slides: HeroSlide[];
+}>();
 
+const carouselImages = computed(() =>
+  props.slides.map((slide) => ({ src: slide.image, alt: slide.title })),
+);
+
+const carousel = ref<InstanceType<typeof ProductImageCarousel> | null>(null);
+const isHovering = ref(false);
+/** Mirrors the carousel's active frame, so the title/subtitle card and slide badge track it. */
 const currentIndex = ref(0);
-let timer: ReturnType<typeof setInterval> | null = null;
-
-function nextSlide() {
-  currentIndex.value = (currentIndex.value + 1) % slides.length;
-}
-
-function prevSlide() {
-  currentIndex.value = (currentIndex.value - 1 + slides.length) % slides.length;
-}
-
-function goToSlide(index: number) {
-  currentIndex.value = index;
-}
-
-function startAutoplay() {
-  if (!timer) {
-    timer = setInterval(nextSlide, 5000);
-  }
-}
-
-function pauseAutoplay() {
-  if (timer) {
-    clearInterval(timer);
-    timer = null;
-  }
-}
-
-const swipeThreshold = 50;
-let touchStartX: number | null = null;
-let touchStartY: number | null = null;
-
-function handleTouchStart(event: TouchEvent) {
-  const touch = event.touches[0];
-  if (!touch) return;
-  touchStartX = touch.clientX;
-  touchStartY = touch.clientY;
-  pauseAutoplay();
-}
-
-function handleTouchEnd(event: TouchEvent) {
-  if (touchStartX === null || touchStartY === null) {
-    startAutoplay();
-    return;
-  }
-
-  const touch = event.changedTouches[0];
-  if (touch) {
-    const deltaX = touch.clientX - touchStartX;
-    const deltaY = touch.clientY - touchStartY;
-
-    if (Math.abs(deltaX) >= swipeThreshold && Math.abs(deltaX) > Math.abs(deltaY)) {
-      if (deltaX < 0) {
-        nextSlide();
-      } else {
-        prevSlide();
-      }
-    }
-  }
-
-  touchStartX = null;
-  touchStartY = null;
-  startAutoplay();
-}
-
-function handleTouchCancel() {
-  touchStartX = null;
-  touchStartY = null;
-  startAutoplay();
-}
-
-onMounted(() => {
-  startAutoplay();
-});
-
-onUnmounted(() => {
-  pauseAutoplay();
-});
 </script>

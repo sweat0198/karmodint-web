@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 
 import { mount } from "@vue/test-utils";
+import { nextTick } from "vue";
 import { describe, expect, it, vi } from "vitest";
 import ProductImageCarousel from "~/components/ProductImageCarousel.vue";
 import type { CarouselImage } from "~/types/catalog";
@@ -227,5 +228,129 @@ describe("ProductImageCarousel", () => {
     expect(wrapper.findAll('[data-testid="carousel-frame"]')).toHaveLength(1);
 
     vi.useRealTimers();
+  });
+
+  it("emits frame-change on an autoplay tick, not just on manual navigation", async () => {
+    vi.useFakeTimers();
+    const wrapper = mount(ProductImageCarousel, {
+      props: {
+        images: [image("left-diagonal", "a"), image("front", "b"), image("top", "c")],
+        active: true,
+        intervalMs: 1000,
+      },
+    });
+
+    await vi.advanceTimersByTimeAsync(1000);
+    expect(wrapper.emitted("frame-change")?.at(-1)).toEqual([1]);
+
+    vi.useRealTimers();
+  });
+
+  it("hides the built-in arrows and dots when a host renders its own", async () => {
+    const wrapper = mount(ProductImageCarousel, {
+      props: {
+        images: [image("left-diagonal", "a"), image("front", "b")],
+        active: true,
+        showArrows: false,
+        showDots: false,
+      },
+    });
+
+    expect(wrapper.find('[data-testid="carousel-prev"]').exists()).toBe(false);
+    expect(wrapper.find('[data-testid="carousel-next"]').exists()).toBe(false);
+    expect(wrapper.find(".bg-white\\/90.rounded-full").exists()).toBe(false);
+  });
+
+  it("exposes goTo so a host can drive navigation from its own controls", async () => {
+    const wrapper = mount(ProductImageCarousel, {
+      props: {
+        images: [image("left-diagonal", "a"), image("front", "b"), image("top", "c")],
+        showArrows: false,
+      },
+    });
+
+    (wrapper.vm as unknown as { goTo: (index: number) => void }).goTo(2);
+    await nextTick();
+    expect(activeFrameIndex(wrapper)).toBe(2);
+  });
+
+  describe("swipeable", () => {
+    const frames = [image("left-diagonal", "a"), image("front", "b"), image("top", "c")];
+
+    it("advances on a left swipe and back on a right swipe", async () => {
+      const wrapper = mount(ProductImageCarousel, {
+        props: { images: frames, swipeable: true },
+      });
+      const surface = wrapper.get('[class*="relative"]');
+
+      await surface.trigger("touchstart", { touches: [{ clientX: 300, clientY: 200 }] });
+      await surface.trigger("touchend", { changedTouches: [{ clientX: 200, clientY: 200 }] });
+      expect(activeFrameIndex(wrapper)).toBe(1);
+
+      await surface.trigger("touchstart", { touches: [{ clientX: 200, clientY: 200 }] });
+      await surface.trigger("touchend", { changedTouches: [{ clientX: 300, clientY: 200 }] });
+      expect(activeFrameIndex(wrapper)).toBe(0);
+    });
+
+    it("ignores a swipe shorter than the threshold or mostly vertical", async () => {
+      const wrapper = mount(ProductImageCarousel, {
+        props: { images: frames, swipeable: true },
+      });
+      const surface = wrapper.get('[class*="relative"]');
+
+      await surface.trigger("touchstart", { touches: [{ clientX: 300, clientY: 200 }] });
+      await surface.trigger("touchend", { changedTouches: [{ clientX: 280, clientY: 200 }] });
+      expect(activeFrameIndex(wrapper)).toBe(0);
+
+      await surface.trigger("touchstart", { touches: [{ clientX: 300, clientY: 200 }] });
+      await surface.trigger("touchend", { changedTouches: [{ clientX: 200, clientY: 320 }] });
+      expect(activeFrameIndex(wrapper)).toBe(0);
+    });
+
+    it("pauses autoplay for the duration of the gesture, then resumes", async () => {
+      vi.useFakeTimers();
+      const wrapper = mount(ProductImageCarousel, {
+        props: { images: frames, swipeable: true, active: true, intervalMs: 1000 },
+      });
+      const surface = wrapper.get('[class*="relative"]');
+
+      await surface.trigger("touchstart", { touches: [{ clientX: 300, clientY: 200 }] });
+      await vi.advanceTimersByTimeAsync(5000);
+      expect(activeFrameIndex(wrapper)).toBe(0);
+
+      await surface.trigger("touchend", { changedTouches: [{ clientX: 280, clientY: 200 }] });
+      await vi.advanceTimersByTimeAsync(1000);
+      expect(activeFrameIndex(wrapper)).toBe(1);
+
+      vi.useRealTimers();
+    });
+
+    it("does not disable further autoplay the way a manual arrow click does", async () => {
+      vi.useFakeTimers();
+      const wrapper = mount(ProductImageCarousel, {
+        props: { images: frames, swipeable: true, active: true, intervalMs: 1000 },
+      });
+      const surface = wrapper.get('[class*="relative"]');
+
+      await surface.trigger("touchstart", { touches: [{ clientX: 300, clientY: 200 }] });
+      await surface.trigger("touchend", { changedTouches: [{ clientX: 200, clientY: 200 }] });
+      expect(activeFrameIndex(wrapper)).toBe(1);
+
+      await vi.advanceTimersByTimeAsync(1000);
+      expect(activeFrameIndex(wrapper)).toBe(2);
+
+      vi.useRealTimers();
+    });
+
+    it("leaves non-swipeable carousels (cards, the customizer) without touch handling", async () => {
+      const wrapper = mount(ProductImageCarousel, {
+        props: { images: frames },
+      });
+      const surface = wrapper.get('[class*="relative"]');
+
+      await surface.trigger("touchstart", { touches: [{ clientX: 300, clientY: 200 }] });
+      await surface.trigger("touchend", { changedTouches: [{ clientX: 200, clientY: 200 }] });
+      expect(activeFrameIndex(wrapper)).toBe(0);
+    });
   });
 });

@@ -1,7 +1,7 @@
 <template>
   <main class="w-full min-h-screen bg-white flex flex-col items-center">
     <!-- Hero Section -->
-    <HeroSection />
+    <HeroSection :slides="HERO_SLIDES" />
 
     <!-- Product Catalog Section -->
     <ProductCatalogSection />
@@ -16,6 +16,7 @@
 
 <script setup lang="ts">
 import { useAppSeo } from "~/composables/useAppSeo";
+import { HERO_SLIDES } from "~/constants/heroSlides";
 
 const { setPageSeo, getOrganizationSchema, getWebSiteSchema } = useAppSeo();
 
