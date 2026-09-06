@@ -195,7 +195,7 @@ export interface SanityQuoteEnquiry {
 export const METERS_TO_FEET = 3.28084
 
 export function metersToFeet(meters: number): number {
-  return Math.round(meters * METERS_TO_FEET * 10) / 10
+  return Math.round(meters * METERS_TO_FEET)
 }
 
 export function formatMetricAndImperialDimension(meters: number): {
@@ -208,4 +208,3 @@ export function formatMetricAndImperialDimension(meters: number): {
     imperial: `${feet}ft`
   }
 }
-

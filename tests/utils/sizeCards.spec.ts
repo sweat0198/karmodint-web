@@ -150,7 +150,7 @@ describe("toSizeCards", () => {
   it("formats the footprint as the sizeLabel using metric and imperial", () => {
     const cards = toSizeCards([grpCabin]);
     const compact = cards.find((c) => c.sizeKey === "150x150")!;
-    expect(compact.sizeLabel).toBe("1.50m × 1.50m (4.9ft × 4.9ft)");
+    expect(compact.sizeLabel).toBe("1.50m × 1.50m (5ft × 5ft)");
   });
 
   it("indexes the displayed measurement terms for search", () => {
@@ -160,7 +160,7 @@ describe("toSizeCards", () => {
     expect(large.sizeSearchTerms).toEqual(
       expect.arrayContaining([
         large.sizeLabel,
-        "Height: 2.40m (7.9ft)",
+        "Height: 2.40m (8ft)",
         "Weight: 450kg",
         "3m",
         "3 m",
@@ -168,8 +168,8 @@ describe("toSizeCards", () => {
         "3.00 m",
         "2.40m",
         "2.40 m",
-        "9.8ft",
-        "9.8 ft",
+        "10ft",
+        "10 ft",
         "450 kg",
       ]),
     );

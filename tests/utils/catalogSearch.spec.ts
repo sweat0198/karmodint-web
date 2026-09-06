@@ -193,7 +193,7 @@ describe("filterCatalog", () => {
     const result = filterCatalog({
       cards: projectedCards,
       categories,
-      query: "3m height 7.9ft weight 450 kg",
+      query: "3m height 8ft weight 450 kg",
     });
 
     expect(result.visibleCards.map((item) => item.sizeKey)).toEqual(["300x300"]);

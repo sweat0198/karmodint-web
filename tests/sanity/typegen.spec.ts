@@ -7,16 +7,16 @@ import {
 } from '../../app/types/catalog'
 
 describe('Sanity Types & Conversion Helpers Contract Verification', () => {
-  it('converts meters to feet with precision rounding', () => {
-    expect(metersToFeet(1.5)).toBe(4.9)
-    expect(metersToFeet(3.0)).toBe(9.8)
-    expect(metersToFeet(6.0)).toBe(19.7)
+  it('converts meters to feet rounded to the nearest integer', () => {
+    expect(metersToFeet(1.5)).toBe(5)
+    expect(metersToFeet(3.0)).toBe(10)
+    expect(metersToFeet(6.0)).toBe(20)
   })
 
   it('formats metric and imperial dimension pairs for product UI display', () => {
     const dim = formatMetricAndImperialDimension(2.4)
     expect(dim.metric).toBe('2.40m')
-    expect(dim.imperial).toBe('7.9ft')
+    expect(dim.imperial).toBe('8ft')
   })
 
   it('verifies SanityQuoteEnquiry type shape against schema contract', () => {
