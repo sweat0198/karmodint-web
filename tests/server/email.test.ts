@@ -77,7 +77,7 @@ describe('Email Utility & Template Engine', () => {
           productName: 'Executive Modular Gatehouse 3x7m',
           sizeLabel: 'Standard Premium',
           quantity: 2,
-          unitPrice: 12500,
+          basePrice: 12500,
           customTotal: 12500,
           notes: 'Anthracite frame'
         }
@@ -112,6 +112,30 @@ describe('Email Utility & Template Engine', () => {
         expect(email.html).not.toContain('Valid until')
         expect(email.html).not.toContain('Accept Quote')
         expect(email.html).not.toContain('Download PDF')
+      }
+    })
+
+    it('quotes the customized total, not the price captured when the item was added', () => {
+      const { businessEmail, customerEmail } = buildQuoteEmails(
+        {
+          customer: quoteData.customer,
+          items: [
+            {
+              productName: 'Executive Modular Gatehouse 3x7m',
+              sizeLabel: 'Standard Premium',
+              quantity: 2,
+              basePrice: 10000,
+              customTotal: 12500,
+              notes: 'Anthracite frame'
+            }
+          ]
+        },
+        'quotes@karmod-international.com'
+      )
+
+      for (const email of [businessEmail, customerEmail]) {
+        expect(email.html).toContain('25,000.00')
+        expect(email.html).not.toContain('20,000.00')
       }
     })
   })

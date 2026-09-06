@@ -1,18 +1,37 @@
 import { buildQuoteEmails, sendResendEmail } from '../utils/email'
 import { buildSanityQuoteEnquiry } from '../utils/sanityLead'
 import { isCompleteDeliveryAddress } from '../../shared/utils/deliveryAddress'
+import { getQuoteLineFinancials } from '../../shared/utils/quoteLine'
+import type { QuoteLine } from '../../shared/utils/quoteLine'
+
+interface QuoteEnquiryCustomer {
+  name: string
+  email: string
+  phone?: string
+  company?: string
+  address?: string | { formattedAddress?: string; townCity?: string; postcode?: string }
+  notes?: string
+}
+
+interface QuoteEnquiryRequestBody {
+  items: QuoteLine[]
+  customer: QuoteEnquiryCustomer
+}
 
 const handler = async (event: any) => {
-  let body: any
+  let body: Partial<QuoteEnquiryRequestBody>
   try {
-    body = event?.context?.$mockBody !== undefined 
-      ? event.context.$mockBody 
+    body = event?.context?.$mockBody !== undefined
+      ? event.context.$mockBody
       : (typeof readBody !== 'undefined' ? await readBody(event) : event?.body)
   } catch {
     body = {}
   }
 
   const { items, customer } = body || {}
+  // Read before the delivery-address validation below, which narrows `customer.address` down to
+  // just the fields (townCity/postcode) it checks for — dropping `formattedAddress` from its type.
+  const customerAddress = customer?.address
 
   if (!customer?.name || !customer?.email || !items || !Array.isArray(items) || items.length === 0) {
     const errorFn = typeof createError !== 'undefined' ? createError : (err: any) => Object.assign(new Error(err.statusMessage), err)
@@ -73,15 +92,15 @@ const handler = async (event: any) => {
           email: customer.email,
           phone: customer.phone || 'Not provided',
           company: customer.company,
-          deliveryLocation: typeof customer.address === 'object' ? customer.address?.formattedAddress : customer.address,
+          deliveryLocation: typeof customerAddress === 'object' ? customerAddress?.formattedAddress : customerAddress,
           notes: customer.notes
         },
-        items: items.map((item: any) => ({
+        items: items.map((item) => ({
           productId: item.productId,
           productName: item.productName,
           sizeLabel: item.sizeLabel,
           quantity: item.quantity || 1,
-          unitPrice: item.customTotal || item.unitPrice || item.basePrice,
+          unitPrice: getQuoteLineFinancials(item).unitPrice,
           notes: item.notes,
           selectedCustomizations: item.selectedCustomizations
         }))

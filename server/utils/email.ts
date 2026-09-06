@@ -6,6 +6,8 @@
  */
 
 import { COMPANY_DETAILS, COMPANY_ADDRESS, COMPANY_CONTACT } from '../../app/constants/company'
+import { getQuoteLineFinancials, getQuoteLinesTotal } from '../../shared/utils/quoteLine'
+import type { QuoteLinePriceInputs } from '../../shared/utils/quoteLine'
 
 export interface EmailPayload {
   from: string
@@ -37,16 +39,16 @@ export interface QuoteCustomizationItem {
   iconType?: 'electrical' | 'kitchen' | 'sanitary' | 'hvac' | 'standard'
 }
 
-export interface QuoteItemSummary {
+/**
+ * The presentation fields the email templates render for a line, plus the pricing fields the
+ * shared Quote Line module reads — sourced straight from `QuoteLinePriceInputs` so this shape
+ * can't drift from what the Quote List page and price bar already agree a line costs.
+ */
+export interface QuoteItemSummary extends QuoteLinePriceInputs {
   productName: string
   sizeLabel?: string
   dimensions?: string
   imageUrl?: string
-  quantity: number
-  basePrice?: number
-  unitPrice?: number
-  customTotal?: number
-  isPoa?: boolean
   notes?: string
   specBadges?: string[]
   customizations?: QuoteCustomizationItem[]
@@ -362,8 +364,7 @@ function customizationInitial(cust: QuoteCustomizationItem): string {
 }
 
 function computeItemFinancials(item: QuoteItemSummary) {
-  const unitPrice = item.isPoa ? 0 : (item.unitPrice ?? item.basePrice ?? item.customTotal ?? 0)
-  const baseTotal = unitPrice * item.quantity
+  const { unitPrice, lineTotal: baseTotal } = getQuoteLineFinancials(item)
   const addons = item.customizations ?? []
   const addonsTotal = addons.reduce((sum, c) => sum + c.price * c.quantity, 0)
   const itemTotal = baseTotal + addonsTotal
@@ -612,7 +613,8 @@ export function buildQuoteEmails(
 
   const itemFinancials = items.map(computeItemFinancials)
   const hasPoaItems = items.some(i => i.isPoa)
-  const productEstimate = itemFinancials.reduce((sum, f) => sum + f.itemTotal, 0)
+  const addonsTotal = itemFinancials.reduce((sum, f) => sum + f.addonsTotal, 0)
+  const productEstimate = getQuoteLinesTotal(items) + addonsTotal
 
   const preparedForCardHtml = buildPreparedForCardHtml({
     customer,
