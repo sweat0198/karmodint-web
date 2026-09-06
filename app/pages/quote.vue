@@ -134,8 +134,8 @@
 
               <!-- Price Per Unit and Total -->
               <div class="mt-2 text-sm font-bold text-brand-navy-heading">
-                £{{ ((item.customTotal || item.basePrice || 0) * item.quantity).toLocaleString() }}<span v-if="item.isPoa"> + POA</span>
-                <span class="text-xs font-normal text-slate-500">(£{{ (item.customTotal || item.basePrice || 0).toLocaleString() }}<span v-if="item.isPoa"> + POA</span> /ea + VAT)</span>
+                £{{ getQuoteLineFinancials(item).lineTotal.toLocaleString() }}<span v-if="item.isPoa"> + POA</span>
+                <span class="text-xs font-normal text-slate-500">(£{{ getQuoteLineFinancials(item).unitPrice.toLocaleString() }}<span v-if="item.isPoa"> + POA</span> /ea + VAT)</span>
               </div>
 
               <p v-if="item.notes" class="text-xs text-slate-500 italic mt-1">Note: "{{ item.notes }}"</p>
@@ -259,6 +259,7 @@
 import { useQuoteStore } from '~/stores/quote'
 import { useAppSeo } from '~/composables/useAppSeo'
 import type { ParsedUkAddress } from '~/composables/useGooglePlacesAutocomplete'
+import { getQuoteLineFinancials } from '~~/shared/utils/quoteLine'
 
 const { setPageSeo } = useAppSeo()
 

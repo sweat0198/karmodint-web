@@ -1,6 +1,7 @@
 import { computed } from 'vue'
 import { useQuoteStore } from '~/stores/quote'
 import { COMPANY_CONTACT } from '~/constants/company'
+import { getQuoteLineFinancials } from '~~/shared/utils/quoteLine'
 
 export const BUSINESS_PHONE_RAW = COMPANY_CONTACT.phoneRaw
 export const BUSINESS_PHONE_DISPLAY = COMPANY_CONTACT.phoneDisplay
@@ -17,8 +18,8 @@ export function useQuickContact() {
 
     const itemsSummary = quoteStore.items
       .map((item, index) => {
-        const price = item.customTotal ?? item.basePrice
-        const priceStr = price ? ` (£${(price * item.quantity).toLocaleString()})` : ''
+        const { unitPrice, lineTotal } = getQuoteLineFinancials(item)
+        const priceStr = unitPrice ? ` (£${lineTotal.toLocaleString()})` : ''
         const title = `*${index + 1}. ${item.quantity}x ${item.productName}*${priceStr}`
         
         let specs = ''
