@@ -459,8 +459,8 @@ import { useRoute, useRouter } from "vue-router";
 import { useRuntimeConfig, useSanityQuery } from "#imports";
 import { useQuoteStore } from "~/stores/quote";
 import { useAppSeo } from "~/composables/useAppSeo";
+import { useCatalogBrowse } from "~/composables/useCatalogBrowse";
 import { sanityImageUrl } from "~/utils/sanityImageUrl";
-import { filterCatalog } from "~/utils/catalogSearch";
 import { toSizeCards } from "~/utils/sizeCards";
 import {
   CATEGORY_TREE_QUERY,
@@ -474,15 +474,8 @@ const route = useRoute();
 const quoteStore = useQuoteStore();
 const config = useRuntimeConfig();
 const { setPageSeo, getProductSchema, getBreadcrumbSchema } = useAppSeo();
-const SEARCH_DEBOUNCE_MS = 350;
-
-function singleRouteQueryValue(value: unknown): string {
-  return typeof value === "string" ? value : "";
-}
 
 const isCategoryDrawerOpen = ref(false);
-const searchInput = ref(singleRouteQueryValue(route.query.search));
-let searchDebounceTimer: ReturnType<typeof setTimeout> | undefined;
 // Which sidebar/drawer accordion is open — purely a UI affordance, independent of the filter below.
 const expandedCategorySlug = ref<string | null>(null);
 
@@ -490,91 +483,38 @@ const { data: products } = await useSanityQuery<CatalogProduct[]>(PRODUCTS_WITH_
 const { data: categoryTree } = await useSanityQuery<CategoryTreeNode[]>(CATEGORY_TREE_QUERY);
 
 const cards = computed(() => toSizeCards(products.value ?? []));
-const committedSearchQuery = computed(() => singleRouteQueryValue(route.query.search).trim());
 
 // The filter lives in the URL (D10: `?category=cabin&subcategory=grp`), not local state, so it
 // survives a reload and is shareable.
-const selectedCategorySlug = computed(() => (route.query.category as string) || null);
-const selectedSubcategorySlug = computed(() => (route.query.subcategory as string) || null);
-
-const selectedCategory = computed(
-  () => categoryTree.value?.find((cat) => cat.slug === selectedCategorySlug.value) ?? null,
-);
-const selectedSubcategory = computed(
-  () =>
-    selectedCategory.value?.children.find((sub) => sub.slug === selectedSubcategorySlug.value) ??
-    null,
-);
-
-const activeCategoryName = computed(() => selectedCategory.value?.name ?? "All Categories");
-const activeSubcategoryName = computed(
-  () => selectedSubcategory.value?.name ?? selectedCategory.value?.name ?? "All Products",
-);
-
-const catalogResults = computed(() =>
-  filterCatalog({
-    cards: cards.value,
-    categories: categoryTree.value ?? [],
-    query: committedSearchQuery.value,
-    selectedCategorySlug: selectedCategorySlug.value,
-    selectedSubcategorySlug: selectedSubcategorySlug.value,
-  }),
-);
-const visibleCards = computed(() => catalogResults.value.visibleCards);
-const filteredCategories = computed(() => catalogResults.value.categories);
-const hasSearchQuery = computed(() => committedSearchQuery.value.length > 0);
-const catalogSearchStatus = computed(() => {
-  if (!hasSearchQuery.value) return "";
-  const count = visibleCards.value.length;
-  const label = count === 1 ? "size" : "sizes";
-  return `${count} ${label} found for “${committedSearchQuery.value}”.`;
+const {
+  searchInput,
+  hasSearchQuery,
+  catalogSearchStatus,
+  searchEmptyStateMessage,
+  selectedCategorySlug,
+  selectedSubcategorySlug,
+  activeCategoryName,
+  activeSubcategoryName,
+  visibleCards,
+  filteredCategories,
+  clearSearch,
+  selectCategory: selectCategoryBrowse,
+  selectSubcategory: selectSubcategoryBrowse,
+  clearFilter,
+  dispose: disposeCatalogBrowse,
+} = useCatalogBrowse({
+  cards,
+  categories: () => categoryTree.value ?? [],
+  getQuery: () => route.query,
+  setQuery: (patch) => void router.replace({ query: { ...route.query, ...patch } }),
 });
-const searchEmptyStateMessage = computed(() =>
-  catalogResults.value.searchCards.length > 0
-    ? `No products in ${activeSubcategoryName.value} found for “${committedSearchQuery.value}”.`
-    : `No products or categories found for “${committedSearchQuery.value}”.`,
-);
-
-function replaceSearchQuery(value: string) {
-  const search = value.trim();
-  if (search === committedSearchQuery.value) return;
-  void router.replace({
-    query: { ...route.query, search: search || undefined },
-  });
-}
-
-watch(searchInput, (value) => {
-  if (searchDebounceTimer) clearTimeout(searchDebounceTimer);
-  if (value.trim() === committedSearchQuery.value) return;
-  searchDebounceTimer = setTimeout(() => {
-    replaceSearchQuery(value);
-    searchDebounceTimer = undefined;
-  }, SEARCH_DEBOUNCE_MS);
-});
-
-watch(
-  () => route.query.search,
-  (value) => {
-    const nextSearch = singleRouteQueryValue(value);
-    if (nextSearch !== searchInput.value) searchInput.value = nextSearch;
-  },
-);
-
-function clearSearch() {
-  if (searchDebounceTimer) clearTimeout(searchDebounceTimer);
-  searchDebounceTimer = undefined;
-  searchInput.value = "";
-  replaceSearchQuery("");
-}
 
 function selectCategory(categorySlug: string) {
-  router.replace({ query: { ...route.query, category: categorySlug, subcategory: undefined } });
+  selectCategoryBrowse(categorySlug);
 }
 
 function selectSubcategory(subcategorySlug: string, categorySlug: string) {
-  router.replace({
-    query: { ...route.query, category: categorySlug, subcategory: subcategorySlug },
-  });
+  selectSubcategoryBrowse(subcategorySlug, categorySlug);
   expandedCategorySlug.value = categorySlug;
 }
 
@@ -590,19 +530,13 @@ function onCategoryClick(category: CategoryTreeNode) {
   }
 }
 
-function clearFilter() {
-  router.replace({
-    query: { ...route.query, category: undefined, subcategory: undefined },
-  });
-}
-
 watch([selectedCategorySlug, selectedSubcategorySlug], () => {
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   window.scrollTo({ top: 0, behavior: reduced ? "auto" : "smooth" });
 });
 
 onBeforeUnmount(() => {
-  if (searchDebounceTimer) clearTimeout(searchDebounceTimer);
+  disposeCatalogBrowse();
 });
 
 onMounted(() => {
