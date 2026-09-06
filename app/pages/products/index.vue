@@ -498,7 +498,7 @@ const {
   visibleCards,
   filteredCategories,
   clearSearch,
-  selectCategory: selectCategoryBrowse,
+  selectCategory,
   selectSubcategory: selectSubcategoryBrowse,
   clearFilter,
   dispose: disposeCatalogBrowse,
@@ -508,10 +508,6 @@ const {
   getQuery: () => route.query,
   setQuery: (patch) => void router.replace({ query: { ...route.query, ...patch } }),
 });
-
-function selectCategory(categorySlug: string) {
-  selectCategoryBrowse(categorySlug);
-}
 
 function selectSubcategory(subcategorySlug: string, categorySlug: string) {
   selectSubcategoryBrowse(subcategorySlug, categorySlug);

@@ -24,7 +24,6 @@ export interface UseCatalogBrowseOptions {
   getQuery: () => CatalogBrowseQuery;
   /** Merge a patch into the URL query, e.g. `(patch) => router.replace({ query: { ...route.query, ...patch } })`. */
   setQuery: (patch: Record<string, string | undefined>) => void;
-  debounceMs?: number;
 }
 
 /**
@@ -33,8 +32,6 @@ export interface UseCatalogBrowseOptions {
  * this stays markup-only.
  */
 export function useCatalogBrowse(options: UseCatalogBrowseOptions) {
-  const debounceMs = options.debounceMs ?? SEARCH_DEBOUNCE_MS;
-
   const searchInput = ref(singleQueryValue(options.getQuery().search));
   let debounceTimer: ReturnType<typeof setTimeout> | undefined;
 
@@ -102,7 +99,7 @@ export function useCatalogBrowse(options: UseCatalogBrowseOptions) {
       debounceTimer = setTimeout(() => {
         replaceSearchQuery(value);
         debounceTimer = undefined;
-      }, debounceMs);
+      }, SEARCH_DEBOUNCE_MS);
     },
     { flush: "sync" },
   );
