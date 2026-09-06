@@ -115,7 +115,7 @@ describe("HeroSection", () => {
       changedTouches: [{ clientX: 200, clientY: 200 }],
     });
 
-    expect(wrapper.text()).toContain("3 × 7 m Modular Container");
+    expect(wrapper.text()).toContain("2.3 × 6 m Modular Container");
 
     await slider.trigger("touchstart", {
       touches: [{ clientX: 200, clientY: 200 }],
@@ -124,7 +124,7 @@ describe("HeroSection", () => {
       changedTouches: [{ clientX: 300, clientY: 200 }],
     });
 
-    expect(wrapper.text()).toContain("2.3 × 6 m Modular Container");
+    expect(wrapper.text()).toContain("3 × 7 m Modular Container");
 
     wrapper.unmount();
   });
@@ -147,7 +147,7 @@ describe("HeroSection", () => {
       changedTouches: [{ clientX: 280, clientY: 200 }],
     });
 
-    expect(wrapper.text()).toContain("2.3 × 6 m Modular Container");
+    expect(wrapper.text()).toContain("3 × 7 m Modular Container");
 
     await slider.trigger("touchstart", {
       touches: [{ clientX: 300, clientY: 200 }],
@@ -156,7 +156,28 @@ describe("HeroSection", () => {
       changedTouches: [{ clientX: 200, clientY: 320 }],
     });
 
-    expect(wrapper.text()).toContain("2.3 × 6 m Modular Container");
+    expect(wrapper.text()).toContain("3 × 7 m Modular Container");
+
+    wrapper.unmount();
+  });
+
+  it("places the slide info card after the image carousel so it stacks under the images on mobile", () => {
+    const wrapper = mount(HeroSection, {
+      global: {
+        stubs: {
+          NuxtLink: { template: "<a><slot /></a>" },
+        },
+      },
+    });
+
+    const carousel = wrapper.get(".group").element;
+    const siblings = Array.from(carousel.parentElement!.children);
+    const carouselIndex = siblings.indexOf(carousel);
+    const infoCardIndex = siblings.findIndex(
+      (el) => el !== carousel && el.textContent?.includes("Modular Container"),
+    );
+
+    expect(infoCardIndex).toBeGreaterThan(carouselIndex);
 
     wrapper.unmount();
   });

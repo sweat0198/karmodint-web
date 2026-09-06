@@ -106,40 +106,111 @@
       </div>
 
       <!-- Right Image Carousel Block (Span 7) -->
-      <div
-        class="lg:col-span-7 h-95 sm:h-120 lg:h-130 bg-brand-rose-card rounded-xl overflow-hidden shadow-xl border border-brand-rose-border/40 relative group touch-pan-y"
-        @mouseenter="pauseAutoplay"
-        @mouseleave="startAutoplay"
-        @touchstart.passive="handleTouchStart"
-        @touchend.passive="handleTouchEnd"
-        @touchcancel.passive="handleTouchCancel"
-      >
-        <!-- Slides Container -->
-        <div class="w-full h-full relative">
-          <div
-            v-for="(slide, index) in slides"
-            :key="index"
-            class="absolute inset-0 transition-opacity duration-700 ease-in-out"
-            :class="
-              currentIndex === index
-                ? 'opacity-100 z-10'
-                : 'opacity-0 z-0 pointer-events-none'
-            "
-          >
-            <img
-              :src="slide.image"
-              :alt="slide.title"
-              class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
-            />
+      <div class="lg:col-span-7 lg:relative">
+        <div
+          class="h-95 sm:h-120 lg:h-130 bg-brand-rose-card rounded-xl overflow-hidden shadow-xl border border-brand-rose-border/40 relative group touch-pan-y"
+          @mouseenter="pauseAutoplay"
+          @mouseleave="startAutoplay"
+          @touchstart.passive="handleTouchStart"
+          @touchend.passive="handleTouchEnd"
+          @touchcancel.passive="handleTouchCancel"
+        >
+          <!-- Slides Container -->
+          <div class="w-full h-full relative">
             <div
-              class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/10"
-            ></div>
+              v-for="(slide, index) in slides"
+              :key="index"
+              class="absolute inset-0 transition-opacity duration-700 ease-in-out"
+              :class="
+                currentIndex === index
+                  ? 'opacity-100 z-10'
+                  : 'opacity-0 z-0 pointer-events-none'
+              "
+            >
+              <img
+                :src="slide.image"
+                :alt="slide.title"
+                class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
+              />
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/10"
+              ></div>
+            </div>
+          </div>
+
+          <!-- Floating Live Indicator Badge Top-Right -->
+          <div
+            class="absolute top-6 right-6 z-20 backdrop-blur-md bg-brand-navy-heading/80 border border-white/20 px-3.5 py-2 rounded-md shadow-md flex items-center gap-2 text-white"
+          >
+            <span class="w-2 h-2 rounded-full bg-brand-red animate-pulse"></span>
+            <span class="text-[11px] font-semibold tracking-[0.8px] uppercase">
+              Slide {{ currentIndex + 1 }} / {{ slides.length }}
+            </span>
+          </div>
+
+          <!-- Carousel Navigation Controls -->
+          <!-- Prev Arrow -->
+          <button
+            @click="prevSlide"
+            aria-label="Previous Slide"
+            class="absolute left-3 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full backdrop-blur-md bg-white/70 hover:bg-white text-brand-navy-heading flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 shadow-md border border-white/40"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15 19l-7-7 7-7"
+              />
+            </svg>
+          </button>
+
+          <!-- Next Arrow -->
+          <button
+            @click="nextSlide"
+            aria-label="Next Slide"
+            class="absolute right-3 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full backdrop-blur-md bg-white/70 hover:bg-white text-brand-navy-heading flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 shadow-md border border-white/40"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 5l7 7-7 7"
+              />
+            </svg>
+          </button>
+
+          <!-- Carousel Indicators (Dots) -->
+          <div class="absolute bottom-6 right-6 z-20 flex items-center gap-2">
+            <button
+              v-for="(_, idx) in slides"
+              :key="idx"
+              @click="goToSlide(idx)"
+              :aria-label="`Go to slide ${idx + 1}`"
+              class="h-2 rounded-full transition-all duration-300"
+              :class="
+                currentIndex === idx
+                  ? 'w-6 bg-brand-red'
+                  : 'w-2 bg-white/60 hover:bg-white'
+              "
+            ></button>
           </div>
         </div>
 
-        <!-- Floating Glassmorphism Badge Bottom-Left (Dynamic per slide) -->
+        <!-- Slide Info Card (Dynamic per slide): stacked under the images on mobile, floating over them from lg -->
         <div
-          class="absolute bottom-6 left-6 z-20 backdrop-blur-md bg-white/90 border border-white/50 px-4 py-3 rounded-lg shadow-lg flex items-center gap-3 transition-all duration-300"
+          class="mt-4 lg:mt-0 lg:absolute lg:bottom-6 lg:left-6 lg:z-20 w-fit backdrop-blur-md bg-white/90 border border-white/50 px-4 py-3 rounded-lg shadow-lg flex items-center gap-3 transition-all duration-300"
         >
           <div
             class="w-9 h-9 rounded-full bg-brand-red/10 border border-brand-red/20 flex items-center justify-center text-brand-red shrink-0"
@@ -168,75 +239,6 @@
               {{ slides[currentIndex]?.subtitle }}
             </p>
           </div>
-        </div>
-
-        <!-- Floating Live Indicator Badge Top-Right -->
-        <div
-          class="absolute top-6 right-6 z-20 backdrop-blur-md bg-brand-navy-heading/80 border border-white/20 px-3.5 py-2 rounded-md shadow-md flex items-center gap-2 text-white"
-        >
-          <span class="w-2 h-2 rounded-full bg-brand-red animate-pulse"></span>
-          <span class="text-[11px] font-semibold tracking-[0.8px] uppercase">
-            Slide {{ currentIndex + 1 }} / {{ slides.length }}
-          </span>
-        </div>
-
-        <!-- Carousel Navigation Controls -->
-        <!-- Prev Arrow -->
-        <button
-          @click="prevSlide"
-          aria-label="Previous Slide"
-          class="absolute left-3 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full backdrop-blur-md bg-white/70 hover:bg-white text-brand-navy-heading flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 shadow-md border border-white/40"
-        >
-          <svg
-            class="w-5 h-5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M15 19l-7-7 7-7"
-            />
-          </svg>
-        </button>
-
-        <!-- Next Arrow -->
-        <button
-          @click="nextSlide"
-          aria-label="Next Slide"
-          class="absolute right-3 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full backdrop-blur-md bg-white/70 hover:bg-white text-brand-navy-heading flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 shadow-md border border-white/40"
-        >
-          <svg
-            class="w-5 h-5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M9 5l7 7-7 7"
-            />
-          </svg>
-        </button>
-
-        <!-- Carousel Indicators (Dots) -->
-        <div class="absolute bottom-6 right-6 z-20 flex items-center gap-2">
-          <button
-            v-for="(_, idx) in slides"
-            :key="idx"
-            @click="goToSlide(idx)"
-            :aria-label="`Go to slide ${idx + 1}`"
-            class="h-2 rounded-full transition-all duration-300"
-            :class="
-              currentIndex === idx
-                ? 'w-6 bg-brand-red'
-                : 'w-2 bg-white/60 hover:bg-white'
-            "
-          ></button>
         </div>
       </div>
     </div>
