@@ -1,10 +1,79 @@
 import { describe, it, expect } from 'vitest'
 import { executeGroq } from '../utils/groqRunner'
-import { PRODUCTS_WITH_SIZES_QUERY } from '~/queries/catalog'
+import { CATEGORY_TREE_QUERY, PRODUCTS_WITH_SIZES_QUERY } from '~/queries/catalog'
 import { REFERENCES_QUERY } from '~/queries/references'
 import { mockSanityDataset, mockProducts, mockSizeImage } from '../fixtures/sanityData'
 
 describe('Sanity GROQ Query Evaluation (SSG Data Fetching)', () => {
+  it('normalises legacy category names for the UK catalogue UI', async () => {
+    const legacyDataset = [
+      {
+        _id: 'category-containers',
+        _type: 'category',
+        name: 'Containers',
+        slug: { current: 'containers' },
+        displayOrder: 1
+      },
+      {
+        _id: 'category-cabin',
+        _type: 'category',
+        name: 'Cabin',
+        slug: { current: 'cabin' },
+        displayOrder: 2
+      },
+      ...[
+        ['category-containers-office', 'Office', 'office', 1],
+        ['category-containers-depo', 'Depo', 'depo', 2],
+        ['category-containers-living-area', 'Living Area', 'living-area', 3],
+        ['category-containers-kiosk-canteen', 'Kiosk / Canteen', 'kiosk-canteen', 4]
+      ].map(([_id, name, slug, displayOrder]) => ({
+        _id,
+        _type: 'category',
+        name,
+        slug: { current: slug },
+        parent: { _ref: 'category-containers' },
+        displayOrder
+      })),
+      {
+        _id: 'product-legacy-category',
+        _type: 'product',
+        name: 'Legacy Category Product',
+        slug: { current: 'legacy-category-product' },
+        status: 'published',
+        categories: [{ _ref: 'category-cabin' }],
+        sizes: [{
+          _key: 'default',
+          label: '1m x 1m',
+          lengthM: 1,
+          widthM: 1,
+          price: 1,
+          isPoa: false,
+          isDefault: true,
+          images: [{
+            _key: 'front',
+            view: 'front',
+            alt: 'Legacy category product front view',
+            asset: { _ref: 'image-legacy-category' }
+          }]
+        }]
+      }
+    ]
+
+    const tree = await executeGroq<any[]>(CATEGORY_TREE_QUERY, {}, legacyDataset)
+    expect(tree.map((category) => category.name)).toEqual(['Portable Cabins', 'Gatehouses & Kiosks'])
+    expect(tree[0].children.map((category: any) => category.name)).toEqual([
+      'Site Offices',
+      'Storage Units',
+      'Accommodation Units',
+      'Canteen & Catering Units'
+    ])
+
+    const products = await executeGroq<any[]>(PRODUCTS_WITH_SIZES_QUERY, {}, legacyDataset)
+    expect(products.flatMap((product) => product.categories.map((category: any) => category.name))).toContain(
+      'Gatehouses & Kiosks'
+    )
+  })
+
   // No isActive field exists on the category schema; filtering on it only ever passed because the
   // fixtures invented one. Categories are listed by display order alone.
   it('fetches all categories ordered by sort weight', async () => {

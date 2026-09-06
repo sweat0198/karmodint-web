@@ -49,6 +49,9 @@ export interface CategoryTreeNode extends CategoryTreeChild {
   children: CategoryTreeChild[];
 }
 
+// Category documents may lag behind the seed files in an already-populated Sanity dataset. Keep
+// customer-facing labels canonical at the query boundary, keyed by stable slugs; this also keeps
+// product category search and the sidebar in sync during the CMS migration.
 /**
  * Products with their sizes, shaped for the catalog fan-out (`toSizeCards`).
  *
@@ -63,8 +66,30 @@ export interface CategoryTreeNode extends CategoryTreeChild {
  */
 export const PRODUCTS_WITH_SIZES_QUERY = `*[_type == "product" && status == "published" && !(_id in path("drafts.**"))] | order(isFeatured desc, name asc) {
   _id, name, "slug": slug.current, isFeatured, shortDescription,
-  "categories": categories[]->{ _id, name, "slug": slug.current, displayOrder,
-                                "parent": parent->{ _id, name, "slug": slug.current, displayOrder } },
+  "categories": categories[]->{
+    _id,
+    "name": select(
+      slug.current == "containers" => "Portable Cabins",
+      slug.current == "cabin" => "Gatehouses & Kiosks",
+      slug.current == "office" => "Site Offices",
+      slug.current == "depo" => "Storage Units",
+      slug.current == "living-area" => "Accommodation Units",
+      slug.current == "kiosk-canteen" => "Canteen & Catering Units",
+      name
+    ),
+    "slug": slug.current,
+    displayOrder,
+    "parent": parent->{
+      _id,
+      "name": select(
+        slug.current == "containers" => "Portable Cabins",
+        slug.current == "cabin" => "Gatehouses & Kiosks",
+        name
+      ),
+      "slug": slug.current,
+      displayOrder
+    }
+  },
   sizes[] {
     _key, label, lengthM, widthM, heightM, weightKg, price, isPoa, isDefault,
     "thumbnail": images[_key == "left-diagonal"][0] { asset, alt, view },
@@ -75,8 +100,24 @@ export const PRODUCTS_WITH_SIZES_QUERY = `*[_type == "product" && status == "pub
 
 /** The sidebar's category tree: top-level categories ordered by `displayOrder`, each with its children. */
 export const CATEGORY_TREE_QUERY = `*[_type == "category" && !defined(parent)] | order(displayOrder asc) {
-  _id, name, "slug": slug.current, displayOrder,
+  _id,
+  "name": select(
+    slug.current == "containers" => "Portable Cabins",
+    slug.current == "cabin" => "Gatehouses & Kiosks",
+    name
+  ),
+  "slug": slug.current,
+  displayOrder,
   "children": *[_type == "category" && references(^._id)] | order(displayOrder asc) {
-    _id, name, "slug": slug.current, displayOrder
+    _id,
+    "name": select(
+      slug.current == "office" => "Site Offices",
+      slug.current == "depo" => "Storage Units",
+      slug.current == "living-area" => "Accommodation Units",
+      slug.current == "kiosk-canteen" => "Canteen & Catering Units",
+      name
+    ),
+    "slug": slug.current,
+    displayOrder
   }
 }`;

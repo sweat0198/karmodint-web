@@ -4,9 +4,10 @@ This document defines the key domain terminology for Karmod International's web 
 
 ## Core Products & Categories
 
-- **Portable Cabin**: Prefabricated standalone space units used for temporary offices, accommodation, or storage.
+- **Portable Cabin**: Prefabricated standalone space units used for site offices, accommodation, storage, or welfare facilities.
 - **Kiosk**: Compact prefabricated structures designed for retail, ticketing, or food/beverage service.
 - **Gatehouse**: Security control cabins positioned at facility entrances or site perimeters.
+- **Gatehouse & Kiosk category**: Customer-facing category covering security gatehouses, control cabins, reception points, ticket booths, and service kiosks.
 - **Ticket Booth**: Dedicated small kiosks configured specifically for entry control and ticket sales.
 - **Modular Building**: Multi-unit prefabricated structures combined to form larger office complexes or accommodation facilities.
 

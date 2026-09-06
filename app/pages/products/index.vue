@@ -540,7 +540,7 @@ onMounted(() => {
 });
 
 setPageSeo({
-  title: "Modular Buildings & Portable Cabins | Karmod International",
+  title: "Portable Cabins, Gatehouses & Kiosks | Karmod International",
   description:
     "Explore Karmod's full range of modular buildings, portable cabins, security gatehouses, retail kiosks, and sanitary units with customizable engineering options.",
   canonicalPath: "/products",
@@ -552,7 +552,7 @@ setPageSeo({
     {
       "@context": "https://schema.org",
       "@type": "ItemList",
-      name: "Modular Building Products",
+      name: "Portable Cabins, Gatehouses & Kiosks",
       itemListElement: cards.value.map((card, idx) => ({
         "@type": "ListItem",
         position: idx + 1,
