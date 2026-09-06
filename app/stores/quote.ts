@@ -1,35 +1,10 @@
 import { defineStore } from "pinia";
-import type { CarouselImage, SanitySelectedCustomization } from "~/types/catalog";
-import type {
-  CustomizationNotes,
-  CustomizationSelections,
-  SpecSummaryItem,
-} from "~/types/customization";
+import type { SanitySelectedCustomization } from "~/types/catalog";
+import type { CustomizationNotes, CustomizationSelections, SpecSummaryItem } from "~/types/customization";
+import type { QuoteLine } from "~~/shared/utils/quoteLine";
+import { getQuoteLinesTotal } from "~~/shared/utils/quoteLine";
 
-export interface QuoteItem {
-  id: string;
-  productId: string;
-  productName: string;
-  productSlug: string;
-  sizeKey: string;
-  sizeLabel: string;
-  basePrice?: number;
-  priceModifier?: number;
-  quantity: number;
-  notes?: string;
-  image?: string;
-  /**
-   * Every angle of this size, for the customize page's viewer. Optional: carts persisted before
-   * this field existed replay with only `image`, and the viewer falls back to that single render.
-   */
-  images?: CarouselImage[];
-  configState?: CustomizationSelections;
-  customizationNotes?: CustomizationNotes;
-  customTotal?: number;
-  specSummary?: SpecSummaryItem[];
-  selectedCustomizations?: SanitySelectedCustomization[];
-  isPoa?: boolean;
-}
+export type QuoteItem = QuoteLine;
 
 export interface QuoteItemConfigPayload {
   selections: CustomizationSelections;
@@ -58,12 +33,7 @@ export const useQuoteStore = defineStore("quote", {
   getters: {
     totalItemsCount: (state) =>
       state.items.reduce((sum, item) => sum + item.quantity, 0),
-    totalQuotePrice: (state) =>
-      state.items.reduce(
-        (sum, item) =>
-          sum + (item.customTotal ?? item.basePrice ?? 0) * item.quantity,
-        0,
-      ),
+    totalQuotePrice: (state) => getQuoteLinesTotal(state.items),
     hasPoa: (state) => state.items.some((item) => item.isPoa),
     isEmpty: (state) => state.items.length === 0,
     continueRoute: (state) => {
