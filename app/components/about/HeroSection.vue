@@ -29,9 +29,6 @@
               class="h-full w-full object-cover"
             />
           </picture>
-          <figcaption class="absolute bottom-3 left-3 rounded bg-brand-navy/85 px-2.5 py-1.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-white backdrop-blur-sm">
-            Concept visualisation
-          </figcaption>
         </figure>
       </div>
     </div>

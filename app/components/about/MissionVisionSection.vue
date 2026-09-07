@@ -22,13 +22,17 @@
         </div>
 
         <!-- Image Container -->
-        <div class="w-full h-48 rounded overflow-hidden bg-brand-rose-card relative">
-          <img 
-            src="/images/hero-building-interior.png" 
-            alt="Karmod Vision Modern Facility" 
-            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
+        <figure class="relative aspect-[23/10] w-full overflow-hidden rounded bg-brand-rose-card">
+          <img
+            src="/images/about/vision-modular-campus-v2.png"
+            srcset="/images/about/vision-modular-campus-v2.webp 1280w"
+            sizes="(min-width: 768px) 50vw, 100vw"
+            alt="Concept visualisation of a landscaped modular business campus"
+            loading="lazy"
+            decoding="async"
+            class="h-full w-full object-cover"
           />
-        </div>
+        </figure>
       </div>
 
       <!-- Card 2: Mission -->
@@ -51,13 +55,17 @@
         </div>
 
         <!-- Image Container -->
-        <div class="w-full h-48 rounded overflow-hidden bg-brand-rose-card relative">
-          <img 
-            src="/images/hero-building-site.png" 
-            alt="Karmod Mission Site Assembly" 
-            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
+        <figure class="relative aspect-[23/10] w-full overflow-hidden rounded bg-brand-rose-card">
+          <img
+            src="/images/about/mission-community-campus-v2.png"
+            srcset="/images/about/mission-community-campus-v2.webp 1280w"
+            sizes="(min-width: 768px) 50vw, 100vw"
+            alt="Concept visualisation of a modular community campus with support cabins"
+            loading="lazy"
+            decoding="async"
+            class="h-full w-full object-cover"
           />
-        </div>
+        </figure>
       </div>
     </div>
   </section>

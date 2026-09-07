@@ -22,7 +22,7 @@ describe('AboutHeroSection', () => {
     expect(image.attributes('decoding')).toBe('async');
     expect(image.classes()).toEqual(expect.arrayContaining(['h-full', 'w-full', 'object-cover']));
     expect(image.classes()).not.toContain('group-hover:scale-105');
-    expect(wrapper.get('figcaption').text()).toBe('Concept visualisation');
+    expect(wrapper.find('figcaption').exists()).toBe(false);
   });
 
   it('references hero assets that exist in public', () => {
