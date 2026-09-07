@@ -31,7 +31,7 @@ describe('Sanity Quote Enquiry Mutation Builder', () => {
           productName: '1.50m x 1.50m Security Gatehouse Cabin',
           sizeLabel: '1.50m x 1.50m (Compact)',
           quantity: 2,
-          unitPrice: 2450,
+          basePrice: 2450,
           isPoa: false,
           selectedCustomizations: [
             {
@@ -93,5 +93,45 @@ describe('Sanity Quote Enquiry Mutation Builder', () => {
     expect(doc.hasPoa).toBe(true)
     expect(doc.estimatedTotal).toBe(0)
     expect(doc.items[0].isPoa).toBe(true)
+  })
+
+  it('reads POA and price for a mixed enquiry from the shared Quote Line rule, not an inferred missing price', () => {
+    const input: QuoteEnquiryInput = {
+      customer: {
+        name: 'Ellen Ripley',
+        email: 'ripley@weyland-yutani.co.uk',
+        phone: '+44 20 7946 0011'
+      },
+      items: [
+        {
+          productId: 'prod_office_20ft',
+          productName: 'Site Office Cabin 20ft',
+          sizeLabel: '2.40m x 6.00m (Standard)',
+          quantity: 2,
+          basePrice: 1000,
+          isPoa: false
+        },
+        {
+          productId: 'prod_blast_cabin',
+          productName: 'Bespoke Armoured Blast Cabin',
+          sizeLabel: 'Custom Spec',
+          quantity: 1,
+          basePrice: 500,
+          isPoa: true
+        }
+      ]
+    }
+
+    const doc = buildSanityQuoteEnquiry(input)
+
+    // The POA line carries a placeholder price, so an inference from a missing price would miss
+    // it — the flag must come from the stored `isPoa`, matching the shared Quote Line rule the
+    // emails already use.
+    expect(doc.hasPoa).toBe(true)
+    expect(doc.items[0].isPoa).toBe(false)
+    expect(doc.items[0].subtotal).toBe(2000)
+    expect(doc.items[1].isPoa).toBe(true)
+    expect(doc.items[1].subtotal).toBe(500)
+    expect(doc.estimatedTotal).toBe(2500)
   })
 })

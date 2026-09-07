@@ -1,3 +1,7 @@
+import { getQuoteLineFinancials, getQuoteLinesTotal } from '../../shared/utils/quoteLine'
+import type { QuoteLinePriceInputs } from '../../shared/utils/quoteLine'
+import type { SanitySelectedCustomization } from '../../app/types/catalog'
+
 export interface CustomerPayload {
   name: string
   email: string
@@ -7,21 +11,17 @@ export interface CustomerPayload {
   notes?: string
 }
 
-export interface QuoteItemPayload {
+/**
+ * The fields the lead needs to display a Quote Line, plus the pricing fields the shared Quote
+ * Line module reads — sourced straight from `QuoteLinePriceInputs` so a Quote Line can be passed
+ * through unchanged and this shape can't drift from what the emails already agree a line costs.
+ */
+export interface QuoteItemPayload extends QuoteLinePriceInputs {
   productId?: string
   productName: string
   sizeLabel?: string
-  quantity: number
-  unitPrice?: number
-  isPoa?: boolean
   notes?: string
-  selectedCustomizations?: Array<{
-    groupTitle: string
-    optionTitle: string
-    price?: number
-    isPoa?: boolean
-    customNotes?: string
-  }>
+  selectedCustomizations?: SanitySelectedCustomization[]
 }
 
 export interface QuoteEnquiryInput {
@@ -73,20 +73,11 @@ export function buildSanityQuoteEnquiry(input: QuoteEnquiryInput): SanityQuoteEn
   const { customer, items } = input
 
   let hasPoa = false
-  let calculatedTotal = 0
 
   const formattedItems = items.map((item, index) => {
-    const isItemPoa = Boolean(item.isPoa || item.unitPrice === undefined || item.unitPrice === null)
+    const { unitPrice, isPoa: isItemPoa, lineTotal } = getQuoteLineFinancials(item)
     if (isItemPoa) {
       hasPoa = true
-    }
-
-    const unitPrice = item.unitPrice || 0
-    const qty = Math.max(1, item.quantity || 1)
-    const itemSubtotal = isItemPoa ? 0 : unitPrice * qty
-
-    if (!isItemPoa) {
-      calculatedTotal += itemSubtotal
     }
 
     const formattedCustomizations = (item.selectedCustomizations || []).map((c, cIdx) => {
@@ -106,10 +97,10 @@ export function buildSanityQuoteEnquiry(input: QuoteEnquiryInput): SanityQuoteEn
       _key: `item_${index}_${Date.now().toString(36)}`,
       productTitle: item.productName,
       sizeLabel: item.sizeLabel || 'Standard',
-      quantity: qty,
-      unitPrice: unitPrice,
+      quantity: item.quantity,
+      unitPrice,
       isPoa: isItemPoa,
-      subtotal: itemSubtotal,
+      subtotal: lineTotal,
       selectedCustomizations: formattedCustomizations.length > 0 ? formattedCustomizations : undefined
     }
 
@@ -134,7 +125,7 @@ export function buildSanityQuoteEnquiry(input: QuoteEnquiryInput): SanityQuoteEn
     deliveryLocation: customer.deliveryLocation,
     customerNotes: customer.notes,
     items: formattedItems,
-    estimatedTotal: calculatedTotal,
+    estimatedTotal: getQuoteLinesTotal(items),
     hasPoa,
     submittedAt: new Date().toISOString()
   }

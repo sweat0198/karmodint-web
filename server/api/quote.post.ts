@@ -1,7 +1,6 @@
 import { buildQuoteEmails, sendResendEmail } from '../utils/email'
 import { buildSanityQuoteEnquiry } from '../utils/sanityLead'
 import { isCompleteDeliveryAddress } from '../../shared/utils/deliveryAddress'
-import { getQuoteLineFinancials } from '../../shared/utils/quoteLine'
 import type { QuoteLine } from '../../shared/utils/quoteLine'
 
 interface QuoteEnquiryCustomer {
@@ -95,15 +94,7 @@ const handler = async (event: any) => {
           deliveryLocation: typeof customerAddress === 'object' ? customerAddress?.formattedAddress : customerAddress,
           notes: customer.notes
         },
-        items: items.map((item) => ({
-          productId: item.productId,
-          productName: item.productName,
-          sizeLabel: item.sizeLabel,
-          quantity: item.quantity || 1,
-          unitPrice: getQuoteLineFinancials(item).unitPrice,
-          notes: item.notes,
-          selectedCustomizations: item.selectedCustomizations
-        }))
+        items
       })
 
       const sanityDataset = config?.public?.sanityDataset || process.env.SANITY_DATASET || 'production'
