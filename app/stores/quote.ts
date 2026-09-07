@@ -3,8 +3,31 @@ import type { SanitySelectedCustomization } from "~/types/catalog";
 import type { CustomizationNotes, CustomizationSelections, SpecSummaryItem } from "~/types/customization";
 import type { QuoteLine } from "~~/shared/utils/quoteLine";
 import { getQuoteLinesTotal } from "~~/shared/utils/quoteLine";
+import type { SizeCard } from "~/utils/sizeCards";
+import { sanityImageUrl } from "~/utils/sanityImageUrl";
+import { toCarouselImages } from "~/utils/carouselImages";
 
 export type QuoteItem = QuoteLine;
+
+/** Wider than the card's frames — the customize page shows these in a large primary viewer. */
+const CUSTOMIZE_VIEWER_IMAGE_WIDTH = 1200;
+
+/**
+ * `useRuntimeConfig` is a Nuxt auto-import: real in the app, undeclared under plain vitest. The
+ * `typeof` check reads as `false` rather than throwing in that case, same guard already used by
+ * `useGooglePlacesAutocomplete`.
+ */
+function resolveSanityImageConfig(): { projectId: string; dataset: string } {
+  try {
+    if (typeof useRuntimeConfig === "function") {
+      const config = useRuntimeConfig();
+      return { projectId: config.public.sanityProjectId, dataset: config.public.sanityDataset };
+    }
+  } catch {
+    // Non-Nuxt / test context fallback
+  }
+  return { projectId: "", dataset: "" };
+}
 
 export interface QuoteItemConfigPayload {
   selections: CustomizationSelections;
@@ -71,10 +94,32 @@ export const useQuoteStore = defineStore("quote", {
   },
 
   actions: {
+    /**
+     * The Quote List's intake: callers pass the Size Option card a visitor picked, and this
+     * derives the line — identity, labels, add-time price, the POA flag, and renders at both the
+     * thumbnail width and the larger width the customize page's viewer wants. Callers no longer
+     * resolve any image URL themselves.
+     */
+    addSizeOption(card: SizeCard, quantity = 1) {
+      const { projectId, dataset } = resolveSanityImageConfig();
+      this.addItem({
+        productId: card.productId,
+        productName: card.productName,
+        productSlug: card.productSlug,
+        sizeKey: card.sizeKey,
+        sizeLabel: card.sizeLabel,
+        basePrice: card.price,
+        isPoa: card.isPoa,
+        quantity,
+        image: sanityImageUrl(card.thumbnail.asset?._ref, projectId, dataset),
+        images: toCarouselImages(card.images, projectId, dataset, CUSTOMIZE_VIEWER_IMAGE_WIDTH),
+      });
+    },
+
     addItem(newItem: Omit<QuoteItem, "id">) {
       // One Quote List line per Product + Size Option (D6). Re-adding increments the quantity.
       // TODO: when customers ask to order the same size twice with different customizations,
-      // this id needs a configuration discriminator.
+      // this id needs a configuration discriminator (see ADR-001's open question).
       const compositeId = `${newItem.productId}-${newItem.sizeKey}`;
 
       const existing = this.items.find((i) => i.id === compositeId);
@@ -85,6 +130,9 @@ export const useQuoteStore = defineStore("quote", {
         // existed — without it such a line would never gain its extra angles.
         existing.image = newItem.image;
         existing.images = newItem.images;
+        // Only overwrite notes when the incoming add actually carries one — an increment/re-add
+        // that doesn't mention notes must not wipe out ones already on the line.
+        existing.notes = newItem.notes ?? existing.notes;
       } else {
         this.items.push({
           ...newItem,
@@ -92,10 +140,6 @@ export const useQuoteStore = defineStore("quote", {
           customTotal: newItem.customTotal ?? newItem.basePrice,
         });
       }
-    },
-
-    incrementProduct(item: Omit<QuoteItem, "id">) {
-      this.addItem({ ...item, quantity: 1 });
     },
 
     decrementItem(id: string) {

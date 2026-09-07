@@ -123,7 +123,6 @@ import { computed, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useRuntimeConfig } from "#imports";
 import { useQuoteStore } from "~/stores/quote";
-import { sanityImageUrl } from "~/utils/sanityImageUrl";
 import { toCarouselImages } from "~/utils/carouselImages";
 import type { SizeCard } from "~/utils/sizeCards";
 import { getPriceLabel } from "~~/shared/utils/priceLabel";
@@ -157,37 +156,8 @@ const carouselImages = computed(() =>
   ),
 );
 
-/** Wider than the card's frames — the customize page shows these in a large primary viewer. */
-const quoteItemImages = computed(() =>
-  toCarouselImages(
-    props.card.images,
-    config.public.sanityProjectId,
-    config.public.sanityDataset,
-    1200,
-  ),
-);
-
-function buildQuoteItemPayload() {
-  return {
-    productId: props.card.productId,
-    productName: props.card.productName,
-    productSlug: props.card.productSlug,
-    sizeKey: props.card.sizeKey,
-    sizeLabel: props.card.sizeLabel,
-    basePrice: props.card.price,
-    isPoa: props.card.isPoa,
-    quantity: 1,
-    image: sanityImageUrl(
-      props.card.thumbnail.asset?._ref,
-      config.public.sanityProjectId,
-      config.public.sanityDataset,
-    ),
-    images: quoteItemImages.value,
-  };
-}
-
 function handleAdd() {
-  quoteStore.addItem(buildQuoteItemPayload());
+  quoteStore.addSizeOption(props.card);
   if (route.path === "/" || !route.path.startsWith("/products")) {
     router.push("/products");
   }
@@ -195,13 +165,13 @@ function handleAdd() {
 
 function handleCustomize() {
   if (quantityInBasket.value === 0) {
-    quoteStore.addItem(buildQuoteItemPayload());
+    quoteStore.addSizeOption(props.card);
   }
   router.push("/customize");
 }
 
 function handleIncrement() {
-  quoteStore.incrementProduct(buildQuoteItemPayload());
+  quoteStore.addSizeOption(props.card);
 }
 
 function handleDecrement() {
