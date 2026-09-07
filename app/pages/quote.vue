@@ -134,8 +134,8 @@
 
               <!-- Price Per Unit and Total -->
               <div class="mt-2 text-sm font-bold text-brand-navy-heading">
-                {{ getTotalLabel({ total: getQuoteLineFinancials(item).lineTotal, hasPoa: item.isPoa === true }) }}
-                <span class="text-xs font-normal text-slate-500">({{ getTotalLabel({ total: getQuoteLineFinancials(item).unitPrice, hasPoa: item.isPoa === true }) }} /ea + VAT)</span>
+                {{ getTotalLabel({ total: getQuoteLineFinancials(item).lineTotal, hasPoa: getQuoteLineFinancials(item).isPoa }) }}
+                <span class="text-xs font-normal text-slate-500">({{ getTotalLabel({ total: getQuoteLineFinancials(item).unitPrice, hasPoa: getQuoteLineFinancials(item).isPoa }) }} /ea + VAT)</span>
               </div>
 
               <p v-if="item.notes" class="text-xs text-slate-500 italic mt-1">Note: "{{ item.notes }}"</p>
