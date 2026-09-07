@@ -13,13 +13,21 @@
 
       <!-- Right Column: Image Card -->
       <div class="lg:col-span-6">
-        <div class="relative w-full h-80 sm:h-96 rounded-lg overflow-hidden border border-brand-rose-border/30 shadow-[0px_10px_15px_-3px_rgba(0,0,0,0.05),0px_4px_6px_-2px_rgba(0,0,0,0.1)] group">
-          <img 
-            src="/images/hero-building-enhanced.png" 
-            alt="Karmod UK Modular Headquarters" 
-            class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
+        <figure class="relative h-80 w-full overflow-hidden rounded-lg border border-brand-rose-border/30 shadow-[0px_10px_15px_-3px_rgba(0,0,0,0.05),0px_4px_6px_-2px_rgba(0,0,0,0.1)] sm:h-96">
+          <img
+            src="/images/about/about-business-campus-hero-v2.png"
+            srcset="/images/about/about-business-campus-hero-v2.webp 1254w"
+            sizes="(min-width: 1024px) 50vw, 100vw"
+            alt="Concept visualisation of an active modular business and education campus"
+            loading="eager"
+            fetchpriority="high"
+            decoding="async"
+            class="h-full w-full object-cover"
           />
-        </div>
+          <figcaption class="absolute bottom-3 left-3 rounded bg-brand-navy/85 px-2.5 py-1.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-white backdrop-blur-sm">
+            Concept visualisation
+          </figcaption>
+        </figure>
       </div>
     </div>
   </section>
