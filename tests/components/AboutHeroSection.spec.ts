@@ -10,10 +10,12 @@ describe('AboutHeroSection', () => {
   it('presents the business campus as a responsive concept visualisation', () => {
     const wrapper = mount(AboutHeroSection);
     const image = wrapper.get('img');
+    const webpSource = wrapper.get('picture source[type="image/webp"]');
 
     expect(image.attributes('src')).toBe('/images/about/about-business-campus-hero-v2.png');
-    expect(image.attributes('srcset')).toBe('/images/about/about-business-campus-hero-v2.webp 1254w');
-    expect(image.attributes('sizes')).toBe('(min-width: 1024px) 50vw, 100vw');
+    expect(image.attributes('srcset')).toBeUndefined();
+    expect(webpSource.attributes('srcset')).toBe('/images/about/about-business-campus-hero-v2.webp 1280w');
+    expect(webpSource.attributes('sizes')).toBe('(min-width: 1024px) 50vw, 100vw');
     expect(image.attributes('alt')).toBe('Concept visualisation of an active modular business and education campus');
     expect(image.attributes('loading')).toBe('eager');
     expect(image.attributes('fetchpriority')).toBe('high');
@@ -32,4 +34,3 @@ describe('AboutHeroSection', () => {
     }
   });
 });
-
