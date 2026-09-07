@@ -59,15 +59,25 @@ Unknown project identities use `others`. Customer and project names are never in
 
 ## CLI Usage Commands
 
+Configure `GALLERY_SOURCE_DIR` in `.env`:
+```bash
+GALLERY_SOURCE_DIR="/Users/enesfurkanornek/Downloads/Proje Görselleri"
+```
+
+Then run scripts directly (or pass `--source "<path>"` to override):
+
 ```bash
 # Dry run: Scan source, plan assets, validate invariants without modifying disk
-pnpm gallery:prepare --source "/Users/enesfurkanornek/Downloads/Proje Görselleri"
+pnpm gallery:prepare
 
 # Write mode: Copy canonical images to sanity/gallery/source/ and generate manifest files
-pnpm gallery:prepare --source "/Users/enesfurkanornek/Downloads/Proje Görselleri" --write
+pnpm gallery:prepare --write
 
 # Verify mode: Read-only check comparing source, disk copies, and manifests
-pnpm gallery:verify --source "/Users/enesfurkanornek/Downloads/Proje Görselleri"
+pnpm gallery:verify
+
+# Override source folder explicitly if needed
+pnpm gallery:prepare --source "/path/to/photos"
 
 # Typecheck gallery pipeline
 pnpm typecheck:gallery

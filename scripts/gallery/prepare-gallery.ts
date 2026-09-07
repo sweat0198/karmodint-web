@@ -3,6 +3,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { GALLERY_SOURCE_ROOT, type GalleryClassification, type GalleryManifestItem } from './lib/model'
+import { loadRootEnv } from './lib/env'
 import { repoPath } from './lib/paths'
 import { planGalleryAssets } from './lib/planAssets'
 import { scanGallerySource } from './lib/scan'
@@ -272,18 +273,18 @@ export function parseArgs(argv: string[]): CliArgs {
     return at === -1 ? undefined : argv[at + 1]
   }
 
-  const source = flag('source')
+  const source = flag('source') ?? process.env.GALLERY_SOURCE_DIR ?? process.env.GALLERY_SOURCE_PATH
   const write = argv.includes('--write')
   const check = argv.includes('--verify')
 
   if (!source) {
-    throw new Error('Pass the photo folder explicitly: --source "<absolute folder>"')
+    throw new Error('Pass the photo folder explicitly: --source "<absolute folder>" or set GALLERY_SOURCE_DIR in .env')
   }
   if (!path.isAbsolute(source)) {
-    throw new Error(`--source must be an absolute path (got "${source}")`)
+    throw new Error(`Photo source folder must be an absolute path (got "${source}")`)
   }
   if (!fs.existsSync(source) || !fs.statSync(source).isDirectory()) {
-    throw new Error(`--source is not an existing folder: ${source}`)
+    throw new Error(`Photo source folder is not an existing folder: ${source}`)
   }
   if (write && check) {
     throw new Error('--write and --verify are opposites: verification never changes files')
@@ -298,6 +299,7 @@ export function parseArgs(argv: string[]): CliArgs {
 }
 
 async function main(): Promise<void> {
+  loadRootEnv()
   const result = await prepareGallery(parseArgs(process.argv.slice(2)))
 
   console.log(result.summary.join('\n'))

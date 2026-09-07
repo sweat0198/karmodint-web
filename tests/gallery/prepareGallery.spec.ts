@@ -5,7 +5,7 @@ import path from 'node:path'
 import sharp from 'sharp'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import type { GalleryClassification } from '../../scripts/gallery/lib/model'
-import { prepareGallery } from '../../scripts/gallery/prepare-gallery'
+import { parseArgs, prepareGallery } from '../../scripts/gallery/prepare-gallery'
 
 let root: string
 let sourceRoot: string
@@ -252,3 +252,64 @@ describe('prepareGallery verify', () => {
     expect(result.problems.join('\n')).toContain('manifest.csv')
   })
 })
+
+describe('parseArgs', () => {
+  let tmpFolder: string
+  const originalEnv = { ...process.env }
+
+  beforeEach(() => {
+    tmpFolder = fs.mkdtempSync(path.join(os.tmpdir(), 'gallery-parse-args-'))
+    delete process.env.GALLERY_SOURCE_DIR
+    delete process.env.GALLERY_SOURCE_PATH
+  })
+
+  afterEach(() => {
+    fs.rmSync(tmpFolder, { recursive: true, force: true })
+    process.env = { ...originalEnv }
+  })
+
+  it('uses --source flag when provided', () => {
+    const args = parseArgs(['--source', tmpFolder])
+    expect(args.sourceRoot).toBe(tmpFolder)
+    expect(args.mode).toBe('dry-run')
+  })
+
+  it('falls back to GALLERY_SOURCE_DIR from environment when --source is absent', () => {
+    process.env.GALLERY_SOURCE_DIR = tmpFolder
+    const args = parseArgs([])
+    expect(args.sourceRoot).toBe(tmpFolder)
+  })
+
+  it('prioritizes --source CLI argument over GALLERY_SOURCE_DIR', () => {
+    const otherFolder = fs.mkdtempSync(path.join(os.tmpdir(), 'other-folder-'))
+    process.env.GALLERY_SOURCE_DIR = otherFolder
+
+    try {
+      const args = parseArgs(['--source', tmpFolder])
+      expect(args.sourceRoot).toBe(tmpFolder)
+    } finally {
+      fs.rmSync(otherFolder, { recursive: true, force: true })
+    }
+  })
+
+  it('throws helpful error if source is missing from both CLI and environment', () => {
+    expect(() => parseArgs([])).toThrowError(/Pass the photo folder explicitly.*GALLERY_SOURCE_DIR/)
+  })
+
+  it('throws error if source is not an absolute path', () => {
+    process.env.GALLERY_SOURCE_DIR = 'relative/path/to/photos'
+    expect(() => parseArgs([])).toThrowError(/must be an absolute path/)
+  })
+
+  it('throws error if source folder does not exist', () => {
+    process.env.GALLERY_SOURCE_DIR = '/non/existent/path/for/sure'
+    expect(() => parseArgs([])).toThrowError(/not an existing folder/)
+  })
+
+  it('resolves verify and write modes properly', () => {
+    process.env.GALLERY_SOURCE_DIR = tmpFolder
+    expect(parseArgs(['--verify']).mode).toBe('verify')
+    expect(parseArgs(['--write']).mode).toBe('write')
+  })
+})
+
