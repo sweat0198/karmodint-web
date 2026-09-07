@@ -121,9 +121,9 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { useRuntimeConfig } from "#imports";
 import { useQuoteStore } from "~/stores/quote";
 import { toCarouselImages } from "~/utils/carouselImages";
+import { resolveSanityImageConfig } from "~/utils/sanityImageConfig";
 import type { SizeCard } from "~/utils/sizeCards";
 import { getPriceLabel } from "~~/shared/utils/priceLabel";
 
@@ -135,7 +135,6 @@ const props = defineProps<ProductCardProps>();
 const quoteStore = useQuoteStore();
 const router = useRouter();
 const route = useRoute();
-const config = useRuntimeConfig();
 
 const isHovering = ref(false);
 
@@ -147,14 +146,10 @@ const priceLabel = computed(() =>
   getPriceLabel({ price: props.card.price, isPoa: props.card.isPoa }),
 );
 
-const carouselImages = computed(() =>
-  toCarouselImages(
-    props.card.images,
-    config.public.sanityProjectId,
-    config.public.sanityDataset,
-    600,
-  ),
-);
+const carouselImages = computed(() => {
+  const { projectId, dataset } = resolveSanityImageConfig();
+  return toCarouselImages(props.card.images, projectId, dataset, 600);
+});
 
 function handleAdd() {
   quoteStore.addSizeOption(props.card);

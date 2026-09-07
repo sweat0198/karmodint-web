@@ -6,28 +6,12 @@ import { getQuoteLinesTotal } from "~~/shared/utils/quoteLine";
 import type { SizeCard } from "~/utils/sizeCards";
 import { sanityImageUrl } from "~/utils/sanityImageUrl";
 import { toCarouselImages } from "~/utils/carouselImages";
+import { resolveSanityImageConfig } from "~/utils/sanityImageConfig";
 
 export type QuoteItem = QuoteLine;
 
 /** Wider than the card's frames — the customize page shows these in a large primary viewer. */
 const CUSTOMIZE_VIEWER_IMAGE_WIDTH = 1200;
-
-/**
- * `useRuntimeConfig` is a Nuxt auto-import: real in the app, undeclared under plain vitest. The
- * `typeof` check reads as `false` rather than throwing in that case, same guard already used by
- * `useGooglePlacesAutocomplete`.
- */
-function resolveSanityImageConfig(): { projectId: string; dataset: string } {
-  try {
-    if (typeof useRuntimeConfig === "function") {
-      const config = useRuntimeConfig();
-      return { projectId: config.public.sanityProjectId, dataset: config.public.sanityDataset };
-    }
-  } catch {
-    // Non-Nuxt / test context fallback
-  }
-  return { projectId: "", dataset: "" };
-}
 
 export interface QuoteItemConfigPayload {
   selections: CustomizationSelections;
