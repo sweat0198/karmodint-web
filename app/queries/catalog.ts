@@ -71,10 +71,6 @@ export const PRODUCTS_WITH_SIZES_QUERY = `*[_type == "product" && status == "pub
     "name": select(
       slug.current == "containers" => "Portable Cabins",
       slug.current == "cabin" => "Gatehouses & Kiosks",
-      slug.current == "office" => "Site Offices",
-      slug.current == "depo" => "Storage Units",
-      slug.current == "living-area" => "Accommodation Units",
-      slug.current == "kiosk-canteen" => "Canteen & Catering Units",
       name
     ),
     "slug": slug.current,
@@ -110,13 +106,7 @@ export const CATEGORY_TREE_QUERY = `*[_type == "category" && !defined(parent)] |
   displayOrder,
   "children": *[_type == "category" && references(^._id)] | order(displayOrder asc) {
     _id,
-    "name": select(
-      slug.current == "office" => "Site Offices",
-      slug.current == "depo" => "Storage Units",
-      slug.current == "living-area" => "Accommodation Units",
-      slug.current == "kiosk-canteen" => "Canteen & Catering Units",
-      name
-    ),
+    name,
     "slug": slug.current,
     displayOrder
   }

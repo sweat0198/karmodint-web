@@ -27,16 +27,4 @@ describe('UK catalogue category naming', () => {
       { _id: 'category-bulletproof', name: 'Bulletproof', slug: 'bulletproof' }
     ])
   })
-
-  it('uses UK buyer language for portable-cabin subcategories', () => {
-    const subcategories = readSeeds('subcategories.ndjson')
-
-    expect(subcategories.map(({ name }) => name)).toEqual([
-      'Site Offices',
-      'Storage Units',
-      'Accommodation Units',
-      'Canteen & Catering Units'
-    ])
-    expect(subcategories.every(({ parent }) => parent?._ref === 'category-containers')).toBe(true)
-  })
 })

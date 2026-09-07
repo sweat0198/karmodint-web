@@ -1,0 +1,25 @@
+{
+  "//": "Typechecks the hand-sourced product scripts. The root tsconfig extends Nuxt's, which includes only app/ — scripts/ sits outside it, so this config is what holds these scripts to strict types.",
+  "compilerOptions": {
+    "strict": true,
+    "noEmit": true,
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "skipLibCheck": true,
+    "types": ["node"],
+    "resolveJsonModule": true,
+    "esModuleInterop": true
+  },
+  "include": [
+    "scripts/manual-products/**/*.ts",
+    "scripts/catalogue/lib/altText.ts",
+    "scripts/catalogue/lib/manifest.ts",
+    "scripts/catalogue/lib/portableText.ts",
+    "scripts/catalogue/lib/paths.ts",
+    "scripts/catalogue/lib/runScript.ts",
+    "scripts/catalogue/lib/sanityEnv.ts",
+    "sanity/schemas/objects/blockContentSpec.ts",
+    "sanity/schemas/objects/productImageViews.ts"
+  ]
+}

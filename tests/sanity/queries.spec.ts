@@ -21,19 +21,6 @@ describe('Sanity GROQ Query Evaluation (SSG Data Fetching)', () => {
         slug: { current: 'cabin' },
         displayOrder: 2
       },
-      ...[
-        ['category-containers-office', 'Office', 'office', 1],
-        ['category-containers-depo', 'Depo', 'depo', 2],
-        ['category-containers-living-area', 'Living Area', 'living-area', 3],
-        ['category-containers-kiosk-canteen', 'Kiosk / Canteen', 'kiosk-canteen', 4]
-      ].map(([_id, name, slug, displayOrder]) => ({
-        _id,
-        _type: 'category',
-        name,
-        slug: { current: slug },
-        parent: { _ref: 'category-containers' },
-        displayOrder
-      })),
       {
         _id: 'product-legacy-category',
         _type: 'product',
@@ -61,12 +48,7 @@ describe('Sanity GROQ Query Evaluation (SSG Data Fetching)', () => {
 
     const tree = await executeGroq<any[]>(CATEGORY_TREE_QUERY, {}, legacyDataset)
     expect(tree.map((category) => category.name)).toEqual(['Portable Cabins', 'Gatehouses & Kiosks'])
-    expect(tree[0].children.map((category: any) => category.name)).toEqual([
-      'Site Offices',
-      'Storage Units',
-      'Accommodation Units',
-      'Canteen & Catering Units'
-    ])
+    expect(tree[0].children).toEqual([])
 
     const products = await executeGroq<any[]>(PRODUCTS_WITH_SIZES_QUERY, {}, legacyDataset)
     expect(products.flatMap((product) => product.categories.map((category: any) => category.name))).toContain(

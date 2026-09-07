@@ -23,6 +23,8 @@
     "gallery:prepare": "jiti scripts/gallery/prepare-gallery.ts",
     "gallery:verify": "jiti scripts/gallery/prepare-gallery.ts --verify",
     "typecheck:gallery": "tsc -p tsconfig.gallery.json",
+    "manual-products:containers": "jiti scripts/manual-products/add-container-products.ts",
+    "typecheck:manual-products": "tsc -p tsconfig.manual-products.json",
     "test": "vitest run",
     "test:watch": "vitest"
   },

@@ -22,7 +22,7 @@ const manifest = loadManifest()
 const assets = loadAssetManifest('dev')
 const seed = buildCatalogueSeed(manifest, loadCopyFile, assets)
 
-const CATEGORY_SEEDS = ['categories', 'cabin-subcategories', 'subcategories']
+const CATEGORY_SEEDS = ['categories', 'cabin-subcategories']
 
 /** Anything the fixture dataset can hold: a seed product, a category seed, an asset stub. */
 type FixtureDocument = SeedProduct | { _id: string, _type: string, [field: string]: unknown }
