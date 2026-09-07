@@ -26,13 +26,13 @@ const sampleQuoteData = {
       quantity: 1,
       unitPrice: 12000,
       basePrice: 12000,
-      customTotal: 14930,
+      customTotal: 14480,
       specBadges: ['High Insulation', 'Pre-wired'],
-      customizations: [
-        { name: 'Electrical Pack: 2x Light fittings, 4x Double sockets', quantity: 1, price: 250, iconType: 'electrical' },
-        { name: 'Standard Kitchenette Unit (Sink, Base Unit, Worktop)', quantity: 1, price: 850, iconType: 'kitchen' },
-        { name: 'Standard WC Sanitation Pack (Toilet, Basin, Plumbing prep)', quantity: 1, price: 1200, iconType: 'sanitary' },
-        { name: '2kW Electric Wall Heater (Installed)', quantity: 1, price: 180, iconType: 'hvac' }
+      selectedCustomizations: [
+        { groupTitle: 'Electrical', optionTitle: '2x Light fittings, 4x Double sockets', price: 250 },
+        { groupTitle: 'Kitchen', optionTitle: 'Standard Kitchenette Unit (Sink, Base Unit, Worktop)', price: 850 },
+        { groupTitle: 'Sanitary', optionTitle: 'Standard WC Sanitation Pack (Toilet, Basin, Plumbing prep)', price: 1200 },
+        { groupTitle: 'HVAC', optionTitle: '2kW Electric Wall Heater (Installed)', price: 180 }
       ]
     }
   ]

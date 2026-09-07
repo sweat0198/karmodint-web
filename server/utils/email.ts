@@ -8,6 +8,7 @@
 import { COMPANY_DETAILS, COMPANY_ADDRESS, COMPANY_CONTACT } from '../../app/constants/company'
 import { getQuoteLineFinancials, getQuoteLinesTotal } from '../../shared/utils/quoteLine'
 import type { QuoteLinePriceInputs } from '../../shared/utils/quoteLine'
+import type { SanitySelectedCustomization } from '../../app/types/catalog'
 
 export interface EmailPayload {
   from: string
@@ -32,13 +33,6 @@ export interface ContactEnquiryPayload {
   details: string
 }
 
-export interface QuoteCustomizationItem {
-  name: string
-  quantity: number
-  price: number
-  iconType?: 'electrical' | 'kitchen' | 'sanitary' | 'hvac' | 'standard'
-}
-
 /**
  * The presentation fields the email templates render for a line, plus the pricing fields the
  * shared Quote Line module reads — sourced straight from `QuoteLinePriceInputs` so this shape
@@ -51,7 +45,7 @@ export interface QuoteItemSummary extends QuoteLinePriceInputs {
   imageUrl?: string
   notes?: string
   specBadges?: string[]
-  customizations?: QuoteCustomizationItem[]
+  selectedCustomizations?: SanitySelectedCustomization[]
   specSummary?: Array<{ label: string; value: string }>
 }
 
@@ -349,26 +343,30 @@ export function buildContactEmails(
   }
 }
 
-const CUSTOMIZATION_INITIAL: Record<string, string> = {
-  electrical: 'E',
-  kitchen: 'K',
-  sanitary: 'S',
-  hvac: 'H',
-  standard: '+'
+function customizationInitial(cust: SanitySelectedCustomization): string {
+  return esc(cust.groupTitle.trim().charAt(0).toUpperCase() || '+')
 }
 
-function customizationInitial(cust: QuoteCustomizationItem): string {
-  const mapped = cust.iconType ? CUSTOMIZATION_INITIAL[cust.iconType] : undefined
-  if (mapped) return mapped
-  return esc(cust.name.trim().charAt(0).toUpperCase() || '+')
+function customizationLabel(cust: SanitySelectedCustomization): string {
+  return `${esc(cust.groupTitle)}: ${esc(cust.optionTitle)}`
 }
 
+function customizationPriceDisplay(cust: SanitySelectedCustomization): string {
+  return cust.isPoa ? 'POA' : fmtGBP(cust.price ?? 0)
+}
+
+/**
+ * `unitPrice`/`itemTotal` already reflect any selected modifiers — the Quote List bakes their
+ * price into `customTotal` when a line is customized (see useCustomizationPricing's `subtotal`).
+ * `addonsTotal` here is informational only, for the "(incl. add-ons)" note and the subcard's
+ * per-item prices; it must never be added on top of `itemTotal` or a line's modifiers would be
+ * counted twice.
+ */
 function computeItemFinancials(item: QuoteItemSummary) {
-  const { unitPrice, lineTotal: baseTotal } = getQuoteLineFinancials(item)
-  const addons = item.customizations ?? []
-  const addonsTotal = addons.reduce((sum, c) => sum + c.price * c.quantity, 0)
-  const itemTotal = baseTotal + addonsTotal
-  return { unitPrice, baseTotal, addonsTotal, itemTotal }
+  const { unitPrice, lineTotal: itemTotal } = getQuoteLineFinancials(item)
+  const addons = item.selectedCustomizations ?? []
+  const addonsTotal = addons.reduce((sum, c) => sum + (c.isPoa ? 0 : c.price ?? 0), 0)
+  return { unitPrice, addonsTotal, itemTotal }
 }
 
 function productImageCell(item: QuoteItemSummary): string {
@@ -388,16 +386,16 @@ function badgesHtml(item: QuoteItemSummary): string {
 }
 
 function customizationsSubcard(item: QuoteItemSummary): string {
-  const custs = item.customizations ?? []
+  const custs = item.selectedCustomizations ?? []
   if (custs.length === 0) return ''
   const rows = custs.map((c, i) => {
     const isLast = i === custs.length - 1
     const borderBottom = isLast ? 'border-bottom:0;' : 'border-bottom:1px solid #E2E8F0;'
+    const priceDisplay = customizationPriceDisplay(c)
     return `<tr>
       <td width="34" valign="top" style="padding:9px 0;${borderBottom}"><table role="presentation" cellpadding="0" cellspacing="0" border="0" style="display:inline-table;border-radius:4px;background:#FFE9E6;"><tr><td width="22" height="22" align="center" valign="middle" style="width:22px;height:22px;font-family:${FONT};font-size:11px;font-weight:700;color:#E31E24;line-height:22px;">${customizationInitial(c)}</td></tr></table></td>
-      <td valign="top" style="padding:9px 12px 9px 0;${borderBottom}font-family:${FONT};font-size:13px;color:#1F2937;line-height:20px;">${esc(c.name)}<div class="show-sm" style="display:none;font-size:0;line-height:0;max-height:0;overflow:hidden;">Qty ${c.quantity} &nbsp;&middot;&nbsp; <span style="font-weight:600;color:#291715;">${fmtGBP(c.price * c.quantity)}</span></div></td>
-      <td class="hide-sm" width="52" align="center" valign="top" style="padding:9px 0;${borderBottom}font-family:${FONT};font-size:13px;color:#64748B;">${c.quantity}</td>
-      <td class="hide-sm" width="90" align="right" valign="top" style="padding:9px 0;${borderBottom}font-family:${FONT};font-size:13px;font-weight:600;color:#291715;white-space:nowrap;">${fmtGBP(c.price * c.quantity)}</td>
+      <td valign="top" style="padding:9px 12px 9px 0;${borderBottom}font-family:${FONT};font-size:13px;color:#1F2937;line-height:20px;">${customizationLabel(c)}<div class="show-sm" style="display:none;font-size:0;line-height:0;max-height:0;overflow:hidden;"><span style="font-weight:600;color:#291715;">${priceDisplay}</span></div></td>
+      <td class="hide-sm" width="90" align="right" valign="top" style="padding:9px 0;${borderBottom}font-family:${FONT};font-size:13px;font-weight:600;color:#291715;white-space:nowrap;">${priceDisplay}</td>
     </tr>`
   }).join('')
 
@@ -415,7 +413,7 @@ function buildItemCardHtml(item: QuoteItemSummary): string {
   const priceDisplay = item.isPoa ? 'POA' : fmtGBP(unitPrice)
   const baseLine = item.isPoa
     ? 'Price on application'
-    : `Base ${fmtGBP(unitPrice)} &times; ${item.quantity}${addonsTotal > 0 ? ` &nbsp;+&nbsp; add-ons ${fmtGBP(addonsTotal)}` : ''}`
+    : `Unit price ${fmtGBP(unitPrice)} &times; ${item.quantity}${addonsTotal > 0 ? ` &nbsp;(includes selected customisations)` : ''}`
 
   const inner = `
     <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"><tr>
@@ -528,7 +526,7 @@ function buildFinancialSummaryCardHtml(opts: {
   const { items, itemFinancials, productEstimate, hasPoaItems, ctasHtml } = opts
 
   const lineRows = items.map((item, i) => {
-    const fin = itemFinancials[i] ?? { unitPrice: 0, baseTotal: 0, addonsTotal: 0, itemTotal: 0 }
+    const fin = itemFinancials[i] ?? { unitPrice: 0, addonsTotal: 0, itemTotal: 0 }
     const addonsNote = fin.addonsTotal > 0 ? ` <span style="color:#64748B;">(incl. add-ons)</span>` : ''
     return `<tr>
       <td style="padding:9px 0;font-family:${FONT};font-size:14px;font-weight:400;color:#64748B;line-height:22px;">${esc(item.productName)}${addonsNote}</td>
@@ -613,8 +611,7 @@ export function buildQuoteEmails(
 
   const itemFinancials = items.map(computeItemFinancials)
   const hasPoaItems = items.some(i => i.isPoa)
-  const addonsTotal = itemFinancials.reduce((sum, f) => sum + f.addonsTotal, 0)
-  const productEstimate = getQuoteLinesTotal(items) + addonsTotal
+  const productEstimate = getQuoteLinesTotal(items)
 
   const preparedForCardHtml = buildPreparedForCardHtml({
     customer,

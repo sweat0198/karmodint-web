@@ -115,6 +115,39 @@ describe('Email Utility & Template Engine', () => {
       }
     })
 
+    it('itemises selected variant modifiers and includes their contribution in the line total', () => {
+      const { businessEmail, customerEmail } = buildQuoteEmails(
+        {
+          customer: quoteData.customer,
+          items: [
+            {
+              productName: 'Executive Modular Gatehouse 3x7m',
+              sizeLabel: 'Standard Premium',
+              quantity: 1,
+              basePrice: 10000,
+              customTotal: 10450,
+              selectedCustomizations: [
+                { groupTitle: 'Electrical', optionTitle: '2x Double sockets', price: 250 },
+                { groupTitle: 'HVAC', optionTitle: '2kW Wall heater', price: 200 }
+              ]
+            }
+          ]
+        },
+        'quotes@karmod-international.com'
+      )
+
+      for (const email of [businessEmail, customerEmail]) {
+        expect(email.html).toContain('Customisations &amp; add-ons')
+        expect(email.html).toContain('Electrical: 2x Double sockets')
+        expect(email.html).toContain('HVAC: 2kW Wall heater')
+        expect(email.html).toContain('250.00')
+        expect(email.html).toContain('200.00')
+        // Modifiers are already folded into customTotal, so the line total must not double-count them.
+        expect(email.html).toContain('10,450.00')
+        expect(email.html).not.toContain('10,700.00')
+      }
+    })
+
     it('quotes the customized total, not the price captured when the item was added', () => {
       const { businessEmail, customerEmail } = buildQuoteEmails(
         {
