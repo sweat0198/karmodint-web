@@ -55,14 +55,14 @@
       <div class="pt-4 border-t border-slate-100 flex flex-col gap-3">
         <div>
           <template v-if="card.isPoa">
-            <span class="text-brand-navy-heading text-2xl font-bold">POA</span>
+            <span class="text-brand-navy-heading text-2xl font-bold">{{ priceLabel }}</span>
             <div class="text-brand-slate-muted text-xs mt-0.5">
               Price on application
             </div>
           </template>
           <div v-else class="flex items-baseline gap-1.5 mt-0.5">
             <span class="text-brand-navy-heading text-2xl font-bold">
-              £{{ card.price.toLocaleString() }}
+              {{ priceLabel }}
             </span>
             <span class="text-brand-slate-muted text-sm">+ VAT</span>
           </div>
@@ -126,6 +126,7 @@ import { useQuoteStore } from "~/stores/quote";
 import { sanityImageUrl } from "~/utils/sanityImageUrl";
 import { toCarouselImages } from "~/utils/carouselImages";
 import type { SizeCard } from "~/utils/sizeCards";
+import { getPriceLabel } from "~~/shared/utils/priceLabel";
 
 export interface ProductCardProps {
   card: SizeCard;
@@ -141,6 +142,10 @@ const isHovering = ref(false);
 
 const quantityInBasket = computed(() =>
   quoteStore.getItemQuantity(props.card.cardId),
+);
+
+const priceLabel = computed(() =>
+  getPriceLabel({ price: props.card.price, isPoa: props.card.isPoa }),
 );
 
 const carouselImages = computed(() =>

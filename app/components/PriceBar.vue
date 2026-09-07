@@ -3,6 +3,7 @@ import { computed } from "vue";
 import { useRoute } from "vue-router";
 import QuickContactWidget from "~/components/QuickContactWidget.vue";
 import { useQuoteStore } from "~/stores/quote";
+import { getTotalLabel } from "~~/shared/utils/priceLabel";
 
 interface Props {
   estimatedTotal?: number;
@@ -51,11 +52,11 @@ const calculatedTotal = computed(() => {
 });
 
 const formattedTotal = computed(() => {
-  const formatted = `${props.currencySymbol}${calculatedTotal.value.toLocaleString()}`;
-  // Mirrors useCustomizationPricing's priceLabel: POA units contribute their non-POA
-  // portion to the sum, so the aggregate needs the same "+ POA" caveat, not a bare number.
   const showsPoa = props.estimatedTotal === undefined && quoteStore.hasPoa;
-  return showsPoa ? `${formatted} + POA` : formatted;
+  return getTotalLabel(
+    { total: calculatedTotal.value, hasPoa: showsPoa },
+    props.currencySymbol,
+  );
 });
 
 // Dynamic continuation text based on current location

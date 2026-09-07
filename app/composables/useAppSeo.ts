@@ -4,6 +4,7 @@ import {
   COMPANY_CONTACT,
   COMPANY_SOCIAL,
 } from "~/constants/company";
+import { hasPublishablePrice } from "~~/shared/utils/priceLabel";
 
 export interface PageSeoOptions {
   title: string;
@@ -118,23 +119,20 @@ export function useAppSeo() {
         : `${siteUrl.replace(/\/$/, "")}${product.image.startsWith("/") ? product.image : `/${product.image}`}`
       : undefined;
 
-    // Every Size Option is POA today: publishing `price: 0` would advertise "From £0", so no
-    // `offers` block is emitted at all when a price hasn't been supplied.
-    const offers =
-      !product.isPoa && product.price !== undefined
-        ? {
-            "@type": "Offer",
-            price: product.price,
-            priceCurrency: "GBP",
-            availability: "https://schema.org/InStock",
-            itemCondition: "https://schema.org/NewCondition",
-            url: `${siteUrl.replace(/\/$/, "")}/products`,
-            seller: {
-              "@type": "Organization",
-              name: "Karmod International",
-            },
-          }
-        : undefined;
+    const offers = hasPublishablePrice(product)
+      ? {
+          "@type": "Offer",
+          price: product.price,
+          priceCurrency: "GBP",
+          availability: "https://schema.org/InStock",
+          itemCondition: "https://schema.org/NewCondition",
+          url: `${siteUrl.replace(/\/$/, "")}/products`,
+          seller: {
+            "@type": "Organization",
+            name: "Karmod International",
+          },
+        }
+      : undefined;
 
     return {
       "@context": "https://schema.org",

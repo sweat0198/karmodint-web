@@ -4,6 +4,7 @@ import {
   type SanitySizeImage,
 } from "~/types/catalog";
 import type { CatalogProduct, CatalogSizeOption } from "~/queries/catalog";
+import { getWeightLabel } from "~~/shared/utils/priceLabel";
 
 /** One purchasable Size Option, presented as its own product card (D3). */
 export interface SizeCard {
@@ -41,15 +42,16 @@ function formatFootprintLabel(size: CatalogSizeOption): string {
   return `${length.metric} × ${width.metric} (${length.imperial} × ${width.imperial})`;
 }
 
-/** Height and weight specs, each omitted when unsupplied — `weightKg: 0` means "not yet supplied", not weightless. */
+/** Height and weight specs, each omitted when unsupplied. */
 function buildSpecs(size: CatalogSizeOption): string[] {
   const specs: string[] = [];
   if (size.heightM) {
     const height = formatMetricAndImperialDimension(size.heightM);
     specs.push(`Height: ${height.metric} (${height.imperial})`);
   }
-  if (size.weightKg) {
-    specs.push(`Weight: ${size.weightKg}kg`);
+  const weightLabel = getWeightLabel(size.weightKg);
+  if (weightLabel) {
+    specs.push(weightLabel);
   }
   return specs;
 }

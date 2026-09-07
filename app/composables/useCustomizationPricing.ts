@@ -10,6 +10,7 @@ import type {
   CustomizationSelections,
   SpecSummaryItem,
 } from "~/types/customization";
+import { getPriceLabel, getTotalLabel } from "~~/shared/utils/priceLabel";
 
 function selectedItems(
   group: SanityCustomizationGroup,
@@ -61,8 +62,8 @@ export function formatPriceBadge(
   currencySymbol = "£",
 ): string {
   if (item.pricingType === "included") return "Included";
-  if (item.pricingType === "poa") return "POA";
-  return `+${currencySymbol}${(item.price ?? 0).toLocaleString()}`;
+  if (item.pricingType === "poa") return getPriceLabel({ isPoa: true });
+  return `+${getPriceLabel({ price: item.price }, currencySymbol)}`;
 }
 
 function isGroupMandatorySatisfied(
@@ -143,11 +144,11 @@ export function useCustomizationPricing(
     return sizePrice + itemsTotal;
   });
 
-  const priceLabel = computed(() => {
-    if (sizeIsPoa.value) return "POA";
-    const formatted = `£${subtotal.value.toLocaleString()}`;
-    return hasPoa.value ? `${formatted} + POA` : formatted;
-  });
+  const priceLabel = computed(() =>
+    sizeIsPoa.value
+      ? getPriceLabel({ isPoa: true })
+      : getTotalLabel({ total: subtotal.value, hasPoa: hasPoa.value }),
+  );
 
   const unsatisfiedMandatory = computed(() =>
     toValue(groups).filter(

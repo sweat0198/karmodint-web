@@ -134,8 +134,8 @@
 
               <!-- Price Per Unit and Total -->
               <div class="mt-2 text-sm font-bold text-brand-navy-heading">
-                £{{ getQuoteLineFinancials(item).lineTotal.toLocaleString() }}<span v-if="item.isPoa"> + POA</span>
-                <span class="text-xs font-normal text-slate-500">(£{{ getQuoteLineFinancials(item).unitPrice.toLocaleString() }}<span v-if="item.isPoa"> + POA</span> /ea + VAT)</span>
+                {{ getTotalLabel({ total: getQuoteLineFinancials(item).lineTotal, hasPoa: item.isPoa === true }) }}
+                <span class="text-xs font-normal text-slate-500">({{ getTotalLabel({ total: getQuoteLineFinancials(item).unitPrice, hasPoa: item.isPoa === true }) }} /ea + VAT)</span>
               </div>
 
               <p v-if="item.notes" class="text-xs text-slate-500 italic mt-1">Note: "{{ item.notes }}"</p>
@@ -260,6 +260,7 @@ import { useQuoteStore } from '~/stores/quote'
 import { useAppSeo } from '~/composables/useAppSeo'
 import type { ParsedUkAddress } from '~/composables/useGooglePlacesAutocomplete'
 import { getQuoteLineFinancials } from '~~/shared/utils/quoteLine'
+import { getTotalLabel } from '~~/shared/utils/priceLabel'
 
 const { setPageSeo } = useAppSeo()
 
