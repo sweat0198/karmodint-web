@@ -15,6 +15,8 @@
 **Files:**
 - Create: `public/images/about/vision-product-backdrop.png`
 - Create: `public/images/about/mission-product-backdrop.png`
+- Create: `public/images/about/K7001-card.webp`
+- Create: `public/images/about/K2004-card.webp`
 
 **Step 1: Generate Vision background**
 
@@ -62,8 +64,10 @@ Copy final output into `public/images/about/mission-product-backdrop.png`. Do no
 
 **Step 7: Commit assets**
 
+Before committing, resize each background to 1280px wide and create 960px-wide WebP derivatives from the exact K7001 and K2004 catalogue PNGs. Preserve source catalogue images unchanged.
+
 ```bash
-git add public/images/about/vision-product-backdrop.png public/images/about/mission-product-backdrop.png
+git add public/images/about/vision-product-backdrop.png public/images/about/mission-product-backdrop.png public/images/about/K7001-card.webp public/images/about/K2004-card.webp
 git commit -m "feat(about): add product card backdrops"
 ```
 
@@ -114,11 +118,17 @@ Replace only Vision image container contents with:
   src="/images/about/vision-product-backdrop.png"
   alt=""
   aria-hidden="true"
+  loading="lazy"
+  decoding="async"
   class="absolute inset-0 h-full w-full object-cover"
 >
 <img
   src="/images/products/K7001/left-diagonal.png"
+  srcset="/images/about/K7001-card.webp 960w"
+  sizes="(min-width: 768px) 50vw, 100vw"
   alt="Karmod K7001 modular building"
+  loading="lazy"
+  decoding="async"
   class="absolute inset-0 h-full w-full object-contain px-4 py-2 transition-transform duration-500 group-hover:scale-105"
 >
 ```
@@ -132,11 +142,17 @@ Replace only Mission image container contents with:
   src="/images/about/mission-product-backdrop.png"
   alt=""
   aria-hidden="true"
+  loading="lazy"
+  decoding="async"
   class="absolute inset-0 h-full w-full object-cover"
 >
 <img
   src="/images/products/K2004/left-diagonal.png"
+  srcset="/images/about/K2004-card.webp 960w"
+  sizes="(min-width: 768px) 50vw, 100vw"
   alt="Karmod K2004 modular building"
+  loading="lazy"
+  decoding="async"
   class="absolute inset-0 h-full w-full object-contain px-4 py-2 transition-transform duration-500 group-hover:scale-105"
 >
 ```
@@ -194,4 +210,3 @@ Run: `graphify update .`
 Run: `code-review-graph update`
 
 Expected: both graphs include component, test, and asset changes.
-

@@ -32,7 +32,9 @@ Both cards keep their existing wide `h-48` media region. Generated backgrounds f
 
 - Preserve current Vision/Mission order, copy, icons, layout, hover behavior, and user edits.
 - Add two new background assets under `public/images/about/`.
+- Add resized WebP derivatives of K7001 and K2004 for responsive delivery; preserve original catalogue PNGs as fallbacks.
 - Do not modify source product images.
+- Lazy-load and asynchronously decode every below-the-fold media layer.
 - Add no claims through people, sites, manufacturing equipment, or installation scenes.
 - Decorative background images use empty alt text; product overlays carry accurate alt text.
 
@@ -42,4 +44,3 @@ Both cards keep their existing wide `h-48` media region. Generated backgrounds f
 - Confirm the component references the new backgrounds and exact catalogue renders.
 - Run focused component tests when available, then project type-check/build validation.
 - Inspect the rendered section at desktop and mobile widths.
-

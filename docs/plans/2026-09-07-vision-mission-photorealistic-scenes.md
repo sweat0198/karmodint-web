@@ -2,7 +2,7 @@
 
 > **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
 
-**Goal:** Replace abstract product composites with two attractive photorealistic completed-project scenes combining recognisable Karmod catalogue products.
+**Goal:** Replace abstract product composites with two attractive photorealistic completed-project concept scenes combining recognisable Karmod catalogue products without implying real client delivery.
 
 **Architecture:** Generate each scene as one raster using multiple catalogue renders as references. Save versioned PNG masters plus optimized WebP delivery assets, then simplify each card to one responsive image while preserving all existing content and layout.
 
@@ -60,7 +60,7 @@ Copy generated output to the PNG master. Use Sharp to create a 1280px-wide WebP 
 
 **Step 1: Update test for new scene contract**
 
-Assert exactly two images in Vision-then-Mission order. Assert PNG fallback paths, WebP `srcset` paths, descriptive alt text, `loading="lazy"`, `decoding="async"`, `object-cover`, and hover scaling.
+Assert exactly two images in Vision-then-Mission order. Assert PNG fallback paths, WebP `srcset` paths, responsive `sizes`, asset existence, truthful concept alt text, visible disclosure, `loading="lazy"`, `decoding="async"`, responsive 2.3:1 framing, `object-cover`, and no scene-wide hover scaling.
 
 **Step 2: Run focused test and verify RED**
 
@@ -70,31 +70,34 @@ Expected: FAIL because component still renders four abstract composite layers.
 
 **Step 3: Implement scene images**
 
-Vision media:
+Vision media pattern:
 
 ```vue
-<img
-  src="/images/about/vision-modular-campus-v2.png"
-  srcset="/images/about/vision-modular-campus-v2.webp 1280w"
-  sizes="(min-width: 768px) 50vw, 100vw"
-  alt="Completed modular business campus in a landscaped setting"
-  loading="lazy"
-  decoding="async"
-  class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-/>
+<figure class="relative aspect-[23/10] w-full overflow-hidden rounded">
+  <img
+    src="/images/about/vision-modular-campus-v2.png"
+    srcset="/images/about/vision-modular-campus-v2.webp 1280w"
+    sizes="(min-width: 768px) 50vw, 100vw"
+    alt="Concept visualisation of a landscaped modular business campus"
+    loading="lazy"
+    decoding="async"
+    class="h-full w-full object-cover"
+  />
+  <figcaption>Concept visualisation</figcaption>
+</figure>
 ```
 
-Mission media:
+Mission uses the same figure and disclosure pattern with these image attributes:
 
 ```vue
 <img
   src="/images/about/mission-community-campus-v2.png"
   srcset="/images/about/mission-community-campus-v2.webp 1280w"
   sizes="(min-width: 768px) 50vw, 100vw"
-  alt="Completed modular community campus with coordinated support cabins"
+  alt="Concept visualisation of a modular community campus with support cabins"
   loading="lazy"
   decoding="async"
-  class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+  class="h-full w-full object-cover"
 />
 ```
 
@@ -129,11 +132,10 @@ Confirm `dist/about/index.html` contains both PNG fallback and WebP delivery pat
 
 **Step 4: Review files and payload**
 
-Confirm WebP files stay reasonably sized, alt text describes scenes without claiming real client projects, and no first-pass asset is deleted.
+Confirm WebP files stay reasonably sized, each image has a visible concept disclosure, alt text describes scenes without claiming real client projects, full product groups survive the 2.3:1 card crop, and no first-pass asset is deleted.
 
 **Step 5: Refresh graphs**
 
 Run: `graphify update .`
 
 Run: `code-review-graph update`
-
