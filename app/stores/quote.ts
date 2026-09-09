@@ -4,9 +4,11 @@ import type { CustomizationNotes, CustomizationSelections, SpecSummaryItem } fro
 import type { QuoteLine } from "~~/shared/utils/quoteLine";
 import { getQuoteLinesTotal } from "~~/shared/utils/quoteLine";
 import type { SizeCard } from "~/utils/sizeCards";
+import type { PortableContainerCard, PortableContainerSize } from "~/utils/portableContainerCards";
 import { sanityImageUrl } from "~/utils/sanityImageUrl";
 import { toCarouselImages } from "~/utils/carouselImages";
 import { resolveSanityImageConfig } from "~/utils/sanityImageConfig";
+import { getQuoteLineId } from "~~/shared/utils/quoteLine";
 
 export type QuoteItem = QuoteLine;
 
@@ -33,6 +35,7 @@ export interface QuoteCustomerInfo {
 export const useQuoteStore = defineStore("quote", {
   state: () => ({
     items: [] as QuoteItem[],
+    portableSelectionSequence: 0,
     lastVisitedRoute: "/products" as string,
     maxVisitedStep: 1 as number,
   }),
@@ -100,11 +103,61 @@ export const useQuoteStore = defineStore("quote", {
       });
     },
 
+    /** Add a portable model for configuration; its size is intentionally unresolved at this point. */
+    addPortableContainer(card: PortableContainerCard) {
+      const { projectId, dataset } = resolveSanityImageConfig();
+      const image = sanityImageUrl(card.representativeImage?.asset?._ref, projectId, dataset);
+      this.portableSelectionSequence += 1;
+      this.items.push({
+        id: `${card.productId}-selection-${this.portableSelectionSequence}`,
+        productId: card.productId,
+        productName: card.productName,
+        productSlug: card.productSlug,
+        sizeKey: "",
+        sizeLabel: "Choose a size",
+        quantity: 1,
+        image,
+        images: image ? [{ src: image, alt: card.representativeImage?.alt ?? `${card.productName} representative image` }] : [],
+        isPoa: card.isPoaOnly,
+        isPortableContainer: true,
+        hasSelectedSize: false,
+      });
+    },
+
+    /**
+     * Select or replace a portable line's size while retaining its extras and quantity. The current
+     * customized total is re-derived by the Customizer from the new base price, so it is cleared.
+     */
+    selectPortableSize(id: string, size: PortableContainerSize): string | undefined {
+      const item = this.items.find((candidate) => candidate.id === id);
+      if (!item || !item.isPortableContainer) return undefined;
+
+      const { projectId, dataset } = resolveSanityImageConfig();
+      const thumbnail = size.images[0];
+      item.sizeKey = size.sizeKey;
+      item.sizeLabel = size.sizeLabel;
+      item.basePrice = size.price;
+      item.isPoa = size.isPoa;
+      item.hasSelectedSize = true;
+      item.image = sanityImageUrl(thumbnail?.asset?._ref, projectId, dataset);
+      item.images = toCarouselImages(size.images, projectId, dataset, CUSTOMIZE_VIEWER_IMAGE_WIDTH);
+      const planSrc = sanityImageUrl(size.planImage?.asset?._ref, projectId, dataset, {
+        width: CUSTOMIZE_VIEWER_IMAGE_WIDTH,
+        fit: "max",
+      });
+      item.floorPlan = planSrc
+        ? { src: planSrc, alt: size.planImage?.alt ?? `${item.productName} ${size.sizeLabel} floor plan` }
+        : undefined;
+      item.customTotal = undefined;
+
+      return this.rekeyPortableItem(item);
+    },
+
     addItem(newItem: Omit<QuoteItem, "id">) {
       // One Quote List line per Product + Size Option (D6). Re-adding increments the quantity.
       // TODO: when customers ask to order the same size twice with different customizations,
       // this id needs a configuration discriminator (see ADR-001's open question).
-      const compositeId = `${newItem.productId}-${newItem.sizeKey}`;
+      const compositeId = getQuoteLineId(newItem);
 
       const existing = this.items.find((i) => i.id === compositeId);
       if (existing) {
@@ -161,7 +214,25 @@ export const useQuoteStore = defineStore("quote", {
         item.isPoa = payload.isPoa;
         item.specSummary = payload.specSummary;
         item.selectedCustomizations = payload.lines;
+        return item.isPortableContainer ? this.rekeyPortableItem(item) : item.id;
       }
+      return undefined;
+    },
+
+    /** Re-key an already-selected portable line and merge only an identical configuration. */
+    rekeyPortableItem(item: QuoteItem): string {
+      const nextId = getQuoteLineId(item);
+      if (item.id === nextId) return item.id;
+
+      const matching = this.items.find((candidate) => candidate.id === nextId);
+      if (matching) {
+        matching.quantity += item.quantity;
+        this.items = this.items.filter((candidate) => candidate !== item);
+        return matching.id;
+      }
+
+      item.id = nextId;
+      return item.id;
     },
 
     updateMaxVisitedStep(step: number) {
@@ -185,6 +256,7 @@ export const useQuoteStore = defineStore("quote", {
 
     clearQuote() {
       this.items = [];
+      this.portableSelectionSequence = 0;
       this.lastVisitedRoute = "/products";
       this.maxVisitedStep = 1;
     },

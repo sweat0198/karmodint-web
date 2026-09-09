@@ -1,5 +1,18 @@
 import { describe, expect, it } from 'vitest'
-import { getQuoteLineFinancials, getQuoteLinesTotal } from '~~/shared/utils/quoteLine'
+import { getQuoteLineFinancials, getQuoteLineId, getQuoteLinesTotal } from '~~/shared/utils/quoteLine'
+
+describe('getQuoteLineId', () => {
+  it('uses a selector-safe deterministic identifier for a portable configuration', () => {
+    const line = {
+      productId: 'product-k1002', sizeKey: '300x700', productName: 'K1002', productSlug: 'k1002',
+      sizeLabel: '3m × 7m', quantity: 1, isPortableContainer: true, hasSelectedSize: true,
+      configState: { heating: ['electric'] }, customizationNotes: { heating: 'Urgent' }
+    }
+
+    expect(getQuoteLineId(line)).toMatch(/^product-k1002-300x700-config-[a-f0-9]+$/)
+    expect(getQuoteLineId({ ...line, configState: { heating: ['gas'] } })).not.toBe(getQuoteLineId(line))
+  })
+})
 
 describe('getQuoteLineFinancials', () => {
   it('prices from basePrice when there is no customized total', () => {

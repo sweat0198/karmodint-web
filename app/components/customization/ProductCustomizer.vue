@@ -16,6 +16,8 @@ interface Props {
   previewImage?: string;
   /** Every angle of this size. Falls back to `previewImage` as a single frame when unsupplied. */
   previewImages?: CarouselImage[];
+  /** A plan is supplied only by the currently selected size; representative images never become plans. */
+  floorPlan?: CarouselImage;
   specSummaryItems?: SpecSummaryItem[];
   specSheetUrl?: string;
   currencySymbol?: string;
@@ -29,6 +31,7 @@ const props = withDefaults(defineProps<Props>(), {
   subtitle: "",
   previewImage: "",
   previewImages: () => [],
+  floorPlan: undefined,
   specSummaryItems: () => [],
   specSheetUrl: "#",
   currencySymbol: "£",
@@ -271,6 +274,16 @@ onBeforeUnmount(() => window.removeEventListener("resize", refreshView));
       >
         Drag the image to move around
       </p>
+
+      <figure v-if="floorPlan" class="mt-5 rounded border border-slate-200 bg-white p-3">
+        <img
+          data-testid="selected-size-floor-plan"
+          :src="floorPlan.src"
+          :alt="floorPlan.alt"
+          class="mx-auto max-h-48 w-full object-contain"
+        >
+        <figcaption class="mt-2 text-center text-xs font-medium text-brand-slate-muted">Selected size floor plan</figcaption>
+      </figure>
 
       <!-- Features Summary Overlay at Bottom -->
       <div

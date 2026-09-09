@@ -20,7 +20,7 @@ export interface SizeCard {
   sizeLabel: string;
   specs: string[];
   isPoa: boolean;
-  price: number;
+  price?: number;
   thumbnail: SanitySizeImage;
   /** Every angle available for this size, thumbnail first — the hover carousel cycles through these. */
   images: SanitySizeImage[];
@@ -153,8 +153,8 @@ export function toSizeCards(products: CatalogProduct[]): SizeCard[] {
         sizeKey,
         sizeLabel,
         specs,
-        isPoa: Boolean(size.isPoa),
-        price: size.price ?? 0,
+        isPoa: size.isPoa === true || size.price === undefined,
+        price: size.price,
         thumbnail,
         images: carouselImages(size, thumbnail),
         categorySlugs: categoryMetadata.slugs,

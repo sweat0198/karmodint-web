@@ -77,6 +77,19 @@ describe("ProductCustomizer", () => {
     expect(wrapper.text().toLowerCase()).not.toContain("catalog");
   });
 
+  it("renders a floor plan only when the selected size provides one", () => {
+    const wrapper = mount(ProductCustomizer, {
+      props: {
+        title: "Test product", groups: [],
+        floorPlan: { src: "selected-size-plan.jpg", alt: "Selected size floor plan" },
+      },
+      global: { stubs: { CustomizationGroups: true } },
+    });
+
+    expect(wrapper.get('[data-testid="selected-size-floor-plan"]').attributes('src'))
+      .toBe('selected-size-plan.jpg');
+  });
+
   it("insets the carousel indicator from the clipped top edge", () => {
     const wrapper = mountCustomizer();
 

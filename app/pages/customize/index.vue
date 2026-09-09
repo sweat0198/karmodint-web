@@ -249,11 +249,19 @@
             :class="{ 'is-expanded': isExpanded(item.id) }"
           >
             <div class="accordion-inner border-t border-slate-200 bg-slate-50">
+              <SizeSelector
+                v-if="item.isPortableContainer"
+                :select-id="`portable-size-${item.id}`"
+                :sizes="getPortableSizes(item)"
+                :model-value="item.hasSelectedSize === false ? '' : item.sizeKey"
+                @update:model-value="onPortableSizeChange(item, $event)"
+              />
               <ProductCustomizer
                 :title="item.productName"
                 :subtitle="`${item.sizeLabel} • Engineering & Component Options`"
                 :preview-image="item.image || getFallbackImage(item.productId)"
                 :preview-images="item.images ?? []"
+                :floor-plan="item.floorPlan"
                 :spec-summary-items="getItemSpecSummary(item)"
                 :groups="DEMO_CUSTOMIZATION_GROUPS"
                 :model-value="getItemSelections(item.id)"
@@ -272,11 +280,15 @@
 
 <script setup lang="ts">
 import { computed, nextTick, onMounted, reactive, ref } from "vue";
+import { useSanityQuery } from '#imports'
 import { useQuoteStore, type QuoteItem } from "~/stores/quote";
 import type { CustomizationNotes, CustomizationSelections, SpecSummaryItem } from "~/types/customization";
 import { DEMO_CUSTOMIZATION_GROUPS } from "~/utils/customizationFixtures";
 import { buildSpecSummary, useCustomizationPricing } from "~/composables/useCustomizationPricing";
 import { useAppSeo } from "~/composables/useAppSeo";
+import { PRODUCTS_WITH_SIZES_QUERY, type CatalogProduct } from '~/queries/catalog'
+import { toPortableContainerCards } from '~/utils/portableContainerCards'
+import { requiresSizeSelection } from '~~/shared/utils/quoteLine'
 
 const { setPageSeo } = useAppSeo();
 
@@ -289,6 +301,8 @@ setPageSeo({
 });
 
 const quoteStore = useQuoteStore();
+const { data: catalogueProducts } = await useSanityQuery<CatalogProduct[]>(PRODUCTS_WITH_SIZES_QUERY)
+const portableCards = computed(() => toPortableContainerCards(catalogueProducts.value ?? []))
 
 // Tracks which single item is expanded in the accordion
 const expandedItemId = ref<string | null>(null);
@@ -402,11 +416,35 @@ function getItemPricing(item: QuoteItem) {
       () => DEMO_CUSTOMIZATION_GROUPS,
       () => getItemSelections(item.id),
       () => getItemNotes(item.id),
-      () => ({ price: item.basePrice ?? 0, isPoa: false }),
+      () => ({
+        label: item.sizeLabel,
+        lengthM: 0,
+        widthM: 0,
+        images: [],
+        price: item.basePrice ?? 0,
+        isPoa: item.isPoa === true,
+      }),
     );
     itemPricingCache.set(item.id, pricing);
   }
   return pricing;
+}
+
+function getPortableSizes(item: QuoteItem) {
+  return portableCards.value.find((card) => card.productId === item.productId)?.sizes ?? []
+}
+
+function onPortableSizeChange(item: QuoteItem, sizeKey: string) {
+  const size = getPortableSizes(item).find((candidate) => candidate.sizeKey === sizeKey)
+  if (!size) return
+
+  const previousId = item.id
+  const nextId = quoteStore.selectPortableSize(previousId, size)
+  itemPricingCache.delete(previousId)
+  if (nextId) {
+    itemPricingCache.delete(nextId)
+    if (expandedItemId.value === previousId) expandedItemId.value = nextId
+  }
 }
 
 function getItemUnsatisfiedMandatory(item: QuoteItem) {
@@ -442,7 +480,9 @@ function onNotesUpdate(item: QuoteItem, next: CustomizationNotes) {
 }
 
 const canProceedToQuote = computed(() =>
-  quoteStore.items.every((item) => getItemUnsatisfiedMandatory(item).length === 0),
+  quoteStore.items.every(
+    (item) => !requiresSizeSelection(item) && getItemUnsatisfiedMandatory(item).length === 0,
+  ),
 );
 
 function handleProceedClick() {
@@ -452,11 +492,17 @@ function handleProceedClick() {
   }
 
   const offendingItem = quoteStore.items.find(
-    (item) => getItemUnsatisfiedMandatory(item).length > 0,
+    (item) => requiresSizeSelection(item) || getItemUnsatisfiedMandatory(item).length > 0,
   );
   if (!offendingItem) return;
 
   expandedItemId.value = offendingItem.id;
+  if (requiresSizeSelection(offendingItem)) {
+    nextTick(() => {
+      document.getElementById(`portable-size-${offendingItem.id}`)?.focus();
+    });
+    return;
+  }
   const offendingGroup = getItemUnsatisfiedMandatory(offendingItem)[0];
   nextTick(() => {
     document

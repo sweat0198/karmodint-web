@@ -1,7 +1,7 @@
 import { buildQuoteEmails, sendResendEmail } from '../utils/email'
 import { buildSanityQuoteEnquiry } from '../utils/sanityLead'
 import { isCompleteDeliveryAddress } from '../../shared/utils/deliveryAddress'
-import type { QuoteLine } from '../../shared/utils/quoteLine'
+import { requiresSizeSelection, type QuoteLine } from '../../shared/utils/quoteLine'
 
 interface QuoteEnquiryCustomer {
   name: string
@@ -45,6 +45,14 @@ const handler = async (event: any) => {
     throw errorFn({
       statusCode: 400,
       statusMessage: 'A delivery destination with town/city and postcode is required.'
+    })
+  }
+
+  if (items.some((item) => requiresSizeSelection(item) || (item.isPortableContainer && !item.sizeKey))) {
+    const errorFn = typeof createError !== 'undefined' ? createError : (err: any) => Object.assign(new Error(err.statusMessage), err)
+    throw errorFn({
+      statusCode: 400,
+      statusMessage: 'Choose a size for every portable container before requesting a quote.'
     })
   }
 

@@ -41,7 +41,10 @@
 
       <!-- Products Grid -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <ProductCard v-for="card in featuredCards" :key="card.cardId" :card="card" />
+        <template v-for="card in featuredCards" :key="card.cardId">
+          <PortableContainerCard v-if="isPortableCard(card)" :card="card" />
+          <ProductCard v-else :card="card" />
+        </template>
       </div>
     </div>
   </section>
@@ -51,16 +54,23 @@
 import { computed } from "vue";
 import { useSanityQuery } from "#imports";
 import { toSizeCards } from "~/utils/sizeCards";
+import { isPortableContainerProduct, toPortableContainerCards, type PortableContainerCard } from '~/utils/portableContainerCards'
+import type { CatalogDisplayCard } from '~/utils/catalogSearch'
 import { PRODUCTS_WITH_SIZES_QUERY, type CatalogProduct } from "~/queries/catalog";
 
 const { data: products } = await useSanityQuery<CatalogProduct[]>(PRODUCTS_WITH_SIZES_QUERY);
 
 // The three smallest Size Options of the featured Product (GRP Cabin today).
-const featuredCards = computed(() => {
+const featuredCards = computed<CatalogDisplayCard[]>(() => {
   const featuredProduct = products.value?.find((p) => p.isFeatured);
   if (!featuredProduct) return [];
-  return toSizeCards(products.value ?? [])
-    .filter((card) => card.productId === featuredProduct._id)
-    .slice(0, 3);
+  if (isPortableContainerProduct(featuredProduct)) {
+    return toPortableContainerCards([featuredProduct])
+  }
+  return toSizeCards([featuredProduct]).slice(0, 3)
 });
+
+function isPortableCard(card: CatalogDisplayCard): card is PortableContainerCard {
+  return 'isPoaOnly' in card
+}
 </script>

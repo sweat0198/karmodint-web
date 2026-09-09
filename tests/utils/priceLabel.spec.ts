@@ -17,8 +17,8 @@ describe('getPriceLabel', () => {
     expect(getPriceLabel({ price: 1000, isPoa: true })).toBe('POA')
   })
 
-  it('treats a missing price as £0', () => {
-    expect(getPriceLabel({})).toBe('£0')
+  it('treats a missing price as POA rather than an invented zero price', () => {
+    expect(getPriceLabel({})).toBe('POA')
   })
 
   it('accepts a currency symbol override', () => {

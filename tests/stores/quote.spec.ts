@@ -3,6 +3,7 @@ import { describe, it, expect, beforeEach } from "vitest";
 import { createPinia, setActivePinia } from "pinia";
 import type { QuoteItem } from "~/stores/quote";
 import type { SizeCard } from "~/utils/sizeCards";
+import type { PortableContainerCard } from "~/utils/portableContainerCards";
 import type { SanitySizeImage } from "~/types/catalog";
 
 // The Nuxt module `pinia-plugin-persistedstate/nuxt` normally auto-imports this global. Outside
@@ -54,6 +55,32 @@ function grpCard(overrides: Partial<SizeCard> = {}): SizeCard {
     sizeSearchTerms: [],
     ...overrides,
   };
+}
+
+function portableCard(): PortableContainerCard {
+  const thumbnail = image("front", "image-k1002-representative-jpg");
+  return {
+    cardId: "portable-product-k1002",
+    productId: "product-k1002",
+    productName: "K1002 Portable Cabin",
+    productSlug: "k1002-portable-cabin",
+    shortDescription: "Portable cabin.",
+    categorySlugs: ["containers"],
+    categoryNames: ["Portable Cabins"],
+    representativeImage: thumbnail,
+    lowestPrice: 9000,
+    isPoaOnly: false,
+    sizes: [
+      {
+        sizeKey: "300x700", sourceLabel: "3m × 7m", sizeLabel: "23ft × 10ft (3.00m × 7.00m)",
+        specs: [], lengthM: 7, widthM: 3, price: 9000, isPoa: false, planImage: null, images: [thumbnail]
+      },
+      {
+        sizeKey: "300x900", sourceLabel: "3m × 9m", sizeLabel: "30ft × 10ft (3.00m × 9.00m)",
+        specs: [], lengthM: 9, widthM: 3, price: undefined, isPoa: true, planImage: null, images: [thumbnail]
+      }
+    ]
+  }
 }
 
 describe("useQuoteStore", () => {
@@ -200,6 +227,75 @@ describe("useQuoteStore", () => {
       expect(grpCard()).not.toHaveProperty("image");
       store.addSizeOption(grpCard());
       expect(store.items[0].image).toBeDefined();
+    });
+  });
+
+  describe("portable-container selections", () => {
+    it("starts a container line without a selected size", () => {
+      const store = useQuoteStore();
+      store.addPortableContainer(portableCard());
+
+      expect(store.items).toHaveLength(1);
+      expect(store.items[0]).toMatchObject({
+        isPortableContainer: true,
+        hasSelectedSize: false,
+        sizeKey: "",
+      });
+    });
+
+    it("keeps matching portable configurations together but separates different extras", () => {
+      const store = useQuoteStore();
+      store.addPortableContainer(portableCard());
+      const [first] = store.items;
+      store.selectPortableSize(first.id, portableCard().sizes[0]!);
+      store.updateItemConfig(first.id, {
+        selections: { heating: ["electric"] }, notes: {}, total: 9200, isPoa: false, specSummary: [], lines: []
+      });
+      store.addPortableContainer(portableCard());
+      const second = store.items.find((item) => item.id !== first.id)!;
+      store.selectPortableSize(second.id, portableCard().sizes[0]!);
+      store.updateItemConfig(second.id, {
+        selections: { heating: ["gas"] }, notes: {}, total: 9300, isPoa: false, specSummary: [], lines: []
+      });
+
+      expect(store.items).toHaveLength(2);
+      expect(store.items.every((item) => item.sizeKey === "300x700")).toBe(true);
+    });
+
+    it("merges matching model, size, and extras while retaining their quantity", () => {
+      const store = useQuoteStore();
+      store.addPortableContainer(portableCard());
+      const [first] = store.items;
+      store.selectPortableSize(first.id, portableCard().sizes[0]!);
+      const payload = { selections: { heating: ["electric"] }, notes: {}, total: 9200, isPoa: false, specSummary: [], lines: [] };
+
+      store.updateItemConfig(first.id, payload);
+      store.addPortableContainer(portableCard());
+      const second = store.items.find((item) => item.id !== first.id)!;
+      store.selectPortableSize(second.id, portableCard().sizes[0]!);
+      store.updateItemConfig(second.id, payload);
+
+      expect(store.items).toHaveLength(1);
+      expect(store.items[0].quantity).toBe(2);
+    });
+
+    it("changes a selected size without losing quantity or extras", () => {
+      const store = useQuoteStore();
+      store.addPortableContainer(portableCard());
+      const [line] = store.items;
+      store.updateQuantity(line.id, 3);
+      store.selectPortableSize(line.id, portableCard().sizes[0]!);
+      store.updateItemConfig(line.id, {
+        selections: { heating: ["electric"] }, notes: { heating: "urgent" }, total: 9200, isPoa: false, specSummary: [], lines: []
+      });
+      const selected = store.items[0]!;
+
+      store.selectPortableSize(selected.id, portableCard().sizes[1]!);
+
+      expect(store.items[0]).toMatchObject({
+        quantity: 3, sizeKey: "300x900", isPoa: true,
+        configState: { heating: ["electric"] }, customizationNotes: { heating: "urgent" }
+      });
     });
   });
 });

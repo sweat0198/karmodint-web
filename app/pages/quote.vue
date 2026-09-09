@@ -120,6 +120,9 @@
             <div>
               <h3 class="text-lg font-bold text-gray-800">{{ item.productName }}</h3>
               <p class="label-caps text-brand-red mt-0.5">{{ item.sizeLabel }}</p>
+              <p v-if="item.isPortableContainer && item.hasSelectedSize === false" class="mt-1 text-xs font-semibold text-brand-red">
+                Choose a size in Customize before requesting a quote.
+              </p>
               
               <!-- Configured Spec Summary Badges -->
               <div v-if="item.specSummary && item.specSummary.length" class="flex flex-wrap gap-1.5 mt-2">
@@ -242,7 +245,7 @@
 
           <button 
             type="submit" 
-            :disabled="submitting"
+            :disabled="submitting || hasUnresolvedPortableSize"
             class="btn-primary w-full py-3 text-sm font-semibold disabled:opacity-50 flex items-center justify-center gap-2"
           >
             <UIcon v-if="submitting" name="i-heroicons-arrow-path" class="w-5 h-5 animate-spin" />
@@ -259,7 +262,7 @@
 import { useQuoteStore } from '~/stores/quote'
 import { useAppSeo } from '~/composables/useAppSeo'
 import type { ParsedUkAddress } from '~/composables/useGooglePlacesAutocomplete'
-import { getQuoteLineFinancials } from '~~/shared/utils/quoteLine'
+import { getQuoteLineFinancials, requiresSizeSelection } from '~~/shared/utils/quoteLine'
 import { getTotalLabel } from '~~/shared/utils/priceLabel'
 
 const { setPageSeo } = useAppSeo()
@@ -285,6 +288,7 @@ const customer = ref({
 const submitting = ref(false)
 const submittedSuccess = ref(false)
 const errorMessage = ref('')
+const hasUnresolvedPortableSize = computed(() => quoteStore.items.some(requiresSizeSelection))
 
 onMounted(() => {
   quoteStore.setLastVisitedRoute('/quote')
@@ -292,6 +296,10 @@ onMounted(() => {
 
 async function submitQuote() {
   if (!customer.value.name || !customer.value.email) return
+  if (hasUnresolvedPortableSize.value) {
+    errorMessage.value = 'Choose a size for every portable container before requesting a quote.'
+    return
+  }
 
   submitting.value = true
   errorMessage.value = ''

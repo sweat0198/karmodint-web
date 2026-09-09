@@ -1,6 +1,6 @@
 import { type MaybeRefOrGetter, computed, ref, toValue, watch } from "vue";
 import { filterCatalog } from "~/utils/catalogSearch";
-import type { SizeCard } from "~/utils/sizeCards";
+import type { CatalogDisplayCard } from '~/utils/catalogSearch'
 import type { CategoryTreeNode } from "~/queries/catalog";
 
 /** How long the search box waits after the last keystroke before it commits to the URL. */
@@ -17,7 +17,7 @@ export interface CatalogBrowseQuery {
 }
 
 export interface UseCatalogBrowseOptions {
-  cards: MaybeRefOrGetter<SizeCard[]>;
+  cards: MaybeRefOrGetter<CatalogDisplayCard[]>;
   categories: MaybeRefOrGetter<CategoryTreeNode[]>;
   /** Read the current URL query. Called from inside computeds/watchers, so it must return the same
    *  reactive source each time (e.g. `() => route.query`) for changes to be tracked. */

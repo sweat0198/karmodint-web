@@ -55,6 +55,21 @@ describe('Quote Request API Endpoint', () => {
     await expect(quoteHandler(event)).rejects.toThrow(/delivery destination/i)
   })
 
+  it('rejects a portable-container line whose required size remains unresolved', async () => {
+    const event = createMockEvent({
+      customer: {
+        name: 'David Miller', email: 'david@construction.co.uk',
+        address: { townCity: 'Nottingham', postcode: 'NG1 1AA' }
+      },
+      items: [{
+        productId: 'product-k1002', productName: 'K1002 Portable Cabin', quantity: 1,
+        sizeKey: '', sizeLabel: 'Choose a size', isPortableContainer: true, hasSelectedSize: false
+      }]
+    })
+
+    await expect(quoteHandler(event)).rejects.toThrow(/choose a size/i)
+  })
+
   it('successfully processes valid quote request in simulated mode', async () => {
     const event = createMockEvent({
       customer: {

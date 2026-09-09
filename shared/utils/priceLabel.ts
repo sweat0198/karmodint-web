@@ -10,8 +10,8 @@ export interface PoaAmount {
 
 /** A single priced thing (a Size Option, a customization item): bare `POA` when it is one. */
 export function getPriceLabel(input: PoaAmount, currencySymbol = '£'): string {
-  if (input.isPoa === true) return 'POA'
-  return `${currencySymbol}${(input.price ?? 0).toLocaleString()}`
+  if (input.isPoa === true || input.price === undefined) return 'POA'
+  return `${currencySymbol}${input.price.toLocaleString()}`
 }
 
 /**

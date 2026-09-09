@@ -320,11 +320,10 @@
 
           <!-- Product Cards Grid (3 Columns) -->
           <div v-else class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-            <ProductCard
-              v-for="card in visibleCards"
-              :key="card.cardId"
-              :card="card"
-            />
+            <template v-for="card in visibleCards" :key="card.cardId">
+              <PortableContainerCard v-if="isPortableCard(card)" :card="card" />
+              <ProductCard v-else :card="card" />
+            </template>
           </div>
         </main>
 
@@ -463,6 +462,8 @@ import { useAppSeo } from "~/composables/useAppSeo";
 import { useCatalogBrowse } from "~/composables/useCatalogBrowse";
 import { sanityImageUrl } from "~/utils/sanityImageUrl";
 import { toSizeCards } from "~/utils/sizeCards";
+import { isPortableContainerProduct, toPortableContainerCards, type PortableContainerCard } from '~/utils/portableContainerCards'
+import type { CatalogDisplayCard } from '~/utils/catalogSearch'
 import {
   CATEGORY_TREE_QUERY,
   PRODUCTS_WITH_SIZES_QUERY,
@@ -487,7 +488,17 @@ function isCategoryExpanded(categorySlug: string): boolean {
 const { data: products } = await useSanityQuery<CatalogProduct[]>(PRODUCTS_WITH_SIZES_QUERY);
 const { data: categoryTree } = await useSanityQuery<CategoryTreeNode[]>(CATEGORY_TREE_QUERY);
 
-const cards = computed(() => toSizeCards(products.value ?? []));
+const cards = computed<CatalogDisplayCard[]>(() => {
+  const catalogue = products.value ?? []
+  return [
+    ...toPortableContainerCards(catalogue),
+    ...toSizeCards(catalogue.filter((product) => !isPortableContainerProduct(product)))
+  ]
+});
+
+function isPortableCard(card: CatalogDisplayCard): card is PortableContainerCard {
+  return 'isPoaOnly' in card
+}
 
 // The filter lives in the URL (D10: `?category=cabin&subcategory=grp`), not local state, so it
 // survives a reload and is shareable.
@@ -576,15 +587,15 @@ setPageSeo({
         "@type": "ListItem",
         position: idx + 1,
         item: getProductSchema({
-          name: `${card.productName} ${card.sizeLabel}`,
+          name: isPortableCard(card) ? card.productName : `${card.productName} ${card.sizeLabel}`,
           image: sanityImageUrl(
-            card.thumbnail.asset?._ref,
+            isPortableCard(card) ? card.representativeImage?.asset?._ref : card.thumbnail.asset?._ref,
             config.public.sanityProjectId,
             config.public.sanityDataset,
           ),
-          price: card.price,
-          isPoa: card.isPoa,
-          specs: card.specs,
+          price: isPortableCard(card) ? card.lowestPrice : card.price,
+          isPoa: isPortableCard(card) ? card.isPoaOnly : card.isPoa,
+          specs: isPortableCard(card) ? card.sizes.flatMap((size) => size.specs) : card.specs,
         }),
       })),
     },

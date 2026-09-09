@@ -1,8 +1,11 @@
 import type { CategoryTreeNode } from "~/queries/catalog";
 import type { SizeCard } from "~/utils/sizeCards";
+import type { PortableContainerCard } from '~/utils/portableContainerCards'
+
+export type CatalogDisplayCard = SizeCard | PortableContainerCard
 
 export interface CatalogFilterOptions {
-  cards: SizeCard[];
+  cards: CatalogDisplayCard[];
   categories: CategoryTreeNode[];
   query: string;
   selectedCategorySlug?: string | null;
@@ -10,8 +13,8 @@ export interface CatalogFilterOptions {
 }
 
 export interface CatalogFilterResult {
-  searchCards: SizeCard[];
-  visibleCards: SizeCard[];
+  searchCards: CatalogDisplayCard[];
+  visibleCards: CatalogDisplayCard[];
   categories: CategoryTreeNode[];
 }
 
@@ -88,7 +91,7 @@ function includesEveryToken(text: string, tokens: string[]): boolean {
 
 function filterCategoryTree(
   categories: CategoryTreeNode[],
-  searchCards: SizeCard[],
+  searchCards: CatalogDisplayCard[],
   tokens: string[],
   selectedCategorySlug?: string | null,
   selectedSubcategorySlug?: string | null,

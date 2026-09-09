@@ -26,6 +26,8 @@ export interface PortableContainerCard {
   shortDescription: string
   categorySlugs: string[]
   categoryNames: string[]
+  /** Search terms across every selectable size, so grouping does not hide a size from search. */
+  sizeSearchTerms: string[]
   sizes: PortableContainerSize[]
   representativeImage?: SanityImage
   /** Lowest configured numeric base price. Undefined means price on application. */
@@ -82,6 +84,7 @@ function representativeImage(product: CatalogProduct): SanityImage | undefined {
   return product.representativeImages?.[0]
     ?? product.sizes.find((size) => size.thumbnail ?? size.fallbackThumbnail)?.thumbnail
     ?? product.sizes.find((size) => size.fallbackThumbnail)?.fallbackThumbnail
+    ?? undefined
 }
 
 /**
@@ -108,6 +111,7 @@ export function toPortableContainerCards(products: CatalogProduct[]): PortableCo
         shortDescription: product.shortDescription ?? '',
         categorySlugs: metadata.slugs,
         categoryNames: metadata.names,
+        sizeSearchTerms: sizes.flatMap((size) => [size.sizeKey, size.sourceLabel, size.sizeLabel, ...size.specs]),
         sizes,
         representativeImage: representativeImage(product),
         lowestPrice: numericPrices.length ? Math.min(...numericPrices) : undefined,
