@@ -154,7 +154,7 @@ export function toSizeCards(products: CatalogProduct[]): SizeCard[] {
         sizeLabel,
         specs,
         isPoa: Boolean(size.isPoa),
-        price: size.price,
+        price: size.price ?? 0,
         thumbnail,
         images: carouselImages(size, thumbnail),
         categorySlugs: categoryMetadata.slugs,

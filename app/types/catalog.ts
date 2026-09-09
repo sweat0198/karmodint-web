@@ -140,6 +140,8 @@ export interface SanityProduct {
   categories: SanityCategory[]
   /** Size-agnostic photography only. Per-size renders live on the size option. */
   lifestyleImages?: SanityImage[]
+  /** Shared model render for portable containers when individual sizes have no render. */
+  representativeImages?: SanityImage[]
   sizes: SanitySizeOption[]
   customizationGroups?: SanityCustomizationGroup[]
   specifications?: SanitySpecItem[]

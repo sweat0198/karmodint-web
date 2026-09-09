@@ -6,7 +6,7 @@ import { customizationGroupType, validateBooleanGroup } from '../../sanity/schem
 import { quoteEnquiryType } from '../../sanity/schemas/quoteEnquiry'
 import { clientReferenceType } from '../../sanity/schemas/reference'
 import { customizationItem } from '../../sanity/schemas/objects/customizationItem'
-import { sizeOption } from '../../sanity/schemas/objects/sizeOption'
+import { sizeOption, validateSizeImages } from '../../sanity/schemas/objects/sizeOption'
 
 describe('Sanity Schemas Structure & Validation Rules', () => {
   it('registers all required document and object types in schema index', () => {
@@ -66,6 +66,7 @@ describe('Sanity Schemas Structure & Validation Rules', () => {
       expect(fieldNames).toContain('description')
       expect(fieldNames).toContain('categories')
       expect(fieldNames).toContain('lifestyleImages')
+      expect(fieldNames).toContain('representativeImages')
       expect(fieldNames).toContain('sizes')
       expect(fieldNames).toContain('customizationGroups')
       expect(fieldNames).toContain('specifications')
@@ -109,6 +110,14 @@ describe('Sanity Schemas Structure & Validation Rules', () => {
   })
 
   describe('Size Option Schema', () => {
+    it('allows a portable-container size to use a representative image while retaining other image requirements', () => {
+      expect(validateSizeImages([], { categories: [{ _ref: 'category-containers' }] })).toBe(true)
+      expect(validateSizeImages([], { categories: [{ _ref: 'category-kiosks' }] }))
+        .toBe('Each size needs at least one render')
+      expect(validateSizeImages([{ view: 'front' }], { categories: [{ _ref: 'category-kiosks' }] }))
+        .toContain('exactly one image')
+    })
+
     it('defines POA, weight, and a size-owned render gallery', () => {
       const fieldNames = sizeOption.fields.map((f: any) => f.name)
       expect(fieldNames).toContain('isPoa')

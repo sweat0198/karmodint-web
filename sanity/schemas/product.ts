@@ -93,6 +93,33 @@ export const productType = defineType({
       ]
     }),
     defineField({
+      name: 'representativeImages',
+      title: 'Representative Product Images',
+      type: 'array',
+      description:
+        'Shared model photography for Portable Cabins. These images are labelled representative and do not imply a floor plan or exact size.',
+      hidden: ({ document }) => !document?.categories?.some((category: any) => category?._ref === 'category-containers'),
+      of: [
+        defineArrayMember({
+          type: 'image',
+          options: { hotspot: true },
+          fields: [
+            {
+              name: 'alt',
+              type: 'string',
+              title: 'Alt Text',
+              validation: (Rule) => Rule.required()
+            },
+            {
+              name: 'caption',
+              type: 'string',
+              title: 'Caption'
+            }
+          ]
+        })
+      ]
+    }),
+    defineField({
       name: 'sizes',
       title: 'Size Options (Mandatory)',
       type: 'array',

@@ -1,4 +1,4 @@
-import type { SanitySizeImage } from "~/types/catalog";
+import type { SanityImage, SanitySizeImage } from "~/types/catalog";
 
 export interface CatalogCategoryRef {
   _id: string;
@@ -21,10 +21,11 @@ export interface CatalogSizeOption {
   heightM?: number;
   weightKg?: number;
   isPoa?: boolean;
-  price: number;
+  price?: number;
   isDefault?: boolean;
   thumbnail: SanitySizeImage | null;
   fallbackThumbnail: SanitySizeImage | null;
+  planImage: SanitySizeImage | null;
   images: SanitySizeImage[];
 }
 
@@ -35,6 +36,7 @@ export interface CatalogProduct {
   isFeatured?: boolean;
   shortDescription?: string;
   categories: CatalogCategoryRef[];
+  representativeImages: SanityImage[];
   sizes: CatalogSizeOption[];
 }
 
@@ -66,6 +68,7 @@ export interface CategoryTreeNode extends CategoryTreeChild {
  */
 export const PRODUCTS_WITH_SIZES_QUERY = `*[_type == "product" && status == "published" && !(_id in path("drafts.**"))] | order(isFeatured desc, name asc) {
   _id, name, "slug": slug.current, isFeatured, shortDescription,
+  "representativeImages": representativeImages[] { asset, alt, caption },
   "categories": categories[]->{
     _id,
     "name": select(
@@ -90,6 +93,7 @@ export const PRODUCTS_WITH_SIZES_QUERY = `*[_type == "product" && status == "pub
     _key, label, lengthM, widthM, heightM, weightKg, price, isPoa, isDefault,
     "thumbnail": images[_key == "left-diagonal"][0] { asset, alt, view },
     "fallbackThumbnail": images[0] { asset, alt, view },
+    "planImage": images[view == "top"][0] { _key, asset, alt, view },
     "images": images[view != "top"] { _key, asset, alt, view }
   }
 }`;

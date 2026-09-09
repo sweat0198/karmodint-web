@@ -1,6 +1,25 @@
 import { defineType, defineField, defineArrayMember } from 'sanity'
 import { viewOptionList, validateExactlyOneTopView } from './productImageViews'
 
+interface ProductDocumentContext {
+  categories?: Array<{ _ref?: string }>
+}
+
+/** Portable containers may use a product-level representative render instead of per-size media. */
+export function isPortableContainer(document: ProductDocumentContext | undefined): boolean {
+  return document?.categories?.some((category) => category?._ref === 'category-containers') === true
+}
+
+/** Keep the legacy render/plan rule everywhere except portable-container size options. */
+export function validateSizeImages(
+  images: Array<{ view?: string }> | undefined,
+  document: ProductDocumentContext | undefined
+): true | string {
+  if (isPortableContainer(document)) return true
+  if (!images || images.length === 0) return 'Each size needs at least one render'
+  return validateExactlyOneTopView(images)
+}
+
 export const sizeOption = defineType({
   name: 'sizeOption',
   title: 'Size Option',
@@ -119,12 +138,11 @@ export const sizeOption = defineType({
         })
       ],
       // The import writes each image's _key as its view name. Sanity enforces _key uniqueness
-      // within an array, which makes duplicate views structurally impossible — a second guarantee
-      // alongside the exactly-one-plan rule below, for free.
-      validation: (Rule) =>
-        Rule.required()
-          .min(1)
-          .custom((images: Array<{ view?: string }> | undefined) => validateExactlyOneTopView(images))
+      // within an array, which makes duplicate views structurally impossible. Portable containers
+      // alone may leave this empty when their product supplies representative photography.
+      validation: (Rule) => Rule.custom((images: Array<{ view?: string }> | undefined, context: any) =>
+        validateSizeImages(images, context.document)
+      )
     })
   ],
   preview: {

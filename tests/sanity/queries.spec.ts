@@ -241,6 +241,45 @@ describe('Sanity GROQ Query Evaluation (SSG Data Fetching)', () => {
       // The fixture size carries front + interior + top; only the plan drawing is dropped.
       expect(gatehouse.sizes[0].images.map((i: any) => i.view)).toEqual(['front', 'interior'])
     })
+
+    it('carries portable representative images, every configured size, and each size plan', async () => {
+      const container = {
+        _id: 'product-k1002',
+        _type: 'product',
+        name: 'K1002 Portable Cabin',
+        slug: { current: 'k1002-portable-cabin' },
+        status: 'published',
+        categories: [{ _ref: 'category-containers' }],
+        representativeImages: [mockSizeImage('front', 'image-k1002-shared', 'K1002 representative view')],
+        sizes: [
+          {
+            _key: '300x700', label: '3m × 7m', lengthM: 7, widthM: 3, price: 9000,
+            isPoa: false, images: []
+          },
+          {
+            _key: '300x900', label: '3m × 9m', lengthM: 9, widthM: 3, price: 0,
+            isPoa: true, images: [mockSizeImage('top', 'image-k1002-900-plan', 'K1002 3m × 9m plan')]
+          }
+        ]
+      }
+
+      const results = await executeGroq<any[]>(
+        PRODUCTS_WITH_SIZES_QUERY,
+        {},
+        [...mockSanityDataset, {
+          _id: 'category-containers', _type: 'category', name: 'Portable Cabins',
+          slug: { current: 'containers' }, displayOrder: 1
+        }, container]
+      )
+      const result = results.find((product) => product._id === container._id)
+
+      expect(result.representativeImages.map((image: any) => image.asset._ref)).toEqual([
+        'image-k1002-shared'
+      ])
+      expect(result.sizes).toHaveLength(2)
+      expect(result.sizes[0].planImage).toBeNull()
+      expect(result.sizes[1].planImage.asset._ref).toBe('image-k1002-900-plan')
+    })
   })
 })
 
