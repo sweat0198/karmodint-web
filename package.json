@@ -13,6 +13,7 @@
     "catalogue:scrape": "jiti scripts/catalogue/scrape-sources.ts",
     "catalogue:assets": "jiti scripts/catalogue/upload-assets.ts",
     "catalogue:import": "jiti scripts/catalogue/import-catalogue.ts",
+    "catalogue:format-size-labels": "jiti scripts/catalogue/format-size-labels.ts",
     "catalogue:verify": "jiti scripts/catalogue/verify-catalogue.ts",
     "typecheck:catalogue": "tsc -p tsconfig.catalogue.json",
     "references:import": "jiti scripts/references/import-references.ts",

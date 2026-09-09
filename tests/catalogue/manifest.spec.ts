@@ -181,7 +181,7 @@ describe('GRP Cabin manifest rows', () => {
     const wide = grp.sizes.find((size) => size.key === '150x270')!
     expect(wide.lengthM).toBe(1.5)
     expect(wide.widthM).toBe(2.7)
-    expect(sizeLabel(wide)).toBe('1.50m × 2.70m')
+    expect(sizeLabel(wide)).toBe('9ft × 5ft (1.50m × 2.70m)')
   })
 
   it('carries the five owner-supplied weights', () => {

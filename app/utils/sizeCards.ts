@@ -1,10 +1,10 @@
 import {
-  formatMetricAndImperialDimension,
   metersToFeet,
   type SanitySizeImage,
 } from "~/types/catalog";
 import type { CatalogProduct, CatalogSizeOption } from "~/queries/catalog";
 import { getWeightLabel } from "~~/shared/utils/priceLabel";
+import { formatFootprintLabel, formatImperialDimension } from "~~/shared/utils/sizeLabels";
 
 /** One purchasable Size Option, presented as its own product card (D3). */
 export interface SizeCard {
@@ -36,18 +36,11 @@ function footprint(size: CatalogSizeOption): number {
   return size.lengthM * size.widthM;
 }
 
-function formatFootprintLabel(size: CatalogSizeOption): string {
-  const length = formatMetricAndImperialDimension(size.lengthM);
-  const width = formatMetricAndImperialDimension(size.widthM);
-  return `${length.metric} × ${width.metric} (${length.imperial} × ${width.imperial})`;
-}
-
 /** Height and weight specs, each omitted when unsupplied. */
 function buildSpecs(size: CatalogSizeOption): string[] {
   const specs: string[] = [];
   if (size.heightM) {
-    const height = formatMetricAndImperialDimension(size.heightM);
-    specs.push(`Height: ${height.metric} (${height.imperial})`);
+    specs.push(`Height: ${formatImperialDimension(size.heightM)}`);
   }
   const weightLabel = getWeightLabel(size.weightKg);
   if (weightLabel) {
@@ -148,7 +141,7 @@ export function toSizeCards(products: CatalogProduct[]): SizeCard[] {
       const sizeKey = size._key ?? "";
       const thumbnail = size.thumbnail ?? size.fallbackThumbnail;
       if (!thumbnail) continue;
-      const sizeLabel = formatFootprintLabel(size);
+      const sizeLabel = formatFootprintLabel(size.lengthM, size.widthM);
       const specs = buildSpecs(size);
 
       cards.push({

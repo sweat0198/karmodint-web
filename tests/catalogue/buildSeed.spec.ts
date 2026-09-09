@@ -34,11 +34,11 @@ describe('Seed document construction', () => {
 
   it('derives the size label from the dimensions rather than storing it', () => {
     expect(document.sizes.map((size) => size.label)).toEqual([
-      '1.50m × 1.50m',
-      '1.50m × 2.15m',
-      '1.50m × 2.70m',
-      '2.15m × 2.70m',
-      '2.70m × 2.70m'
+      '5ft × 5ft (1.50m × 1.50m)',
+      '7ft × 5ft (1.50m × 2.15m)',
+      '9ft × 5ft (1.50m × 2.70m)',
+      '9ft × 7ft (2.15m × 2.70m)',
+      '9ft × 9ft (2.70m × 2.70m)'
     ])
   })
 
@@ -65,13 +65,13 @@ describe('Seed document construction', () => {
   it('templates alt text from the product name, size label and view', () => {
     const size = document.sizes.find((s) => s._key === '215x270')!
     expect(size.images.map((image) => image.alt)).toEqual([
-      'GRP Cabin 2.15m × 2.70m, front view',
-      'GRP Cabin 2.15m × 2.70m, three-quarter view from the left',
-      'GRP Cabin 2.15m × 2.70m, right side view',
-      'GRP Cabin 2.15m × 2.70m, rear view',
-      'GRP Cabin 2.15m × 2.70m, interior view',
-      'GRP Cabin 2.15m × 2.70m, door detail',
-      'GRP Cabin 2.15m × 2.70m, plan view from above'
+      'GRP Cabin 9ft × 7ft (2.15m × 2.70m), front view',
+      'GRP Cabin 9ft × 7ft (2.15m × 2.70m), three-quarter view from the left',
+      'GRP Cabin 9ft × 7ft (2.15m × 2.70m), right side view',
+      'GRP Cabin 9ft × 7ft (2.15m × 2.70m), rear view',
+      'GRP Cabin 9ft × 7ft (2.15m × 2.70m), interior view',
+      'GRP Cabin 9ft × 7ft (2.15m × 2.70m), door detail',
+      'GRP Cabin 9ft × 7ft (2.15m × 2.70m), plan view from above'
     ])
   })
 

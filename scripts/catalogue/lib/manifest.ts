@@ -5,6 +5,7 @@ import {
   PRODUCT_IMAGE_VIEW_VALUES,
   type ProductImageView
 } from '../../../sanity/schemas/objects/productImageViews'
+import { formatFootprintLabel } from '../../../shared/utils/sizeLabels'
 import { repoPath } from './paths'
 
 /**
@@ -71,7 +72,7 @@ export function renderPath(manifest: CatalogueManifest, size: ManifestSize, view
 
 /** Display label, derived rather than stored so it cannot disagree with the dimensions above it. */
 export function sizeLabel(size: ManifestSize): string {
-  return `${size.lengthM.toFixed(2)}m × ${size.widthM.toFixed(2)}m`
+  return formatFootprintLabel(size.lengthM, size.widthM)
 }
 
 /** What a render folder holds: the recognised views, plus anything the vocabulary does not name. */

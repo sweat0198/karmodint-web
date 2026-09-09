@@ -192,11 +192,9 @@ export interface SanityQuoteEnquiry {
 }
 
 // Unit Conversion Helpers for UI
-export const METERS_TO_FEET = 3.28084
+import { METERS_TO_FEET, metersToFeet } from '~~/shared/utils/sizeLabels'
 
-export function metersToFeet(meters: number): number {
-  return Math.round(meters * METERS_TO_FEET)
-}
+export { METERS_TO_FEET, metersToFeet }
 
 export function formatMetricAndImperialDimension(meters: number): {
   metric: string

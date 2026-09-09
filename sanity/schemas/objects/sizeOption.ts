@@ -10,7 +10,7 @@ export const sizeOption = defineType({
       name: 'label',
       title: 'Size Label',
       type: 'string',
-      description: 'Display label, e.g. "2.40m x 6.00m" or "Compact Unit"',
+      description: 'Display label, e.g. "20ft × 8ft (2.40m × 6.00m)" or "Compact Unit"',
       validation: (Rule) => Rule.required()
     }),
     defineField({
