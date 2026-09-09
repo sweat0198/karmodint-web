@@ -192,8 +192,8 @@ describe('GRP Cabin manifest rows', () => {
     expect(grp.sizes.map((size) => size.heightM)).toEqual([2.4, 2.4, 2.4, 2.4, 2.45])
   })
 
-  it('carries the five owner-supplied fixed prices', () => {
-    expect(grp.sizes.map((size) => size.price)).toEqual([1361, 1595, 1639, 2059, 2208])
+  it('carries the five supplied sales prices', () => {
+    expect(grp.sizes.map((size) => size.price)).toEqual([3890, 4490, 4690, 5890, 6390])
     expect(grp.sizes.every((size) => size.isPoa === false)).toBe(true)
   })
 
@@ -219,8 +219,8 @@ describe('GRP Cabin manifest rows', () => {
   })
 })
 
-describe('Owner price request', () => {
-  it('stores the supplied price, height and weight for every requested size', () => {
+describe('Product sales price request', () => {
+  it('stores the supplied sales price, height and weight for every requested size', () => {
     const requested = Object.fromEntries(
       manifest.products.map((product) => [
         product.slug,
@@ -236,42 +236,42 @@ describe('Owner price request', () => {
 
     expect(requested).toMatchObject({
       'bulletproof-security-cabin': [
-        { key: '150x150', heightM: 3, weightKg: 3000, price: 29000, isPoa: false },
-        { key: '150x200', heightM: 3, weightKg: 3800, price: 34323, isPoa: false },
-        { key: '200x200', heightM: 3, weightKg: 4500, price: 39000, isPoa: false },
-        { key: '200x300', heightM: 3, weightKg: 5800, price: 43800, isPoa: false },
-        { key: '200x400', heightM: 3, weightKg: 7500, price: 49000, isPoa: false },
-        { key: '300x300', heightM: 3, weightKg: 8000, price: 51600, isPoa: false },
-        { key: '300x400', heightM: 3, weightKg: 8800, price: 57000, isPoa: false },
-        { key: '300x500', heightM: 3, weightKg: 10500, price: 64000, isPoa: false }
+        { key: '150x150', heightM: 3, weightKg: 3000, price: 39900, isPoa: false },
+        { key: '150x200', heightM: 3, weightKg: 3800, price: 47900, isPoa: false },
+        { key: '200x200', heightM: 3, weightKg: 4500, price: 54900, isPoa: false },
+        { key: '200x300', heightM: 3, weightKg: 5800, price: 59900, isPoa: false },
+        { key: '200x400', heightM: 3, weightKg: 7500, price: 67900, isPoa: false },
+        { key: '300x300', heightM: 3, weightKg: 8000, price: 69900, isPoa: false },
+        { key: '300x400', heightM: 3, weightKg: 8800, price: 78900, isPoa: false },
+        { key: '300x500', heightM: 3, weightKg: 10500, price: 84900, isPoa: false }
       ],
       'kompocity-composite-cabin': [
-        { key: '140x140', heightM: 2.75, weightKg: 850, price: 3098, isPoa: false },
-        { key: '140x215', heightM: 2.75, weightKg: 1100, price: 3623, isPoa: false },
-        { key: '215x215', heightM: 2.75, weightKg: 1500, price: 4370, isPoa: false },
-        { key: '215x265', heightM: 2.75, weightKg: 1750, price: 4900, isPoa: false },
-        { key: '265x265', heightM: 2.75, weightKg: 1900, price: 5500, isPoa: false }
+        { key: '140x140', heightM: 2.75, weightKg: 850, price: 6890, isPoa: false },
+        { key: '140x215', heightM: 2.75, weightKg: 1100, price: 7890, isPoa: false },
+        { key: '215x215', heightM: 2.75, weightKg: 1500, price: 8990, isPoa: false },
+        { key: '215x265', heightM: 2.75, weightKg: 1750, price: 10980, isPoa: false },
+        { key: '265x265', heightM: 2.75, weightKg: 1900, price: 11980, isPoa: false }
       ],
       'grp-cabin': [
-        { key: '150x150', heightM: 2.4, weightKg: 280, price: 1361, isPoa: false },
-        { key: '150x215', heightM: 2.4, weightKg: 350, price: 1595, isPoa: false },
-        { key: '150x270', heightM: 2.4, weightKg: 450, price: 1639, isPoa: false },
-        { key: '215x270', heightM: 2.4, weightKg: 550, price: 2059, isPoa: false },
-        { key: '270x270', heightM: 2.45, weightKg: 650, price: 2208, isPoa: false }
+        { key: '150x150', heightM: 2.4, weightKg: 280, price: 3890, isPoa: false },
+        { key: '150x215', heightM: 2.4, weightKg: 350, price: 4490, isPoa: false },
+        { key: '150x270', heightM: 2.4, weightKg: 450, price: 4690, isPoa: false },
+        { key: '215x270', heightM: 2.4, weightKg: 550, price: 5890, isPoa: false },
+        { key: '270x270', heightM: 2.45, weightKg: 650, price: 6390, isPoa: false }
       ],
       'metrocity-modular-cabin': [
-        { key: '140x140', heightM: 2.75, weightKg: 700, price: 2519, isPoa: false },
-        { key: '140x215', heightM: 2.75, weightKg: 950, price: 2946, isPoa: false },
-        { key: '215x215', heightM: 2.75, weightKg: 1100, price: 3553, isPoa: false },
-        { key: '215x265', heightM: 2.75, weightKg: 1250, price: 3938, isPoa: false },
-        { key: '265x265', heightM: 2.75, weightKg: 1400, price: 4416, isPoa: false }
+        { key: '140x140', heightM: 2.75, weightKg: 700, price: 5595, isPoa: false },
+        { key: '140x215', heightM: 2.75, weightKg: 950, price: 6490, isPoa: false },
+        { key: '215x215', heightM: 2.75, weightKg: 1100, price: 7890, isPoa: false },
+        { key: '215x265', heightM: 2.75, weightKg: 1250, price: 8790, isPoa: false },
+        { key: '265x265', heightM: 2.75, weightKg: 1400, price: 9890, isPoa: false }
       ],
       'insulated-panel-cabin': [
-        { key: '110x110', heightM: 2.35, weightKg: 100, price: 800, isPoa: false },
-        { key: '135x135', heightM: 2.35, weightKg: 125, price: 928, isPoa: false },
-        { key: '135x210', heightM: 2.35, weightKg: 225, price: 1265, isPoa: false },
-        { key: '210x210', heightM: 2.35, weightKg: 280, price: 1429, isPoa: false },
-        { key: '260x260', heightM: 2.35, weightKg: 380, price: 1647, isPoa: false }
+        { key: '110x110', heightM: 2.35, weightKg: 100, price: 2290, isPoa: false },
+        { key: '135x135', heightM: 2.35, weightKg: 125, price: 2690, isPoa: false },
+        { key: '135x210', heightM: 2.35, weightKg: 225, price: 3690, isPoa: false },
+        { key: '210x210', heightM: 2.35, weightKg: 280, price: 4195, isPoa: false },
+        { key: '260x260', heightM: 2.35, weightKg: 380, price: 4890, isPoa: false }
       ]
     })
   })
