@@ -4,43 +4,16 @@
  *   npm run catalogue:format-size-labels -- --dry-run
  *   npm run catalogue:format-size-labels
  */
-import { formatFootprintLabel } from '../../shared/utils/sizeLabels'
 import { runScript } from './lib/runScript'
 import { createSanityClient, readSanityTarget } from './lib/sanityEnv'
-
-interface ProductSize {
-  _key?: string
-  label?: string
-  lengthM?: number
-  widthM?: number
-}
-
-interface ProductWithSizes {
-  _id: string
-  sizes?: ProductSize[]
-}
-
-interface LabelChange {
-  productId: string
-  sizeKey: string
-  from: string | undefined
-  to: string
-}
+import {
+  labelPatchSet,
+  labelsToUpdate,
+  type LabelChange,
+  type ProductWithSizes
+} from './lib/sizeLabelMigration'
 
 const PRODUCT_SIZES_QUERY = `*[_type == 'product']{_id, sizes[]{_key, label, lengthM, widthM}}`
-
-function labelsToUpdate(product: ProductWithSizes): LabelChange[] {
-  return (product.sizes ?? []).flatMap((size) => {
-    if (!size._key || typeof size.lengthM !== 'number' || typeof size.widthM !== 'number') {
-      throw new Error(`Product ${product._id} has a size without _key, lengthM, or widthM`)
-    }
-
-    const label = formatFootprintLabel(size.lengthM, size.widthM)
-    return label === size.label
-      ? []
-      : [{ productId: product._id, sizeKey: size._key, from: size.label, to: label }]
-  })
-}
 
 async function main(): Promise<void> {
   const dryRun = process.argv.includes('--dry-run')
@@ -68,13 +41,7 @@ async function main(): Promise<void> {
   }
   let transaction = client.transaction()
   for (const [productId, productChanges] of changesByProduct) {
-    const set = Object.fromEntries(
-      productChanges.map((change) => [
-        `sizes[_key == ${JSON.stringify(change.sizeKey)}].label`,
-        change.to
-      ])
-    )
-    transaction = transaction.patch(productId, { set })
+    transaction = transaction.patch(productId, { set: labelPatchSet(productChanges) })
   }
   await transaction.commit()
 
