@@ -507,7 +507,7 @@ function buildLogisticsCardHtml(customer: QuoteEmailPayload['customer']): string
             ${fieldValue(esc(destination), 14)}
             <div style="font-family:${FONT};font-size:14px;font-weight:600;color:#291715;line-height:22px;">The sales team will contact you about the delivery charge after reviewing your quote request.</div>
             <div style="height:6px;line-height:6px;">&nbsp;</div>
-            <div style="font-family:${FONT};font-size:13px;color:#64748B;line-height:21px;">Offload requirements and costs will also be confirmed during the review.</div>
+            <div style="font-family:${FONT};font-size:13px;color:#64748B;line-height:21px;">Delivery and offload pricing is determined based on destination and equipment requirements (e.g. crane, Hiab, or forklift).</div>
           </td>
         </tr></table>
       </td>
@@ -550,7 +550,7 @@ function buildFinancialSummaryCardHtml(opts: {
       </tr>
     </table>
     <div style="height:10px;line-height:10px;">&nbsp;</div>
-    <div style="font-family:${FONT};font-size:12px;color:#64748B;line-height:18px;">This is a non-binding product estimate. The formal sales quote will confirm VAT, delivery, offload requirements, and the final payable total.</div>
+    <div style="font-family:${FONT};font-size:12px;color:#64748B;line-height:18px;">This is a non-binding product estimate. The formal sales quote will confirm VAT, delivery and equipment-based offload costs, and the final payable total.</div>
     <div style="height:24px;line-height:24px;">&nbsp;</div>
     ${ctasHtml}
   `
@@ -583,7 +583,7 @@ function buildWhatsNextCardHtml(): string {
     <div style="height:12px;line-height:12px;">&nbsp;</div>
     <div style="font-family:${FONT};font-size:14px;color:#1F2937;line-height:24px;">
       1. Our sales team reviews your requested products and delivery destination.<br>
-      2. The team contacts you about delivery and any offload requirements.<br>
+      2. The team contacts you regarding delivery pricing and equipment/offload requirements.<br>
       3. You receive a formal quote confirming VAT and the final payable total.
     </div>
     <div style="height:14px;line-height:14px;">&nbsp;</div>

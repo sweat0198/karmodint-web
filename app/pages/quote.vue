@@ -80,7 +80,7 @@
         </div>
         <h2 class="text-3xl font-bold text-brand-navy-heading mb-4">Quote Request Submitted!</h2>
         <p class="text-slate-600 mb-6 leading-relaxed">
-          Our sales team is reviewing your requested products and delivery destination. They will contact you about the delivery charge and any offload requirements before issuing a formal quote.
+          Our sales team is reviewing your requested products and delivery destination. They will contact you regarding delivery pricing based on equipment status and offload requirements before issuing a formal quote.
         </p>
         <div class="flex justify-center gap-4">
           <NuxtLink to="/products" class="btn-primary px-6 py-3 text-sm font-semibold">
@@ -105,7 +105,7 @@
         </div>
 
         <div class="rounded border border-brand-rose-border bg-brand-rose-bg px-4 py-3 text-sm leading-relaxed text-brand-rose-text">
-          Product estimates exclude VAT. Delivery and offload costs are not included; the sales team will confirm them in the formal quote.
+          Product estimates exclude VAT. Delivery and offload costs are not included; final charges are determined based on site destination and offload equipment requirements (e.g. crane, Hiab, or forklift), and confirmed in the formal quote.
         </div>
 
         <div 
@@ -218,7 +218,7 @@
 
             <div class="mt-3 rounded border border-brand-rose-border bg-brand-rose-bg px-3.5 py-3 text-xs leading-relaxed text-brand-rose-text">
               <p class="font-semibold text-brand-navy-heading">Delivery charge confirmed after review</p>
-              <p class="mt-1">The sales team will contact you about the delivery charge after reviewing your quote request. Offload requirements and costs will also be confirmed during the review.</p>
+              <p class="mt-1">The sales team will contact you about the delivery charge after reviewing your quote request. Delivery and offload pricing is determined based on site destination and equipment requirements (e.g. crane, Hiab, or forklift availability).</p>
             </div>
           </div>
 
@@ -237,7 +237,7 @@
           </div>
 
           <p class="text-xs leading-relaxed text-slate-500">
-            Submitting this request is non-binding. The sales team will contact you about the delivery charge after reviewing your quote request. Your formal quote will confirm VAT, delivery, offload requirements, and the final payable total.
+            Submitting this request is non-binding. The sales team will contact you about the delivery charge after reviewing your quote request. Your formal quote will confirm VAT, delivery and equipment-based offload costs, and the final payable total.
           </p>
 
           <button 
