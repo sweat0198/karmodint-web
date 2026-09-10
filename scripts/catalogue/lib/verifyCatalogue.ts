@@ -70,7 +70,7 @@ export interface CatalogueSize {
   key: string
   isDefault: boolean
   isPoa: boolean
-  price: number
+  price?: number
   weightKg: number
   heightM: number | null
   views: ProductImageView[]
@@ -369,12 +369,15 @@ function checkImageryIsolation(expected: readonly CatalogueProduct[], dataset: D
 
 function checkIntegrity(dataset: DatasetCatalogue): Check[] {
   const sizes = allSizes(dataset.products)
+  const isPortableContainer = (product: CatalogueProduct) =>
+    product.categoryIds.includes('category-containers')
 
-  const wrongDefaults = dataset.products.filter(
-    (product) => product.sizes.filter((size) => size.isDefault).length !== 1
+  const wrongDefaults = dataset.products.filter((product) =>
+    !isPortableContainer(product) && product.sizes.filter((size) => size.isDefault).length !== 1
   )
-  const wrongPlans = sizes.filter(
-    (entry) => entry.size.views.filter((view) => view === PLAN_VIEW).length !== 1
+  const wrongPlans = sizes.filter((entry) =>
+    !isPortableContainer(entry.product)
+    && entry.size.views.filter((view) => view === PLAN_VIEW).length !== 1
   )
 
   const slugCounts = new Map<string, number>()
@@ -386,14 +389,17 @@ function checkIntegrity(dataset: DatasetCatalogue): Check[] {
   const categorySlugs = new Set(dataset.categories.map((category) => category.slug))
   const collidingSlugs = dataset.products.map((product) => product.slug).filter((slug) => categorySlugs.has(slug))
 
-  const withoutFixedPrice = sizes.filter((entry) => entry.size.isPoa || entry.size.price <= 0)
+  const withoutFixedPrice = sizes.filter((entry) =>
+    !isPortableContainer(entry.product)
+    && (entry.size.isPoa || entry.size.price === undefined || entry.size.price <= 0)
+  )
 
   return [
     check(
       'Exactly one default size per product',
       wrongDefaults.length === 0,
       wrongDefaults.length === 0
-        ? list(dataset.products.map((product) =>
+        ? list(dataset.products.filter((product) => !isPortableContainer(product)).map((product) =>
           `${product.slug} ${product.sizes.find((size) => size.isDefault)!.key}`))
         : list(wrongDefaults.map((product) =>
           `${product.slug} has ${product.sizes.filter((size) => size.isDefault).length} defaults`))
@@ -402,7 +408,7 @@ function checkIntegrity(dataset: DatasetCatalogue): Check[] {
       'Exactly one plan view per size',
       wrongPlans.length === 0,
       wrongPlans.length === 0
-        ? `all ${sizes.length} sizes carry one "${PLAN_VIEW}" render`
+        ? `all ${sizes.filter((entry) => !isPortableContainer(entry.product)).length} non-portable sizes carry one "${PLAN_VIEW}" render`
         : list(wrongPlans.map((entry) => entry.ref))
     ),
     check(
@@ -421,7 +427,7 @@ function checkIntegrity(dataset: DatasetCatalogue): Check[] {
       'Every size has an owner-supplied fixed price',
       withoutFixedPrice.length === 0,
       withoutFixedPrice.length === 0
-        ? `all ${sizes.length} sizes carry a positive fixed price`
+        ? `all ${sizes.filter((entry) => !isPortableContainer(entry.product)).length} non-portable sizes carry a positive fixed price`
         : list(withoutFixedPrice.map((entry) =>
           `${entry.ref} (isPoa ${entry.size.isPoa}, price ${entry.size.price})`))
     )

@@ -125,8 +125,8 @@ export const useQuoteStore = defineStore("quote", {
     },
 
     /**
-     * Select or replace a portable line's size while retaining its extras and quantity. The current
-     * customized total is re-derived by the Customizer from the new base price, so it is cleared.
+     * Select or replace a portable line's size while retaining its extras, quantity, and the
+     * configured total's option-price delta.
      */
     selectPortableSize(id: string, size: PortableContainerSize): string | undefined {
       const item = this.items.find((candidate) => candidate.id === id);
@@ -134,6 +134,7 @@ export const useQuoteStore = defineStore("quote", {
 
       const { projectId, dataset } = resolveSanityImageConfig();
       const thumbnail = size.images[0];
+      const previousBasePrice = item.basePrice ?? 0;
       item.sizeKey = size.sizeKey;
       item.sizeLabel = size.sizeLabel;
       item.basePrice = size.price;
@@ -148,7 +149,11 @@ export const useQuoteStore = defineStore("quote", {
       item.floorPlan = planSrc
         ? { src: planSrc, alt: size.planImage?.alt ?? `${item.productName} ${size.sizeLabel} floor plan` }
         : undefined;
-      item.customTotal = undefined;
+      // Preserve configured option pricing while replacing only the size-derived base amount.
+      // This also keeps POA size changes honest: an absent base is not invented as a numeric price.
+      if (item.customTotal !== undefined) {
+        item.customTotal += (size.price ?? 0) - previousBasePrice;
+      }
 
       return this.rekeyPortableItem(item);
     },

@@ -297,5 +297,20 @@ describe("useQuoteStore", () => {
         configState: { heating: ["electric"] }, customizationNotes: { heating: "urgent" }
       });
     });
+
+    it("updates a configured line total by the selected size base-price difference", () => {
+      const store = useQuoteStore();
+      store.addPortableContainer(portableCard());
+      const [line] = store.items;
+      store.selectPortableSize(line.id, portableCard().sizes[0]!);
+      store.updateItemConfig(store.items[0]!.id, {
+        selections: { heating: ["electric"] }, notes: {}, total: 9200, isPoa: false, specSummary: [], lines: []
+      });
+      const largerPricedSize = { ...portableCard().sizes[1]!, price: 11000, isPoa: false };
+
+      store.selectPortableSize(store.items[0]!.id, largerPricedSize);
+
+      expect(store.items[0]!.customTotal).toBe(11200);
+    });
   });
 });

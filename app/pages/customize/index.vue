@@ -289,6 +289,7 @@ import { useAppSeo } from "~/composables/useAppSeo";
 import { PRODUCTS_WITH_SIZES_QUERY, type CatalogProduct } from '~/queries/catalog'
 import { toPortableContainerCards } from '~/utils/portableContainerCards'
 import { requiresSizeSelection } from '~~/shared/utils/quoteLine'
+import { moveQuoteItemState } from '~/utils/quoteItemState'
 
 const { setPageSeo } = useAppSeo();
 
@@ -440,11 +441,7 @@ function onPortableSizeChange(item: QuoteItem, sizeKey: string) {
 
   const previousId = item.id
   const nextId = quoteStore.selectPortableSize(previousId, size)
-  itemPricingCache.delete(previousId)
-  if (nextId) {
-    itemPricingCache.delete(nextId)
-    if (expandedItemId.value === previousId) expandedItemId.value = nextId
-  }
+  migrateCustomizerState(previousId, nextId)
 }
 
 function getItemUnsatisfiedMandatory(item: QuoteItem) {
@@ -459,7 +456,7 @@ function getItemSpecSummary(item: QuoteItem): SpecSummaryItem[] {
 
 function persistItemConfig(item: QuoteItem) {
   const pricing = getItemPricing(item);
-  quoteStore.updateItemConfig(item.id, {
+  return quoteStore.updateItemConfig(item.id, {
     selections: getItemSelections(item.id),
     notes: getItemNotes(item.id),
     total: pricing.subtotal.value,
@@ -469,14 +466,25 @@ function persistItemConfig(item: QuoteItem) {
   });
 }
 
+function migrateCustomizerState(previousId: string, nextId: string | undefined) {
+  if (!nextId || previousId === nextId) return
+  moveQuoteItemState(itemSelections, previousId, nextId)
+  moveQuoteItemState(itemNotes, previousId, nextId)
+  itemPricingCache.delete(previousId)
+  itemPricingCache.delete(nextId)
+  if (expandedItemId.value === previousId) expandedItemId.value = nextId
+}
+
 function onSelectionsUpdate(item: QuoteItem, next: CustomizationSelections) {
-  itemSelections[item.id] = next;
-  persistItemConfig(item);
+  const previousId = item.id
+  itemSelections[previousId] = next;
+  migrateCustomizerState(previousId, persistItemConfig(item));
 }
 
 function onNotesUpdate(item: QuoteItem, next: CustomizationNotes) {
-  itemNotes[item.id] = next;
-  persistItemConfig(item);
+  const previousId = item.id
+  itemNotes[previousId] = next;
+  migrateCustomizerState(previousId, persistItemConfig(item));
 }
 
 const canProceedToQuote = computed(() =>

@@ -9,9 +9,14 @@ import { defineType, defineField, defineArrayMember } from 'sanity'
  * Returns `true` for absent or empty sizes — that is the `required().min(1)` rule's job to report.
  */
 export function validateExactlyOneDefaultSize(
-  sizes: Array<{ isDefault?: boolean }> | undefined
+  sizes: Array<{ isDefault?: boolean }> | undefined,
+  document?: { categories?: Array<{ _ref?: string }> }
 ): true | string {
   if (!sizes || sizes.length === 0) return true
+
+  // Portable customers choose deliberately in Customize, so Studio must not force an arbitrary
+  // pre-selected size. Existing products retain the exactly-one invariant.
+  if (document?.categories?.some((category) => category?._ref === 'category-containers')) return true
 
   const defaultCount = sizes.filter((size) => size?.isDefault === true).length
   if (defaultCount === 1) return true
@@ -128,8 +133,8 @@ export const productType = defineType({
       validation: (Rule) =>
         Rule.required()
           .min(1)
-          .custom((sizes: Array<{ isDefault?: boolean }> | undefined) =>
-            validateExactlyOneDefaultSize(sizes)
+          .custom((sizes: Array<{ isDefault?: boolean }> | undefined, context: any) =>
+            validateExactlyOneDefaultSize(sizes, context.document)
           )
     }),
     defineField({

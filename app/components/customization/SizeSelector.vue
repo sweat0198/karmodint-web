@@ -8,7 +8,7 @@
       :id="selectId"
       :value="modelValue"
       :aria-invalid="!modelValue"
-      aria-describedby="size-selection-feedback"
+      :aria-describedby="feedbackId"
       class="mt-2 w-full rounded border border-slate-300 bg-white px-3 py-2 text-sm text-brand-navy-heading focus:border-brand-red focus:outline-none focus:ring-2 focus:ring-brand-red/20"
       @change="emit('update:modelValue', ($event.target as HTMLSelectElement).value)"
     >
@@ -17,7 +17,7 @@
         {{ size.sizeLabel }} — {{ size.isPoa ? 'Price on application' : `£${size.price?.toLocaleString()}` }}
       </option>
     </select>
-    <p id="size-selection-feedback" class="mt-2 text-xs" :class="modelValue ? 'text-brand-slate-muted' : 'font-medium text-brand-red'">
+    <p :id="feedbackId" class="mt-2 text-xs" :class="modelValue ? 'text-brand-slate-muted' : 'font-medium text-brand-red'">
       <template v-if="modelValue">Dimensions and price update when you change size.</template>
       <template v-else>Choose a size before continuing to quote review.</template>
     </p>
@@ -32,13 +32,17 @@ interface SizeChoice {
   isPoa: boolean
 }
 
-withDefaults(defineProps<{
+import { computed } from 'vue'
+
+const props = withDefaults(defineProps<{
   sizes: SizeChoice[]
   modelValue: string
   selectId?: string
 }>(), {
   selectId: 'portable-size-selector'
 })
+
+const feedbackId = computed(() => `${props.selectId}-feedback`)
 
 const emit = defineEmits<{ (event: 'update:modelValue', value: string): void }>()
 </script>

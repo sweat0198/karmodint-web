@@ -239,6 +239,38 @@ describe('Catalogue verification', () => {
     return verifyCatalogue(seed, await queryCatalogue(datasetDocuments(drifted)))
   }
 
+  it('allows portable containers to start without a default, floor plan, or fixed price', () => {
+    const portableContainer: DatasetProduct = {
+      id: 'product-k1002-portable-cabin',
+      slug: 'k1002-portable-cabin',
+      categoryIds: ['category-containers'],
+      specificationCount: 0,
+      sizes: [{
+        key: '300x700',
+        isDefault: false,
+        isPoa: true,
+        price: undefined,
+        weightKg: 0,
+        heightM: null,
+        views: [],
+        assetIds: [],
+        resolvedAssetIds: []
+      }]
+    }
+    const withPortableContainer: DatasetCatalogue = {
+      ...committed,
+      products: [...committed.products, portableContainer],
+      productCount: committed.productCount + 1,
+      sizeCount: committed.sizeCount + 1
+    }
+
+    const checks = verifyCatalogue(seed, withPortableContainer)
+
+    expect(checkNamed(checks, 'Exactly one default size per product').ok).toBe(true)
+    expect(checkNamed(checks, 'Exactly one plan view per size').ok).toBe(true)
+    expect(checkNamed(checks, 'Every size has an owner-supplied fixed price').ok).toBe(true)
+  })
+
   it('ignores the draft twin a Studio visit leaves behind', async () => {
     // Editing a product in the Studio creates a `drafts.` copy carrying every field, including
     // `status: "published"`. Counting it doubled a product and reported 33 sizes against a dataset

@@ -65,6 +65,18 @@ describe('toPortableContainerCards', () => {
     expect(cards[0].isPoaOnly).toBe(true)
   })
 
+  it('falls back to an available size render when product-level representative media is absent', () => {
+    const fallback = { ...image, asset: { _type: 'reference' as const, _ref: 'image-k1002-fallback' } }
+    const cards = toPortableContainerCards([
+      container({
+        representativeImages: [],
+        sizes: [{ ...container().sizes[0]!, thumbnail: null, fallbackThumbnail: fallback }]
+      })
+    ])
+
+    expect(cards[0].representativeImage?.asset?._ref).toBe('image-k1002-fallback')
+  })
+
   it('keeps distinct portable-container models as distinct cards and excludes other categories', () => {
     const cards = toPortableContainerCards([
       container(),

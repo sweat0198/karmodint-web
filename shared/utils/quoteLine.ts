@@ -69,8 +69,8 @@ export function getQuoteLineId(line: Omit<QuoteLine, 'id'>): string {
   return `${line.productId}-${line.sizeKey}-config-${selectorSafeKey(getPortableConfigurationKey(line))}`
 }
 
-export function requiresSizeSelection(line: Pick<QuoteLine, 'isPortableContainer' | 'hasSelectedSize'>): boolean {
-  return line.isPortableContainer === true && line.hasSelectedSize === false
+export function requiresSizeSelection(line: Pick<QuoteLine, 'isPortableContainer' | 'hasSelectedSize' | 'sizeKey'>): boolean {
+  return line.isPortableContainer === true && (line.hasSelectedSize === false || !line.sizeKey)
 }
 
 /** The subset of a Quote Line that the financials rules read. */

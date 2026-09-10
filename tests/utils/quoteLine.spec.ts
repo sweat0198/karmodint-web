@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { getQuoteLineFinancials, getQuoteLineId, getQuoteLinesTotal } from '~~/shared/utils/quoteLine'
+import { getQuoteLineFinancials, getQuoteLineId, getQuoteLinesTotal, requiresSizeSelection } from '~~/shared/utils/quoteLine'
 
 describe('getQuoteLineId', () => {
   it('uses a selector-safe deterministic identifier for a portable configuration', () => {
@@ -11,6 +11,10 @@ describe('getQuoteLineId', () => {
 
     expect(getQuoteLineId(line)).toMatch(/^product-k1002-300x700-config-[a-f0-9]+$/)
     expect(getQuoteLineId({ ...line, configState: { heating: ['gas'] } })).not.toBe(getQuoteLineId(line))
+  })
+
+  it('rejects a portable line marked selected when it has no concrete size key', () => {
+    expect(requiresSizeSelection({ isPortableContainer: true, hasSelectedSize: true, sizeKey: '' })).toBe(true)
   })
 })
 

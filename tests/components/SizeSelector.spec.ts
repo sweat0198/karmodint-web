@@ -25,4 +25,11 @@ describe('SizeSelector', () => {
 
     expect(wrapper.emitted('update:modelValue')).toEqual([['300x700']])
   })
+
+  it('scopes feedback ids to its select so multiple quote lines remain accessible', () => {
+    const wrapper = mount(SizeSelector, { props: { sizes, modelValue: '', selectId: 'portable-size-line-2' } })
+
+    expect(wrapper.get('select').attributes('aria-describedby')).toBe('portable-size-line-2-feedback')
+    expect(wrapper.get('#portable-size-line-2-feedback').exists()).toBe(true)
+  })
 })

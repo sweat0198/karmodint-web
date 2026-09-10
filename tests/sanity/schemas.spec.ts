@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { schemaTypes } from '../../sanity/schemas'
-import { productType } from '../../sanity/schemas/product'
+import { productType, validateExactlyOneDefaultSize } from '../../sanity/schemas/product'
 import { categoryType } from '../../sanity/schemas/category'
 import { customizationGroupType, validateBooleanGroup } from '../../sanity/schemas/customizationGroup'
 import { quoteEnquiryType } from '../../sanity/schemas/quoteEnquiry'
@@ -58,6 +58,15 @@ describe('Sanity Schemas Structure & Validation Rules', () => {
   })
 
   describe('Product Schema', () => {
+    it('does not force a default portable-container size, but preserves the default rule elsewhere', () => {
+      expect(validateExactlyOneDefaultSize([{ isDefault: false }], {
+        categories: [{ _ref: 'category-containers' }]
+      })).toBe(true)
+      expect(validateExactlyOneDefaultSize([{ isDefault: false }], {
+        categories: [{ _ref: 'category-kiosks' }]
+      })).toContain('Exactly one size')
+    })
+
     it('defines essential product fields and relations', () => {
       const fieldNames = productType.fields.map((f: any) => f.name)
       expect(fieldNames).toContain('name')
