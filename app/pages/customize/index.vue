@@ -249,19 +249,11 @@
             :class="{ 'is-expanded': isExpanded(item.id) }"
           >
             <div class="accordion-inner border-t border-slate-200 bg-slate-50">
-              <SizeSelector
-                v-if="item.isPortableContainer"
-                :select-id="`portable-size-${item.id}`"
-                :sizes="getPortableSizes(item)"
-                :model-value="item.hasSelectedSize === false ? '' : item.sizeKey"
-                @update:model-value="onPortableSizeChange(item, $event)"
-              />
               <ProductCustomizer
                 :title="item.productName"
                 :subtitle="`${item.sizeLabel} • Engineering & Component Options`"
                 :preview-image="item.image || getFallbackImage(item.productId)"
                 :preview-images="item.images ?? []"
-                :floor-plan="item.floorPlan"
                 :spec-summary-items="getItemSpecSummary(item)"
                 :groups="DEMO_CUSTOMIZATION_GROUPS"
                 :model-value="getItemSelections(item.id)"
@@ -269,7 +261,16 @@
                 show-demo-notice
                 @update:model-value="onSelectionsUpdate(item, $event)"
                 @update:notes="onNotesUpdate(item, $event)"
-              />
+              >
+                <template v-if="item.isPortableContainer" #before-demo-notice>
+                  <SizeSelector
+                    :select-id="`portable-size-${item.id}`"
+                    :sizes="getPortableSizes(item)"
+                    :model-value="item.hasSelectedSize === false ? '' : item.sizeKey"
+                    @update:model-value="onPortableSizeChange(item, $event)"
+                  />
+                </template>
+              </ProductCustomizer>
             </div>
           </div>
         </div>

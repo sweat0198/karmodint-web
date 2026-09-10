@@ -13,7 +13,6 @@ export interface PortableContainerSize {
   heightM?: number
   price?: number
   isPoa: boolean
-  planImage: CatalogSizeOption['planImage']
   images: CatalogSizeOption['images']
 }
 
@@ -75,7 +74,6 @@ function toPortableSize(size: CatalogSizeOption): PortableContainerSize {
     heightM: size.heightM,
     price: size.price,
     isPoa: size.isPoa === true,
-    planImage: size.planImage,
     images: size.images
   }
 }

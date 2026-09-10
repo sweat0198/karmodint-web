@@ -242,7 +242,7 @@ describe('Sanity GROQ Query Evaluation (SSG Data Fetching)', () => {
       expect(gatehouse.sizes[0].images.map((i: any) => i.view)).toEqual(['front', 'interior'])
     })
 
-    it('carries portable representative images, every configured size, and each size plan', async () => {
+    it('carries portable representative images and every configured size without floor-plan-only data', async () => {
       const container = {
         _id: 'product-k1002',
         _type: 'product',
@@ -277,8 +277,9 @@ describe('Sanity GROQ Query Evaluation (SSG Data Fetching)', () => {
         'image-k1002-shared'
       ])
       expect(result.sizes).toHaveLength(2)
-      expect(result.sizes[0].planImage).toBeNull()
-      expect(result.sizes[1].planImage.asset._ref).toBe('image-k1002-900-plan')
+      expect(result.sizes[0]).not.toHaveProperty('planImage')
+      expect(result.sizes[1]).not.toHaveProperty('planImage')
+      expect(result.sizes[1].images).toEqual([])
     })
   })
 })

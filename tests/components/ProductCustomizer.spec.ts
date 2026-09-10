@@ -77,7 +77,26 @@ describe("ProductCustomizer", () => {
     expect(wrapper.text().toLowerCase()).not.toContain("catalog");
   });
 
-  it("renders a floor plan only when the selected size provides one", () => {
+  it("places injected controls directly above the demo-data notice", () => {
+    const wrapper = mount(ProductCustomizer, {
+      props: {
+        title: "Test product",
+        groups: [],
+        showDemoNotice: true,
+      },
+      slots: {
+        "before-demo-notice": '<div data-testid="portable-size-picker">Choose size</div>',
+      },
+      global: { stubs: { CustomizationGroups: true } },
+    });
+
+    const html = wrapper.html();
+    const pickerPosition = html.indexOf('data-testid="portable-size-picker"');
+    expect(pickerPosition).toBeGreaterThanOrEqual(0);
+    expect(pickerPosition).toBeLessThan(html.indexOf("Demo data."));
+  });
+
+  it("does not render a separate selected-size floor-plan section", () => {
     const wrapper = mount(ProductCustomizer, {
       props: {
         title: "Test product", groups: [],
@@ -86,8 +105,7 @@ describe("ProductCustomizer", () => {
       global: { stubs: { CustomizationGroups: true } },
     });
 
-    expect(wrapper.get('[data-testid="selected-size-floor-plan"]').attributes('src'))
-      .toBe('selected-size-plan.jpg');
+    expect(wrapper.find('[data-testid="selected-size-floor-plan"]').exists()).toBe(false);
   });
 
   it("insets the carousel indicator from the clipped top edge", () => {

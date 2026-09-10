@@ -58,7 +58,7 @@ function grpCard(overrides: Partial<SizeCard> = {}): SizeCard {
 }
 
 function portableCard(): PortableContainerCard {
-  const thumbnail = image("front", "image-k1002-representative-jpg");
+  const thumbnail = image("front", "image-k1002-representative-800x600-jpg");
   return {
     cardId: "portable-product-k1002",
     productId: "product-k1002",
@@ -73,11 +73,11 @@ function portableCard(): PortableContainerCard {
     sizes: [
       {
         sizeKey: "300x700", sourceLabel: "3m × 7m", sizeLabel: "23ft × 10ft (3.00m × 7.00m)",
-        specs: [], lengthM: 7, widthM: 3, price: 9000, isPoa: false, planImage: null, images: [thumbnail]
+        specs: [], lengthM: 7, widthM: 3, price: 9000, isPoa: false, images: [thumbnail]
       },
       {
         sizeKey: "300x900", sourceLabel: "3m × 9m", sizeLabel: "30ft × 10ft (3.00m × 9.00m)",
-        specs: [], lengthM: 9, widthM: 3, price: undefined, isPoa: true, planImage: null, images: [thumbnail]
+        specs: [], lengthM: 9, widthM: 3, price: undefined, isPoa: true, images: [thumbnail]
       }
     ]
   }
@@ -241,6 +241,28 @@ describe("useQuoteStore", () => {
         hasSelectedSize: false,
         sizeKey: "",
       });
+    });
+
+    it("uses selected-size images without saving a separate floor-plan payload", () => {
+      const store = useQuoteStore();
+      store.addPortableContainer(portableCard());
+
+      store.selectPortableSize(store.items[0]!.id, portableCard().sizes[0]!);
+
+      expect(store.items[0]).not.toHaveProperty("floorPlan");
+    });
+
+    it("keeps the representative preview when the selected size has no images", () => {
+      const store = useQuoteStore();
+      const card = portableCard();
+      const imageLessSize = { ...card.sizes[1]!, images: [] };
+      store.addPortableContainer(card);
+      const representativeImages = store.items[0]!.images;
+
+      store.selectPortableSize(store.items[0]!.id, imageLessSize);
+
+      expect(store.items[0]!.images).toEqual(representativeImages);
+      expect(store.items[0]!.image).toBe(representativeImages![0]!.src);
     });
 
     it("keeps matching portable configurations together but separates different extras", () => {

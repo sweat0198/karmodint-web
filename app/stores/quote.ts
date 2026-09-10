@@ -140,15 +140,11 @@ export const useQuoteStore = defineStore("quote", {
       item.basePrice = size.price;
       item.isPoa = size.isPoa;
       item.hasSelectedSize = true;
-      item.image = sanityImageUrl(thumbnail?.asset?._ref, projectId, dataset);
-      item.images = toCarouselImages(size.images, projectId, dataset, CUSTOMIZE_VIEWER_IMAGE_WIDTH);
-      const planSrc = sanityImageUrl(size.planImage?.asset?._ref, projectId, dataset, {
-        width: CUSTOMIZE_VIEWER_IMAGE_WIDTH,
-        fit: "max",
-      });
-      item.floorPlan = planSrc
-        ? { src: planSrc, alt: size.planImage?.alt ?? `${item.productName} ${size.sizeLabel} floor plan` }
-        : undefined;
+      const selectedImages = toCarouselImages(size.images, projectId, dataset, CUSTOMIZE_VIEWER_IMAGE_WIDTH);
+      if (selectedImages.length > 0) {
+        item.image = sanityImageUrl(thumbnail?.asset?._ref, projectId, dataset);
+        item.images = selectedImages;
+      }
       // Preserve configured option pricing while replacing only the size-derived base amount.
       // This also keeps POA size changes honest: an absent base is not invented as a numeric price.
       if (item.customTotal !== undefined) {

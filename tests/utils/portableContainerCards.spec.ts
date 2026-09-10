@@ -19,11 +19,11 @@ function container(overrides: Partial<CatalogProduct> = {}): CatalogProduct {
     sizes: [
       {
         _key: '300x700', label: '3m × 7m', lengthM: 7, widthM: 3, price: 9000,
-        isPoa: false, thumbnail: null, fallbackThumbnail: null, planImage: null, images: []
+        isPoa: false, thumbnail: null, fallbackThumbnail: null, images: []
       },
       {
         _key: '300x900', label: '3m × 9m', lengthM: 9, widthM: 3, price: undefined,
-        isPoa: true, thumbnail: null, fallbackThumbnail: null, planImage: null, images: []
+        isPoa: true, thumbnail: null, fallbackThumbnail: null, images: []
       }
     ],
     ...overrides
@@ -46,7 +46,7 @@ describe('toPortableContainerCards', () => {
           ...container().sizes,
           {
             _key: '300x1100', label: '3m × 11m', lengthM: 11, widthM: 3, price: 12000,
-            isPoa: false, thumbnail: null, fallbackThumbnail: null, planImage: null, images: []
+            isPoa: false, thumbnail: null, fallbackThumbnail: null, images: []
           }
         ]
       })

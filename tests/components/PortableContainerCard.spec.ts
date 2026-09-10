@@ -16,8 +16,8 @@ const card: PortableContainerCardModel = {
   categoryNames: ['Portable Cabins'], sizeSearchTerms: [], lowestPrice: 9000, isPoaOnly: false,
   representativeImage: { alt: 'K1002 representative image', asset: { _type: 'reference', _ref: 'image-k1002-jpg' } },
   sizes: [
-    { sizeKey: '300x700', sourceLabel: '3m × 7m', sizeLabel: '23ft × 10ft (3.00m × 7.00m)', specs: [], lengthM: 7, widthM: 3, price: 9000, isPoa: false, planImage: null, images: [] },
-    { sizeKey: '300x900', sourceLabel: '3m × 9m', sizeLabel: '30ft × 10ft (3.00m × 9.00m)', specs: [], lengthM: 9, widthM: 3, price: undefined, isPoa: true, planImage: null, images: [] }
+    { sizeKey: '300x700', sourceLabel: '3m × 7m', sizeLabel: '23ft × 10ft (3.00m × 7.00m)', specs: [], lengthM: 7, widthM: 3, price: 9000, isPoa: false, images: [] },
+    { sizeKey: '300x900', sourceLabel: '3m × 9m', sizeLabel: '30ft × 10ft (3.00m × 9.00m)', specs: [], lengthM: 9, widthM: 3, price: undefined, isPoa: true, images: [] }
   ]
 }
 

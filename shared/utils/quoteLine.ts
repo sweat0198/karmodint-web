@@ -22,8 +22,6 @@ export interface QuoteLine {
    * this field existed replay with only `image`, and the viewer falls back to that single render.
    */
   images?: CarouselImage[]
-  /** The plan attached to the selected size only; omitted for representative product imagery. */
-  floorPlan?: CarouselImage
   configState?: CustomizationSelections
   customizationNotes?: CustomizationNotes
   customTotal?: number
