@@ -14,8 +14,9 @@
  * view-vocabulary filenames the scraped pipeline uses. Sanity dedupes uploads by content hash, so
  * re-running this script re-attaches the same assets rather than duplicating them.
  *
- *   pnpm products:containers --dry-run
- *   pnpm products:containers
+ *   pnpm manual-products:containers --dry-run
+ *   pnpm manual-products:containers
+ *   pnpm manual-products:containers --update-existing
  */
 import fs from 'node:fs'
 import { renderAltText } from '../catalogue/lib/altText'
@@ -63,20 +64,20 @@ interface ManualProduct {
 export const CONTAINER_PRODUCTS: ManualProduct[] = [
   {
     id: 'product-k1002-portable-cabin',
-    name: 'K1002 Portable Cabin',
+    name: 'Portable Cabin',
     slug: 'k1002-portable-cabin',
     shortDescription:
-      'A 3.00m × 7.00m sandwich-panel portable cabin with a central door and twin windows, ready to site as an office, store or welfare unit.',
-    seoTitle: 'K1002 Portable Cabin | 3m × 7m Site Cabin',
+      'A sandwich-panel portable cabin available in 2.30m × 6.00m, 3.00m × 5.00m, 3.00m × 6.00m and 3.00m × 7.00m sizes with a central door and twin windows, ready to site as an office, store or welfare unit.',
+    seoTitle: 'Portable Cabin | Site Offices, Storage & Welfare',
     seoDescription:
-      'The K1002 is a 3.00m × 7.00m insulated sandwich-panel portable cabin with a central entrance door and two windows, suited to site offices, storage and welfare use.',
+      'An insulated sandwich-panel portable cabin in four sizes from 2.30m × 6.00m to 3.00m × 7.00m with a central entrance door and two windows, suited to site offices, storage and welfare use.',
     isFeatured: false,
     categories: ['category-containers'],
-    bodyMarkdown: `## A single-piece cabin built for the wider footprint
+    bodyMarkdown: `## A single-piece cabin in four sizes
 
-The K1002 is a 3.00m × 7.00m portable cabin, built from insulated sandwich panel on a steel
-chassis. The extra length over Karmod's smaller cabins gives room to split the interior into more
-than one working area, while the unit still arrives and leaves as a single piece.
+The Portable Cabin is built from insulated sandwich panel on a steel chassis. Choose from
+2.30m × 6.00m, 3.00m × 5.00m, 3.00m × 6.00m and 3.00m × 7.00m footprints to suit your site.
+The unit arrives and leaves as a single piece.
 
 ## Layout
 
@@ -84,7 +85,7 @@ A centred entrance door sits between two windows, one at each end of the cabin, 
 the interior get natural light. The panel construction and steel frame follow the same build as the
 rest of the range, insulated for year-round use.
 
-## Where the K1002 fits
+## Where the Portable Cabin fits
 
 - **Site offices** needing more desk space than a single-room cabin allows.
 - **Storage** for tools, plant and materials where a wider unit reduces the number of units needed
@@ -93,6 +94,42 @@ rest of the range, insulated for year-round use.
 
 Delivered ready for use — placement on site is the only step before it is in service.`,
     sizes: [
+      {
+        key: '230x600',
+        lengthM: 2.3,
+        widthM: 6,
+        weightKg: 0,
+        isPoa: true,
+        price: 0,
+        isDefault: false,
+        renderFolder: '',
+        views: [],
+        sourceUrl: '' // Dimensions supplied by the product owner; no size-specific renders yet.
+      },
+      {
+        key: '300x500',
+        lengthM: 3,
+        widthM: 5,
+        weightKg: 0,
+        isPoa: true,
+        price: 0,
+        isDefault: false,
+        renderFolder: '',
+        views: [],
+        sourceUrl: '' // Dimensions supplied by the product owner; no size-specific renders yet.
+      },
+      {
+        key: '300x600',
+        lengthM: 3,
+        widthM: 6,
+        weightKg: 0,
+        isPoa: true,
+        price: 0,
+        isDefault: false,
+        renderFolder: '',
+        views: [],
+        sourceUrl: '' // Dimensions supplied by the product owner; no size-specific renders yet.
+      },
       {
         key: '300x700',
         lengthM: 3,
@@ -125,7 +162,7 @@ function validateProducts(products: ManualProduct[]): string[] {
     for (const size of product.sizes) {
       const where = `${product.id} size "${size.key}"`
 
-      if (!size.views.includes('top')) {
+      if (size.views.length > 0 && !size.views.includes('top')) {
         problems.push(`${where} has no "top" (plan) view`)
       }
       if (size.isPoa && size.price !== 0) {
@@ -146,6 +183,7 @@ function validateProducts(products: ManualProduct[]): string[] {
 
 async function main(): Promise<void> {
   const dryRun = process.argv.includes('--dry-run')
+  const updateExisting = process.argv.includes('--update-existing')
   const dataset = dryRun ? readDataset() : readSanityTarget().dataset
 
   const problems = validateProducts(CONTAINER_PRODUCTS)
@@ -161,7 +199,9 @@ async function main(): Promise<void> {
   if (dryRun) {
     for (const product of CONTAINER_PRODUCTS) {
       const renders = product.sizes.flatMap((size) => size.views.map((view) => renderPath(size.renderFolder, view)))
-      console.log(`would create/replace ${product.id} (${renders.length} render(s))`)
+      console.log(updateExisting
+        ? `would update copy and append missing sizes for ${product.id}`
+        : `would create/replace ${product.id} (${renders.length} render(s))`)
     }
     return
   }
@@ -173,6 +213,55 @@ async function main(): Promise<void> {
     const problemsInBody = validatePortableText(description)
     if (problemsInBody.length > 0) {
       throw new Error(`${product.id} body converts to Portable Text outside the whitelist:\n  ${problemsInBody.join('\n  ')}`)
+    }
+
+    if (updateExisting) {
+      // Patch only requested copy and append missing sizes; preserve CMS pricing, media and edits.
+      const documents = await client.fetch<Array<{
+        _id: string
+        _rev: string
+        sizes?: Array<{ _key: string; images?: Array<{ alt?: string }> }>
+        representativeImages?: Array<{ alt?: string }>
+      }>>('*[_id in $ids]{_id, _rev, sizes, representativeImages}', {
+        ids: [product.id, `drafts.${product.id}`]
+      })
+      if (!documents.some((document) => document._id === product.id)) {
+        throw new Error(`Published product ${product.id} does not exist`)
+      }
+      let transaction = client.transaction()
+      for (const existing of documents) {
+        const additions = product.sizes
+          .filter((size) => !existing.sizes?.some((current) => current._key === size.key))
+          .map(({ key, renderFolder, views, sourceUrl, ...size }) => ({
+            ...size, _key: key, _type: 'sizeOption', label: sizeLabel({ key, renderFolder, views, sourceUrl, ...size }), images: []
+          }))
+        const altUpdates: Record<string, string> = {}
+        const renameImageAlts = (images: Array<{ alt?: string }> | undefined, path: string) => {
+          images?.forEach((image, index) => {
+            if (image.alt?.includes('K1002')) {
+              altUpdates[`${path}[${index}].alt`] = image.alt.replace(/K1002\s*/g, '').trim()
+            }
+          })
+        }
+        renameImageAlts(existing.representativeImages, 'representativeImages')
+        existing.sizes?.forEach((size, index) => renameImageAlts(size.images, `sizes[${index}].images`))
+        transaction = transaction.patch(existing._id, (patch) => {
+          const updated = patch.ifRevisionId(existing._rev).set({
+            ...altUpdates,
+            name: product.name,
+            shortDescription: product.shortDescription,
+            description,
+            'seo.metaTitle': product.seoTitle,
+            'seo.metaDescription': product.seoDescription
+          })
+          return additions.length > 0
+            ? updated.setIfMissing({ sizes: [] }).append('sizes', additions)
+            : updated
+        })
+      }
+      await transaction.commit()
+      console.log(`updated ${product.id} and any existing draft in "${dataset}"`)
+      continue
     }
 
     const sizes = []
