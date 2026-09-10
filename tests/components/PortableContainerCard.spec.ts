@@ -24,6 +24,16 @@ const card: PortableContainerCardModel = {
 describe('PortableContainerCard', () => {
   beforeEach(() => setActivePinia(createPinia()))
 
+  it('omits the model description to match other product cards', () => {
+    const description = 'A 3.00m × 7.00m sandwich-panel portable cabin with a central door.'
+    const wrapper = mount(PortableContainerCard, {
+      props: { card: { ...card, shortDescription: description } },
+      global: { plugins: [createPinia()] }
+    })
+
+    expect(wrapper.text()).not.toContain(description)
+  })
+
   it('shows every available size, representative-image context, and the lowest configured price', () => {
     const wrapper = mount(PortableContainerCard, { props: { card }, global: { plugins: [createPinia()] } })
 

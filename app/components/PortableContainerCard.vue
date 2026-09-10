@@ -19,7 +19,6 @@
     <div class="p-6 flex flex-1 flex-col justify-between gap-6">
       <div>
         <h3 class="text-brand-navy-heading text-xl font-bold leading-snug">{{ card.productName }}</h3>
-        <p v-if="card.shortDescription" class="mt-1 text-sm text-brand-slate-muted">{{ card.shortDescription }}</p>
         <div class="mt-4">
           <p class="text-xs font-semibold tracking-wide uppercase text-brand-slate-muted">Available sizes</p>
           <ul class="mt-2 flex flex-wrap gap-2" aria-label="Available sizes">
