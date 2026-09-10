@@ -125,6 +125,20 @@ export const structure: StructureResolver = (S) =>
 
       S.divider(),
 
+      // Gallery Section
+      S.listItem()
+        .title('Gallery')
+        .child(
+          S.documentTypeList('galleryEntry')
+            .title('Gallery Entries')
+            .defaultOrdering([
+              { field: 'order', direction: 'asc' },
+              { field: 'projectTitle', direction: 'asc' }
+            ])
+        ),
+
+      S.divider(),
+
       // References Section
       S.listItem()
         .title('References')

@@ -3,6 +3,7 @@ import { productType } from './product'
 import { customizationGroupType } from './customizationGroup'
 import { quoteEnquiryType } from './quoteEnquiry'
 import { clientReferenceType } from './reference'
+import { galleryEntryType } from './galleryEntry'
 import { blockContent } from './objects/blockContent'
 import { sizeOption } from './objects/sizeOption'
 import { customizationItem } from './objects/customizationItem'
@@ -17,6 +18,7 @@ export const schemaTypes = [
   customizationGroupType,
   quoteEnquiryType,
   clientReferenceType,
+  galleryEntryType,
 
   // Object types
   blockContent,

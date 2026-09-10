@@ -5,6 +5,7 @@ import { categoryType } from '../../sanity/schemas/category'
 import { customizationGroupType, validateBooleanGroup } from '../../sanity/schemas/customizationGroup'
 import { quoteEnquiryType } from '../../sanity/schemas/quoteEnquiry'
 import { clientReferenceType } from '../../sanity/schemas/reference'
+import { galleryEntryType, validateGalleryOrder } from '../../sanity/schemas/galleryEntry'
 import { customizationItem } from '../../sanity/schemas/objects/customizationItem'
 import { sizeOption, validateSizeImages } from '../../sanity/schemas/objects/sizeOption'
 
@@ -16,6 +17,7 @@ describe('Sanity Schemas Structure & Validation Rules', () => {
     expect(typeNames).toContain('customizationGroup')
     expect(typeNames).toContain('quoteEnquiry')
     expect(typeNames).toContain('clientReference')
+    expect(typeNames).toContain('galleryEntry')
     expect(typeNames).toContain('sizeOption')
     expect(typeNames).toContain('quoteItem')
     expect(typeNames).toContain('customizationItem')
@@ -53,6 +55,44 @@ describe('Sanity Schemas Structure & Validation Rules', () => {
       expect(clientReferenceType.orderings?.map((ordering) => ordering.name)).toEqual([
         'displayOrderAsc',
         'companyNameAsc'
+      ])
+    })
+  })
+
+  describe('Gallery Entry Schema', () => {
+    it('defines the agreed fields and category relation', () => {
+      const fields = Object.fromEntries(galleryEntryType.fields.map((field: any) => [field.name, field]))
+
+      expect(Object.keys(fields)).toEqual([
+        'projectTitle',
+        'image',
+        'category',
+        'description',
+        'order'
+      ])
+      expect(fields.projectTitle.type).toBe('string')
+      expect(fields.image.type).toBe('image')
+      expect(fields.image.options).toEqual({ hotspot: true })
+      expect(fields.image.fields[0].name).toBe('alt')
+      expect(fields.category.type).toBe('reference')
+      expect(fields.category.to).toEqual([{ type: 'category' }])
+      expect(fields.description.type).toBe('text')
+      expect(fields.order.type).toBe('number')
+      expect(fields.order.initialValue).toBeUndefined()
+    })
+
+    it('allows unordered entries and only accepts positive whole-number positions', () => {
+      expect(validateGalleryOrder(undefined)).toBe(true)
+      expect(validateGalleryOrder(null)).toBe(true)
+      expect(validateGalleryOrder(1)).toBe(true)
+      expect(validateGalleryOrder(4.5)).toContain('whole number')
+      expect(validateGalleryOrder(0)).toContain('greater than zero')
+    })
+
+    it('provides manual and alphabetical orderings', () => {
+      expect(galleryEntryType.orderings?.map((ordering) => ordering.name)).toEqual([
+        'orderAsc',
+        'projectTitleAsc'
       ])
     })
   })
