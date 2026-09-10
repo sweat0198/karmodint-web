@@ -93,7 +93,7 @@ describe('Email Utility & Template Engine', () => {
       expect(businessEmail.to).toEqual(['quotes@karmod-international.com'])
       expect(businessEmail.subject).toContain('New Quote Request from Bob Johnson (1 item)')
       expect(businessEmail.html).toContain('Executive Modular Gatehouse')
-      expect(businessEmail.html).toContain('25,000.00')
+      expect(businessEmail.html).toContain('£25,000')
       expect(businessEmail.html).toContain('Product estimate (ex. VAT)')
       expect(businessEmail.html).toContain('Pending sales review')
       expect(businessEmail.html).toContain('10 High Street, Nottingham, NG1 1AA')
@@ -140,11 +140,11 @@ describe('Email Utility & Template Engine', () => {
         expect(email.html).toContain('Customisations &amp; add-ons')
         expect(email.html).toContain('Electrical: 2x Double sockets')
         expect(email.html).toContain('HVAC: 2kW Wall heater')
-        expect(email.html).toContain('250.00')
-        expect(email.html).toContain('200.00')
+        expect(email.html).toContain('£250')
+        expect(email.html).toContain('£200')
         // Modifiers are already folded into customTotal, so the line total must not double-count them.
-        expect(email.html).toContain('10,450.00')
-        expect(email.html).not.toContain('10,700.00')
+        expect(email.html).toContain('£10,450')
+        expect(email.html).not.toContain('£10,700')
       }
     })
 
@@ -167,8 +167,46 @@ describe('Email Utility & Template Engine', () => {
       )
 
       for (const email of [businessEmail, customerEmail]) {
-        expect(email.html).toContain('25,000.00')
-        expect(email.html).not.toContain('20,000.00')
+        expect(email.html).toContain('£25,000')
+        expect(email.html).not.toContain('£20,000')
+      }
+    })
+
+    it('renders POA and priced lines with the same wording as the Quote List page for a mixed-POA enquiry', () => {
+      const { businessEmail, customerEmail } = buildQuoteEmails(
+        {
+          customer: quoteData.customer,
+          items: [
+            {
+              productName: 'Executive Modular Gatehouse 3x7m',
+              sizeLabel: 'Standard Premium',
+              quantity: 2,
+              basePrice: 12500,
+              customTotal: 12500
+            },
+            {
+              productName: 'Bespoke Security Cabin',
+              sizeLabel: 'Custom',
+              quantity: 1,
+              isPoa: true
+            }
+          ]
+        },
+        'quotes@karmod-international.com'
+      )
+
+      for (const email of [businessEmail, customerEmail]) {
+        // Priced line: per-line price and per-line total match getTotalLabel's wording.
+        expect(email.html).toContain('£25,000')
+        expect(email.html).toContain('£12,500')
+
+        // POA line: getQuoteLineFinancials has no price to report, so getTotalLabel renders
+        // the placeholder total with the additive "+ POA" suffix — same as the Quote List page.
+        expect(email.html).toContain('£0 + POA')
+
+        // Enquiry summary total: some lines priced, one wholly POA -> "Part POA" (getPartialTotalLabel).
+        expect(email.html).toContain('Part POA')
+        expect(email.html).not.toContain('£25,000 + POA')
       }
     })
   })

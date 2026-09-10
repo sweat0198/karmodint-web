@@ -8,6 +8,7 @@
 import { COMPANY_DETAILS, COMPANY_ADDRESS, COMPANY_CONTACT } from '../../app/constants/company'
 import { getQuoteLineFinancials, getQuoteLinesTotal } from '../../shared/utils/quoteLine'
 import type { QuoteLinePriceInputs } from '../../shared/utils/quoteLine'
+import { getPriceLabel, getTotalLabel, getPartialTotalLabel } from '../../shared/utils/priceLabel'
 import type { SanitySelectedCustomization } from '../../app/types/catalog'
 
 export interface EmailPayload {
@@ -73,10 +74,6 @@ function esc(value: unknown): string {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;')
-}
-
-function fmtGBP(amount: number): string {
-  return `&pound;${amount.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
 }
 
 function fmtDateLong(date: Date): string {
@@ -352,7 +349,7 @@ function customizationLabel(cust: SanitySelectedCustomization): string {
 }
 
 function customizationPriceDisplay(cust: SanitySelectedCustomization): string {
-  return cust.isPoa ? 'POA' : fmtGBP(cust.price ?? 0)
+  return getPriceLabel(cust)
 }
 
 /**
@@ -363,10 +360,10 @@ function customizationPriceDisplay(cust: SanitySelectedCustomization): string {
  * counted twice.
  */
 function computeItemFinancials(item: QuoteItemSummary) {
-  const { unitPrice, lineTotal: itemTotal } = getQuoteLineFinancials(item)
+  const { unitPrice, lineTotal: itemTotal, isPoa } = getQuoteLineFinancials(item)
   const addons = item.selectedCustomizations ?? []
   const addonsTotal = addons.reduce((sum, c) => sum + (c.isPoa ? 0 : c.price ?? 0), 0)
-  return { unitPrice, addonsTotal, itemTotal }
+  return { unitPrice, addonsTotal, itemTotal, isPoa }
 }
 
 function productImageCell(item: QuoteItemSummary): string {
@@ -407,13 +404,12 @@ function customizationsSubcard(item: QuoteItemSummary): string {
 }
 
 function buildItemCardHtml(item: QuoteItemSummary): string {
-  const { unitPrice, addonsTotal, itemTotal } = computeItemFinancials(item)
+  const { unitPrice, addonsTotal, itemTotal, isPoa } = computeItemFinancials(item)
   const dimsParts = [item.dimensions, item.sizeLabel].filter((v): v is string => Boolean(v))
   const dims = Array.from(new Set(dimsParts)).join(' &middot; ')
-  const priceDisplay = item.isPoa ? 'POA' : fmtGBP(unitPrice)
-  const baseLine = item.isPoa
-    ? 'Price on application'
-    : `Unit price ${fmtGBP(unitPrice)} &times; ${item.quantity}${addonsTotal > 0 ? ` &nbsp;(includes selected customisations)` : ''}`
+  const priceDisplay = getTotalLabel({ total: unitPrice, hasPoa: isPoa })
+  const totalDisplay = getTotalLabel({ total: itemTotal, hasPoa: isPoa })
+  const baseLine = `Unit price ${priceDisplay} &times; ${item.quantity}${addonsTotal > 0 ? ` &nbsp;(includes selected customisations)` : ''}`
 
   const inner = `
     <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"><tr>
@@ -441,7 +437,7 @@ function buildItemCardHtml(item: QuoteItemSummary): string {
     <div style="height:16px;line-height:16px;">&nbsp;</div>
     <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-top:1px solid #E2E8F0;"><tr>
       <td class="stack center-sm" valign="middle" style="padding-top:14px;font-family:${FONT};font-size:12px;color:#64748B;line-height:20px;">${baseLine}</td>
-      <td class="stack center-sm" align="right" valign="middle" style="padding-top:14px;font-family:${FONT};font-size:13px;font-weight:600;color:#1F2937;white-space:nowrap;text-align:right;">Item total &nbsp;<span style="font-size:18px;font-weight:700;color:#291715;">${item.isPoa ? 'POA' : fmtGBP(itemTotal)}</span></td>
+      <td class="stack center-sm" align="right" valign="middle" style="padding-top:14px;font-family:${FONT};font-size:13px;font-weight:600;color:#1F2937;white-space:nowrap;text-align:right;">Item total &nbsp;<span style="font-size:18px;font-weight:700;color:#291715;">${totalDisplay}</span></td>
     </tr></table>
   `
   return cardRow(inner)
@@ -526,11 +522,11 @@ function buildFinancialSummaryCardHtml(opts: {
   const { items, itemFinancials, productEstimate, hasPoaItems, ctasHtml } = opts
 
   const lineRows = items.map((item, i) => {
-    const fin = itemFinancials[i] ?? { unitPrice: 0, addonsTotal: 0, itemTotal: 0 }
+    const fin = itemFinancials[i] ?? { unitPrice: 0, addonsTotal: 0, itemTotal: 0, isPoa: false }
     const addonsNote = fin.addonsTotal > 0 ? ` <span style="color:#64748B;">(incl. add-ons)</span>` : ''
     return `<tr>
       <td style="padding:9px 0;font-family:${FONT};font-size:14px;font-weight:400;color:#64748B;line-height:22px;">${esc(item.productName)}${addonsNote}</td>
-      <td align="right" style="padding:9px 0;font-family:${FONT};font-size:15px;font-weight:600;color:#291715;line-height:22px;white-space:nowrap;">${item.isPoa ? 'POA' : fmtGBP(fin.itemTotal)}</td>
+      <td align="right" style="padding:9px 0;font-family:${FONT};font-size:15px;font-weight:600;color:#291715;line-height:22px;white-space:nowrap;">${getTotalLabel({ total: fin.itemTotal, hasPoa: fin.isPoa })}</td>
     </tr>`
   }).join('')
 
@@ -542,7 +538,7 @@ function buildFinancialSummaryCardHtml(opts: {
       <tr><td colspan="2" style="border-top:1px solid #E2E8F0;height:1px;line-height:1px;font-size:1px;padding-top:6px;">&nbsp;</td></tr>
       <tr>
         <td style="padding:9px 0;font-family:${FONT};font-size:14px;font-weight:600;color:#1F2937;line-height:22px;">Product estimate (ex. VAT)</td>
-        <td align="right" style="padding:9px 0;font-family:${FONT};font-size:18px;font-weight:700;color:#291715;line-height:24px;white-space:nowrap;">${hasPoaItems ? 'Part POA' : fmtGBP(productEstimate)}</td>
+        <td align="right" style="padding:9px 0;font-family:${FONT};font-size:18px;font-weight:700;color:#291715;line-height:24px;white-space:nowrap;">${getPartialTotalLabel({ total: productEstimate, hasPoa: hasPoaItems })}</td>
       </tr>
       <tr>
         <td style="padding:9px 0;font-family:${FONT};font-size:14px;font-weight:400;color:#64748B;line-height:22px;">VAT, delivery &amp; offload</td>
@@ -610,7 +606,7 @@ export function buildQuoteEmails(
   const submittedAt = `${now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}, ${submittedDate}`
 
   const itemFinancials = items.map(computeItemFinancials)
-  const hasPoaItems = items.some(i => i.isPoa)
+  const hasPoaItems = itemFinancials.some(f => f.isPoa)
   const productEstimate = getQuoteLinesTotal(items)
 
   const preparedForCardHtml = buildPreparedForCardHtml({

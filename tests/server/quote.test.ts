@@ -148,8 +148,8 @@ describe('Quote Request API Endpoint', () => {
     const [customerEmail] = vi.mocked(sendResendEmail).mock.calls[1]
 
     for (const email of [businessEmail, customerEmail]) {
-      expect(email.html).toContain('9,800.00')
-      expect(email.html).not.toContain('8,500.00')
+      expect(email.html).toContain('£9,800')
+      expect(email.html).not.toContain('£8,500')
     }
   })
 })
