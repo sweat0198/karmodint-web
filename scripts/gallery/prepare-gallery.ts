@@ -2,16 +2,22 @@ import { createHash } from 'node:crypto'
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { GALLERY_SOURCE_ROOT, type GalleryClassification, type GalleryManifestItem } from './lib/model'
+import {
+  GALLERY_SOURCE_ROOT,
+  type GalleryClassification,
+  type GalleryManifestItem,
+  type GallerySourceRoot,
+  type GallerySourceScope
+} from './lib/model'
 import { loadRootEnv } from './lib/env'
 import { repoPath } from './lib/paths'
 import { planGalleryAssets } from './lib/planAssets'
-import { scanGallerySource } from './lib/scan'
+import { scanGallerySources } from './lib/scan'
 import { manifestCsv, manifestJson, reviewReport } from './lib/serialize'
 import { validateClassifications, validateManifest } from './lib/validate'
 
 /**
- * Prepare the gallery package: read an external photo folder, plan it, and — only when asked —
+ * Prepare the gallery package: read the external photo folders, plan them, and — only when asked —
  * copy bytes into the ignored local library beside the tracked metadata.
  *
  * Three modes, one code path. A dry run does everything a write does except touch the disk, so the
@@ -26,8 +32,8 @@ export const GALLERY_PACKAGE_ROOT = 'sanity/gallery'
 const ARTEFACTS = ['manifest.json', 'manifest.csv', 'review-report.md'] as const
 
 export interface PrepareGalleryOptions {
-  /** Absolute path of the external photo folder. Never stored in a tracked artefact. */
-  sourceRoot: string
+  /** The external photo folders, in the order they are read. Never stored in a tracked artefact. */
+  sourceRoots: GallerySourceRoot[]
   /** Absolute path the copied binaries live under; the tracked artefacts sit in its parent. */
   outputRoot: string
   classificationFile: string
@@ -56,7 +62,7 @@ export function loadClassifications(file: string = repoPath(CLASSIFICATION_FILE)
 }
 
 export async function prepareGallery(options: PrepareGalleryOptions): Promise<PrepareGalleryResult> {
-  const { sourceRoot, outputRoot, classificationFile, mode } = options
+  const { sourceRoots, outputRoot, classificationFile, mode } = options
 
   const classifications = loadClassifications(classificationFile)
   const classificationProblems = validateClassifications(classifications)
@@ -64,7 +70,10 @@ export async function prepareGallery(options: PrepareGalleryOptions): Promise<Pr
     throw new Error(`Classification is invalid:\n  ${classificationProblems.join('\n  ')}`)
   }
 
-  const { images, problems: scanProblems } = await scanGallerySource(sourceRoot)
+  const { images, problems: scanProblems } = await scanGallerySources(
+    sourceRoots,
+    new Set(classifications.map((row) => row.sourcePath))
+  )
   if (scanProblems.length > 0) {
     throw new Error(`Source images could not be read:\n  ${scanProblems.join('\n  ')}`)
   }
@@ -261,37 +270,70 @@ function summarise(result: PrepareGalleryResult): string[] {
 }
 
 interface CliArgs {
-  sourceRoot: string
+  sourceRoots: GallerySourceRoot[]
   outputRoot: string
   classificationFile: string
   mode: PrepareGalleryOptions['mode']
 }
 
+/** Every `--name value` occurrence, so a folder flag can be passed more than once. */
+function flagValues(argv: string[], name: string): string[] {
+  const values: string[] = []
+  for (const [index, argument] of argv.entries()) {
+    if (argument !== `--${name}`) continue
+    const value = argv[index + 1]
+    if (value !== undefined && !value.startsWith('--')) values.push(value)
+  }
+  return values
+}
+
 export function parseArgs(argv: string[]): CliArgs {
-  const flag = (name: string) => {
-    const at = argv.indexOf(`--${name}`)
-    return at === -1 ? undefined : argv[at + 1]
+  const flag = (name: string) => flagValues(argv, name)[0]
+
+  /**
+   * The folders one flag names, at that flag's scope.
+   *
+   * Flags win over the environment per scope, so overriding the library folder on the command line
+   * does not silently drop the curated one configured in `.env`, or the other way round. The
+   * environment names one folder per scope; passing several is a command-line affair.
+   */
+  const rootsFor = (
+    flagName: string,
+    scope: GallerySourceScope,
+    ...configured: (string | undefined)[]
+  ): GallerySourceRoot[] => {
+    const passed = flagValues(argv, flagName)
+    if (passed.length > 0) return passed.map((path) => ({ path, scope }))
+
+    const fallback = configured.find((value) => value !== undefined && value !== '')
+    return fallback === undefined ? [] : [{ path: fallback, scope }]
   }
 
-  const source = flag('source') ?? process.env.GALLERY_SOURCE_DIR ?? process.env.GALLERY_SOURCE_PATH
   const write = argv.includes('--write')
   const check = argv.includes('--verify')
 
-  if (!source) {
+  const sourceRoots: GallerySourceRoot[] = [
+    ...rootsFor('source', 'all', process.env.GALLERY_SOURCE_DIR, process.env.GALLERY_SOURCE_PATH),
+    ...rootsFor('curated-source', 'classified', process.env.GALLERY_CURATED_SOURCE_DIR)
+  ]
+
+  if (sourceRoots.length === 0) {
     throw new Error('Pass the photo folder explicitly: --source "<absolute folder>" or set GALLERY_SOURCE_DIR in .env')
   }
-  if (!path.isAbsolute(source)) {
-    throw new Error(`Photo source folder must be an absolute path (got "${source}")`)
-  }
-  if (!fs.existsSync(source) || !fs.statSync(source).isDirectory()) {
-    throw new Error(`Photo source folder is not an existing folder: ${source}`)
+  for (const root of sourceRoots) {
+    if (!path.isAbsolute(root.path)) {
+      throw new Error(`Photo source folder must be an absolute path (got "${root.path}")`)
+    }
+    if (!fs.existsSync(root.path) || !fs.statSync(root.path).isDirectory()) {
+      throw new Error(`Photo source folder is not an existing folder: ${root.path}`)
+    }
   }
   if (write && check) {
     throw new Error('--write and --verify are opposites: verification never changes files')
   }
 
   return {
-    sourceRoot: source,
+    sourceRoots,
     outputRoot: flag('output') ?? repoPath(GALLERY_SOURCE_ROOT),
     classificationFile: flag('classification') ?? repoPath(CLASSIFICATION_FILE),
     mode: write ? 'write' : check ? 'verify' : 'dry-run'

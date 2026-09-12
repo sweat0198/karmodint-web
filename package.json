@@ -23,6 +23,7 @@
     "typecheck:references": "tsc -p tsconfig.references.json",
     "gallery:prepare": "jiti scripts/gallery/prepare-gallery.ts",
     "gallery:verify": "jiti scripts/gallery/prepare-gallery.ts --verify",
+    "gallery:import": "jiti scripts/gallery/import-gallery.ts",
     "typecheck:gallery": "tsc -p tsconfig.gallery.json",
     "manual-products:containers": "jiti scripts/manual-products/add-container-products.ts",
     "typecheck:manual-products": "tsc -p tsconfig.manual-products.json",

@@ -4,7 +4,7 @@ import os from 'node:os'
 import path from 'node:path'
 import sharp from 'sharp'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
-import type { GalleryClassification } from '../../scripts/gallery/lib/model'
+import type { GalleryClassification, GallerySourceRoot } from '../../scripts/gallery/lib/model'
 import { parseArgs, prepareGallery } from '../../scripts/gallery/prepare-gallery'
 
 let root: string
@@ -76,8 +76,13 @@ async function seedSource() {
   ])
 }
 
-function run(mode: 'dry-run' | 'write' | 'verify') {
-  return prepareGallery({ sourceRoot, outputRoot, classificationFile, mode })
+function run(mode: 'dry-run' | 'write' | 'verify', sourceRoots?: GallerySourceRoot[]) {
+  return prepareGallery({
+    sourceRoots: sourceRoots ?? [{ path: sourceRoot, scope: 'all' }],
+    outputRoot,
+    classificationFile,
+    mode
+  })
 }
 
 function sha256Of(absolute: string): string {
@@ -253,6 +258,83 @@ describe('prepareGallery verify', () => {
   })
 })
 
+
+describe('prepareGallery with a curated second folder', () => {
+  let jobFolder: string
+
+  beforeEach(() => {
+    jobFolder = path.join(root, 'job-archive')
+    fs.mkdirSync(jobFolder, { recursive: true })
+  })
+
+  async function writeJobJpeg(relative: string, tint: number) {
+    const absolute = path.join(jobFolder, relative)
+    fs.mkdirSync(path.dirname(absolute), { recursive: true })
+    await sharp({
+      create: { width: 60, height: 40, channels: 3, background: { r: tint, g: 40, b: 40 } }
+    }).jpeg().toFile(absolute)
+    return absolute
+  }
+
+  const BOTH: GallerySourceRoot[] = []
+
+  beforeEach(() => {
+    BOTH.length = 0
+    BOTH.push({ path: sourceRoot, scope: 'all' }, { path: jobFolder, scope: 'classified' })
+  })
+
+  it('takes the classified photos and ignores the rest of the job folder', async () => {
+    await seedSource()
+    await writeJobJpeg('Arca/picked.jpg', 30)
+    await writeJobJpeg('Arca/ignored.jpg', 31)
+    await writeJobJpeg('Arca/also-ignored.jpg', 32)
+    const rows = JSON.parse(fs.readFileSync(classificationFile, 'utf-8')) as GalleryClassification[]
+    writeClassification([
+      ...rows,
+      classification({
+        sourcePath: 'Arca/picked.jpg',
+        family: 'cabins',
+        useCase: 'security-guard',
+        project: 'arca-savunma',
+        order: 1
+      })
+    ])
+
+    const result = await run('write', BOTH)
+
+    expect(result.scanned).toBe(4)
+    expect(result.canonical).toBe(3)
+    expect(result.items.map((item) => item.sourcePath)).toContain('Arca/picked.jpg')
+    expect(fs.existsSync(path.join(outputRoot, 'cabins/security-guard/arca-savunma/arca-savunma-001.jpg')))
+      .toBe(true)
+  })
+
+  it('still refuses an unclassified photo in the all-scope folder', async () => {
+    await seedSource()
+    await writeJpeg('Konteyner/Yatakhane/3.jpg', 90)
+    await writeJobJpeg('Arca/ignored.jpg', 31)
+
+    await expect(run('dry-run', BOTH)).rejects.toThrow(/Konteyner\/Yatakhane\/3\.jpg/)
+  })
+
+  it('refuses a classified row naming a photo neither folder holds', async () => {
+    await seedSource()
+    const rows = JSON.parse(fs.readFileSync(classificationFile, 'utf-8')) as GalleryClassification[]
+    writeClassification([
+      ...rows,
+      classification({
+        sourcePath: 'Arca/never-arrived.jpg',
+        family: 'cabins',
+        useCase: 'security-guard',
+        project: 'arca-savunma',
+        order: 1
+      })
+    ])
+
+    await expect(run('dry-run', BOTH)).rejects.toThrow(/Arca\/never-arrived\.jpg/)
+  })
+})
+
 describe('parseArgs', () => {
   let tmpFolder: string
   const originalEnv = { ...process.env }
@@ -261,6 +343,7 @@ describe('parseArgs', () => {
     tmpFolder = fs.mkdtempSync(path.join(os.tmpdir(), 'gallery-parse-args-'))
     delete process.env.GALLERY_SOURCE_DIR
     delete process.env.GALLERY_SOURCE_PATH
+    delete process.env.GALLERY_CURATED_SOURCE_DIR
   })
 
   afterEach(() => {
@@ -270,14 +353,14 @@ describe('parseArgs', () => {
 
   it('uses --source flag when provided', () => {
     const args = parseArgs(['--source', tmpFolder])
-    expect(args.sourceRoot).toBe(tmpFolder)
+    expect(args.sourceRoots).toEqual([{ path: tmpFolder, scope: 'all' }])
     expect(args.mode).toBe('dry-run')
   })
 
   it('falls back to GALLERY_SOURCE_DIR from environment when --source is absent', () => {
     process.env.GALLERY_SOURCE_DIR = tmpFolder
     const args = parseArgs([])
-    expect(args.sourceRoot).toBe(tmpFolder)
+    expect(args.sourceRoots).toEqual([{ path: tmpFolder, scope: 'all' }])
   })
 
   it('prioritizes --source CLI argument over GALLERY_SOURCE_DIR', () => {
@@ -286,7 +369,7 @@ describe('parseArgs', () => {
 
     try {
       const args = parseArgs(['--source', tmpFolder])
-      expect(args.sourceRoot).toBe(tmpFolder)
+      expect(args.sourceRoots).toEqual([{ path: tmpFolder, scope: 'all' }])
     } finally {
       fs.rmSync(otherFolder, { recursive: true, force: true })
     }
@@ -310,6 +393,56 @@ describe('parseArgs', () => {
     process.env.GALLERY_SOURCE_DIR = tmpFolder
     expect(parseArgs(['--verify']).mode).toBe('verify')
     expect(parseArgs(['--write']).mode).toBe('write')
+  })
+
+  it('adds a --curated-source folder at classified scope, after the all-scope ones', () => {
+    const jobFolder = fs.mkdtempSync(path.join(os.tmpdir(), 'gallery-curated-'))
+
+    try {
+      const args = parseArgs(['--source', tmpFolder, '--curated-source', jobFolder])
+      expect(args.sourceRoots).toEqual([
+        { path: tmpFolder, scope: 'all' },
+        { path: jobFolder, scope: 'classified' }
+      ])
+    } finally {
+      fs.rmSync(jobFolder, { recursive: true, force: true })
+    }
+  })
+
+  it('accepts several folders of each scope', () => {
+    const second = fs.mkdtempSync(path.join(os.tmpdir(), 'gallery-second-'))
+
+    try {
+      const args = parseArgs(['--source', tmpFolder, '--curated-source', second, '--curated-source', tmpFolder])
+      expect(args.sourceRoots.map((root) => root.scope)).toEqual(['all', 'classified', 'classified'])
+    } finally {
+      fs.rmSync(second, { recursive: true, force: true })
+    }
+  })
+
+  it('falls back to GALLERY_CURATED_SOURCE_DIR when --curated-source is absent', () => {
+    const jobFolder = fs.mkdtempSync(path.join(os.tmpdir(), 'gallery-curated-env-'))
+    process.env.GALLERY_SOURCE_DIR = tmpFolder
+    process.env.GALLERY_CURATED_SOURCE_DIR = jobFolder
+
+    try {
+      expect(parseArgs([]).sourceRoots).toEqual([
+        { path: tmpFolder, scope: 'all' },
+        { path: jobFolder, scope: 'classified' }
+      ])
+    } finally {
+      fs.rmSync(jobFolder, { recursive: true, force: true })
+    }
+  })
+
+  it('accepts a curated folder as the only source', () => {
+    expect(parseArgs(['--curated-source', tmpFolder]).sourceRoots)
+      .toEqual([{ path: tmpFolder, scope: 'classified' }])
+  })
+
+  it('rejects a curated folder that does not exist', () => {
+    expect(() => parseArgs(['--curated-source', '/non/existent/path/for/sure']))
+      .toThrowError(/not an existing folder/)
   })
 })
 

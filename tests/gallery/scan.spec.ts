@@ -4,7 +4,8 @@ import os from 'node:os'
 import path from 'node:path'
 import sharp from 'sharp'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
-import { scanGallerySource } from '../../scripts/gallery/lib/scan'
+import type { GallerySourceRoot } from '../../scripts/gallery/lib/model'
+import { scanGallerySources } from '../../scripts/gallery/lib/scan'
 
 let sourceRoot: string
 
@@ -55,7 +56,16 @@ function sha256Of(absolute: string): string {
   return createHash('sha256').update(fs.readFileSync(absolute)).digest('hex')
 }
 
-describe('scanGallerySource', () => {
+/** The common case: one folder, every image in it, so the pick list is irrelevant. */
+function scanGallerySource(root: string) {
+  return scanGallerySources([{ path: root, scope: 'all' }], new Set())
+}
+
+function root(path: string, scope: GallerySourceRoot['scope']): GallerySourceRoot {
+  return { path, scope }
+}
+
+describe('scanGallerySources', () => {
   it('returns only supported images and ignores filesystem noise', async () => {
     await writeJpeg('Konteyner/a.jpg')
     await writePng('Kabin/b.png')
@@ -184,6 +194,106 @@ describe('scanGallerySource', () => {
 
   it('refuses a source root that does not exist', async () => {
     await expect(scanGallerySource(path.join(sourceRoot, 'missing')))
+      .rejects.toThrow(/missing/)
+  })
+})
+
+describe('scanGallerySources across several folders', () => {
+  let second: string
+
+  beforeEach(() => {
+    second = fs.mkdtempSync(path.join(os.tmpdir(), 'gallery-scan-second-'))
+  })
+
+  afterEach(() => {
+    fs.rmSync(second, { recursive: true, force: true })
+  })
+
+  async function writeJpegUnder(base: string, relative: string, width = 40) {
+    const absolute = path.join(base, relative)
+    fs.mkdirSync(path.dirname(absolute), { recursive: true })
+    await sharp({
+      create: { width, height: 30, channels: 3, background: { r: 12, g: 120, b: 200 } }
+    }).jpeg().toFile(absolute)
+    return absolute
+  }
+
+  it('merges folders into one source-path-ordered list', async () => {
+    await writeJpegUnder(sourceRoot, 'Kabin/b.jpg')
+    await writeJpegUnder(second, 'Arca/a.jpg', 41)
+
+    const { images, problems } = await scanGallerySources(
+      [root(sourceRoot, 'all'), root(second, 'all')],
+      new Set()
+    )
+
+    expect(problems).toEqual([])
+    expect(images.map((image) => image.sourcePath)).toEqual(['Arca/a.jpg', 'Kabin/b.jpg'])
+  })
+
+  it('orders the merged list by source path, not by the order folders were passed', async () => {
+    await writeJpegUnder(sourceRoot, 'Kabin/b.jpg')
+    await writeJpegUnder(second, 'Arca/a.jpg', 41)
+
+    const forwards = await scanGallerySources([root(sourceRoot, 'all'), root(second, 'all')], new Set())
+    const backwards = await scanGallerySources([root(second, 'all'), root(sourceRoot, 'all')], new Set())
+
+    expect(backwards.images.map((image) => image.sourcePath))
+      .toEqual(forwards.images.map((image) => image.sourcePath))
+  })
+
+  it('takes only classified files from a classified-scope folder', async () => {
+    await writeJpegUnder(second, 'Arca/wanted.jpg')
+    await writeJpegUnder(second, 'Arca/contact-sheet.jpg', 41)
+
+    const { images, problems } = await scanGallerySources(
+      [root(second, 'classified')],
+      new Set(['Arca/wanted.jpg'])
+    )
+
+    expect(problems).toEqual([])
+    expect(images.map((image) => image.sourcePath)).toEqual(['Arca/wanted.jpg'])
+  })
+
+  it('never filters an all-scope folder by the pick list', async () => {
+    await writeJpegUnder(sourceRoot, 'Kabin/a.jpg')
+    await writeJpegUnder(sourceRoot, 'Kabin/b.jpg', 41)
+
+    const { images } = await scanGallerySources([root(sourceRoot, 'all')], new Set(['Kabin/a.jpg']))
+
+    expect(images.map((image) => image.sourcePath)).toEqual(['Kabin/a.jpg', 'Kabin/b.jpg'])
+  })
+
+  it('does not read a file a classified-scope folder holds but nobody picked', async () => {
+    await writeJpegUnder(second, 'Arca/wanted.jpg')
+    fs.writeFileSync(path.join(second, 'Arca/broken.jpg'), Buffer.from('not an image at all'))
+
+    const { images, problems } = await scanGallerySources(
+      [root(second, 'classified')],
+      new Set(['Arca/wanted.jpg'])
+    )
+
+    expect(images.map((image) => image.sourcePath)).toEqual(['Arca/wanted.jpg'])
+    expect(problems).toEqual([])
+  })
+
+  it('names a source path two folders both answer to rather than picking one', async () => {
+    await writeJpegUnder(sourceRoot, 'Kabin/a.jpg')
+    await writeJpegUnder(second, 'Kabin/a.jpg', 41)
+
+    const { images, problems } = await scanGallerySources(
+      [root(sourceRoot, 'all'), root(second, 'all')],
+      new Set()
+    )
+
+    expect(images).toHaveLength(1)
+    expect(problems).toHaveLength(1)
+    expect(problems[0]).toContain('Kabin/a.jpg')
+    expect(problems[0]).toContain(second)
+  })
+
+  it('refuses a source root that does not exist', async () => {
+    await expect(scanGallerySources([root(path.join(sourceRoot, 'missing'), 'all')], new Set()))
       .rejects.toThrow(/missing/)
   })
 })

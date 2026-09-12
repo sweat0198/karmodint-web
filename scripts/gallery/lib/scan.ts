@@ -2,7 +2,7 @@ import { createHash } from 'node:crypto'
 import fs from 'node:fs'
 import path from 'node:path'
 import sharp from 'sharp'
-import type { GalleryFormat, ScannedImage } from './model'
+import type { GalleryFormat, GallerySourceRoot, ScannedImage } from './model'
 import { toSourcePath } from './paths'
 
 /**
@@ -23,26 +23,55 @@ export interface GallerySourceScan {
   problems: string[]
 }
 
-/** Every image under `sourceRoot`, in a stable order, with its bytes and dimensions read once each. */
-export async function scanGallerySource(sourceRoot: string): Promise<GallerySourceScan> {
-  if (!fs.existsSync(sourceRoot) || !fs.statSync(sourceRoot).isDirectory()) {
-    throw new Error(`Source folder does not exist: ${sourceRoot}`)
-  }
-
-  const sourcePaths = walk(sourceRoot)
-    .sort((a, b) => a.localeCompare(b, 'en'))
-
+/**
+ * Every image the given folders offer, in source-path order, read once each.
+ *
+ * A `classified`-scope folder contributes only the files `classified` names, and the ones it does
+ * not name are never opened — the point of borrowing from a job folder is to touch sixteen photos,
+ * not the three hundred beside them.
+ *
+ * The merged list is keyed by source-relative path, which is what the classification file records,
+ * so two folders offering the same relative path would make that key ambiguous. Rather than let the
+ * folder order decide which photo wins, the clash is reported and the second one dropped.
+ */
+export async function scanGallerySources(
+  roots: readonly GallerySourceRoot[],
+  classified: ReadonlySet<string>
+): Promise<GallerySourceScan> {
   const images: ScannedImage[] = []
   const problems: string[] = []
+  /** Source path -> the folder that offered it first. */
+  const offeredBy = new Map<string, string>()
 
-  for (const sourcePath of sourcePaths) {
-    const absolutePath = path.join(sourceRoot, sourcePath)
-    try {
-      images.push(await inspect(sourcePath, absolutePath))
-    } catch (error) {
-      problems.push(`${sourcePath}: ${error instanceof Error ? error.message : String(error)}`)
+  for (const root of roots) {
+    if (!fs.existsSync(root.path) || !fs.statSync(root.path).isDirectory()) {
+      throw new Error(`Source folder does not exist: ${root.path}`)
+    }
+
+    for (const sourcePath of walk(root.path)) {
+      if (root.scope === 'classified' && !classified.has(sourcePath)) continue
+
+      const owner = offeredBy.get(sourcePath)
+      if (owner !== undefined) {
+        problems.push(
+          `${sourcePath}: offered by two source folders (${owner} and ${root.path}) — `
+          + 'a source-relative path must name exactly one photo'
+        )
+        continue
+      }
+      offeredBy.set(sourcePath, root.path)
+
+      try {
+        images.push(await inspect(sourcePath, path.join(root.path, sourcePath)))
+      } catch (error) {
+        problems.push(`${sourcePath}: ${error instanceof Error ? error.message : String(error)}`)
+      }
     }
   }
+
+  // Sorted after the merge, not within each folder, so the plan does not depend on folder order.
+  images.sort((a, b) => a.sourcePath.localeCompare(b.sourcePath, 'en'))
+  problems.sort((a, b) => a.localeCompare(b, 'en'))
 
   return { images, problems }
 }

@@ -4,7 +4,7 @@ Deterministic preparation pipeline and metadata catalogue for Karmod Internation
 
 ## Purpose and Scope
 
-This package organizes, classifies, and indexes project photography from an external source directory (`/Users/enesfurkanornek/Downloads/Proje Görselleri`) into a clean, reproducible, and reviewable asset library under `sanity/gallery/`.
+This package organizes, classifies, and indexes project photography from external source directories into a clean, reproducible, and reviewable asset library under `sanity/gallery/`.
 
 ### Non-Goals
 
@@ -33,6 +33,21 @@ Future gallery schema and uploader adapters should consume `manifest.json` as th
 - **Visual Duplicates / Bursts:** 7 high-confidence visual duplicate pairs and burst sequences kept as separate files and linked via `possibleDuplicateAssetIds`.
 - **Byte Preservation:** Source images are copied verbatim via `fs.copyFileSync`. No re-encoding, format conversion, resizing, or EXIF stripping occurs. Source originals in Downloads are never renamed, moved, deleted, or modified.
 
+## Source Folder Scopes
+
+The package reads from two kinds of external folder, and the difference is how much of the folder
+belongs to it.
+
+- **`--source` / `GALLERY_SOURCE_DIR` (scope `all`)** — a folder assembled *as* the gallery's
+  library. Every image in it is one somebody chose to hand over, so a file with no row in
+  `classification.json` is a file nobody reviewed, and preparation stops rather than dropping it.
+- **`--curated-source` / `GALLERY_CURATED_SOURCE_DIR` (scope `classified`)** — a working job
+  archive that was never assembled for us, holding every frame of a shoot. Here
+  `classification.json` *is* the pick list: the named files are read, and the rest are never opened.
+
+Source-relative paths are the key the classification is written against, so two folders may not
+offer the same relative path. A clash is reported by name rather than resolved by folder order.
+
 ## Taxonomy and Category Model
 
 Physical image output paths follow:
@@ -59,9 +74,10 @@ Unknown project identities use `others`. Customer and project names are never in
 
 ## CLI Usage Commands
 
-Configure `GALLERY_SOURCE_DIR` in `.env`:
+Configure the source folders in `.env`:
 ```bash
 GALLERY_SOURCE_DIR="/Users/enesfurkanornek/Downloads/Proje Görselleri"
+GALLERY_CURATED_SOURCE_DIR="/Users/enesfurkanornek/Downloads/Projeler"
 ```
 
 Then run scripts directly (or pass `--source "<path>"` to override):
@@ -76,9 +92,39 @@ pnpm gallery:prepare --write
 # Verify mode: Read-only check comparing source, disk copies, and manifests
 pnpm gallery:verify
 
-# Override source folder explicitly if needed
+# Override source folders explicitly if needed (both flags may be repeated)
 pnpm gallery:prepare --source "/path/to/photos"
+pnpm gallery:prepare --curated-source "/path/to/job/archive"
 
 # Typecheck gallery pipeline
 pnpm typecheck:gallery
 ```
+
+## Importing Gallery Entries into Sanity
+
+`scripts/gallery/data.ts` holds the curated selection of photos that become `galleryEntry`
+documents, each with its category and gallery description. Titles and alt text are **not** repeated
+there — they are read from `manifest.json` by `filePath`, so a copy correction made in
+`classification.json` reaches the Studio on the next import.
+
+```bash
+# Print the planned documents without touching the network
+pnpm gallery:import --dry-run
+
+# Upload the images and create/replace the documents
+pnpm gallery:import
+```
+
+Document IDs are deterministic (`galleryEntry-<category>-<project-or-use-case>-NNN`), so re-running
+updates the same documents rather than duplicating them. `order` is never set; the schema falls back
+to alphabetical ordering.
+
+## Rights Statuses
+
+- `unknown` — nobody has raised a concern. Upload eligible.
+- `review-required` — provenance or privacy needs checking. **Blocks upload.**
+- `cleared` — checked and confirmed with the client. Upload eligible.
+
+`cleared` exists so a settled rights question is not re-opened, and so it is never confused with
+`unknown`, which only records the absence of a concern. The importer refuses any photo that is not
+upload eligible.

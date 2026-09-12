@@ -22,7 +22,7 @@ import {
  */
 
 const CONFIDENCES = ['high', 'medium', 'low']
-const RIGHTS_STATUSES = ['unknown', 'review-required']
+const RIGHTS_STATUSES = ['unknown', 'review-required', 'cleared']
 const SHA256_HEX = /^[0-9a-f]{64}$/
 
 /** Printable ASCII only. Prose in this package is English, so a Turkish letter is a mistake. */
@@ -114,7 +114,9 @@ function flagAndRoleProblems(
     problems.push(`${where} confidence "${row.confidence}" must be high, medium or low`)
   }
   if (!RIGHTS_STATUSES.includes(row.rightsStatus)) {
-    problems.push(`${where} rightsStatus "${row.rightsStatus}" must be unknown or review-required`)
+    problems.push(
+      `${where} rightsStatus "${row.rightsStatus}" must be unknown, review-required or cleared`
+    )
   }
 
   return problems

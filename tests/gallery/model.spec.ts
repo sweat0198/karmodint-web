@@ -242,8 +242,8 @@ describe('gallery manifest invariants', () => {
 describe('tracked gallery classification', () => {
   it('records one decision for every audited source image', () => {
     const rows = loadClassifications()
-    expect(rows).toHaveLength(298)
-    expect(new Set(rows.map((row) => row.sourcePath)).size).toBe(298)
+    expect(rows).toHaveLength(314)
+    expect(new Set(rows.map((row) => row.sourcePath)).size).toBe(314)
     expect(validateClassifications(rows)).toEqual([])
   })
 
@@ -263,12 +263,16 @@ describe('tracked gallery classification', () => {
     expect(preferred).toHaveLength(11)
   })
 
-  it('marks all retail kiosk items and the school yard photo as review-required', () => {
+  it('never leaves a retail kiosk item or the school yard photo at the default rights status', () => {
     const rows = loadClassifications()
-    const reviewRequired = rows.filter((row) => row.rightsStatus === 'review-required')
-    expect(reviewRequired.length).toBeGreaterThanOrEqual(55)
+    const assessed = rows.filter(
+      (row) => row.rightsStatus === 'review-required' || row.rightsStatus === 'cleared'
+    )
+    expect(assessed.length).toBeGreaterThanOrEqual(55)
+    // A kiosk photo may only become uploadable through an explicit `cleared`, never by defaulting
+    // to `unknown` — that is the gate the blanket review-required flag was there to hold.
     for (const row of rows.filter((r) => r.family === 'cabins' && r.useCase === 'retail-event-kiosk')) {
-      expect(row.rightsStatus).toBe('review-required')
+      expect(row.rightsStatus).not.toBe('unknown')
     }
   })
 })

@@ -29,10 +29,15 @@ export type ClassificationConfidence = 'high' | 'medium' | 'low'
 /**
  * Rights posture.
  *
- * `unknown` is the floor, not a pass: nothing reaches `cleared` without external evidence, so
- * `cleared` is deliberately absent from this union until such evidence exists.
+ * `unknown` is the floor, not a pass: it records only that nobody has raised a concern, which is
+ * where a photo sits until someone looks. `review-required` is the one status that blocks upload.
+ *
+ * `cleared` is the outcome of that look — provenance queried and confirmed with the owner of the
+ * photograph — and exists so a settled question is not re-opened, and is never read as the mere
+ * silence of `unknown`. Nothing reaches it without the evidence recorded beside the row, which is
+ * what the `caption` field is for.
  */
-export type RightsStatus = 'unknown' | 'review-required'
+export type RightsStatus = 'unknown' | 'review-required' | 'cleared'
 
 export const GALLERY_ROLES = [
   'hero',
@@ -92,6 +97,27 @@ export const FORMAT_EXTENSION: Record<GalleryFormat, string> = {
 
 /** Repo-relative root the copied binaries live under. Git-ignored; the metadata beside it is not. */
 export const GALLERY_SOURCE_ROOT = 'sanity/gallery/source'
+
+/**
+ * How much of one external folder belongs to the package.
+ *
+ * `all` is the posture for a folder that was assembled *as* the gallery's library: every image in
+ * it is one somebody chose to hand over, so a file with no classification row is a file nobody
+ * reviewed, and preparation stops. `classified` is the posture for a working archive that was never
+ * assembled for us — a job folder holding every frame of a shoot — where the classification is the
+ * pick list, and a file it does not name is simply not ours.
+ *
+ * The choice is per folder rather than global on purpose: relaxing the completeness check
+ * everywhere would let a photo drop silently out of the library it was chosen for.
+ */
+export type GallerySourceScope = 'all' | 'classified'
+
+/** One external folder the package reads photos out of. */
+export interface GallerySourceRoot {
+  /** Absolute path of the folder. Never stored in a tracked artefact. */
+  path: string
+  scope: GallerySourceScope
+}
 
 /**
  * One position in the taxonomy.
@@ -233,9 +259,14 @@ export function heroEligibility(flags: readonly GalleryFlag[], role: GalleryRole
     || role === 'interior-wide'
 }
 
-/** Whether an importer may publish this photo without a human looking at it first. */
+/**
+ * Whether an importer may publish this photo without a human looking at it first.
+ *
+ * `cleared` is the outcome of that human check: a photo whose rights were queried and confirmed
+ * with the client. It is distinct from `unknown`, which only means nobody has raised a concern.
+ */
 export function uploadEligibility(rightsStatus: RightsStatus): boolean {
-  return rightsStatus === 'unknown'
+  return rightsStatus === 'unknown' || rightsStatus === 'cleared'
 }
 
 /** `{project}-{NNN}.{ext}` — three digits so a project's files sort in sequence order. */
