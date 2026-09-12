@@ -7,16 +7,18 @@ import { describe, expect, it } from 'vitest';
 import AboutHeroSection from '../../app/components/about/HeroSection.vue';
 
 describe('AboutHeroSection', () => {
-  it('presents the business campus as a responsive concept visualisation', () => {
+  it('presents a real modular construction compound with responsive images', () => {
     const wrapper = mount(AboutHeroSection);
     const image = wrapper.get('img');
     const webpSource = wrapper.get('picture source[type="image/webp"]');
 
-    expect(image.attributes('src')).toBe('/images/about/about-business-campus-hero-v2.png');
+    expect(image.attributes('src')).toBe('/images/about/about-modular-site-compound.jpg');
     expect(image.attributes('srcset')).toBeUndefined();
-    expect(webpSource.attributes('srcset')).toBe('/images/about/about-business-campus-hero-v2.webp 1280w');
-    expect(webpSource.attributes('sizes')).toBe('(min-width: 1024px) 50vw, 100vw');
-    expect(image.attributes('alt')).toBe('Concept visualisation of an active modular business and education campus');
+    expect(webpSource.attributes('srcset')).toBe('/images/about/about-modular-site-compound-640.webp 640w, /images/about/about-modular-site-compound-1280.webp 1280w');
+    expect(webpSource.attributes('sizes')).toBe('(min-width: 1024px) 560px, calc(100vw - 48px)');
+    expect(image.attributes('alt')).toBe('Aerial photograph of a large modular construction compound with accommodation and site buildings.');
+    expect(image.attributes('width')).toBe('1280');
+    expect(image.attributes('height')).toBe('720');
     expect(image.attributes('loading')).toBe('eager');
     expect(image.attributes('fetchpriority')).toBe('high');
     expect(image.attributes('decoding')).toBe('async');
@@ -27,8 +29,9 @@ describe('AboutHeroSection', () => {
 
   it('references hero assets that exist in public', () => {
     for (const filename of [
-      'about-business-campus-hero-v2.png',
-      'about-business-campus-hero-v2.webp',
+      'about-modular-site-compound.jpg',
+      'about-modular-site-compound-640.webp',
+      'about-modular-site-compound-1280.webp',
     ]) {
       expect(existsSync(resolve(process.cwd(), 'public/images/about', filename))).toBe(true);
     }

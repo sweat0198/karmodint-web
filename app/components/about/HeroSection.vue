@@ -17,12 +17,14 @@
           <picture class="block h-full w-full">
             <source
               type="image/webp"
-              srcset="/images/about/about-business-campus-hero-v2.webp 1280w"
-              sizes="(min-width: 1024px) 50vw, 100vw"
+              srcset="/images/about/about-modular-site-compound-640.webp 640w, /images/about/about-modular-site-compound-1280.webp 1280w"
+              sizes="(min-width: 1024px) 560px, calc(100vw - 48px)"
             />
             <img
-              src="/images/about/about-business-campus-hero-v2.png"
-              alt="Concept visualisation of an active modular business and education campus"
+              src="/images/about/about-modular-site-compound.jpg"
+              alt="Aerial photograph of a large modular construction compound with accommodation and site buildings."
+              width="1280"
+              height="720"
               loading="eager"
               fetchpriority="high"
               decoding="async"
