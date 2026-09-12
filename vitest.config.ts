@@ -29,7 +29,8 @@ export default defineConfig({
       '~': path.join(currentDir, 'app'),
       '@': path.join(currentDir, 'app'),
       '~~': currentDir,
-      '@@': currentDir
+      '@@': currentDir,
+      '#imports': path.join(currentDir, 'tests/mocks/nuxt-imports.ts')
     }
   }
 })
