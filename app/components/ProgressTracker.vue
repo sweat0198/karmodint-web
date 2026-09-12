@@ -12,7 +12,7 @@
           <div
             class="h-full bg-brand-red transition-all duration-300"
             :style="{
-              width: `${((Math.max(currentStep, quoteStore.maxVisitedStep) - 1) / (steps.length - 1)) * 100}%`,
+              width: `${progressPercentage}%`,
             }"
           ></div>
         </div>
@@ -23,24 +23,24 @@
           <NuxtLink
             v-if="isStepEnabled(step)"
             :to="step.route"
-            :aria-current="step.number === currentStep ? 'step' : undefined"
+            :aria-current="step.number === activeStep ? 'step' : undefined"
             class="group bg-white px-2 sm:px-3 flex flex-col items-center z-10 select-none cursor-pointer transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-red rounded-lg"
           >
             <!-- Step Indicator Icon/Number -->
             <div class="h-10 flex items-start pb-2 relative">
               <!-- Vivid Pulsing Outer Ring & Radar Ping for Current Step -->
               <span
-                v-if="step.number === currentStep"
+                v-if="step.number === activeStep"
                 class="absolute inset-0 w-8 h-8 rounded-xl bg-brand-red/35 animate-ping-slow pointer-events-none"
               ></span>
 
               <div
                 :class="[
                   'w-8 h-8 rounded-xl flex items-center justify-center font-bold text-base transition-all duration-200 shrink-0 relative z-10',
-                  step.number <= currentStep || isStepEnabled(step)
+                  step.number <= activeStep || isStepEnabled(step)
                     ? 'bg-brand-red text-white shadow-sm'
                     : 'bg-brand-navy text-brand-slate-light border border-brand-navy',
-                  isStepEnabled(step) && step.number !== currentStep
+                  isStepEnabled(step) && step.number !== activeStep
                     ? 'group-hover:bg-brand-red-hover group-hover:scale-105 group-hover:shadow'
                     : '',
                 ]"
@@ -54,7 +54,7 @@
               <span
                 :class="[
                   'text-xs font-semibold tracking-wider uppercase whitespace-nowrap transition-colors',
-                  step.number === currentStep
+                  step.number === activeStep
                     ? 'text-brand-navy-heading font-bold'
                     : isStepEnabled(step)
                       ? 'text-brand-navy-heading font-semibold group-hover:text-brand-red'
@@ -102,6 +102,7 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from "vue";
 import { useQuoteStore } from "~/stores/quote";
 
 interface Step {
@@ -139,11 +140,24 @@ const props = withDefaults(
 
 const quoteStore = useQuoteStore();
 
+// Submission clears the basket, but its confirmation still represents step 4.
+const activeStep = computed(() =>
+  props.currentStep === 4 ? 4 : quoteStore.isEmpty ? 1 : props.currentStep,
+);
+
 const isStepEnabled = (step: Step): boolean => {
   if (!step.route) return false;
-  if (step.number <= props.currentStep) return true;
+  if (step.number <= activeStep.value) return true;
   return quoteStore.isStepUnlocked(step.number);
 };
+
+// Use the same eligibility rules for the connecting line and the colored steps.
+const progressPercentage = computed(() => {
+  const lastEnabledIndex = props.steps.findLastIndex(isStepEnabled);
+  return props.steps.length > 1
+    ? (Math.max(0, lastEnabledIndex) / (props.steps.length - 1)) * 100
+    : 0;
+});
 </script>
 
 <style scoped>

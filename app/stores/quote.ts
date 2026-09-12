@@ -47,6 +47,7 @@ export const useQuoteStore = defineStore("quote", {
     hasPoa: (state) => state.items.some((item) => item.isPoa),
     isEmpty: (state) => state.items.length === 0,
     continueRoute: (state) => {
+      if (state.items.length === 0) return "/products";
       if (
         state.lastVisitedRoute &&
         ["/products", "/customize", "/quote"].includes(state.lastVisitedRoute)
@@ -59,6 +60,7 @@ export const useQuoteStore = defineStore("quote", {
       return "/products";
     },
     continueStepNumber: (state) => {
+      if (state.items.length === 0) return 1;
       if (state.lastVisitedRoute === "/quote") return 3;
       if (state.lastVisitedRoute === "/customize") return 2;
       if (state.lastVisitedRoute === "/products") return 1;
@@ -66,7 +68,8 @@ export const useQuoteStore = defineStore("quote", {
     },
     isStepUnlocked: (state) => (stepNumber: number) => {
       if (stepNumber === 1) return true;
-      if (stepNumber === 2) return state.items.length > 0 || state.maxVisitedStep >= 2;
+      if (state.items.length === 0) return false;
+      if (stepNumber === 2) return true;
       if (stepNumber === 3) return state.items.length > 0 && state.maxVisitedStep >= 3;
       if (stepNumber === 4) return state.maxVisitedStep >= 4;
       return false;
@@ -107,6 +110,7 @@ export const useQuoteStore = defineStore("quote", {
     addPortableContainer(card: PortableContainerCard) {
       const { projectId, dataset } = resolveSanityImageConfig();
       const image = sanityImageUrl(card.representativeImage?.asset?._ref, projectId, dataset);
+      if (this.isEmpty) this.clearQuote();
       this.portableSelectionSequence += 1;
       this.items.push({
         id: `${card.productId}-selection-${this.portableSelectionSequence}`,
@@ -155,6 +159,8 @@ export const useQuoteStore = defineStore("quote", {
     },
 
     addItem(newItem: Omit<QuoteItem, "id">) {
+      // An empty persisted basket may still carry visits from a previous enquiry.
+      if (this.isEmpty) this.clearQuote();
       // One Quote List line per Product + Size Option (D6). Re-adding increments the quantity.
       // TODO: when customers ask to order the same size twice with different customizations,
       // this id needs a configuration discriminator (see ADR-001's open question).
@@ -193,6 +199,7 @@ export const useQuoteStore = defineStore("quote", {
 
     removeItem(id: string) {
       this.items = this.items.filter((item) => item.id !== id);
+      if (this.isEmpty) this.clearQuote();
     },
 
     updateQuantity(id: string, quantity: number) {
