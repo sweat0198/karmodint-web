@@ -7,14 +7,17 @@
       <div
         class="bg-white border border-brand-rose-border rounded-lg shadow-md overflow-hidden grid grid-cols-1 lg:grid-cols-2"
       >
-        <!-- Left Column: Hero Image & Overlay -->
+        <!-- Left Column: Illustrative Hero -->
         <div
           class="relative min-h-[380px] lg:min-h-[580px] flex flex-col justify-end p-8 lg:p-12 overflow-hidden"
         >
           <img
-            src="/images/get-in-touch-uk.jpg"
-            alt="Modular Building Architecture"
-            class="absolute inset-0 w-full h-full object-cover object-center"
+            src="/images/get-in-touch-metro-city.webp"
+            alt="Illustration of engineers reviewing plans beside a Metro City security cabin and a two-storey modular office."
+            width="1024"
+            height="1536"
+            fetchpriority="high"
+            class="absolute inset-0 w-full h-full object-cover object-[center_30%]"
           />
           <!-- Dark Gradient Overlay -->
           <div
