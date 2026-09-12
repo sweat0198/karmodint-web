@@ -58,8 +58,7 @@ interface ManualProduct {
 }
 
 /**
- * K1002: 3.00m × 7.00m, renders already staged locally. No confirmed sell price yet, so the size is
- * POA rather than carrying an invented figure — see `sizeOption.isPoa`.
+ * Confirmed prices exclude VAT. The storefront adds the shared "+ VAT" label.
  */
 export const CONTAINER_PRODUCTS: ManualProduct[] = [
   {
@@ -99,8 +98,8 @@ Delivered ready for use — placement on site is the only step before it is in s
         lengthM: 2.3,
         widthM: 6,
         weightKg: 0,
-        isPoa: true,
-        price: 0,
+        isPoa: false,
+        price: 4290,
         isDefault: false,
         renderFolder: '',
         views: [],
@@ -111,8 +110,8 @@ Delivered ready for use — placement on site is the only step before it is in s
         lengthM: 3,
         widthM: 5,
         weightKg: 0,
-        isPoa: true,
-        price: 0,
+        isPoa: false,
+        price: 5090,
         isDefault: false,
         renderFolder: '',
         views: [],
@@ -123,8 +122,8 @@ Delivered ready for use — placement on site is the only step before it is in s
         lengthM: 3,
         widthM: 6,
         weightKg: 0,
-        isPoa: true,
-        price: 0,
+        isPoa: false,
+        price: 5490,
         isDefault: false,
         renderFolder: '',
         views: [],
@@ -135,8 +134,8 @@ Delivered ready for use — placement on site is the only step before it is in s
         lengthM: 3,
         widthM: 7,
         weightKg: 0,
-        isPoa: true,
-        price: 0,
+        isPoa: false,
+        price: 5790,
         isDefault: true,
         renderFolder: 'K1002',
         views: ['front', 'left-diagonal', 'right', 'top'],
@@ -200,7 +199,7 @@ async function main(): Promise<void> {
     for (const product of CONTAINER_PRODUCTS) {
       const renders = product.sizes.flatMap((size) => size.views.map((view) => renderPath(size.renderFolder, view)))
       console.log(updateExisting
-        ? `would update copy and append missing sizes for ${product.id}`
+        ? `would update copy, prices and append missing sizes for ${product.id}`
         : `would create/replace ${product.id} (${renders.length} render(s))`)
     }
     return
@@ -216,7 +215,7 @@ async function main(): Promise<void> {
     }
 
     if (updateExisting) {
-      // Patch only requested copy and append missing sizes; preserve CMS pricing, media and edits.
+      // Patch requested copy and confirmed prices; preserve media and all other CMS edits.
       const documents = await client.fetch<Array<{
         _id: string
         _rev: string
@@ -236,6 +235,13 @@ async function main(): Promise<void> {
             ...size, _key: key, _type: 'sizeOption', label: sizeLabel({ key, renderFolder, views, sourceUrl, ...size }), images: []
           }))
         const altUpdates: Record<string, string> = {}
+        const priceUpdates: Record<string, number | boolean> = {}
+        for (const size of product.sizes) {
+          if (existing.sizes?.some((current) => current._key === size.key)) {
+            priceUpdates[`sizes[_key == "${size.key}"].price`] = size.price
+            priceUpdates[`sizes[_key == "${size.key}"].isPoa`] = size.isPoa
+          }
+        }
         const renameImageAlts = (images: Array<{ alt?: string }> | undefined, path: string) => {
           images?.forEach((image, index) => {
             if (image.alt?.includes('K1002')) {
@@ -248,6 +254,7 @@ async function main(): Promise<void> {
         transaction = transaction.patch(existing._id, (patch) => {
           const updated = patch.ifRevisionId(existing._rev).set({
             ...altUpdates,
+            ...priceUpdates,
             name: product.name,
             shortDescription: product.shortDescription,
             description,
