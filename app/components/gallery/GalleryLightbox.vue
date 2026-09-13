@@ -45,7 +45,7 @@
             </svg>
           </button>
 
-          <div class="min-h-[300px] bg-slate-900 md:min-h-full md:w-1/2">
+          <div class="min-h-[300px] overflow-hidden bg-slate-900 md:min-h-full md:w-1/2">
             <img
               :src="tile.image.src"
               :srcset="tile.image.srcset"
