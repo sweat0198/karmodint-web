@@ -17,14 +17,14 @@
           <picture class="block h-full w-full">
             <source
               type="image/webp"
-              srcset="/images/about/about-modular-site-compound-640.webp 640w, /images/about/about-modular-site-compound-1280.webp 1280w"
+              srcset="/images/about/about-old-trafford-kiosks-640.webp 640w, /images/about/about-old-trafford-kiosks-1280.webp 1280w"
               sizes="(min-width: 1024px) 560px, calc(100vw - 48px)"
             />
             <img
-              src="/images/about/about-modular-site-compound.jpg"
-              alt="Aerial photograph of a large modular construction compound with accommodation and site buildings."
+              src="/images/about/about-old-trafford-kiosks.jpg"
+              alt="Two black Manchester United programme kiosks under the stadium concourse canopy at Old Trafford, behind red crowd barriers."
               width="1280"
-              height="720"
+              height="960"
               loading="eager"
               fetchpriority="high"
               decoding="async"
