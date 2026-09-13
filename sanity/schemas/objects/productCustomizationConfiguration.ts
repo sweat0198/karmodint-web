@@ -1,5 +1,22 @@
 import { defineArrayMember, defineField, defineType } from 'sanity'
 
+export function validateItemOverrides(
+  overrides: Array<{ itemKey?: string }> | undefined,
+): true | string {
+  if (!overrides) return true
+
+  const seen = new Set<string>()
+  for (const override of overrides) {
+    if (!override.itemKey) continue
+    if (seen.has(override.itemKey)) {
+      return `Customization Item "${override.itemKey}" can have only one override`
+    }
+    seen.add(override.itemKey)
+  }
+
+  return true
+}
+
 /** Product-specific controls for one reusable Customization Group. */
 export const productCustomizationConfiguration = defineType({
   name: 'productCustomizationConfiguration',
@@ -57,7 +74,8 @@ export const productCustomizationConfiguration = defineType({
             })
           ]
         })
-      ]
+      ],
+      validation: (Rule) => Rule.custom(validateItemOverrides)
     })
   ],
   preview: {

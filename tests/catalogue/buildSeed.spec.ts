@@ -93,6 +93,27 @@ describe('Seed document construction', () => {
     expect('specifications' in document).toBe(false)
   })
 
+  it('assigns live Electricity, Heater, and AC groups, hiding the larger electricity option for small cabins', () => {
+    expect(document.customizationConfigurations).toEqual([
+      {
+        _key: 'electricity',
+        _type: 'productCustomizationConfiguration',
+        group: { _type: 'reference', _ref: 'customizationGroup-electricity' },
+        itemOverrides: [{ _key: 'disable-elec-2', itemKey: 'elec-2', enabled: false }]
+      },
+      {
+        _key: 'heater',
+        _type: 'productCustomizationConfiguration',
+        group: { _type: 'reference', _ref: 'customizationGroup-heater' }
+      },
+      {
+        _key: 'air-conditioning',
+        _type: 'productCustomizationConfiguration',
+        group: { _type: 'reference', _ref: 'customizationGroup-ac' }
+      }
+    ])
+  })
+
   it('converts the body to Portable Text inside the whitelist', () => {
     expect(validatePortableText(document.description)).toEqual([])
     expect(document.description.length).toBeGreaterThan(0)

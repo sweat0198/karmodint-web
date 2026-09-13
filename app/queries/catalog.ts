@@ -57,6 +57,11 @@ export interface CategoryTreeNode extends CategoryTreeChild {
   children: CategoryTreeChild[];
 }
 
+const CUSTOMIZATION_GROUP_PROJECTION = `{
+  _id, _type, title, "identifier": identifier.current, selectionType, isMandatory, description, displayOrder,
+  items[]{ _key, title, pricingType, price, requiresTextInput, textInputPlaceholder, description, image { asset, alt, caption } }
+}`;
+
 // Category documents may lag behind the seed files in an already-populated Sanity dataset. Keep
 // customer-facing labels canonical at the query boundary, keyed by stable slugs; this also keeps
 // product category search and the sidebar in sync during the CMS migration.
@@ -101,16 +106,10 @@ export const PRODUCTS_WITH_SIZES_QUERY = `*[_type == "product" && status == "pub
     "fallbackThumbnail": images[0] { asset, alt, view },
     "images": images[view != "top"] { _key, asset, alt, view }
   },
-  "customizationGroups": customizationGroups[]->{
-    _id, _type, title, "identifier": identifier.current, selectionType, isMandatory, description, displayOrder,
-    items[]{ _key, title, pricingType, price, requiresTextInput, textInputPlaceholder, description, image { asset, alt, caption } }
-  },
+  "customizationGroups": customizationGroups[]->${CUSTOMIZATION_GROUP_PROJECTION},
   customizationConfigurations[]{
     _key,
-    "group": group->{
-      _id, _type, title, "identifier": identifier.current, selectionType, isMandatory, description, displayOrder,
-      items[]{ _key, title, pricingType, price, requiresTextInput, textInputPlaceholder, description, image { asset, alt, caption } }
-    },
+    "group": group->${CUSTOMIZATION_GROUP_PROJECTION},
     itemOverrides[]{ _key, itemKey, enabled, pricingType, price }
   }
 }`;

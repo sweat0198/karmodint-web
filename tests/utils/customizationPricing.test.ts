@@ -262,4 +262,13 @@ describe('Product customization resolution', () => {
 
     expect(resolveCustomizationGroups({ customizationGroups: [groupBooleanAc] })).toEqual([groupBooleanAc])
   })
+
+  it('rejects an override that does not identify an item in its Customization Group', () => {
+    expect(() => resolveCustomizationGroups({
+      customizationConfigurations: [{
+        group: groupBooleanAc,
+        itemOverrides: [{ itemKey: 'not-an-ac-item', enabled: false }]
+      }]
+    })).toThrow('not-an-ac-item')
+  })
 })

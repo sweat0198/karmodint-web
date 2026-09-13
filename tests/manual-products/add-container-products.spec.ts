@@ -8,6 +8,18 @@ const source = readFileSync(
 )
 
 describe('Portable Cabin manual product', () => {
+  it('assigns optional Electricity, Heater, AC, WC, and Kitchen configuration groups', () => {
+    for (const groupId of [
+      'customizationGroup-electricity',
+      'customizationGroup-heater',
+      'customizationGroup-ac',
+      'customizationGroup-wc',
+      'customizationGroup-kitchen'
+    ]) {
+      expect(source).toContain(groupId)
+    }
+  })
+
   it.each([
     ['230x600', 4290],
     ['300x500', 5090],

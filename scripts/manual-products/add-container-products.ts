@@ -57,6 +57,22 @@ interface ManualProduct {
   sizes: ManualSize[]
 }
 
+const CONTAINER_CUSTOMIZATION_GROUP_IDS = [
+  'customizationGroup-electricity',
+  'customizationGroup-heater',
+  'customizationGroup-ac',
+  'customizationGroup-wc',
+  'customizationGroup-kitchen'
+] as const
+
+function containerCustomizationConfigurations() {
+  return CONTAINER_CUSTOMIZATION_GROUP_IDS.map((groupId) => ({
+    _key: groupId.replace('customizationGroup-', ''),
+    _type: 'productCustomizationConfiguration' as const,
+    group: { _type: 'reference' as const, _ref: groupId }
+  }))
+}
+
 /**
  * Confirmed prices exclude VAT. The storefront adds the shared "+ VAT" label.
  */
@@ -256,8 +272,9 @@ async function main(): Promise<void> {
             ...altUpdates,
             ...priceUpdates,
             name: product.name,
-            shortDescription: product.shortDescription,
-            description,
+             shortDescription: product.shortDescription,
+             description,
+             customizationConfigurations: containerCustomizationConfigurations(),
             'seo.metaTitle': product.seoTitle,
             'seo.metaDescription': product.seoDescription
           })
@@ -312,11 +329,12 @@ async function main(): Promise<void> {
       slug: { _type: 'slug' as const, current: product.slug },
       shortDescription: product.shortDescription,
       description,
-      categories: product.categories.map((categoryId) => ({
+       categories: product.categories.map((categoryId) => ({
         _key: categoryId,
         _type: 'reference' as const,
         _ref: categoryId
-      })),
+       })),
+       customizationConfigurations: containerCustomizationConfigurations(),
       sizes,
       isFeatured: product.isFeatured,
       status: 'published' as const,

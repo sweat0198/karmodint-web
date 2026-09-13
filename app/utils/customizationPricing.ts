@@ -30,6 +30,18 @@ export function resolveCustomizationItemPricing(
 function resolveConfiguredGroup(
   configuration: SanityProductCustomizationConfiguration,
 ): SanityCustomizationGroup {
+  const itemKeys = new Set(configuration.group.items.map((item) => item._key).filter(Boolean))
+  const overrideKeys = new Set<string>()
+  for (const override of configuration.itemOverrides ?? []) {
+    if (!itemKeys.has(override.itemKey)) {
+      throw new Error(`Customization override references unknown item "${override.itemKey}"`)
+    }
+    if (overrideKeys.has(override.itemKey)) {
+      throw new Error(`Customization item "${override.itemKey}" has more than one Product override`)
+    }
+    overrideKeys.add(override.itemKey)
+  }
+
   const overrides = new Map(
     (configuration.itemOverrides ?? []).map((override) => [override.itemKey, override]),
   )
