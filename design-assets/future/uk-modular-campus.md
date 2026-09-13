@@ -1,0 +1,18 @@
+# Future UK campus concept
+
+Saved for future use at the user’s request. This larger two-storey campus concept is not used on the current website. Generated using the built-in image generation tool.
+
+Original full-resolution image: `uk-modular-campus.png` (1448 × 1086).
+
+## Generation prompt
+
+```text
+Use case: photorealistic-natural
+Asset type: premium architecture photograph for the image card beside “Pioneering Modular Construction.” on a UK modular building company's About page. Landscape 4:3, 1536x1152.
+Primary request: Create a beautiful new imaginary completed UK modular business and events campus, inspired by the real gallery product designs in the reference photographs. This is an architectural concept, not a depiction of Old Trafford or any real completed project.
+References: Image 1 shows the real GRP kiosks at Old Trafford: use the compact moulded shell, softly rounded corners and wide service opening as product inspiration only. Image 2 shows a Metro City office: use its crisp rectangular white/charcoal panel system, deep flat roof fascia and generous practical windows. Image 3 shows actual two-storey modular office construction: retain believable panel joints, modest two-storey proportions and an external steel stair rather than inventing a glass tower.
+Scene: an attractive finished British commercial campus at the edge of a leafy town. Principal subject is a substantial two-storey modular office and visitor building composed of several connected modules: off-white textured infill panels, elegant dark charcoal frames, regular generous windows, a clean entrance canopy and a well integrated external steel stair. A secondary low modular wing extends into the background to communicate a genuinely sizeable development. In the central foreground is one handsome compact charcoal GRP coffee/visitor kiosk, with its service hatch open, clearly identifiable as a manufactured modular product. Muted red detail only on the kiosk fascia, no branding. Small paved terrace with a couple of simple outdoor tables; restrained grasses, native hedges and mature deciduous trees soften the building edges. A few naturally posed adults in everyday business clothes provide scale, very small and incidental. Subtle brick buildings in the distance suggest a British setting.
+Composition: eye-level three-quarter architectural view from across the landscaped pedestrian forecourt, calm confident geometry, architectural verticals straight, equivalent 35mm lens. Main building and kiosk both prominent and fully understandable in central 75% of frame, allowing a near-square mobile crop. Building fills most upper-middle area, avoid excessive sky or empty ground. Foreground leads toward entrance without obscuring product. No text space needed because heading is outside the image.
+Lighting and finish: warm late-afternoon sunlight after a passing shower, blue-grey clouds opening to soft sunshine, gentle window reflections, realistic material texture, subtle damp paving highlights. Premium editorial architectural photography with natural restrained colours and believable construction; sophisticated and inviting, crisp but not oversharpened.
+Constraints: preserve the physical language of actual gallery products but design an entirely new scene. Realistically buildable modular architecture. No shipping freight boxes, desert compound, construction rubble, large cranes, dense accommodation barracks, iconic stadium, football branding, flags, logos, text, signs, watermarks or infographic overlays. Avoid exaggerated cantilevers, surreal glazing, plastic CGI surfaces, oversaturated greens and orange sunset glow.
+```

@@ -17,12 +17,12 @@
           <picture class="block h-full w-full">
             <source
               type="image/webp"
-              srcset="/images/about/about-old-trafford-kiosks-640.webp 640w, /images/about/about-old-trafford-kiosks-1280.webp 1280w"
+              srcset="/images/about/about-uk-office-concept-640.webp 640w, /images/about/about-uk-office-concept-1280.webp 1280w"
               sizes="(min-width: 1024px) 560px, calc(100vw - 48px)"
             />
             <img
-              src="/images/about/about-old-trafford-kiosks.jpg"
-              alt="Two black Manchester United programme kiosks under the stadium concourse canopy at Old Trafford, behind red crowd barriers."
+              src="/images/about/about-uk-office-concept.jpg"
+              alt="Concept visualisation of a compact single-storey modular office and coffee kiosk at a UK business park."
               width="1280"
               height="960"
               loading="eager"
