@@ -17,6 +17,17 @@ export function validateItemOverrides(
   return true
 }
 
+export function validateItemOverrideKeys(
+  overrides: Array<{ itemKey?: string }> | undefined,
+  itemKeys: string[],
+): true | string {
+  const itemKeySet = new Set(itemKeys)
+  const invalidKey = overrides?.find((override) => override.itemKey && !itemKeySet.has(override.itemKey))?.itemKey
+  return invalidKey
+    ? `Customization Item "${invalidKey}" does not exist in the selected Customization Group`
+    : true
+}
+
 /** Product-specific controls for one reusable Customization Group. */
 export const productCustomizationConfiguration = defineType({
   name: 'productCustomizationConfiguration',
@@ -78,6 +89,20 @@ export const productCustomizationConfiguration = defineType({
       validation: (Rule) => Rule.custom(validateItemOverrides)
     })
   ],
+  validation: (Rule) => Rule.custom(async (configuration: {
+    group?: { _ref?: string }
+    itemOverrides?: Array<{ itemKey?: string }>
+  } | undefined, context: any) => {
+    const groupId = configuration?.group?._ref
+    if (!groupId || !configuration?.itemOverrides?.length) return true
+
+    const itemKeys = await context
+      .getClient({ apiVersion: '2025-02-19' })
+      .withConfig({ perspective: 'drafts' })
+      .fetch<string[]>('*[_id == $groupId][0].items[]._key', { groupId })
+
+    return validateItemOverrideKeys(configuration.itemOverrides, itemKeys ?? [])
+  }),
   preview: {
     select: { title: 'group.title', overrideCount: 'itemOverrides.length' },
     prepare({ title, overrideCount }) {

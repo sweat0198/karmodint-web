@@ -8,7 +8,11 @@ import { clientReferenceType } from '../../sanity/schemas/reference'
 import { galleryEntryType, validateGalleryOrder } from '../../sanity/schemas/galleryEntry'
 import { customizationItem } from '../../sanity/schemas/objects/customizationItem'
 import { sizeOption, validateSizeImages } from '../../sanity/schemas/objects/sizeOption'
-import { productCustomizationConfiguration, validateItemOverrides } from '../../sanity/schemas/objects/productCustomizationConfiguration'
+import {
+  productCustomizationConfiguration,
+  validateItemOverrideKeys,
+  validateItemOverrides,
+} from '../../sanity/schemas/objects/productCustomizationConfiguration'
 
 describe('Sanity Schemas Structure & Validation Rules', () => {
   it('registers all required document and object types in schema index', () => {
@@ -162,6 +166,10 @@ describe('Sanity Schemas Structure & Validation Rules', () => {
         { itemKey: 'elec-2' },
         { itemKey: 'elec-2' }
       ])).toContain('one override')
+    })
+
+    it('rejects an override key that is not present in the selected Customization Group', () => {
+      expect(validateItemOverrideKeys([{ itemKey: 'elec-2' }], ['elec-1'])).toContain('does not exist')
     })
 
     it('requires at least one size option', () => {
