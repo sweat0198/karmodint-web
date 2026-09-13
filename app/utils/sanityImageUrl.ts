@@ -26,6 +26,15 @@ export interface SanityImageTransform {
   fit?: "max" | "crop" | "clip" | "fill";
 }
 
+/** The asset's original pixel dimensions, read straight out of its `_ref` — no network call. */
+export function sanityImageDimensions(
+  assetRef: string | undefined,
+): { width: number; height: number } | undefined {
+  if (!assetRef) return undefined;
+  const parsed = parseAssetRef(assetRef);
+  return parsed ? { width: parsed.width, height: parsed.height } : undefined;
+}
+
 /**
  * Builds the public CDN URL for a Sanity image asset reference. `<SanityImage>` handles the
  * rendered `<img>` markup itself — this is for the places that need a plain URL string instead,
