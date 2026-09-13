@@ -72,7 +72,7 @@
 
             <div class="flex flex-col gap-3 border-t border-slate-100 pt-4">
               <NuxtLink
-                to="/quote"
+                :to="toCategoryProductsLink(tile.category)"
                 class="w-full rounded-xs bg-brand-red px-6 py-3 text-center text-xs font-semibold uppercase tracking-[0.6px] text-white transition-colors duration-150 hover:bg-brand-red-hover"
                 @click="emit('close')"
               >
@@ -96,6 +96,7 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, watch } from "vue";
 import type { GalleryTile } from "~/types/gallery";
+import { toCategoryProductsLink } from "~/utils/galleryCategoryLink";
 
 const props = defineProps<{ tile: GalleryTile | null }>();
 const emit = defineEmits<{ close: [] }>();

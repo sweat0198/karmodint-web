@@ -12,6 +12,8 @@ export interface GalleryCategoryRef {
   name: string;
   slug: string;
   displayOrder?: number;
+  /** The top-level category's slug, when this category is itself a subcategory (e.g. "cabin" for "metro-city"). */
+  parentSlug?: string;
 }
 
 /** Raw shape returned by `GALLERY_ENTRIES_QUERY`. */

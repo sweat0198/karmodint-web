@@ -10,7 +10,13 @@ export const GALLERY_ENTRIES_QUERY = `*[
   image,
   description,
   order,
-  "category": category->{ _id, name, "slug": slug.current, displayOrder },
+  "category": category->{
+    _id,
+    name,
+    "slug": slug.current,
+    displayOrder,
+    "parentSlug": parent->slug.current
+  },
   "_sortOrder": coalesce(order, 2147483647)
 } | order(_sortOrder asc, projectTitle asc) {
   _id,

@@ -25,14 +25,29 @@ function tile(overrides: Partial<GalleryTile> = {}): GalleryTile {
 
 const TILES: GalleryTile[] = [
   tile({ id: "t1", title: "Container house", category: { _id: "c1", name: "Containers", slug: "containers", displayOrder: 1 } }),
-  tile({ id: "t2", title: "Metro City cabin", category: { _id: "c2", name: "Metro City", slug: "metro-city", displayOrder: 2 } }),
+  tile({ id: "t2", title: "Metro City cabin", category: { _id: "c2", name: "Metro City", slug: "metro-city", displayOrder: 2, parentSlug: "cabin" } }),
   tile({ id: "t3", title: "Another container project", category: { _id: "c1", name: "Containers", slug: "containers", displayOrder: 1 } }),
 ];
+
+/** Mirrors vue-router's own path+query resolution closely enough to assert on the rendered href. */
+const NuxtLinkStub = {
+  props: ["to"],
+  template: '<a :href="href"><slot /></a>',
+  computed: {
+    href(): string {
+      if (typeof this.to === "string") return this.to;
+      const query = this.to?.query
+        ? `?${new URLSearchParams(this.to.query as Record<string, string>).toString()}`
+        : "";
+      return `${this.to?.path ?? ""}${query}`;
+    },
+  },
+};
 
 const mountOptions = {
   global: {
     stubs: {
-      NuxtLink: { props: ["to"], template: '<a :href="to"><slot /></a>' },
+      NuxtLink: NuxtLinkStub,
     },
   },
 };
@@ -164,13 +179,21 @@ describe("GalleryMasonry", () => {
     expect(positioned.length).toBe(TILES.length);
   });
 
-  it("offers a link to the quote page from the lightbox", async () => {
+  it("links the quote CTA to the tile's category on the catalogue", async () => {
     const wrapper = mountGallery(TILES);
 
+    // t1 "Container house" is a top-level category (no parentSlug) — plain ?category=.
     await openTile(wrapper, "Container house");
+    const containersLink = document.querySelector('a[href^="/products"]');
+    expect(containersLink!.getAttribute("href")).toBe("/products?category=containers");
+    expect(containersLink!.textContent?.toLowerCase()).toContain("request a quote");
 
-    const quoteLink = document.querySelector('a[href="/quote"]');
-    expect(quoteLink).not.toBeNull();
-    expect(quoteLink!.textContent?.toLowerCase()).toContain("request a quote");
+    document.querySelector('[aria-label="Close"]')!.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+    await wrapper.vm.$nextTick();
+
+    // t2 "Metro City cabin" is a subcategory of "cabin" — nested ?category=cabin&subcategory=.
+    await openTile(wrapper, "Metro City cabin");
+    const metroCityLink = document.querySelector('a[href^="/products"]');
+    expect(metroCityLink!.getAttribute("href")).toBe("/products?category=cabin&subcategory=metro-city");
   });
 });
