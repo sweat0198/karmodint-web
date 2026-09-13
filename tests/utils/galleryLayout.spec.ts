@@ -1,9 +1,25 @@
 import { describe, expect, it } from "vitest";
 import {
   computeMasonryLayout,
+  placementToStyle,
   resolveGalleryColumns,
   type GalleryLayoutItem,
 } from "~/utils/galleryLayout";
+
+describe("placementToStyle", () => {
+  it("converts a placement into an inline absolute-position style", () => {
+    expect(placementToStyle({ id: "a", left: 10, top: 20, width: 100, height: 50, span: 1 })).toEqual({
+      left: "10px",
+      top: "20px",
+      width: "100px",
+      height: "50px",
+    });
+  });
+
+  it("hides the tile when no placement was found", () => {
+    expect(placementToStyle(undefined)).toEqual({ display: "none" });
+  });
+});
 
 describe("resolveGalleryColumns", () => {
   it("gives 2 columns below the tablet breakpoint", () => {
@@ -115,6 +131,22 @@ describe("computeMasonryLayout", () => {
         expect(sorted[i].top).toBeGreaterThanOrEqual(sorted[i - 1].top + sorted[i - 1].height - 0.5);
       }
     }
+  });
+
+  it("places the tail longest-first (tallest tile lands before the shortest)", () => {
+    // Both items fall inside the tail window (tailCount = columns * 2 = 2), so which one lands
+    // first is purely down to the tail sort, not the look-ahead pass.
+    const items: GalleryLayoutItem[] = [
+      { id: "short", aspectRatio: 4 }, // wide/short: 200x50
+      { id: "tall", aspectRatio: 0.5 }, // narrow/tall: 200x400
+    ];
+    const { placements } = computeMasonryLayout(items, { containerWidth: 200, columns: 1, gap: 10 });
+
+    const tall = placements.find((p) => p.id === "tall")!;
+    const short = placements.find((p) => p.id === "short")!;
+
+    expect(tall.top).toBe(0);
+    expect(short.top).toBeCloseTo(tall.height + 10);
   });
 
   it("stretches the shortest tail tile to close the bottom edge when flush is set", () => {

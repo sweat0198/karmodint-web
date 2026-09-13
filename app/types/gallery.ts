@@ -24,6 +24,14 @@ export interface GalleryEntry {
   category: GalleryCategoryRef;
 }
 
+/** A category as it appears in the filter bar: how many visible tiles it covers, and in what order. */
+export interface GalleryCategoryOption {
+  slug: string;
+  name: string;
+  displayOrder: number;
+  count: number;
+}
+
 /** A gallery entry once its image has been resolved to real URLs and a known aspect ratio. */
 export interface GalleryTile {
   id: string;

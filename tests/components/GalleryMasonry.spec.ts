@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 
-import { mount } from "@vue/test-utils";
+import { mount, type VueWrapper } from "@vue/test-utils";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import GalleryMasonry from "~/components/gallery/GalleryMasonry.vue";
 import type { GalleryTile } from "~/types/gallery";
@@ -37,9 +37,20 @@ const mountOptions = {
   },
 };
 
+let mountedWrappers: VueWrapper[] = [];
+
 /** `Teleport to="body"` renders outside the mounted root, so lightbox assertions query the real DOM. */
 function mountGallery(tiles: GalleryTile[]) {
-  return mount(GalleryMasonry, { props: { tiles }, attachTo: document.body, ...mountOptions });
+  const wrapper = mount(GalleryMasonry, { props: { tiles }, attachTo: document.body, ...mountOptions });
+  mountedWrappers.push(wrapper);
+  return wrapper;
+}
+
+/** Clicks the first tile whose title matches, and waits for the lightbox to open. */
+async function openTile(wrapper: VueWrapper, titleText: string) {
+  const button = [...document.querySelectorAll("button")].find((b) => b.textContent?.includes(titleText));
+  button!.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+  await wrapper.vm.$nextTick();
 }
 
 describe("GalleryMasonry", () => {
@@ -78,6 +89,11 @@ describe("GalleryMasonry", () => {
   });
 
   afterEach(() => {
+    // Unmount every wrapper (not just wipe the DOM) so no component is left with pending reactive
+    // updates targeting nodes that are about to disappear — a leftover instance's queued update
+    // can otherwise flush mid-way through a *later* test and crash on a now-detached Teleport target.
+    for (const wrapper of mountedWrappers) wrapper.unmount();
+    mountedWrappers = [];
     vi.unstubAllGlobals();
     vi.restoreAllMocks();
     if (originalResizeObserver) globalThis.ResizeObserver = originalResizeObserver;
@@ -119,11 +135,7 @@ describe("GalleryMasonry", () => {
 
     expect(document.querySelector('[role="dialog"]')).toBeNull();
 
-    const firstTileButton = [...document.querySelectorAll("button")].find((b) =>
-      b.textContent?.includes("Container house"),
-    );
-    firstTileButton!.dispatchEvent(new MouseEvent("click", { bubbles: true }));
-    await wrapper.vm.$nextTick();
+    await openTile(wrapper, "Container house");
 
     const dialog = document.querySelector('[role="dialog"]');
     expect(dialog).not.toBeNull();
@@ -134,11 +146,7 @@ describe("GalleryMasonry", () => {
   it("closes the lightbox on Escape and via the close button", async () => {
     const wrapper = mountGallery(TILES);
 
-    const firstTileButton = [...document.querySelectorAll("button")].find((b) =>
-      b.textContent?.includes("Container house"),
-    );
-    firstTileButton!.dispatchEvent(new MouseEvent("click", { bubbles: true }));
-    await wrapper.vm.$nextTick();
+    await openTile(wrapper, "Container house");
     expect(document.querySelector('[role="dialog"]')).not.toBeNull();
 
     document
@@ -159,11 +167,7 @@ describe("GalleryMasonry", () => {
   it("offers a link to the quote page from the lightbox", async () => {
     const wrapper = mountGallery(TILES);
 
-    const firstTileButton = [...document.querySelectorAll("button")].find((b) =>
-      b.textContent?.includes("Container house"),
-    );
-    firstTileButton!.dispatchEvent(new MouseEvent("click", { bubbles: true }));
-    await wrapper.vm.$nextTick();
+    await openTile(wrapper, "Container house");
 
     const quoteLink = document.querySelector('a[href="/quote"]');
     expect(quoteLink).not.toBeNull();

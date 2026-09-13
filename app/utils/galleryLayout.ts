@@ -57,7 +57,7 @@ interface Candidate {
  * Three passes: items are placed order-respecting with a short look-ahead, weighing each
  * candidate slot against the dead space it would create (so a short tile levels two columns
  * before a wide tile lands across them); the last `columns * 2` items are then placed
- * shortest-first to level the ragged tail; and if `flush` is set, each column's final single-span
+ * longest-first to level the ragged tail; and if `flush` is set, each column's final single-span
  * tile stretches to square off the bottom edge.
  */
 export function computeMasonryLayout(
@@ -177,12 +177,30 @@ export function computeMasonryLayout(
   return { placements, height: round(height) };
 }
 
+/** A placement's inline `position: absolute` box, ready to hand straight to an element's `style`. */
+export function placementToStyle(placement: GalleryTilePlacement | undefined) {
+  if (!placement) return { display: "none" };
+  return {
+    left: `${placement.left}px`,
+    top: `${placement.top}px`,
+    width: `${placement.width}px`,
+    height: `${placement.height}px`,
+  };
+}
+
 export interface GalleryColumnPlan {
   columns: number;
   gap: number;
 }
 
-/** Column count and gutter for a given grid container width. */
+/**
+ * Column count and gutter for a given grid container width.
+ *
+ * Thresholds key off the grid's own measured width, not the viewport — the grid sits inside a
+ * padded, max-width page container, so a mockup's viewport breakpoints (e.g. a 1440px desktop
+ * frame) wouldn't reliably fire here. Tailwind's own `sm`/`lg` scale keeps this in step with the
+ * rest of the site instead.
+ */
 export function resolveGalleryColumns(containerWidth: number): GalleryColumnPlan {
   if (containerWidth >= 1024) return { columns: 4, gap: 20 };
   if (containerWidth >= 640) return { columns: 3, gap: 16 };
