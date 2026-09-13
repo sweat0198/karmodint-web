@@ -1,4 +1,9 @@
-import type { SanityImage, SanitySizeImage } from "~/types/catalog";
+import type {
+  SanityCustomizationGroup,
+  SanityImage,
+  SanityProductCustomizationConfiguration,
+  SanitySizeImage,
+} from "~/types/catalog";
 
 export interface CatalogCategoryRef {
   _id: string;
@@ -37,6 +42,8 @@ export interface CatalogProduct {
   categories: CatalogCategoryRef[];
   representativeImages: SanityImage[];
   sizes: CatalogSizeOption[];
+  customizationGroups?: SanityCustomizationGroup[];
+  customizationConfigurations?: SanityProductCustomizationConfiguration[];
 }
 
 export interface CategoryTreeChild {
@@ -93,6 +100,18 @@ export const PRODUCTS_WITH_SIZES_QUERY = `*[_type == "product" && status == "pub
     "thumbnail": images[_key == "left-diagonal"][0] { asset, alt, view },
     "fallbackThumbnail": images[0] { asset, alt, view },
     "images": images[view != "top"] { _key, asset, alt, view }
+  },
+  "customizationGroups": customizationGroups[]->{
+    _id, _type, title, "identifier": identifier.current, selectionType, isMandatory, description, displayOrder,
+    items[]{ _key, title, pricingType, price, requiresTextInput, textInputPlaceholder, description, image { asset, alt, caption } }
+  },
+  customizationConfigurations[]{
+    _key,
+    "group": group->{
+      _id, _type, title, "identifier": identifier.current, selectionType, isMandatory, description, displayOrder,
+      items[]{ _key, title, pricingType, price, requiresTextInput, textInputPlaceholder, description, image { asset, alt, caption } }
+    },
+    itemOverrides[]{ _key, itemKey, enabled, pricingType, price }
   }
 }`;
 

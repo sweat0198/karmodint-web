@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { useCustomizationPricing, buildSpecSummary } from '~~/app/composables/useCustomizationPricing'
+import { resolveCustomizationGroups, resolveCustomizationItemPricing } from '~~/app/utils/customizationPricing'
 import type { SanityCustomizationGroup, SanitySizeOption } from '~~/app/types/catalog'
 import type { CustomizationSelections, CustomizationNotes } from '~~/app/types/customization'
 
@@ -222,5 +223,43 @@ describe('buildSpecSummary', () => {
   it('skips groups with no selection', () => {
     const summary = buildSpecSummary([groupSingleFinish, groupBooleanAc], { 'grp-finish': null, 'grp-ac': false })
     expect(summary).toEqual([])
+  })
+})
+
+describe('Product customization resolution', () => {
+  const configuration = {
+    group: groupPoaElectrical,
+    itemOverrides: [
+      { itemKey: 'standard', pricingType: 'fixed' as const, price: 1 },
+      { itemKey: 'custom', enabled: false }
+    ]
+  }
+
+  it('uses the Customization Item default when a Product has no override', () => {
+    expect(resolveCustomizationItemPricing(groupBooleanAc.items[0])).toEqual({ pricingType: 'fixed', price: 450 })
+  })
+
+  it('uses Product price and pricing-type overrides before the item default', () => {
+    expect(resolveCustomizationItemPricing(groupPoaElectrical.items[0], configuration.itemOverrides[0])).toEqual({
+      pricingType: 'fixed', price: 1
+    })
+    expect(resolveCustomizationItemPricing(groupBooleanAc.items[0], { itemKey: 'ac-unit', pricingType: 'included' })).toEqual({
+      pricingType: 'included', price: 0
+    })
+    expect(resolveCustomizationItemPricing(groupBooleanAc.items[0], { itemKey: 'ac-unit', pricingType: 'poa' })).toEqual({
+      pricingType: 'poa', price: undefined
+    })
+  })
+
+  it('uses Product configurations, disables excluded items, and falls back to legacy groups', () => {
+    const configured = resolveCustomizationGroups({ customizationConfigurations: [configuration] })
+    expect(configured).toEqual([
+      {
+        ...groupPoaElectrical,
+        items: [{ ...groupPoaElectrical.items[0], pricingType: 'fixed', price: 1 }]
+      }
+    ])
+
+    expect(resolveCustomizationGroups({ customizationGroups: [groupBooleanAc] })).toEqual([groupBooleanAc])
   })
 })

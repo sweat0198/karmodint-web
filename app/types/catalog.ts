@@ -93,6 +93,16 @@ export interface SanityCustomizationItem {
   image?: SanityImage
 }
 
+/** A Product-level override for one item from a reusable Customization Group. */
+export interface SanityCustomizationItemOverride {
+  _key?: string
+  itemKey: string
+  /** False removes this item from the Product's customer-facing group. */
+  enabled?: boolean
+  pricingType?: PricingType
+  price?: number
+}
+
 export type CustomizationSelectionType = 'single' | 'multiple' | 'boolean'
 
 export interface SanityCustomizationGroup {
@@ -105,6 +115,12 @@ export interface SanityCustomizationGroup {
   description?: string
   items: SanityCustomizationItem[]
   displayOrder?: number
+}
+
+export interface SanityProductCustomizationConfiguration {
+  _key?: string
+  group: SanityCustomizationGroup
+  itemOverrides?: SanityCustomizationItemOverride[]
 }
 
 export interface SanityCategory {
@@ -144,6 +160,7 @@ export interface SanityProduct {
   representativeImages?: SanityImage[]
   sizes: SanitySizeOption[]
   customizationGroups?: SanityCustomizationGroup[]
+  customizationConfigurations?: SanityProductCustomizationConfiguration[]
   specifications?: SanitySpecItem[]
   isFeatured?: boolean
   status: 'published' | 'draft' | 'archived'

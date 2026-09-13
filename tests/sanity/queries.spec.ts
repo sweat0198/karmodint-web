@@ -198,6 +198,29 @@ describe('Sanity GROQ Query Evaluation (SSG Data Fetching)', () => {
   })
 
   describe('catalog fan-out query (app/queries/catalog.ts)', () => {
+    it('projects Product customization configurations with resolved reusable groups and overrides', async () => {
+      const configuredProduct = {
+        ...mockProducts[0],
+        _id: 'product-configured-customization',
+        customizationConfigurations: [{
+          _key: 'electricity-config',
+          group: { _ref: 'group_electrical' },
+          itemOverrides: [{ _key: 'disable-premium', itemKey: 'opt_prem_elec', enabled: false }]
+        }]
+      }
+
+      const results = await executeGroq<any[]>(PRODUCTS_WITH_SIZES_QUERY, {}, [...mockSanityDataset, configuredProduct])
+      const product = results.find((candidate) => candidate._id === configuredProduct._id)
+
+      expect(product.customizationConfigurations).toEqual([
+        expect.objectContaining({
+          _key: 'electricity-config',
+          group: expect.objectContaining({ _id: 'group_electrical', title: 'Electrical & Lighting Package' }),
+          itemOverrides: [expect.objectContaining({ _key: 'disable-premium', itemKey: 'opt_prem_elec', enabled: false })]
+        })
+      ])
+    })
+
     it('excludes a drafts.* twin of a published product', async () => {
       const draftTwin = { ...mockProducts[0], _id: `drafts.${mockProducts[0]._id}` }
       const dataset = [...mockSanityDataset, draftTwin]

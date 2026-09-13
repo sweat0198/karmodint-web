@@ -41,8 +41,8 @@ describe('getPartialTotalLabel', () => {
     expect(getPartialTotalLabel({ total: 3240, hasPoa: false })).toBe('£3,240')
   })
 
-  it('is "Part POA" when any sibling line in the aggregate is POA', () => {
-    expect(getPartialTotalLabel({ total: 3240, hasPoa: true })).toBe('Part POA')
+  it('keeps the known subtotal visible when sibling lines include POA', () => {
+    expect(getPartialTotalLabel({ total: 3240, hasPoa: true })).toBe('£3,240 + POA')
   })
 })
 

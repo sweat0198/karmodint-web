@@ -255,10 +255,9 @@
                 :preview-image="item.image || getFallbackImage(item.productId)"
                 :preview-images="item.images ?? []"
                 :spec-summary-items="getItemSpecSummary(item)"
-                :groups="DEMO_CUSTOMIZATION_GROUPS"
+                :groups="getItemGroups(item)"
                 :model-value="getItemSelections(item.id)"
                 :notes="getItemNotes(item.id)"
-                show-demo-notice
                 @update:model-value="onSelectionsUpdate(item, $event)"
                 @update:notes="onNotesUpdate(item, $event)"
               >
@@ -284,13 +283,13 @@ import { computed, nextTick, onMounted, reactive, ref } from "vue";
 import { useSanityQuery } from '#imports'
 import { useQuoteStore, type QuoteItem } from "~/stores/quote";
 import type { CustomizationNotes, CustomizationSelections, SpecSummaryItem } from "~/types/customization";
-import { DEMO_CUSTOMIZATION_GROUPS } from "~/utils/customizationFixtures";
 import { buildSpecSummary, useCustomizationPricing } from "~/composables/useCustomizationPricing";
 import { useAppSeo } from "~/composables/useAppSeo";
 import { PRODUCTS_WITH_SIZES_QUERY, type CatalogProduct } from '~/queries/catalog'
 import { toPortableContainerCards } from '~/utils/portableContainerCards'
 import { requiresSizeSelection } from '~~/shared/utils/quoteLine'
 import { moveQuoteItemState } from '~/utils/quoteItemState'
+import { resolveCustomizationGroups } from '~/utils/customizationPricing'
 
 const { setPageSeo } = useAppSeo();
 
@@ -305,6 +304,12 @@ setPageSeo({
 const quoteStore = useQuoteStore();
 const { data: catalogueProducts } = await useSanityQuery<CatalogProduct[]>(PRODUCTS_WITH_SIZES_QUERY)
 const portableCards = computed(() => toPortableContainerCards(catalogueProducts.value ?? []))
+const customizationGroupsByProductId = computed(() => new Map(
+  (catalogueProducts.value ?? []).map((product) => [
+    product._id,
+    resolveCustomizationGroups(product),
+  ]),
+))
 
 // Tracks which single item is expanded in the accordion
 const expandedItemId = ref<string | null>(null);
@@ -411,11 +416,16 @@ function getItemNotes(id: string): CustomizationNotes {
   return itemNotes[id];
 }
 
+/** Live Product configurations take precedence over legacy Product group references. */
+function getItemGroups(item: QuoteItem) {
+  return customizationGroupsByProductId.value.get(item.productId) ?? []
+}
+
 function getItemPricing(item: QuoteItem) {
   let pricing = itemPricingCache.get(item.id);
   if (!pricing) {
     pricing = useCustomizationPricing(
-      () => DEMO_CUSTOMIZATION_GROUPS,
+      () => getItemGroups(item),
       () => getItemSelections(item.id),
       () => getItemNotes(item.id),
       () => ({
@@ -450,7 +460,7 @@ function getItemUnsatisfiedMandatory(item: QuoteItem) {
 }
 
 function getItemSpecSummary(item: QuoteItem): SpecSummaryItem[] {
-  const live = buildSpecSummary(DEMO_CUSTOMIZATION_GROUPS, getItemSelections(item.id));
+  const live = buildSpecSummary(getItemGroups(item), getItemSelections(item.id));
   if (live.length > 0) return live;
   return item.specSummary ?? [];
 }
@@ -462,7 +472,7 @@ function persistItemConfig(item: QuoteItem) {
     notes: getItemNotes(item.id),
     total: pricing.subtotal.value,
     isPoa: pricing.hasPoa.value,
-    specSummary: buildSpecSummary(DEMO_CUSTOMIZATION_GROUPS, getItemSelections(item.id)),
+    specSummary: buildSpecSummary(getItemGroups(item), getItemSelections(item.id)),
     lines: pricing.lines.value,
   });
 }

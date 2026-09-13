@@ -11,6 +11,7 @@ import type {
   SpecSummaryItem,
 } from "~/types/customization";
 import { getPriceLabel, getTotalLabel } from "~~/shared/utils/priceLabel";
+import { resolveCustomizationItemPricing } from "~/utils/customizationPricing";
 
 function selectedItems(
   group: SanityCustomizationGroup,
@@ -37,9 +38,7 @@ function selectedItems(
 }
 
 function itemPrice(item: SanityCustomizationItem): number | undefined {
-  if (item.pricingType === "fixed") return item.price ?? 0;
-  if (item.pricingType === "included") return 0;
-  return undefined;
+  return resolveCustomizationItemPricing(item).price;
 }
 
 /** "<groupId>:<itemKey>" — the one place this composite key is built. */
@@ -61,9 +60,10 @@ export function formatPriceBadge(
   item: SanityCustomizationItem,
   currencySymbol = "£",
 ): string {
-  if (item.pricingType === "included") return "Included";
-  if (item.pricingType === "poa") return getPriceLabel({ isPoa: true });
-  return `+${getPriceLabel({ price: item.price }, currencySymbol)}`;
+  const pricing = resolveCustomizationItemPricing(item);
+  if (pricing.pricingType === "included") return "Included";
+  if (pricing.pricingType === "poa") return getPriceLabel({ isPoa: true });
+  return `+${getPriceLabel({ price: pricing.price }, currencySymbol)}`;
 }
 
 function isGroupMandatorySatisfied(
@@ -118,7 +118,7 @@ export function useCustomizationPricing(
           groupTitle: group.title,
           optionTitle: item.title,
           price: itemPrice(item),
-          isPoa: item.pricingType === "poa",
+          isPoa: resolveCustomizationItemPricing(item).pricingType === "poa",
           customNotes: item.requiresTextInput
             ? notesMap[noteKey(group._id, item._key)]
             : undefined,

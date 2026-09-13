@@ -10,6 +10,7 @@ import { customizationItem } from './objects/customizationItem'
 import { specItem } from './objects/specItem'
 import { seo } from './objects/seo'
 import { quoteItem } from './objects/quoteItem'
+import { productCustomizationConfiguration } from './objects/productCustomizationConfiguration'
 
 export const schemaTypes = [
   // Document types
@@ -26,5 +27,6 @@ export const schemaTypes = [
   customizationItem,
   specItem,
   seo,
-  quoteItem
+  quoteItem,
+  productCustomizationConfiguration
 ]

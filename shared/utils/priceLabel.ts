@@ -26,11 +26,11 @@ export function getTotalLabel(input: { total: number; hasPoa: boolean }, currenc
 
 /**
  * A total across sibling lines (distinct products in one enquiry) where some are entirely POA
- * and others are priced — a different aggregation from {@link getTotalLabel}'s "priced base plus
- * POA extras within one line" case, so it gets its own wording rather than reusing "+ POA".
+ * and others are priced. It keeps the known subtotal and uses additive POA wording.
  */
 export function getPartialTotalLabel(input: { total: number; hasPoa: boolean }, currencySymbol = '£'): string {
-  return input.hasPoa ? 'Part POA' : `${currencySymbol}${input.total.toLocaleString()}`
+  const formatted = `${currencySymbol}${input.total.toLocaleString()}`
+  return input.hasPoa ? `${formatted} + POA` : formatted
 }
 
 /** Whether a price can be published at all — a POA size's stored price is a placeholder. */

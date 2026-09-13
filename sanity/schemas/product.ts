@@ -150,6 +150,13 @@ export const productType = defineType({
       description: 'Select which global customization groups (Electricity, Heater, WC, Kitchen, etc.) apply to this product.'
     }),
     defineField({
+      name: 'customizationConfigurations',
+      title: 'Customization Configurations',
+      type: 'array',
+      of: [defineArrayMember({ type: 'productCustomizationConfiguration' })],
+      description: 'Product-specific groups and item availability or pricing overrides. Takes precedence over legacy Customization Options & Add-ons.'
+    }),
+    defineField({
       name: 'specifications',
       title: 'Technical Specifications',
       type: 'array',

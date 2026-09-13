@@ -8,6 +8,7 @@ import { clientReferenceType } from '../../sanity/schemas/reference'
 import { galleryEntryType, validateGalleryOrder } from '../../sanity/schemas/galleryEntry'
 import { customizationItem } from '../../sanity/schemas/objects/customizationItem'
 import { sizeOption, validateSizeImages } from '../../sanity/schemas/objects/sizeOption'
+import { productCustomizationConfiguration } from '../../sanity/schemas/objects/productCustomizationConfiguration'
 
 describe('Sanity Schemas Structure & Validation Rules', () => {
   it('registers all required document and object types in schema index', () => {
@@ -21,6 +22,7 @@ describe('Sanity Schemas Structure & Validation Rules', () => {
     expect(typeNames).toContain('sizeOption')
     expect(typeNames).toContain('quoteItem')
     expect(typeNames).toContain('customizationItem')
+    expect(typeNames).toContain('productCustomizationConfiguration')
     expect(typeNames).toContain('specItem')
     expect(typeNames).toContain('seo')
   })
@@ -118,6 +120,7 @@ describe('Sanity Schemas Structure & Validation Rules', () => {
       expect(fieldNames).toContain('representativeImages')
       expect(fieldNames).toContain('sizes')
       expect(fieldNames).toContain('customizationGroups')
+      expect(fieldNames).toContain('customizationConfigurations')
       expect(fieldNames).toContain('specifications')
       expect(fieldNames).toContain('status')
       expect(fieldNames).toContain('seo')
@@ -137,6 +140,21 @@ describe('Sanity Schemas Structure & Validation Rules', () => {
       expect(custField.type).toBe('array')
       expect(custField.of[0].type).toBe('reference')
       expect(custField.of[0].to).toEqual([{ type: 'customizationGroup' }])
+    })
+
+    it('defines Product customization configurations without removing legacy groups', () => {
+      const configurationsField: any = productType.fields.find((f: any) => f.name === 'customizationConfigurations')
+
+      expect(configurationsField.type).toBe('array')
+      expect(configurationsField.of[0].type).toBe('productCustomizationConfiguration')
+
+      const fields = Object.fromEntries(productCustomizationConfiguration.fields.map((field: any) => [field.name, field]))
+      expect(fields.group.type).toBe('reference')
+      expect(fields.group.to).toEqual([{ type: 'customizationGroup' }])
+      expect(fields.itemOverrides.type).toBe('array')
+      expect(fields.itemOverrides.of[0].fields.map((field: any) => field.name)).toEqual([
+        'itemKey', 'enabled', 'pricingType', 'price'
+      ])
     })
 
     it('requires at least one size option', () => {

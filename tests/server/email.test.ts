@@ -204,9 +204,9 @@ describe('Email Utility & Template Engine', () => {
         // the placeholder total with the additive "+ POA" suffix — same as the Quote List page.
         expect(email.html).toContain('£0 + POA')
 
-        // Enquiry summary total: some lines priced, one wholly POA -> "Part POA" (getPartialTotalLabel).
-        expect(email.html).toContain('Part POA')
-        expect(email.html).not.toContain('£25,000 + POA')
+        // Enquiry summary total retains its known ex-VAT subtotal and signals the POA line.
+        expect(email.html).toContain('£25,000 + POA')
+        expect(email.html).not.toContain('Part POA')
       }
     })
   })
