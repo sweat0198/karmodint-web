@@ -205,18 +205,56 @@ describe('Sanity GROQ Query Evaluation (SSG Data Fetching)', () => {
         customizationConfigurations: [{
           _key: 'electricity-config',
           group: { _ref: 'group_electrical' },
-          itemOverrides: [{ _key: 'disable-premium', itemKey: 'opt_prem_elec', enabled: false }]
+          itemOverrides: [{
+            _key: 'disable-premium',
+            itemKey: 'opt_prem_elec',
+            enabled: false,
+            titleOverride: 'Premium electrical package',
+            descriptionOverride: 'Equipment matched to this Product.',
+            sizeRules: [{
+              _key: 'small-cabin-rule',
+              sizeOptionKey: mockProducts[0].sizes[0]._key,
+              mode: 'unavailable',
+              review: { status: 'reviewed', snapshot: 'Small cabin does not offer this package.' }
+            }]
+          }]
         }]
       }
 
-      const results = await executeGroq<any[]>(PRODUCTS_WITH_SIZES_QUERY, {}, [...mockSanityDataset, configuredProduct])
+      const electricalGroup = mockSanityDataset.find((document) => document._id === 'group_electrical')!
+      const scopedElectricalGroup = {
+        ...electricalGroup,
+        items: electricalGroup.items.map((item: any) => ({ ...item, scope: 'universal' }))
+      }
+      const dataset = [
+        ...mockSanityDataset.filter((document) => document._id !== electricalGroup._id),
+        scopedElectricalGroup,
+        configuredProduct
+      ]
+      const results = await executeGroq<any[]>(PRODUCTS_WITH_SIZES_QUERY, {}, dataset)
       const product = results.find((candidate) => candidate._id === configuredProduct._id)
 
       expect(product.customizationConfigurations).toEqual([
         expect.objectContaining({
           _key: 'electricity-config',
-          group: expect.objectContaining({ _id: 'group_electrical', title: 'Electrical & Lighting Package' }),
-          itemOverrides: [expect.objectContaining({ _key: 'disable-premium', itemKey: 'opt_prem_elec', enabled: false })]
+          group: expect.objectContaining({
+            _id: 'group_electrical',
+            title: 'Electrical & Lighting Package',
+            items: expect.arrayContaining([expect.objectContaining({ scope: 'universal' })])
+          }),
+          itemOverrides: [expect.objectContaining({
+            _key: 'disable-premium',
+            itemKey: 'opt_prem_elec',
+            enabled: false,
+            titleOverride: 'Premium electrical package',
+            descriptionOverride: 'Equipment matched to this Product.',
+            sizeRules: [expect.objectContaining({
+              _key: 'small-cabin-rule',
+              sizeOptionKey: mockProducts[0].sizes[0]._key,
+              mode: 'unavailable',
+              review: { status: 'reviewed', snapshot: 'Small cabin does not offer this package.' }
+            })]
+          })]
         })
       ])
     })

@@ -59,7 +59,7 @@ export interface CategoryTreeNode extends CategoryTreeChild {
 
 const CUSTOMIZATION_GROUP_PROJECTION = `{
   _id, _type, title, "identifier": identifier.current, selectionType, isMandatory, description, displayOrder,
-  items[]{ _key, title, pricingType, price, requiresTextInput, textInputPlaceholder, description, image { asset, alt, caption } }
+  items[]{ _key, title, pricingType, price, requiresTextInput, textInputPlaceholder, description, image { asset, alt, caption }, scope }
 }`;
 
 // Category documents may lag behind the seed files in an already-populated Sanity dataset. Keep
@@ -110,7 +110,13 @@ export const PRODUCTS_WITH_SIZES_QUERY = `*[_type == "product" && status == "pub
   customizationConfigurations[]{
     _key,
     "group": group->${CUSTOMIZATION_GROUP_PROJECTION},
-    itemOverrides[]{ _key, itemKey, enabled, pricingType, price }
+    itemOverrides[]{
+      _key, itemKey, enabled, pricingType, price, titleOverride, descriptionOverride,
+      sizeRules[]{
+        _key, sizeOptionKey, mode, price, titleOverride, descriptionOverride,
+        review { status, snapshot }
+      }
+    }
   }
 }`;
 

@@ -304,11 +304,12 @@ setPageSeo({
 const quoteStore = useQuoteStore();
 const { data: catalogueProducts } = await useSanityQuery<CatalogProduct[]>(PRODUCTS_WITH_SIZES_QUERY)
 const portableCards = computed(() => toPortableContainerCards(catalogueProducts.value ?? []))
-const customizationGroupsByProductId = computed(() => new Map(
-  (catalogueProducts.value ?? []).map((product) => [
-    product._id,
-    resolveCustomizationGroups(product),
-  ]),
+const customizationProductById = computed(() => new Map(
+  (catalogueProducts.value ?? []).map((product) => [product._id, {
+    ...product,
+    // The catalogue's POA sizes omit a numeric price; resolution validates only stable `_key`s.
+    sizes: product.sizes.map((size) => ({ ...size, price: size.price ?? 0 })),
+  }]),
 ))
 
 // Tracks which single item is expanded in the accordion
@@ -418,7 +419,15 @@ function getItemNotes(id: string): CustomizationNotes {
 
 /** Live Product configurations take precedence over legacy Product group references. */
 function getItemGroups(item: QuoteItem) {
-  return customizationGroupsByProductId.value.get(item.productId) ?? []
+  const product = customizationProductById.value.get(item.productId)
+  if (!product) return []
+
+  if (product.customizationConfigurations?.length) {
+    if (requiresSizeSelection(item) || !item.sizeKey) return []
+    return resolveCustomizationGroups(product, item.sizeKey)
+  }
+
+  return resolveCustomizationGroups(product)
 }
 
 function getItemPricing(item: QuoteItem) {
