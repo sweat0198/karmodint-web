@@ -128,6 +128,7 @@ export const productCustomizationConfiguration = defineType({
                       name: 'sizeOptionKey',
                       title: 'Size Option Key',
                       type: 'string',
+                      description: 'Enter the stable _key shown on the matching Product > Size Options entry. Publish validation lists valid keys and labels.',
                       validation: (Rule) => Rule.required()
                     }),
                     defineField({
@@ -196,7 +197,7 @@ export const productCustomizationConfiguration = defineType({
                           name: 'snapshot',
                           title: 'Reviewed Size Snapshot',
                           type: 'string',
-                          description: 'Copy the size key and current dimensions when reviewing. Publish blocks stale snapshots.',
+                          description: 'Record the exact review snapshot: size key, length, width, height, mode, price, title override, and description override. Re-review after any of these values changes.',
                           validation: (Rule) => Rule.required()
                         })
                       ]

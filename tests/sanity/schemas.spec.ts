@@ -243,7 +243,7 @@ describe('Sanity Schemas Structure & Validation Rules', () => {
             sizeRules: [{
               sizeOptionKey: 'small',
               mode: 'included',
-              review: { status: 'reviewed', snapshot: createSizeRuleSnapshot(sizes[0]) }
+              review: { status: 'reviewed', snapshot: createSizeRuleSnapshot(sizes[0], { mode: 'included' }) }
             }]
           }]
         }]
@@ -262,7 +262,7 @@ describe('Sanity Schemas Structure & Validation Rules', () => {
       const rule = {
         sizeOptionKey: 'small',
         mode: 'included',
-        review: { status: 'pending', snapshot: createSizeRuleSnapshot(size) }
+        review: { status: 'pending', snapshot: createSizeRuleSnapshot(size, { mode: 'included' }) }
       }
       const document = {
         status: 'published',
@@ -344,9 +344,41 @@ describe('Sanity Schemas Structure & Validation Rules', () => {
         }]
       }, [group])
 
-      expect(missingReview).toMatchObject({ level: 'warning', message: expect.stringContaining('needs a reviewed rule') })
-      expect(orphan).toMatchObject({ level: 'warning', message: expect.stringContaining('missing') })
-      expect(stale).toMatchObject({ level: 'warning', message: expect.stringContaining('dimensions changed') })
+      expect(missingReview).toContain('needs a reviewed rule')
+      expect(orphan).toContain('missing')
+      expect(stale).toContain('dimensions changed')
+    })
+
+    it('snapshots every reviewed rule value that changes size-dependent equipment', () => {
+      const size = { _key: 'small', label: 'Small Cabin', lengthM: 3, widthM: 2.4, heightM: 2.6 }
+      const included = createSizeRuleSnapshot(size, { mode: 'included' })
+
+      expect(included).toContain('"sizeOptionKey":"small"')
+      expect(included).toContain('"lengthM":3')
+      expect(createSizeRuleSnapshot(size, { mode: 'fixed', price: 200 })).not.toBe(included)
+      expect(createSizeRuleSnapshot(size, { mode: 'included', titleOverride: '2 lights' })).not.toBe(included)
+      expect(createSizeRuleSnapshot(size, { mode: 'included', descriptionOverride: 'Two lights and four sockets' }))
+        .not.toBe(included)
+    })
+
+    it('lists Product Size Option keys and labels when a rule uses an unknown key', () => {
+      const group = {
+        _id: 'group-electricity',
+        isMandatory: false,
+        items: [{ _key: 'elec-1', scope: 'universal' as const }]
+      }
+
+      expect(validatePublishedCustomizationRules({
+        status: 'published',
+        sizes: [{ _key: 'small', label: 'Small Cabin', lengthM: 3, widthM: 2.4 }],
+        customizationConfigurations: [{
+          group: { _ref: 'group-electricity' },
+          itemOverrides: [{
+            itemKey: 'elec-1',
+            sizeRules: [{ sizeOptionKey: 'unknown', mode: 'included' }]
+          }]
+        }]
+      }, [group])).toContain('small (Small Cabin)')
     })
 
     it('blocks published legacy groups containing size-dependent items without native rules', () => {

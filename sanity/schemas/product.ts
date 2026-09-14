@@ -26,6 +26,7 @@ export function validateExactlyOneDefaultSize(
 
 interface ValidationSizeOption {
   _key?: string
+  label?: string
   lengthM?: number
   widthM?: number
   heightM?: number
@@ -34,6 +35,9 @@ interface ValidationSizeOption {
 interface ValidationSizeRule {
   sizeOptionKey?: string
   mode?: 'inherit' | 'fixed' | 'included' | 'poa' | 'unavailable'
+  price?: number
+  titleOverride?: string
+  descriptionOverride?: string
   review?: { status?: 'pending' | 'reviewed'; snapshot?: string }
 }
 
@@ -61,19 +65,24 @@ interface ProductCustomizationValidationDocument {
   customizationConfigurations?: ValidationConfiguration[]
 }
 
-export interface CustomizationConfigurationWarning {
-  message: string
-  level: 'warning'
-}
-
 /** Stable evidence for a reviewed Size Option rule. Update the review if any dimension changes. */
-export function createSizeRuleSnapshot(size: ValidationSizeOption): string {
+export function createSizeRuleSnapshot(size: ValidationSizeOption, rule: ValidationSizeRule): string {
   return JSON.stringify({
     sizeOptionKey: size._key ?? null,
     lengthM: size.lengthM ?? null,
     widthM: size.widthM ?? null,
-    heightM: size.heightM ?? null
+    heightM: size.heightM ?? null,
+    mode: rule.mode ?? null,
+    price: rule.price ?? null,
+    titleOverride: rule.titleOverride ?? null,
+    descriptionOverride: rule.descriptionOverride ?? null
   })
+}
+
+function describeProductSizeOptions(sizes: ValidationSizeOption[]): string {
+  return sizes.length === 0
+    ? 'No Size Options have been added.'
+    : sizes.map((size) => `${size._key || '(missing key)'} (${size.label || 'unnamed size'})`).join(', ')
 }
 
 /**
@@ -119,7 +128,9 @@ function validateCustomizationRules(
       const rulesBySizeKey = new Set<string>()
       for (const rule of override.sizeRules ?? []) {
         if (!rule.sizeOptionKey || !sizeKeys.has(rule.sizeOptionKey)) {
-          return `Size Option "${rule.sizeOptionKey || '(missing)'}" does not exist on this Product`
+          return rule.sizeOptionKey
+            ? `Size Option "${rule.sizeOptionKey}" does not exist on this Product. Available Size Options: ${describeProductSizeOptions(sizes)}`
+            : `A Size Option rule needs a Size Option Key. Available Size Options: ${describeProductSizeOptions(sizes)}`
         }
         if (rulesBySizeKey.has(rule.sizeOptionKey)) {
           return `Size Option "${rule.sizeOptionKey}" can have only one rule for this Customization Item`
@@ -130,7 +141,7 @@ function validateCustomizationRules(
           return `Size Option rule for "${override.itemKey}" at "${rule.sizeOptionKey}" must be reviewed before publishing`
         }
         const size = sizes.find((candidate) => candidate._key === rule.sizeOptionKey)!
-        if (rule.review.snapshot !== createSizeRuleSnapshot(size)) {
+        if (rule.review.snapshot !== createSizeRuleSnapshot(size, rule)) {
           return `Size Option rule for "${override.itemKey}" at "${rule.sizeOptionKey}" must be reviewed again because dimensions changed`
         }
       }
@@ -194,11 +205,29 @@ export function validatePublishedCustomizationRules(
 export function getCustomizationConfigurationWarning(
   document: ProductCustomizationValidationDocument | undefined,
   groups: ValidationGroup[],
-): true | CustomizationConfigurationWarning {
+): true | string {
   if (document?.status !== 'draft') return true
 
-  const result = validateCustomizationRules(document, groups)
-  return result === true ? true : { message: result, level: 'warning' }
+  return validateCustomizationRules(document, groups)
+}
+
+async function fetchProductCustomizationGroups(
+  document: ProductCustomizationValidationDocument,
+  context: any,
+): Promise<ValidationGroup[]> {
+  const groupIds = [...new Set([
+    ...(document.customizationConfigurations ?? []).map((configuration) => configuration.group?._ref),
+    ...(document.customizationGroups ?? []).map((group) => group._ref)
+  ].filter((groupId): groupId is string => Boolean(groupId)))]
+  if (groupIds.length === 0) return []
+
+  return context
+    .getClient({ apiVersion: '2025-02-19' })
+    .withConfig({ perspective: 'drafts' })
+    .fetch<ValidationGroup[]>(
+      '*[_id in $groupIds]{_id, isMandatory, items[]{_key, scope}}',
+      { groupIds }
+    )
 }
 
 export const productType = defineType({
@@ -332,32 +361,24 @@ export const productType = defineType({
       type: 'array',
       of: [defineArrayMember({ type: 'productCustomizationConfiguration' })],
       description: 'Product-specific groups and item availability or pricing overrides. Takes precedence over legacy Customization Options & Add-ons.',
-      validation: (Rule) => Rule.custom(async (
-        configurations: ValidationConfiguration[] | undefined,
-        context: any
-      ) => {
-        const document = {
-          ...context.document,
-          customizationConfigurations: configurations
-        } as ProductCustomizationValidationDocument
-        const groupIds = [...new Set([
-          ...(configurations ?? []).map((configuration) => configuration.group?._ref),
-          ...(document.customizationGroups ?? []).map((group) => group._ref)
-        ]
-          .filter((groupId): groupId is string => Boolean(groupId)))]
-        if (groupIds.length === 0) return true
-        const groups = await context
-          .getClient({ apiVersion: '2025-02-19' })
-          .withConfig({ perspective: 'drafts' })
-          .fetch<ValidationGroup[]>(
-            '*[_id in $groupIds]{_id, isMandatory, items[]{_key, scope}}',
-            { groupIds }
-          )
-
-        return document.status === 'published'
-          ? validatePublishedCustomizationRules(document, groups ?? [])
-          : getCustomizationConfigurationWarning(document, groups ?? [])
-      })
+      validation: (Rule) => [
+        Rule.custom(async (configurations: ValidationConfiguration[] | undefined, context: any) => {
+          const document = {
+            ...context.document,
+            customizationConfigurations: configurations
+          } as ProductCustomizationValidationDocument
+          if (document.status !== 'draft') return true
+          return getCustomizationConfigurationWarning(document, await fetchProductCustomizationGroups(document, context))
+        }).warning(),
+        Rule.custom(async (configurations: ValidationConfiguration[] | undefined, context: any) => {
+          const document = {
+            ...context.document,
+            customizationConfigurations: configurations
+          } as ProductCustomizationValidationDocument
+          if (document.status !== 'published') return true
+          return validatePublishedCustomizationRules(document, await fetchProductCustomizationGroups(document, context))
+        })
+      ]
     }),
     defineField({
       name: 'specifications',
