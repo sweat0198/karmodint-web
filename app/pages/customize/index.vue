@@ -262,6 +262,24 @@
                 @update:notes="onNotesUpdate(item, $event)"
               >
                 <template v-if="item.isPortableContainer" #before-demo-notice>
+                  <div
+                    v-if="sizeChangeNotices[item.id]?.length"
+                    class="mb-4 flex items-start justify-between gap-3 rounded border border-amber-300 bg-amber-50 px-3.5 py-2.5 text-xs text-amber-900"
+                  >
+                    <span>
+                      <strong class="font-semibold">Removed for this size:</strong>
+                      {{ sizeChangeNotices[item.id]!.join(", ") }} — not available at the size you
+                      just selected.
+                    </span>
+                    <button
+                      type="button"
+                      class="shrink-0 font-bold text-amber-700 hover:text-amber-900"
+                      aria-label="Dismiss notice"
+                      @click="dismissSizeChangeNotice(item.id)"
+                    >
+                      ×
+                    </button>
+                  </div>
                   <SizeSelector
                     :select-id="`portable-size-${item.id}`"
                     :sizes="getPortableSizes(item)"
@@ -289,7 +307,7 @@ import { PRODUCTS_WITH_SIZES_QUERY, type CatalogProduct } from '~/queries/catalo
 import { toPortableContainerCards } from '~/utils/portableContainerCards'
 import { requiresSizeSelection } from '~~/shared/utils/quoteLine'
 import { moveQuoteItemState } from '~/utils/quoteItemState'
-import { resolveCustomizationGroups } from '~/utils/customizationPricing'
+import { reconcileCustomizationSelections, resolveCustomizationGroups } from '~/utils/customizationPricing'
 
 const { setPageSeo } = useAppSeo();
 
@@ -373,6 +391,8 @@ function scrollCardIntoView(id: string) {
 const itemSelections = reactive<Record<string, CustomizationSelections>>({});
 const itemNotes = reactive<Record<string, CustomizationNotes>>({});
 const itemPricingCache = new Map<string, ReturnType<typeof useCustomizationPricing>>();
+/** Titles removed by the most recent Size Option change, keyed by the line's current id. */
+const sizeChangeNotices = reactive<Record<string, string[]>>({});
 
 function isExpanded(id: string): boolean {
   return expandedItemId.value === id;
@@ -455,13 +475,45 @@ function getPortableSizes(item: QuoteItem) {
   return portableCards.value.find((card) => card.productId === item.productId)?.sizes ?? []
 }
 
+/**
+ * Changing Size Option reprices through the shared resolver rather than the store's own
+ * base-price delta, and carries selections/notes across the change: an item the new size still
+ * offers survives, one it doesn't is dropped and named in a customer-facing notice (D6).
+ */
 function onPortableSizeChange(item: QuoteItem, sizeKey: string) {
   const size = getPortableSizes(item).find((candidate) => candidate.sizeKey === sizeKey)
   if (!size) return
 
   const previousId = item.id
-  const nextId = quoteStore.selectPortableSize(previousId, size)
-  migrateCustomizerState(previousId, nextId)
+  const previousGroups = getItemGroups(item)
+  const previousSelections = getItemSelections(previousId)
+  const previousNotes = getItemNotes(previousId)
+  delete sizeChangeNotices[previousId]
+
+  const sizeId = quoteStore.selectPortableSize(previousId, size)
+  migrateCustomizerState(previousId, sizeId)
+  const updatedItem = sizeId ? quoteStore.items.find((candidate) => candidate.id === sizeId) : undefined
+  if (!sizeId || !updatedItem) return
+
+  const { selections, notes, removedTitles } = reconcileCustomizationSelections(
+    previousGroups,
+    getItemGroups(updatedItem),
+    previousSelections,
+    previousNotes,
+  )
+  itemSelections[sizeId] = selections
+  itemNotes[sizeId] = notes
+
+  const finalId = persistItemConfig(updatedItem)
+  migrateCustomizerState(sizeId, finalId)
+
+  if (removedTitles.length > 0) {
+    sizeChangeNotices[finalId ?? sizeId] = removedTitles
+  }
+}
+
+function dismissSizeChangeNotice(id: string) {
+  delete sizeChangeNotices[id]
 }
 
 function getItemUnsatisfiedMandatory(item: QuoteItem) {
@@ -493,6 +545,10 @@ function migrateCustomizerState(previousId: string, nextId: string | undefined) 
   itemPricingCache.delete(previousId)
   itemPricingCache.delete(nextId)
   if (expandedItemId.value === previousId) expandedItemId.value = nextId
+  // A size-change notice names what a *specific* size change removed; once the id it was
+  // keyed under is gone (any further customization change, not only another size change),
+  // it no longer describes the line's current state and would otherwise never be freed.
+  delete sizeChangeNotices[previousId]
 }
 
 function onSelectionsUpdate(item: QuoteItem, next: CustomizationSelections) {

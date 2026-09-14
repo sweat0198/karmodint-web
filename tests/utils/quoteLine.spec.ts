@@ -16,6 +16,35 @@ describe('getQuoteLineId', () => {
   it('rejects a portable line marked selected when it has no concrete size key', () => {
     expect(requiresSizeSelection({ isPortableContainer: true, hasSelectedSize: true, sizeKey: '' })).toBe(true)
   })
+
+  it('gives an ordinary Product + Size Option line the same plain id whether or not it is portable', () => {
+    const line = {
+      productId: 'product-grp-cabin', sizeKey: '150x150', productName: 'GRP Cabin', productSlug: 'grp-cabin',
+      sizeLabel: '1.50m × 1.50m', quantity: 1
+    }
+
+    expect(getQuoteLineId(line)).toBe('product-grp-cabin-150x150')
+  })
+
+  it('appends a configuration-derived id to a customized non-portable line, same as a portable one', () => {
+    const line = {
+      productId: 'product-grp-cabin', sizeKey: '150x150', productName: 'GRP Cabin', productSlug: 'grp-cabin',
+      sizeLabel: '1.50m × 1.50m', quantity: 1,
+      configState: { finish: 'anthracite' }, customizationNotes: {}
+    }
+
+    expect(getQuoteLineId(line)).toMatch(/^product-grp-cabin-150x150-config-[a-f0-9]+$/)
+  })
+
+  it('treats an explicit "None" selection as a configuration decision, distinct from no selection at all', () => {
+    const unconfigured = {
+      productId: 'product-grp-cabin', sizeKey: '150x150', productName: 'GRP Cabin', productSlug: 'grp-cabin',
+      sizeLabel: '1.50m × 1.50m', quantity: 1
+    }
+    const explicitNone = { ...unconfigured, configState: { finish: null } }
+
+    expect(getQuoteLineId(explicitNone)).not.toBe(getQuoteLineId(unconfigured))
+  })
 })
 
 describe('getQuoteLineFinancials', () => {

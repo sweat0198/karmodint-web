@@ -47,8 +47,8 @@ function canonicalJson(value: unknown): string {
   return JSON.stringify(value) ?? 'null'
 }
 
-/** A portable quote line is identical only when its model, size, options, and notes all match. */
-export function getPortableConfigurationKey(line: Pick<QuoteLine, 'configState' | 'customizationNotes'>): string {
+/** A quote line is identical only when its Product, Size Option, selections, and notes all match. */
+export function getConfigurationKey(line: Pick<QuoteLine, 'configState' | 'customizationNotes'>): string {
   return canonicalJson({ selections: line.configState ?? {}, notes: line.customizationNotes ?? {} })
 }
 
@@ -59,12 +59,21 @@ function selectorSafeKey(value: string): string {
     .join('')
 }
 
-/** Existing product-size IDs remain stable; portable IDs include their selected configuration. */
+function hasConfiguration(line: Pick<QuoteLine, 'configState' | 'customizationNotes'>): boolean {
+  return Object.keys(line.configState ?? {}).length > 0 || Object.keys(line.customizationNotes ?? {}).length > 0
+}
+
+/**
+ * Product, Size Option, selected items, and customer notes form a line's canonical identity (D6).
+ * An unconfigured line keeps the plain `${productId}-${sizeKey}` id it always had; any line that
+ * carries a selection or note — portable or not — is distinguished by that configuration too, so
+ * differently-configured units of the same Product and Size Option never silently merge.
+ */
 export function getQuoteLineId(line: Omit<QuoteLine, 'id'>): string {
-  if (!line.isPortableContainer || line.hasSelectedSize === false) {
+  if (!hasConfiguration(line)) {
     return `${line.productId}-${line.sizeKey}`
   }
-  return `${line.productId}-${line.sizeKey}-config-${selectorSafeKey(getPortableConfigurationKey(line))}`
+  return `${line.productId}-${line.sizeKey}-config-${selectorSafeKey(getConfigurationKey(line))}`
 }
 
 export function requiresSizeSelection(line: Pick<QuoteLine, 'isPortableContainer' | 'hasSelectedSize' | 'sizeKey'>): boolean {

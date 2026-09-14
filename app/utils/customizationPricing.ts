@@ -7,6 +7,7 @@ import type {
   SanityProductCustomizationConfiguration,
   SanitySizeOption,
 } from '~/types/catalog'
+import type { CustomizationNotes, CustomizationSelections } from '~/types/customization'
 
 export interface ResolvedCustomizationItemPricing {
   pricingType: PricingType
@@ -154,4 +155,86 @@ export function resolveCustomizationGroups(product: {
   }
 
   return product.customizationGroups ?? []
+}
+
+export interface CustomizationSelectionReconciliation {
+  selections: CustomizationSelections
+  notes: CustomizationNotes
+  /** Titles of items the customer had selected that the new Size Option no longer offers. */
+  removedTitles: string[]
+}
+
+/**
+ * Carries a customer's selections and notes across a Size Option change. An item still offered by
+ * `nextGroups` (resolved for the new size) keeps its selection and any note; one the new size no
+ * longer offers is dropped and named in `removedTitles`, so the caller can tell the customer what
+ * changed rather than silently discarding it.
+ */
+export function reconcileCustomizationSelections(
+  previousGroups: SanityCustomizationGroup[],
+  nextGroups: SanityCustomizationGroup[],
+  selections: CustomizationSelections,
+  notes: CustomizationNotes,
+): CustomizationSelectionReconciliation {
+  const nextGroupsById = new Map(nextGroups.map((group) => [group._id, group]))
+  const nextSelections: CustomizationSelections = {}
+  const removedTitles: string[] = []
+  const keptNoteKeys = new Set<string>()
+
+  const reportRemoved = (group: SanityCustomizationGroup, itemKey: string | undefined) => {
+    const removed = group.items.find((item) => item._key === itemKey)
+    if (removed) removedTitles.push(removed.title)
+  }
+
+  for (const group of previousGroups) {
+    const value = selections[group._id]
+    if (value === undefined) continue
+
+    const nextGroup = nextGroupsById.get(group._id)
+
+    if (group.selectionType === 'single') {
+      if (value === null) {
+        // "None" names no item, so there's nothing to report removed; it's only worth keeping
+        // when the group itself still exists for the customer to see it selected in.
+        if (nextGroup) nextSelections[group._id] = null
+      } else if (nextGroup?.items.some((item) => item._key === value)) {
+        nextSelections[group._id] = value
+        keptNoteKeys.add(`${group._id}:${value}`)
+      } else {
+        reportRemoved(group, value as string)
+      }
+      continue
+    }
+
+    if (group.selectionType === 'multiple') {
+      const availableKeys = new Set(nextGroup?.items.map((item) => item._key))
+      const kept: string[] = []
+      for (const key of (value as string[] | undefined) ?? []) {
+        if (availableKeys.has(key)) {
+          kept.push(key)
+          keptNoteKeys.add(`${group._id}:${key}`)
+        } else {
+          reportRemoved(group, key)
+        }
+      }
+      if (kept.length > 0) nextSelections[group._id] = kept
+      continue
+    }
+
+    // boolean
+    if (nextGroup) {
+      nextSelections[group._id] = value
+      const item = nextGroup.items[0]
+      if (item?._key) keptNoteKeys.add(`${group._id}:${item._key}`)
+    } else if (value === true) {
+      reportRemoved(group, group.items[0]?._key)
+    }
+  }
+
+  const nextNotes: CustomizationNotes = {}
+  for (const [key, note] of Object.entries(notes)) {
+    if (keptNoteKeys.has(key)) nextNotes[key] = note
+  }
+
+  return { selections: nextSelections, notes: nextNotes, removedTitles }
 }

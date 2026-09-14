@@ -320,7 +320,10 @@ describe("useQuoteStore", () => {
       });
     });
 
-    it("updates a configured line total by the selected size base-price difference", () => {
+    it("leaves a configured total for the caller to recompute through the resolver rather than a base-price delta", () => {
+      // The resolver knows which items are still available at the new size and what they now
+      // cost; the store doesn't have catalogue access, so it no longer guesses via delta math
+      // (that guess could preserve a stale total for an item the new size makes unavailable).
       const store = useQuoteStore();
       store.addPortableContainer(portableCard());
       const [line] = store.items;
@@ -332,7 +335,53 @@ describe("useQuoteStore", () => {
 
       store.selectPortableSize(store.items[0]!.id, largerPricedSize);
 
-      expect(store.items[0]!.customTotal).toBe(11200);
+      expect(store.items[0]!.customTotal).toBe(9200);
+      expect(store.items[0]!.basePrice).toBe(11000);
+    });
+  });
+
+  describe("configuration identity for ordinary (non-portable) lines", () => {
+    it("rekeys a customized line and merges it into a matching configuration already in the Quote List", () => {
+      const store = useQuoteStore();
+      store.addItem(grpItem({ sizeKey: "150x150" }));
+      const first = store.items[0]!;
+      store.updateItemConfig(first.id, {
+        selections: { finish: "white" }, notes: {}, total: 5000, isPoa: false, specSummary: [], lines: []
+      });
+      const configuredId = store.items[0]!.id;
+      expect(configuredId).not.toBe("product-grp-cabin-150x150");
+
+      // A second, independently-added unit of the same Size Option, customized to match the first.
+      store.addItem(grpItem({ sizeKey: "150x150" }));
+      const second = store.items.find((item) => item.id !== configuredId)!;
+      store.updateItemConfig(second.id, {
+        selections: { finish: "white" }, notes: {}, total: 5000, isPoa: false, specSummary: [], lines: []
+      });
+
+      expect(store.items).toHaveLength(1);
+      expect(store.items[0]!.id).toBe(configuredId);
+      expect(store.items[0]!.quantity).toBe(2);
+    });
+
+    it("keeps two lines of the same Product and Size Option separate while their configurations differ", () => {
+      const store = useQuoteStore();
+      store.addItem(grpItem({ sizeKey: "150x150" }));
+      const first = store.items[0]!;
+      store.updateItemConfig(first.id, {
+        selections: { finish: "white" }, notes: {}, total: 5000, isPoa: false, specSummary: [], lines: []
+      });
+
+      store.addItem(grpItem({ sizeKey: "150x150" }));
+      const second = store.items.find((item) => item.id !== first.id)!;
+      store.updateItemConfig(second.id, {
+        selections: { finish: "anthracite" }, notes: {}, total: 5320, isPoa: false, specSummary: [], lines: []
+      });
+
+      expect(store.items).toHaveLength(2);
+      expect(store.items.map((item) => item.configState)).toEqual([
+        { finish: "white" },
+        { finish: "anthracite" },
+      ]);
     });
   });
 });

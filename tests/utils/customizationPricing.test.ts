@@ -1,6 +1,10 @@
 import { describe, it, expect } from 'vitest'
 import { useCustomizationPricing, buildSpecSummary } from '~~/app/composables/useCustomizationPricing'
-import { resolveCustomizationGroups, resolveCustomizationItemPricing } from '~~/app/utils/customizationPricing'
+import {
+  reconcileCustomizationSelections,
+  resolveCustomizationGroups,
+  resolveCustomizationItemPricing,
+} from '~~/app/utils/customizationPricing'
 import type {
   SanityCustomizationGroup,
   SanityCustomizationItem,
@@ -510,6 +514,32 @@ describe('Product customization resolution', () => {
       .toEqual(['four-sockets'])
   })
 
+  it('reprices a Size Option change through the shared resolver, not a base-price delta from the old total', () => {
+    const product = { customizationConfigurations: [sizeRuleConfiguration] }
+    const selections: CustomizationSelections = { 'grp-size-rules': ['two-light-points', 'four-sockets'] }
+
+    // At 'fixed-size': two-light-points is a £80 Size Option rule, four-sockets falls through to
+    // its £40 item default.
+    const previousGroups = resolveCustomizationGroups(product, 'fixed-size')
+    const previousPricing = useCustomizationPricing(previousGroups, selections, {}, sizeFixed)
+    expect(previousPricing.subtotal.value).toBe(sizeFixed.price + 80 + 40)
+
+    // At 'poa-size': two-light-points becomes POA (excluded from the numeric subtotal) while
+    // four-sockets, untouched by any rule for this size, keeps its £40 default. Carrying the old
+    // £80 forward via a base-price delta would silently keep a stale, no-longer-true price.
+    const nextGroups = resolveCustomizationGroups(product, 'poa-size')
+    const reconciled = reconcileCustomizationSelections(previousGroups, nextGroups, selections, {})
+    expect(reconciled.removedTitles).toEqual([]) // still offered, just re-priced — not "removed"
+
+    const nextSize = { ...sizeFixed, _key: 'poa-size', price: 4100 }
+    const nextPricing = useCustomizationPricing(nextGroups, reconciled.selections, reconciled.notes, nextSize)
+
+    expect(nextPricing.hasPoa.value).toBe(true)
+    expect(nextPricing.subtotal.value).toBe(nextSize.price + 40)
+    const staleDeltaTotal = previousPricing.subtotal.value + (nextSize.price - sizeFixed.price)
+    expect(nextPricing.subtotal.value).not.toBe(staleDeltaTotal)
+  })
+
   it('requires a selected Size Option key for Product configurations', () => {
     expect(() => resolveCustomizationGroups({ customizationConfigurations: [sizeRuleConfiguration] }))
       .toThrow('selected Size Option')
@@ -576,5 +606,118 @@ describe('Product customization resolution', () => {
         }]
       }]
     }, 'size-a')).toThrow('missing-size')
+  })
+})
+
+describe('reconcileCustomizationSelections', () => {
+  const previousGroups = [groupSingleFinish, groupMultipleExtras, groupBooleanAc, groupPoaElectrical]
+
+  it('retains a single selection whose item is still available at the new size', () => {
+    const result = reconcileCustomizationSelections(
+      previousGroups,
+      [groupSingleFinish],
+      { 'grp-finish': 'anthracite' },
+      {}
+    )
+    expect(result.selections).toEqual({ 'grp-finish': 'anthracite' })
+    expect(result.removedTitles).toEqual([])
+  })
+
+  it('retains an explicit "None" selection for a group that still exists', () => {
+    const result = reconcileCustomizationSelections(
+      previousGroups,
+      [{ ...groupSingleFinish, isMandatory: false }],
+      { 'grp-finish': null },
+      {}
+    )
+    expect(result.selections).toEqual({ 'grp-finish': null })
+    expect(result.removedTitles).toEqual([])
+  })
+
+  it('drops an explicit "None" selection whose group disappeared entirely at the new size', () => {
+    // "None" names no item, so there's nothing to name in removedTitles — but it must not leave a
+    // phantom entry for a group the new size no longer offers at all, or two lines that are
+    // otherwise identical at the new size could hash to different configuration ids.
+    const result = reconcileCustomizationSelections(
+      previousGroups,
+      [],
+      { 'grp-finish': null },
+      {}
+    )
+    expect(result.selections).toEqual({})
+    expect(result.removedTitles).toEqual([])
+  })
+
+  it('drops and reports a single selection whose group disappeared entirely at the new size', () => {
+    const result = reconcileCustomizationSelections(
+      previousGroups,
+      [],
+      { 'grp-finish': 'anthracite' },
+      {}
+    )
+    expect(result.selections).toEqual({})
+    expect(result.removedTitles).toEqual(['Anthracite Grey'])
+  })
+
+  it('drops and reports a single selection whose specific item is no longer offered', () => {
+    const finishWithoutAnthracite = { ...groupSingleFinish, items: [groupSingleFinish.items[0]!] }
+    const result = reconcileCustomizationSelections(
+      previousGroups,
+      [finishWithoutAnthracite],
+      { 'grp-finish': 'anthracite' },
+      {}
+    )
+    expect(result.selections).toEqual({})
+    expect(result.removedTitles).toEqual(['Anthracite Grey'])
+  })
+
+  it('keeps compatible entries of a multiple selection while dropping and reporting the unavailable ones', () => {
+    const extrasWithoutCanopy = { ...groupMultipleExtras, items: [groupMultipleExtras.items[0]!] }
+    const result = reconcileCustomizationSelections(
+      previousGroups,
+      [extrasWithoutCanopy],
+      { 'grp-extras': ['shutter', 'canopy'] },
+      {}
+    )
+    expect(result.selections).toEqual({ 'grp-extras': ['shutter'] })
+    expect(result.removedTitles).toEqual(['Rain Canopy'])
+  })
+
+  it('clears and reports a boolean selection whose group disappeared at the new size', () => {
+    const result = reconcileCustomizationSelections(
+      previousGroups,
+      [],
+      { 'grp-ac': true },
+      {}
+    )
+    expect(result.selections).toEqual({})
+    expect(result.removedTitles).toEqual(['Split AC Unit'])
+  })
+
+  it('drops the orphaned note of a removed item while keeping a retained item\'s note', () => {
+    const result = reconcileCustomizationSelections(
+      previousGroups,
+      [],
+      { 'grp-electrical': 'custom' },
+      { 'grp-electrical:custom': 'Need an extra socket by the desk' }
+    )
+    expect(result.notes).toEqual({})
+    expect(result.removedTitles).toEqual(['Custom Electrical Layout'])
+  })
+
+  it('keeps a note belonging to a selection that survives the size change', () => {
+    const result = reconcileCustomizationSelections(
+      previousGroups,
+      [groupPoaElectrical],
+      { 'grp-electrical': 'custom' },
+      { 'grp-electrical:custom': 'Need an extra socket by the desk' }
+    )
+    expect(result.notes).toEqual({ 'grp-electrical:custom': 'Need an extra socket by the desk' })
+  })
+
+  it('ignores groups with no prior selection', () => {
+    const result = reconcileCustomizationSelections(previousGroups, [], {}, {})
+    expect(result.selections).toEqual({})
+    expect(result.removedTitles).toEqual([])
   })
 })

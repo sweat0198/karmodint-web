@@ -129,8 +129,10 @@ export const useQuoteStore = defineStore("quote", {
     },
 
     /**
-     * Select or replace a portable line's size while retaining its extras, quantity, and the
-     * configured total's option-price delta.
+     * Select or replace a portable line's size, retaining its extras and quantity. Repricing
+     * through the shared resolver is the caller's job (see `updateItemConfig`): the store has no
+     * catalogue access, so it cannot tell which selected items the new size still makes available
+     * or what they now cost.
      */
     selectPortableSize(id: string, size: PortableContainerSize): string | undefined {
       const item = this.items.find((candidate) => candidate.id === id);
@@ -138,7 +140,6 @@ export const useQuoteStore = defineStore("quote", {
 
       const { projectId, dataset } = resolveSanityImageConfig();
       const thumbnail = size.images[0];
-      const previousBasePrice = item.basePrice ?? 0;
       item.sizeKey = size.sizeKey;
       item.sizeLabel = size.sizeLabel;
       item.basePrice = size.price;
@@ -149,13 +150,8 @@ export const useQuoteStore = defineStore("quote", {
         item.image = sanityImageUrl(thumbnail?.asset?._ref, projectId, dataset);
         item.images = selectedImages;
       }
-      // Preserve configured option pricing while replacing only the size-derived base amount.
-      // This also keeps POA size changes honest: an absent base is not invented as a numeric price.
-      if (item.customTotal !== undefined) {
-        item.customTotal += (size.price ?? 0) - previousBasePrice;
-      }
 
-      return this.rekeyPortableItem(item);
+      return this.rekeyItem(item);
     },
 
     addItem(newItem: Omit<QuoteItem, "id">) {
@@ -222,13 +218,17 @@ export const useQuoteStore = defineStore("quote", {
         item.isPoa = payload.isPoa;
         item.specSummary = payload.specSummary;
         item.selectedCustomizations = payload.lines;
-        return item.isPortableContainer ? this.rekeyPortableItem(item) : item.id;
+        return this.rekeyItem(item);
       }
       return undefined;
     },
 
-    /** Re-key an already-selected portable line and merge only an identical configuration. */
-    rekeyPortableItem(item: QuoteItem): string {
+    /**
+     * Re-key a line whose canonical identity (Product, Size Option, selections, notes — D6) may
+     * have just changed, merging it into a Quote List line that already carries that same
+     * identity, or keeping it separate when none does.
+     */
+    rekeyItem(item: QuoteItem): string {
       const nextId = getQuoteLineId(item);
       if (item.id === nextId) return item.id;
 
