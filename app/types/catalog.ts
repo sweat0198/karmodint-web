@@ -86,7 +86,7 @@ export type PricingType = 'fixed' | 'included' | 'poa'
 export type CustomizationItemScope = 'universal' | 'sizeDependent'
 
 /** Native Size Option rule states. `inherit` defers to the Product and item defaults. */
-export type CustomizationAvailability = 'inherit' | 'fixed' | 'included' | 'poa' | 'unavailable'
+export type CustomizationSizeRuleMode = 'inherit' | 'fixed' | 'included' | 'poa' | 'unavailable'
 
 /** Review state for a Size Option rule. Draft rules may remain pending until publish validation. */
 export type CustomizationSizeRuleReviewStatus = 'pending' | 'reviewed'
@@ -102,17 +102,30 @@ export interface SanityCustomizationSizeRuleReview {
   snapshot?: string
 }
 
-/** A Size Option-specific rule for one item, linked solely through the stable Size Option `_key`. */
-export interface SanityCustomizationSizeRule {
+/** Fields shared by every Size Option-specific rule. */
+interface SanityCustomizationSizeRuleBase {
   _key?: string
   sizeOptionKey: string
-  mode: CustomizationAvailability
-  /** Used only when `mode` is `fixed`. */
-  price?: number
   titleOverride?: string
   descriptionOverride?: string
   review?: SanityCustomizationSizeRuleReview
 }
+
+/**
+ * A Size Option-specific rule for one item, linked solely through the stable Size Option `_key`.
+ *
+ * Only fixed rules carry a price. Studio validation enforces its non-negative numeric bound for
+ * decoded CMS data; this union prevents prices on every non-fixed mode at compile time.
+ */
+export type SanityCustomizationSizeRule =
+  | (SanityCustomizationSizeRuleBase & {
+      mode: 'fixed'
+      price: number
+    })
+  | (SanityCustomizationSizeRuleBase & {
+      mode: Exclude<CustomizationSizeRuleMode, 'fixed'>
+      price?: never
+    })
 
 export interface SanityCustomizationItem {
   _key?: string

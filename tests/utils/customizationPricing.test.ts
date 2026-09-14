@@ -5,7 +5,9 @@ import type {
   SanityCustomizationGroup,
   SanityCustomizationItem,
   SanityCustomizationItemOverride,
+  SanityCustomizationSizeRule,
   SanitySizeOption,
+  CustomizationSizeRuleMode,
 } from '~~/app/types/catalog'
 import type { CustomizationSelections, CustomizationNotes } from '~~/app/types/customization'
 
@@ -99,16 +101,58 @@ const sizePoa: SanitySizeOption = {
   images: []
 }
 
-const sizeRuleContractFixture: SanityCustomizationItemOverride = {
+const sizeRuleModes = [
+  'inherit',
+  'fixed',
+  'included',
+  'poa',
+  'unavailable'
+] as const satisfies readonly CustomizationSizeRuleMode[]
+
+// @ts-expect-error Fixed rules must always provide a price.
+const fixedSizeRuleWithoutPrice: SanityCustomizationSizeRule = {
+  sizeOptionKey: 'container-4m',
+  mode: 'fixed'
+}
+
+// @ts-expect-error Non-fixed rules cannot provide a price.
+const poaSizeRuleWithPrice: SanityCustomizationSizeRule = {
+  sizeOptionKey: 'container-10m',
+  mode: 'poa',
+  price: 100
+}
+
+// @ts-expect-error Non-fixed rules cannot provide a price.
+const inheritSizeRuleWithPrice: SanityCustomizationSizeRule = {
+  sizeOptionKey: 'container-6m',
+  mode: 'inherit',
+  price: 100
+}
+
+// @ts-expect-error Non-fixed rules cannot provide a price.
+const includedSizeRuleWithPrice: SanityCustomizationSizeRule = {
+  sizeOptionKey: 'container-8m',
+  mode: 'included',
+  price: 100
+}
+
+// @ts-expect-error Non-fixed rules cannot provide a price.
+const unavailableSizeRuleWithPrice: SanityCustomizationSizeRule = {
+  sizeOptionKey: 'small-cabin-4m',
+  mode: 'unavailable',
+  price: 100
+}
+
+const sizeRuleContractFixture = {
   itemKey: 'two-light-points',
   titleOverride: 'Two ceiling light points',
   descriptionOverride: 'Included only where the selected size supports it.',
   sizeRules: [{
     sizeOptionKey: sizeFixed._key!,
-    mode: 'unavailable',
+    mode: 'inherit',
     review: {
       status: 'reviewed',
-      snapshot: `${sizeFixed._key}: unavailable`
+      snapshot: `${sizeFixed._key}: inherits product pricing`
     }
   }, {
     sizeOptionKey: sizePoa._key!,
@@ -120,8 +164,31 @@ const sizeRuleContractFixture: SanityCustomizationItemOverride = {
       status: 'reviewed',
       snapshot: `${sizePoa._key}: fixed £90`
     }
+  }, {
+    sizeOptionKey: 'container-8m',
+    mode: 'included',
+    titleOverride: 'Included light points',
+    descriptionOverride: 'Included in this size option.',
+    review: {
+      status: 'reviewed',
+      snapshot: 'container-8m: included'
+    }
+  }, {
+    sizeOptionKey: 'container-10m',
+    mode: 'poa',
+    review: {
+      status: 'pending',
+      snapshot: 'container-10m: POA'
+    }
+  }, {
+    sizeOptionKey: 'small-cabin-4m',
+    mode: 'unavailable',
+    review: {
+      status: 'reviewed',
+      snapshot: 'small-cabin-4m: unavailable'
+    }
   }]
-}
+} satisfies SanityCustomizationItemOverride
 
 const sizeDependentItemContractFixture: SanityCustomizationItem = {
   _key: 'two-light-points',
@@ -268,9 +335,35 @@ describe('buildSpecSummary', () => {
 describe('Product customization resolution', () => {
   it('accepts native size-option rules for size-dependent items', () => {
     expect(sizeDependentItemContractFixture.scope).toBe('sizeDependent')
-    expect(sizeRuleContractFixture.sizeRules?.map((rule) => rule.sizeOptionKey)).toEqual([
+    expect(sizeRuleModes).toEqual(['inherit', 'fixed', 'included', 'poa', 'unavailable'])
+    expect(sizeRuleContractFixture.sizeRules.map((rule) => rule.sizeOptionKey)).toEqual([
       sizeFixed._key,
-      sizePoa._key
+      sizePoa._key,
+      'container-8m',
+      'container-10m',
+      'small-cabin-4m'
+    ])
+    expect(sizeRuleContractFixture.sizeRules.map((rule) => rule.mode)).toEqual(sizeRuleModes)
+    expect(sizeRuleContractFixture.sizeRules).toMatchObject([
+      {
+        mode: 'inherit',
+        review: { status: 'reviewed', snapshot: `${sizeFixed._key}: inherits product pricing` }
+      },
+      {
+        mode: 'fixed',
+        price: 90,
+        titleOverride: 'Two ceiling light points',
+        descriptionOverride: 'Fitted electrical option.',
+        review: { status: 'reviewed', snapshot: `${sizePoa._key}: fixed £90` }
+      },
+      {
+        mode: 'included',
+        titleOverride: 'Included light points',
+        descriptionOverride: 'Included in this size option.',
+        review: { status: 'reviewed', snapshot: 'container-8m: included' }
+      },
+      { mode: 'poa', review: { status: 'pending', snapshot: 'container-10m: POA' } },
+      { mode: 'unavailable', review: { status: 'reviewed', snapshot: 'small-cabin-4m: unavailable' } }
     ])
   })
 
