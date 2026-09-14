@@ -411,4 +411,140 @@ describe('Product customization resolution', () => {
       }]
     })).toThrow('not-an-ac-item')
   })
+
+  const sizeRuleGroup: SanityCustomizationGroup = {
+    _id: 'grp-size-rules',
+    _type: 'customizationGroup',
+    title: 'Electricity',
+    identifier: 'electricity',
+    selectionType: 'multiple',
+    items: [
+      {
+        _key: 'two-light-points',
+        title: 'Two light points',
+        description: 'Item description',
+        pricingType: 'fixed',
+        price: 20,
+        scope: 'sizeDependent'
+      },
+      {
+        _key: 'four-sockets',
+        title: 'Four double sockets',
+        description: 'Socket description',
+        pricingType: 'fixed',
+        price: 40,
+        scope: 'sizeDependent'
+      }
+    ]
+  }
+
+  const sizeRuleConfiguration = {
+    group: sizeRuleGroup,
+    itemOverrides: [{
+      itemKey: 'two-light-points',
+      pricingType: 'fixed' as const,
+      price: 50,
+      titleOverride: 'Product light points',
+      descriptionOverride: 'Product description',
+      sizeRules: [
+        { sizeOptionKey: 'fixed-size', mode: 'fixed' as const, price: 80, titleOverride: 'Size light points' },
+        { sizeOptionKey: 'included-size', mode: 'included' as const },
+        { sizeOptionKey: 'poa-size', mode: 'poa' as const },
+        { sizeOptionKey: 'inherit-size', mode: 'inherit' as const },
+        { sizeOptionKey: 'unavailable-size', mode: 'unavailable' as const }
+      ]
+    }, {
+      itemKey: 'four-sockets',
+      sizeRules: [{ sizeOptionKey: 'unavailable-size', mode: 'unavailable' as const }]
+    }]
+  }
+
+  it('gives selected Size Option fixed, included, and POA rules precedence over Product prices', () => {
+    const product = { customizationConfigurations: [sizeRuleConfiguration] }
+
+    expect(resolveCustomizationGroups(product, 'fixed-size')[0].items[0]).toMatchObject({
+      pricingType: 'fixed', price: 80
+    })
+    expect(resolveCustomizationGroups(product, 'included-size')[0].items[0]).toMatchObject({
+      pricingType: 'included', price: 0
+    })
+    expect(resolveCustomizationGroups(product, 'poa-size')[0].items[0]).toMatchObject({
+      pricingType: 'poa', price: undefined
+    })
+  })
+
+  it('lets inherit fall through Product overrides and then item defaults', () => {
+    const product = { customizationConfigurations: [sizeRuleConfiguration] }
+    const inherited = resolveCustomizationGroups(product, 'inherit-size')[0].items
+
+    expect(inherited[0]).toMatchObject({ pricingType: 'fixed', price: 50 })
+    expect(inherited[1]).toMatchObject({ pricingType: 'fixed', price: 40 })
+  })
+
+  it('uses selected Size Option text before Product text and item text', () => {
+    const product = { customizationConfigurations: [sizeRuleConfiguration] }
+    const fixed = resolveCustomizationGroups(product, 'fixed-size')[0].items[0]
+    const inherited = resolveCustomizationGroups(product, 'inherit-size')[0].items[0]
+    const defaulted = resolveCustomizationGroups(product, 'inherit-size')[0].items[1]
+
+    expect(fixed).toMatchObject({ title: 'Size light points', description: 'Product description' })
+    expect(inherited).toMatchObject({ title: 'Product light points', description: 'Product description' })
+    expect(defaulted).toMatchObject({ title: 'Four double sockets', description: 'Socket description' })
+  })
+
+  it('filters unavailable items and removes groups left without any available items', () => {
+    const product = { customizationConfigurations: [sizeRuleConfiguration] }
+    expect(resolveCustomizationGroups(product, 'unavailable-size')).toEqual([])
+  })
+
+  it('rejects duplicate Size Option rules and Size Option rules for unknown items', () => {
+    expect(() => resolveCustomizationGroups({
+      customizationConfigurations: [{
+        group: groupBooleanAc,
+        itemOverrides: [{
+          itemKey: 'ac-unit',
+          sizeRules: [
+            { sizeOptionKey: 'size-a', mode: 'included' },
+            { sizeOptionKey: 'size-a', mode: 'poa' }
+          ]
+        }]
+      }]
+    }, 'size-a')).toThrow('size-a')
+
+    expect(() => resolveCustomizationGroups({
+      customizationConfigurations: [{
+        group: groupBooleanAc,
+        itemOverrides: [{ itemKey: 'unknown', sizeRules: [{ sizeOptionKey: 'size-a', mode: 'included' }] }]
+      }]
+    }, 'size-a')).toThrow('unknown')
+
+    expect(() => resolveCustomizationGroups({
+      sizes: [{ ...sizeFixed, _key: 'size-a' }],
+      customizationConfigurations: [{
+        group: groupBooleanAc,
+        itemOverrides: [{ itemKey: 'ac-unit', sizeRules: [{ sizeOptionKey: 'missing-size', mode: 'included' }] }]
+      }]
+    }, 'size-a')).toThrow('missing-size')
+  })
+
+  it('rejects an unknown selected Size Option key when Product Size Options are available', () => {
+    expect(() => resolveCustomizationGroups({
+      sizes: [{ ...sizeFixed, _key: 'size-a' }],
+      customizationConfigurations: [{ group: groupBooleanAc }]
+    }, 'missing-size')).toThrow('missing-size')
+  })
+
+  it('validates Size Option rules on disabled item overrides', () => {
+    expect(() => resolveCustomizationGroups({
+      sizes: [{ ...sizeFixed, _key: 'size-a' }],
+      customizationConfigurations: [{
+        group: groupBooleanAc,
+        itemOverrides: [{
+          itemKey: 'ac-unit',
+          enabled: false,
+          sizeRules: [{ sizeOptionKey: 'missing-size', mode: 'included' }]
+        }]
+      }]
+    }, 'size-a')).toThrow('missing-size')
+  })
 })

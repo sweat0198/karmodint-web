@@ -3,7 +3,9 @@ import type {
   SanityCustomizationGroup,
   SanityCustomizationItem,
   SanityCustomizationItemOverride,
+  SanityCustomizationSizeRule,
   SanityProductCustomizationConfiguration,
+  SanitySizeOption,
 } from '~/types/catalog'
 
 export interface ResolvedCustomizationItemPricing {
@@ -18,7 +20,15 @@ export interface ResolvedCustomizationItemPricing {
 export function resolveCustomizationItemPricing(
   item: SanityCustomizationItem,
   override?: SanityCustomizationItemOverride,
+  sizeRule?: SanityCustomizationSizeRule,
 ): ResolvedCustomizationItemPricing {
+  if (sizeRule && sizeRule.mode !== 'inherit' && sizeRule.mode !== 'unavailable') {
+    if (sizeRule.mode === 'included') return { pricingType: 'included', price: 0 }
+    if (sizeRule.mode === 'poa') return { pricingType: 'poa', price: undefined }
+
+    return { pricingType: 'fixed', price: sizeRule.price }
+  }
+
   const pricingType = override?.pricingType ?? item.pricingType
 
   if (pricingType === 'included') return { pricingType, price: 0 }
@@ -27,12 +37,53 @@ export function resolveCustomizationItemPricing(
   return { pricingType, price: override?.price ?? item.price ?? 0 }
 }
 
+function validateSizeRules(
+  override: SanityCustomizationItemOverride,
+  availableSizeOptionKeys?: Set<string>,
+): void {
+  const sizeRuleKeys = new Set<string>()
+  for (const sizeRule of override.sizeRules ?? []) {
+    if (!sizeRule.sizeOptionKey) {
+      throw new Error(`Customization item "${override.itemKey}" has a Size Option rule without a key`)
+    }
+    if (availableSizeOptionKeys && !availableSizeOptionKeys.has(sizeRule.sizeOptionKey)) {
+      throw new Error(`Customization item "${override.itemKey}" references unknown Size Option "${sizeRule.sizeOptionKey}"`)
+    }
+    if (sizeRuleKeys.has(sizeRule.sizeOptionKey)) {
+      throw new Error(`Customization item "${override.itemKey}" has more than one rule for Size Option "${sizeRule.sizeOptionKey}"`)
+    }
+    sizeRuleKeys.add(sizeRule.sizeOptionKey)
+  }
+}
+
+function findSizeRule(
+  override: SanityCustomizationItemOverride | undefined,
+  selectedSizeOptionKey: string | undefined,
+): SanityCustomizationSizeRule | undefined {
+  if (!override || !selectedSizeOptionKey) return undefined
+  return override.sizeRules?.find((sizeRule) => sizeRule.sizeOptionKey === selectedSizeOptionKey)
+}
+
 function resolveConfiguredGroup(
   configuration: SanityProductCustomizationConfiguration,
+  selectedSizeOptionKey?: string,
+  availableSizeOptionKeys?: Set<string>,
 ): SanityCustomizationGroup {
-  const itemKeys = new Set(configuration.group.items.map((item) => item._key).filter(Boolean))
+  const itemKeys = new Set<string>()
+  for (const item of configuration.group.items) {
+    if (!item._key) {
+      throw new Error(`Customization Group "${configuration.group.title}" contains an item without a key`)
+    }
+    if (itemKeys.has(item._key)) {
+      throw new Error(`Customization Group "${configuration.group.title}" has more than one item "${item._key}"`)
+    }
+    itemKeys.add(item._key)
+  }
   const overrideKeys = new Set<string>()
   for (const override of configuration.itemOverrides ?? []) {
+    if (!override.itemKey) {
+      throw new Error('Customization Product override does not identify an item')
+    }
     if (!itemKeys.has(override.itemKey)) {
       throw new Error(`Customization override references unknown item "${override.itemKey}"`)
     }
@@ -40,6 +91,7 @@ function resolveConfiguredGroup(
       throw new Error(`Customization item "${override.itemKey}" has more than one Product override`)
     }
     overrideKeys.add(override.itemKey)
+    validateSizeRules(override, availableSizeOptionKeys)
   }
 
   const overrides = new Map(
@@ -49,21 +101,40 @@ function resolveConfiguredGroup(
   return {
     ...configuration.group,
     items: configuration.group.items
-      .filter((item) => overrides.get(item._key ?? '')?.enabled !== false)
-      .map((item) => ({
-        ...item,
-        ...resolveCustomizationItemPricing(item, overrides.get(item._key ?? '')),
-      })),
+      .flatMap((item) => {
+        const override = overrides.get(item._key!)
+        if (override?.enabled === false) return []
+
+        const sizeRule = findSizeRule(override, selectedSizeOptionKey, availableSizeOptionKeys)
+        if (sizeRule?.mode === 'unavailable') return []
+
+        return [{
+          ...item,
+          title: sizeRule?.titleOverride ?? override?.titleOverride ?? item.title,
+          description: sizeRule?.descriptionOverride ?? override?.descriptionOverride ?? item.description,
+          ...resolveCustomizationItemPricing(item, override, sizeRule),
+        }]
+      }),
   }
 }
 
 /** Product configurations take priority; direct Product groups remain migration fallback. */
 export function resolveCustomizationGroups(product: {
+  sizes?: SanitySizeOption[]
   customizationConfigurations?: SanityProductCustomizationConfiguration[]
   customizationGroups?: SanityCustomizationGroup[]
-}): SanityCustomizationGroup[] {
+}, selectedSizeOptionKey?: string): SanityCustomizationGroup[] {
   if (product.customizationConfigurations?.length) {
-    return product.customizationConfigurations.map(resolveConfiguredGroup)
+    const availableSizeOptionKeys = product.sizes
+      ? new Set(product.sizes.map((size) => size._key).filter((key): key is string => Boolean(key)))
+      : undefined
+    if (selectedSizeOptionKey && availableSizeOptionKeys && !availableSizeOptionKeys.has(selectedSizeOptionKey)) {
+      throw new Error(`Customization resolver received unknown Size Option "${selectedSizeOptionKey}"`)
+    }
+
+    return product.customizationConfigurations
+      .map((configuration) => resolveConfiguredGroup(configuration, selectedSizeOptionKey, availableSizeOptionKeys))
+      .filter((group) => group.items.length > 0)
   }
 
   return product.customizationGroups ?? []
