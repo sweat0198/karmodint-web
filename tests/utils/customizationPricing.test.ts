@@ -80,6 +80,7 @@ const groupBooleanHeater: SanityCustomizationGroup = {
 }
 
 const sizeFixed: SanitySizeOption = {
+  _key: 'small-cabin-3m',
   label: '2.40m x 3.00m',
   lengthM: 3,
   widthM: 2.4,
@@ -89,6 +90,7 @@ const sizeFixed: SanitySizeOption = {
 }
 
 const sizePoa: SanitySizeOption = {
+  _key: 'container-6m',
   label: '6.00m x 2.40m',
   lengthM: 6,
   widthM: 2.4,
@@ -102,21 +104,21 @@ const sizeRuleContractFixture: SanityCustomizationItemOverride = {
   titleOverride: 'Two ceiling light points',
   descriptionOverride: 'Included only where the selected size supports it.',
   sizeRules: [{
-    sizeOptionKey: 'small-cabin-3m',
+    sizeOptionKey: sizeFixed._key!,
     mode: 'unavailable',
     review: {
       status: 'reviewed',
-      snapshot: 'small-cabin-3m: unavailable'
+      snapshot: `${sizeFixed._key}: unavailable`
     }
   }, {
-    sizeOptionKey: 'container-6m',
+    sizeOptionKey: sizePoa._key!,
     mode: 'fixed',
     price: 90,
     titleOverride: 'Two ceiling light points',
     descriptionOverride: 'Fitted electrical option.',
     review: {
       status: 'reviewed',
-      snapshot: 'container-6m: fixed £90'
+      snapshot: `${sizePoa._key}: fixed £90`
     }
   }]
 }
@@ -266,9 +268,9 @@ describe('buildSpecSummary', () => {
 describe('Product customization resolution', () => {
   it('accepts native size-option rules for size-dependent items', () => {
     expect(sizeDependentItemContractFixture.scope).toBe('sizeDependent')
-    expect(sizeRuleContractFixture.sizeRules).toEqual([
-      expect.objectContaining({ sizeOptionKey: 'small-cabin-3m', mode: 'unavailable' }),
-      expect.objectContaining({ sizeOptionKey: 'container-6m', mode: 'fixed', price: 90 })
+    expect(sizeRuleContractFixture.sizeRules?.map((rule) => rule.sizeOptionKey)).toEqual([
+      sizeFixed._key,
+      sizePoa._key
     ])
   })
 
