@@ -28,6 +28,23 @@ export function validateItemOverrideKeys(
     : true
 }
 
+export function validateSizeRuleKeys(
+  rules: Array<{ sizeOptionKey?: string }> | undefined,
+): true | string {
+  if (!rules) return true
+
+  const seen = new Set<string>()
+  for (const rule of rules) {
+    if (!rule.sizeOptionKey) continue
+    if (seen.has(rule.sizeOptionKey)) {
+      return `Size Option "${rule.sizeOptionKey}" can have only one rule for this Customization Item`
+    }
+    seen.add(rule.sizeOptionKey)
+  }
+
+  return true
+}
+
 /** Product-specific controls for one reusable Customization Group. */
 export const productCustomizationConfiguration = defineType({
   name: 'productCustomizationConfiguration',
@@ -82,6 +99,112 @@ export const productCustomizationConfiguration = defineType({
               type: 'number',
               hidden: ({ parent }) => parent?.pricingType !== 'fixed',
               validation: (Rule) => Rule.min(0)
+            }),
+            defineField({
+              name: 'titleOverride',
+              title: 'Title Override',
+              type: 'string',
+              description: 'Optional Product-specific customer-facing title.'
+            }),
+            defineField({
+              name: 'descriptionOverride',
+              title: 'Description Override',
+              type: 'text',
+              rows: 2,
+              description: 'Optional Product-specific customer-facing description.'
+            }),
+            defineField({
+              name: 'sizeRules',
+              title: 'Size Option Rules',
+              type: 'array',
+              description: 'Override this item for a specific Product Size Option. Each rule needs review before a published product can use it.',
+              of: [
+                defineArrayMember({
+                  name: 'productCustomizationSizeRule',
+                  title: 'Size Option Rule',
+                  type: 'object',
+                  fields: [
+                    defineField({
+                      name: 'sizeOptionKey',
+                      title: 'Size Option Key',
+                      type: 'string',
+                      validation: (Rule) => Rule.required()
+                    }),
+                    defineField({
+                      name: 'mode',
+                      title: 'Availability & Pricing',
+                      type: 'string',
+                      options: {
+                        list: [
+                          { title: 'Inherit Product / Item default', value: 'inherit' },
+                          { title: 'Fixed Additional Price (£)', value: 'fixed' },
+                          { title: 'Included / Standard (£0)', value: 'included' },
+                          { title: 'POA / Custom Quote Required', value: 'poa' },
+                          { title: 'Unavailable for this size', value: 'unavailable' }
+                        ],
+                        layout: 'radio'
+                      },
+                      initialValue: 'inherit',
+                      validation: (Rule) => Rule.required()
+                    }),
+                    defineField({
+                      name: 'price',
+                      title: 'Fixed Additional Price (£)',
+                      type: 'number',
+                      hidden: ({ parent }) => parent?.mode !== 'fixed',
+                      validation: (Rule) => Rule.custom((value, context: any) => {
+                        if (context.parent?.mode === 'fixed' && (value === undefined || value === null)) {
+                          return 'Price is required for a fixed Size Option rule'
+                        }
+                        if (value !== undefined && value !== null && value < 0) {
+                          return 'Price cannot be negative'
+                        }
+                        return true
+                      })
+                    }),
+                    defineField({
+                      name: 'titleOverride',
+                      title: 'Title Override',
+                      type: 'string'
+                    }),
+                    defineField({
+                      name: 'descriptionOverride',
+                      title: 'Description Override',
+                      type: 'text',
+                      rows: 2
+                    }),
+                    defineField({
+                      name: 'review',
+                      title: 'Review',
+                      type: 'object',
+                      fields: [
+                        defineField({
+                          name: 'status',
+                          title: 'Review Status',
+                          type: 'string',
+                          options: {
+                            list: [
+                              { title: 'Pending review', value: 'pending' },
+                              { title: 'Reviewed', value: 'reviewed' }
+                            ],
+                            layout: 'radio'
+                          },
+                          initialValue: 'pending',
+                          validation: (Rule) => Rule.required()
+                        }),
+                        defineField({
+                          name: 'snapshot',
+                          title: 'Reviewed Size Snapshot',
+                          type: 'string',
+                          description: 'Copy the size key and current dimensions when reviewing. Publish blocks stale snapshots.',
+                          validation: (Rule) => Rule.required()
+                        })
+                      ]
+                    })
+                  ]
+                })
+              ],
+              validation: (Rule) => Rule.custom(validateSizeRuleKeys)
             })
           ]
         })

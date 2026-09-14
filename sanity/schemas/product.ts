@@ -24,6 +24,147 @@ export function validateExactlyOneDefaultSize(
   return `Exactly one size must be marked as the default selection (found ${defaultCount})`
 }
 
+interface ValidationSizeOption {
+  _key?: string
+  lengthM?: number
+  widthM?: number
+  heightM?: number
+}
+
+interface ValidationSizeRule {
+  sizeOptionKey?: string
+  mode?: 'inherit' | 'fixed' | 'included' | 'poa' | 'unavailable'
+  review?: { status?: 'pending' | 'reviewed'; snapshot?: string }
+}
+
+interface ValidationItemOverride {
+  itemKey?: string
+  enabled?: boolean
+  sizeRules?: ValidationSizeRule[]
+}
+
+interface ValidationConfiguration {
+  group?: { _ref?: string }
+  itemOverrides?: ValidationItemOverride[]
+}
+
+interface ValidationGroup {
+  _id: string
+  isMandatory?: boolean
+  items?: Array<{ _key?: string; scope?: 'universal' | 'sizeDependent' }>
+}
+
+interface ProductCustomizationValidationDocument {
+  status?: string
+  sizes?: ValidationSizeOption[]
+  customizationConfigurations?: ValidationConfiguration[]
+}
+
+/** Stable evidence for a reviewed Size Option rule. Update the review if any dimension changes. */
+export function createSizeRuleSnapshot(size: ValidationSizeOption): string {
+  return JSON.stringify({
+    sizeOptionKey: size._key ?? null,
+    lengthM: size.lengthM ?? null,
+    widthM: size.widthM ?? null,
+    heightM: size.heightM ?? null
+  })
+}
+
+/**
+ * Publish-only integrity checks for native Product customization rules.
+ *
+ * Drafts deliberately remain editable with incomplete rules. Studio supplies the referenced group
+ * records, which keeps this function deterministic and independently testable.
+ */
+export function validatePublishedCustomizationRules(
+  document: ProductCustomizationValidationDocument | undefined,
+  groups: ValidationGroup[],
+): true | string {
+  if (document?.status !== 'published') return true
+
+  const sizes = document.sizes ?? []
+  const sizeKeys = new Set<string>()
+  for (const size of sizes) {
+    if (!size._key) return 'Each Product Size Option needs a stable key before publishing'
+    if (sizeKeys.has(size._key)) return `Product has more than one Size Option "${size._key}"`
+    sizeKeys.add(size._key)
+  }
+
+  const groupsById = new Map(groups.map((group) => [group._id, group]))
+  for (const configuration of document.customizationConfigurations ?? []) {
+    const groupId = configuration.group?._ref
+    if (!groupId) continue
+
+    const group = groupsById.get(groupId)
+    if (!group) return `Customization Group "${groupId}" no longer exists`
+
+    const items = group.items ?? []
+    const itemsByKey = new Map(items.flatMap((item) => item._key ? [[item._key, item] as const] : []))
+    const overridesByKey = new Map<string, ValidationItemOverride>()
+
+    for (const override of configuration.itemOverrides ?? []) {
+      if (!override.itemKey) return 'Customization Product override does not identify an item'
+      if (!itemsByKey.has(override.itemKey)) {
+        return `Customization Item "${override.itemKey}" does not exist in the selected Customization Group`
+      }
+      if (overridesByKey.has(override.itemKey)) {
+        return `Customization Item "${override.itemKey}" can have only one override`
+      }
+      overridesByKey.set(override.itemKey, override)
+
+      const rulesBySizeKey = new Set<string>()
+      for (const rule of override.sizeRules ?? []) {
+        if (!rule.sizeOptionKey || !sizeKeys.has(rule.sizeOptionKey)) {
+          return `Size Option "${rule.sizeOptionKey || '(missing)'}" does not exist on this Product`
+        }
+        if (rulesBySizeKey.has(rule.sizeOptionKey)) {
+          return `Size Option "${rule.sizeOptionKey}" can have only one rule for this Customization Item`
+        }
+        rulesBySizeKey.add(rule.sizeOptionKey)
+
+        if (rule.review?.status !== 'reviewed') {
+          return `Size Option rule for "${override.itemKey}" at "${rule.sizeOptionKey}" must be reviewed before publishing`
+        }
+        const size = sizes.find((candidate) => candidate._key === rule.sizeOptionKey)!
+        if (rule.review.snapshot !== createSizeRuleSnapshot(size)) {
+          return `Size Option rule for "${override.itemKey}" at "${rule.sizeOptionKey}" must be reviewed again because dimensions changed`
+        }
+      }
+    }
+
+    for (const item of items) {
+      if (!item._key || item.scope !== 'sizeDependent') continue
+      const override = overridesByKey.get(item._key)
+      if (override?.enabled === false) continue
+      const reviewedSizeKeys = new Set(
+        (override?.sizeRules ?? [])
+          .filter((rule) => rule.review?.status === 'reviewed')
+          .map((rule) => rule.sizeOptionKey)
+      )
+      const missingSizeKey = sizes.find((size) => size._key && !reviewedSizeKeys.has(size._key))?._key
+      if (missingSizeKey) {
+        return `Size-dependent Customization Item "${item._key}" needs a reviewed rule for Size Option "${missingSizeKey}"`
+      }
+    }
+
+    if (group.isMandatory) {
+      for (const size of sizes) {
+        const hasAvailableItem = items.some((item) => {
+          if (!item._key) return false
+          const override = overridesByKey.get(item._key)
+          if (override?.enabled === false) return false
+          return override?.sizeRules?.find((rule) => rule.sizeOptionKey === size._key)?.mode !== 'unavailable'
+        })
+        if (!hasAvailableItem) {
+          return `Mandatory Customization Group "${groupId}" has no available items for Size Option "${size._key}"`
+        }
+      }
+    }
+  }
+
+  return true
+}
+
 export const productType = defineType({
   name: 'product',
   title: 'Product',
@@ -154,7 +295,31 @@ export const productType = defineType({
       title: 'Customization Configurations',
       type: 'array',
       of: [defineArrayMember({ type: 'productCustomizationConfiguration' })],
-      description: 'Product-specific groups and item availability or pricing overrides. Takes precedence over legacy Customization Options & Add-ons.'
+      description: 'Product-specific groups and item availability or pricing overrides. Takes precedence over legacy Customization Options & Add-ons.',
+      validation: (Rule) => Rule.custom(async (
+        configurations: ValidationConfiguration[] | undefined,
+        context: any
+      ) => {
+        if (context.document?.status !== 'published' || !configurations?.length) return true
+
+        const groupIds = [...new Set(configurations
+          .map((configuration) => configuration.group?._ref)
+          .filter((groupId): groupId is string => Boolean(groupId)))]
+        const groups = groupIds.length === 0
+          ? []
+          : await context
+            .getClient({ apiVersion: '2025-02-19' })
+            .withConfig({ perspective: 'drafts' })
+            .fetch<ValidationGroup[]>(
+              '*[_id in $groupIds]{_id, isMandatory, items[]{_key, scope}}',
+              { groupIds }
+            )
+
+        return validatePublishedCustomizationRules({
+          ...context.document,
+          customizationConfigurations: configurations
+        }, groups ?? [])
+      })
     }),
     defineField({
       name: 'specifications',

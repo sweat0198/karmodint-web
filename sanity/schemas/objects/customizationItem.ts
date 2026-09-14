@@ -13,6 +13,21 @@ export const customizationItem = defineType({
       validation: (Rule) => Rule.required()
     }),
     defineField({
+      name: 'scope',
+      title: 'Size Availability',
+      type: 'string',
+      description: 'Universal options apply to every size. Size-dependent options need one reviewed rule per Product size before publishing.',
+      options: {
+        list: [
+          { title: 'Universal — same for every size', value: 'universal' },
+          { title: 'Size-dependent — review each size', value: 'sizeDependent' }
+        ],
+        layout: 'radio'
+      },
+      initialValue: 'universal',
+      validation: (Rule) => Rule.required()
+    }),
+    defineField({
       name: 'pricingType',
       title: 'Pricing Model',
       type: 'string',

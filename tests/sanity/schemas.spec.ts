@@ -1,6 +1,11 @@
 import { describe, it, expect } from 'vitest'
 import { schemaTypes } from '../../sanity/schemas'
-import { productType, validateExactlyOneDefaultSize } from '../../sanity/schemas/product'
+import {
+  createSizeRuleSnapshot,
+  productType,
+  validateExactlyOneDefaultSize,
+  validatePublishedCustomizationRules,
+} from '../../sanity/schemas/product'
 import { categoryType } from '../../sanity/schemas/category'
 import { customizationGroupType, validateBooleanGroup } from '../../sanity/schemas/customizationGroup'
 import { quoteEnquiryType } from '../../sanity/schemas/quoteEnquiry'
@@ -157,8 +162,16 @@ describe('Sanity Schemas Structure & Validation Rules', () => {
       expect(fields.group.to).toEqual([{ type: 'customizationGroup' }])
       expect(fields.itemOverrides.type).toBe('array')
       expect(fields.itemOverrides.of[0].fields.map((field: any) => field.name)).toEqual([
-        'itemKey', 'enabled', 'pricingType', 'price'
+        'itemKey', 'enabled', 'pricingType', 'price', 'titleOverride', 'descriptionOverride', 'sizeRules'
       ])
+
+      const sizeRuleFields = fields.itemOverrides.of[0].fields
+        .find((field: any) => field.name === 'sizeRules').of[0].fields
+      expect(sizeRuleFields.map((field: any) => field.name)).toEqual([
+        'sizeOptionKey', 'mode', 'price', 'titleOverride', 'descriptionOverride', 'review'
+      ])
+      expect(sizeRuleFields.find((field: any) => field.name === 'mode').options.list.map((option: any) => option.value))
+        .toEqual(['inherit', 'fixed', 'included', 'poa', 'unavailable'])
     })
 
     it('rejects duplicate Product overrides for one Customization Item', () => {
@@ -170,6 +183,126 @@ describe('Sanity Schemas Structure & Validation Rules', () => {
 
     it('rejects an override key that is not present in the selected Customization Group', () => {
       expect(validateItemOverrideKeys([{ itemKey: 'elec-2' }], ['elec-1'])).toContain('does not exist')
+    })
+
+    it('requires native size rules to identify one size, a mode, and a valid fixed price', () => {
+      const sizeRulesField: any = productCustomizationConfiguration.fields
+        .find((field: any) => field.name === 'itemOverrides').of[0].fields
+        .find((field: any) => field.name === 'sizeRules')
+      const ruleFields = Object.fromEntries(sizeRulesField.of[0].fields.map((field: any) => [field.name, field]))
+
+      expect(ruleFields.sizeOptionKey.validation).toBeDefined()
+      expect(ruleFields.mode.validation).toBeDefined()
+      expect(ruleFields.price.hidden({ parent: { mode: 'fixed' } })).toBe(false)
+      expect(ruleFields.price.hidden({ parent: { mode: 'included' } })).toBe(true)
+    })
+
+    it('rejects published products with orphaned items or stale size rules', () => {
+      const group = {
+        _id: 'group-electricity',
+        isMandatory: false,
+        items: [{ _key: 'elec-1', scope: 'universal' }]
+      }
+      const document = {
+        status: 'published',
+        sizes: [{ _key: 'small', lengthM: 3, widthM: 2.4, heightM: 2.6 }],
+        customizationConfigurations: [{
+          group: { _ref: 'group-electricity' },
+          itemOverrides: [{
+            itemKey: 'gone-item',
+            sizeRules: [{
+              sizeOptionKey: 'gone-size',
+              mode: 'included',
+              review: { status: 'reviewed', snapshot: 'anything' }
+            }]
+          }]
+        }]
+      }
+
+      expect(validatePublishedCustomizationRules(document, [group])).toContain('gone-item')
+    })
+
+    it('requires every size-dependent item to have a reviewed current rule before publishing', () => {
+      const sizes = [
+        { _key: 'small', lengthM: 3, widthM: 2.4, heightM: 2.6 },
+        { _key: 'large', lengthM: 6, widthM: 2.4, heightM: 2.6 }
+      ]
+      const group = {
+        _id: 'group-electricity',
+        isMandatory: false,
+        items: [{ _key: 'elec-1', scope: 'sizeDependent' }]
+      }
+      const document = {
+        status: 'published',
+        sizes,
+        customizationConfigurations: [{
+          group: { _ref: 'group-electricity' },
+          itemOverrides: [{
+            itemKey: 'elec-1',
+            sizeRules: [{
+              sizeOptionKey: 'small',
+              mode: 'included',
+              review: { status: 'reviewed', snapshot: createSizeRuleSnapshot(sizes[0]) }
+            }]
+          }]
+        }]
+      }
+
+      expect(validatePublishedCustomizationRules(document, [group])).toContain('large')
+    })
+
+    it('rejects pending and dimension-drifted size-rule reviews when publishing', () => {
+      const size = { _key: 'small', lengthM: 3, widthM: 2.4, heightM: 2.6 }
+      const group = {
+        _id: 'group-electricity',
+        isMandatory: false,
+        items: [{ _key: 'elec-1', scope: 'universal' }]
+      }
+      const rule = {
+        sizeOptionKey: 'small',
+        mode: 'included',
+        review: { status: 'pending', snapshot: createSizeRuleSnapshot(size) }
+      }
+      const document = {
+        status: 'published',
+        sizes: [size],
+        customizationConfigurations: [{ group: { _ref: 'group-electricity' }, itemOverrides: [{ itemKey: 'elec-1', sizeRules: [rule] }] }]
+      }
+
+      expect(validatePublishedCustomizationRules(document, [group])).toContain('must be reviewed')
+      rule.review.status = 'reviewed'
+      document.sizes[0].widthM = 3
+      expect(validatePublishedCustomizationRules(document, [group])).toContain('dimensions changed')
+    })
+
+    it('rejects a mandatory group that has no available item for a size', () => {
+      const size = { _key: 'small', lengthM: 3, widthM: 2.4 }
+      const group = {
+        _id: 'group-wc',
+        isMandatory: true,
+        items: [{ _key: 'wc', scope: 'universal' }]
+      }
+      const document = {
+        status: 'published',
+        sizes: [size],
+        customizationConfigurations: [{
+          group: { _ref: 'group-wc' },
+          itemOverrides: [{ itemKey: 'wc', enabled: false }]
+        }]
+      }
+
+      expect(validatePublishedCustomizationRules(document, [group])).toContain('no available items')
+    })
+
+    it('leaves incomplete rules valid while a product is a draft', () => {
+      expect(validatePublishedCustomizationRules({
+        status: 'draft',
+        sizes: [{ _key: 'small', lengthM: 3, widthM: 2.4 }],
+        customizationConfigurations: [{
+          group: { _ref: 'missing' },
+          itemOverrides: [{ itemKey: 'gone', sizeRules: [{ sizeOptionKey: 'gone-size', mode: 'fixed' }] }]
+        }]
+      }, [])).toBe(true)
     })
 
     it('requires at least one size option', () => {
@@ -341,6 +474,7 @@ describe('Sanity Schemas Structure & Validation Rules', () => {
       expect(fieldNames).toContain('pricingType')
       expect(fieldNames).toContain('price')
       expect(fieldNames).toContain('requiresTextInput')
+      expect(fieldNames).toContain('scope')
     })
   })
 
