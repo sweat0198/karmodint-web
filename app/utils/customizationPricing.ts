@@ -13,10 +13,7 @@ export interface ResolvedCustomizationItemPricing {
   price: number | undefined
 }
 
-/**
- * Resolves the available Product-level price layer. Size Option overrides are
- * intentionally not read here; they arrive in the next customization ticket.
- */
+/** Resolves Size Option, Product, and item-default pricing in precedence order. */
 export function resolveCustomizationItemPricing(
   item: SanityCustomizationItem,
   override?: SanityCustomizationItemOverride,
