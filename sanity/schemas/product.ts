@@ -57,7 +57,13 @@ interface ValidationGroup {
 interface ProductCustomizationValidationDocument {
   status?: string
   sizes?: ValidationSizeOption[]
+  customizationGroups?: Array<{ _ref?: string }>
   customizationConfigurations?: ValidationConfiguration[]
+}
+
+export interface CustomizationConfigurationWarning {
+  message: string
+  level: 'warning'
 }
 
 /** Stable evidence for a reviewed Size Option rule. Update the review if any dimension changes. */
@@ -76,13 +82,11 @@ export function createSizeRuleSnapshot(size: ValidationSizeOption): string {
  * Drafts deliberately remain editable with incomplete rules. Studio supplies the referenced group
  * records, which keeps this function deterministic and independently testable.
  */
-export function validatePublishedCustomizationRules(
+function validateCustomizationRules(
   document: ProductCustomizationValidationDocument | undefined,
   groups: ValidationGroup[],
 ): true | string {
-  if (document?.status !== 'published') return true
-
-  const sizes = document.sizes ?? []
+  const sizes = document?.sizes ?? []
   const sizeKeys = new Set<string>()
   for (const size of sizes) {
     if (!size._key) return 'Each Product Size Option needs a stable key before publishing'
@@ -91,7 +95,7 @@ export function validatePublishedCustomizationRules(
   }
 
   const groupsById = new Map(groups.map((group) => [group._id, group]))
-  for (const configuration of document.customizationConfigurations ?? []) {
+  for (const configuration of document?.customizationConfigurations ?? []) {
     const groupId = configuration.group?._ref
     if (!groupId) continue
 
@@ -162,7 +166,39 @@ export function validatePublishedCustomizationRules(
     }
   }
 
+  const configuredGroupIds = new Set(
+    (document?.customizationConfigurations ?? [])
+      .map((configuration) => configuration.group?._ref)
+      .filter((groupId): groupId is string => Boolean(groupId))
+  )
+  for (const legacyGroupReference of document?.customizationGroups ?? []) {
+    const groupId = legacyGroupReference._ref
+    if (!groupId || configuredGroupIds.has(groupId)) continue
+    const group = groupsById.get(groupId)
+    if (group?.items?.some((item) => item.scope === 'sizeDependent')) {
+      return `Customization Group "${groupId}" contains size-dependent items and requires Product customization rules before publishing`
+    }
+  }
+
   return true
+}
+
+export function validatePublishedCustomizationRules(
+  document: ProductCustomizationValidationDocument | undefined,
+  groups: ValidationGroup[],
+): true | string {
+  return document?.status === 'published' ? validateCustomizationRules(document, groups) : true
+}
+
+/** Keep drafts editable while showing the same publish blockers in the Studio. */
+export function getCustomizationConfigurationWarning(
+  document: ProductCustomizationValidationDocument | undefined,
+  groups: ValidationGroup[],
+): true | CustomizationConfigurationWarning {
+  if (document?.status !== 'draft') return true
+
+  const result = validateCustomizationRules(document, groups)
+  return result === true ? true : { message: result, level: 'warning' }
 }
 
 export const productType = defineType({
@@ -300,25 +336,27 @@ export const productType = defineType({
         configurations: ValidationConfiguration[] | undefined,
         context: any
       ) => {
-        if (context.document?.status !== 'published' || !configurations?.length) return true
-
-        const groupIds = [...new Set(configurations
-          .map((configuration) => configuration.group?._ref)
-          .filter((groupId): groupId is string => Boolean(groupId)))]
-        const groups = groupIds.length === 0
-          ? []
-          : await context
-            .getClient({ apiVersion: '2025-02-19' })
-            .withConfig({ perspective: 'drafts' })
-            .fetch<ValidationGroup[]>(
-              '*[_id in $groupIds]{_id, isMandatory, items[]{_key, scope}}',
-              { groupIds }
-            )
-
-        return validatePublishedCustomizationRules({
+        const document = {
           ...context.document,
           customizationConfigurations: configurations
-        }, groups ?? [])
+        } as ProductCustomizationValidationDocument
+        const groupIds = [...new Set([
+          ...(configurations ?? []).map((configuration) => configuration.group?._ref),
+          ...(document.customizationGroups ?? []).map((group) => group._ref)
+        ]
+          .filter((groupId): groupId is string => Boolean(groupId)))]
+        if (groupIds.length === 0) return true
+        const groups = await context
+          .getClient({ apiVersion: '2025-02-19' })
+          .withConfig({ perspective: 'drafts' })
+          .fetch<ValidationGroup[]>(
+            '*[_id in $groupIds]{_id, isMandatory, items[]{_key, scope}}',
+            { groupIds }
+          )
+
+        return document.status === 'published'
+          ? validatePublishedCustomizationRules(document, groups ?? [])
+          : getCustomizationConfigurationWarning(document, groups ?? [])
       })
     }),
     defineField({

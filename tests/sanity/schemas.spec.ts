@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { schemaTypes } from '../../sanity/schemas'
 import {
   createSizeRuleSnapshot,
+  getCustomizationConfigurationWarning,
   productType,
   validateExactlyOneDefaultSize,
   validatePublishedCustomizationRules,
@@ -303,6 +304,63 @@ describe('Sanity Schemas Structure & Validation Rules', () => {
           itemOverrides: [{ itemKey: 'gone', sizeRules: [{ sizeOptionKey: 'gone-size', mode: 'fixed' }] }]
         }]
       }, [])).toBe(true)
+    })
+
+    it('shows a non-blocking draft warning for stale, orphaned, or unreviewed rules', () => {
+      const group = {
+        _id: 'group-electricity',
+        isMandatory: false,
+        items: [{ _key: 'elec-1', scope: 'sizeDependent' as const }]
+      }
+      const missingReview = getCustomizationConfigurationWarning({
+        status: 'draft',
+        sizes: [{ _key: 'small', lengthM: 3, widthM: 2.4 }],
+        customizationConfigurations: [{
+          group: { _ref: 'group-electricity' },
+          itemOverrides: [{ itemKey: 'elec-1' }]
+        }]
+      }, [group])
+      const orphan = getCustomizationConfigurationWarning({
+        status: 'draft',
+        sizes: [{ _key: 'small', lengthM: 3, widthM: 2.4 }],
+        customizationConfigurations: [{
+          group: { _ref: 'group-electricity' },
+          itemOverrides: [{ itemKey: 'missing' }]
+        }]
+      }, [group])
+      const stale = getCustomizationConfigurationWarning({
+        status: 'draft',
+        sizes: [{ _key: 'small', lengthM: 3, widthM: 2.4 }],
+        customizationConfigurations: [{
+          group: { _ref: 'group-electricity' },
+          itemOverrides: [{
+            itemKey: 'elec-1',
+            sizeRules: [{
+              sizeOptionKey: 'small',
+              mode: 'included',
+              review: { status: 'reviewed', snapshot: 'old dimensions' }
+            }]
+          }]
+        }]
+      }, [group])
+
+      expect(missingReview).toMatchObject({ level: 'warning', message: expect.stringContaining('needs a reviewed rule') })
+      expect(orphan).toMatchObject({ level: 'warning', message: expect.stringContaining('missing') })
+      expect(stale).toMatchObject({ level: 'warning', message: expect.stringContaining('dimensions changed') })
+    })
+
+    it('blocks published legacy groups containing size-dependent items without native rules', () => {
+      const group = {
+        _id: 'group-electricity',
+        isMandatory: false,
+        items: [{ _key: 'elec-1', scope: 'sizeDependent' as const }]
+      }
+
+      expect(validatePublishedCustomizationRules({
+        status: 'published',
+        sizes: [{ _key: 'small', lengthM: 3, widthM: 2.4 }],
+        customizationGroups: [{ _ref: 'group-electricity' }]
+      }, [group])).toContain('requires Product customization rules')
     })
 
     it('requires at least one size option', () => {
