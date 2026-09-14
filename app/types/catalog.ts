@@ -82,6 +82,38 @@ export interface SanitySizeOption {
 
 export type PricingType = 'fixed' | 'included' | 'poa'
 
+/** Whether an item applies to every product size or needs an explicit size rule. */
+export type CustomizationItemScope = 'universal' | 'sizeDependent'
+
+/** Native Size Option rule states. `inherit` defers to the Product and item defaults. */
+export type CustomizationAvailability = 'inherit' | 'fixed' | 'included' | 'poa' | 'unavailable'
+
+/** Review state for a Size Option rule. Draft rules may remain pending until publish validation. */
+export type CustomizationSizeRuleReviewStatus = 'pending' | 'reviewed'
+
+/**
+ * Editor-owned evidence that a Size Option rule was reviewed.
+ *
+ * `snapshot` is an intentionally opaque, human-readable record of what was reviewed; later
+ * Studio validation can require it without coupling catalogue types to the Studio schema.
+ */
+export interface SanityCustomizationSizeRuleReview {
+  status: CustomizationSizeRuleReviewStatus
+  snapshot?: string
+}
+
+/** A Size Option-specific rule for one item, linked solely through the stable Size Option `_key`. */
+export interface SanityCustomizationSizeRule {
+  _key?: string
+  sizeOptionKey: string
+  mode: CustomizationAvailability
+  /** Used only when `mode` is `fixed`. */
+  price?: number
+  titleOverride?: string
+  descriptionOverride?: string
+  review?: SanityCustomizationSizeRuleReview
+}
+
 export interface SanityCustomizationItem {
   _key?: string
   title: string
@@ -91,6 +123,7 @@ export interface SanityCustomizationItem {
   textInputPlaceholder?: string
   description?: string
   image?: SanityImage
+  scope?: CustomizationItemScope
 }
 
 /** A Product-level override for one item from a reusable Customization Group. */
@@ -101,6 +134,9 @@ export interface SanityCustomizationItemOverride {
   enabled?: boolean
   pricingType?: PricingType
   price?: number
+  titleOverride?: string
+  descriptionOverride?: string
+  sizeRules?: SanityCustomizationSizeRule[]
 }
 
 export type CustomizationSelectionType = 'single' | 'multiple' | 'boolean'

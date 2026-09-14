@@ -1,7 +1,12 @@
 import { describe, it, expect } from 'vitest'
 import { useCustomizationPricing, buildSpecSummary } from '~~/app/composables/useCustomizationPricing'
 import { resolveCustomizationGroups, resolveCustomizationItemPricing } from '~~/app/utils/customizationPricing'
-import type { SanityCustomizationGroup, SanitySizeOption } from '~~/app/types/catalog'
+import type {
+  SanityCustomizationGroup,
+  SanityCustomizationItem,
+  SanityCustomizationItemOverride,
+  SanitySizeOption,
+} from '~~/app/types/catalog'
 import type { CustomizationSelections, CustomizationNotes } from '~~/app/types/customization'
 
 const groupSingleFinish: SanityCustomizationGroup = {
@@ -90,6 +95,38 @@ const sizePoa: SanitySizeOption = {
   price: 0,
   isPoa: true,
   images: []
+}
+
+const sizeRuleContractFixture: SanityCustomizationItemOverride = {
+  itemKey: 'two-light-points',
+  titleOverride: 'Two ceiling light points',
+  descriptionOverride: 'Included only where the selected size supports it.',
+  sizeRules: [{
+    sizeOptionKey: 'small-cabin-3m',
+    mode: 'unavailable',
+    review: {
+      status: 'reviewed',
+      snapshot: 'small-cabin-3m: unavailable'
+    }
+  }, {
+    sizeOptionKey: 'container-6m',
+    mode: 'fixed',
+    price: 90,
+    titleOverride: 'Two ceiling light points',
+    descriptionOverride: 'Fitted electrical option.',
+    review: {
+      status: 'reviewed',
+      snapshot: 'container-6m: fixed £90'
+    }
+  }]
+}
+
+const sizeDependentItemContractFixture: SanityCustomizationItem = {
+  _key: 'two-light-points',
+  title: 'Two ceiling light points',
+  pricingType: 'fixed',
+  price: 90,
+  scope: 'sizeDependent'
 }
 
 function pricing(
@@ -227,6 +264,14 @@ describe('buildSpecSummary', () => {
 })
 
 describe('Product customization resolution', () => {
+  it('accepts native size-option rules for size-dependent items', () => {
+    expect(sizeDependentItemContractFixture.scope).toBe('sizeDependent')
+    expect(sizeRuleContractFixture.sizeRules).toEqual([
+      expect.objectContaining({ sizeOptionKey: 'small-cabin-3m', mode: 'unavailable' }),
+      expect.objectContaining({ sizeOptionKey: 'container-6m', mode: 'fixed', price: 90 })
+    ])
+  })
+
   const configuration = {
     group: groupPoaElectrical,
     itemOverrides: [
