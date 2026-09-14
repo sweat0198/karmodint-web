@@ -44,6 +44,10 @@ interface ValidationSizeRule {
 interface ValidationItemOverride {
   itemKey?: string
   enabled?: boolean
+  pricingType?: 'fixed' | 'included' | 'poa'
+  price?: number
+  titleOverride?: string
+  descriptionOverride?: string
   sizeRules?: ValidationSizeRule[]
 }
 
@@ -55,7 +59,14 @@ interface ValidationConfiguration {
 interface ValidationGroup {
   _id: string
   isMandatory?: boolean
-  items?: Array<{ _key?: string; scope?: 'universal' | 'sizeDependent' }>
+  items?: Array<{
+    _key?: string
+    scope?: 'universal' | 'sizeDependent'
+    title?: string
+    description?: string
+    pricingType?: 'fixed' | 'included' | 'poa'
+    price?: number
+  }>
 }
 
 interface ProductCustomizationValidationDocument {
@@ -65,8 +76,19 @@ interface ProductCustomizationValidationDocument {
   customizationConfigurations?: ValidationConfiguration[]
 }
 
-/** Stable evidence for a reviewed Size Option rule. Update the review if any dimension changes. */
-export function createSizeRuleSnapshot(size: ValidationSizeOption, rule: ValidationSizeRule): string {
+/** Stable evidence for a reviewed Size Option rule. Update the review if any resolved value changes. */
+export function createSizeRuleSnapshot(
+  size: ValidationSizeOption,
+  rule: ValidationSizeRule,
+  override?: ValidationItemOverride,
+  item?: NonNullable<ValidationGroup['items']>[number],
+): string {
+  const inheritedPricingType = override?.pricingType ?? item?.pricingType ?? null
+  const pricingType = rule.mode === 'inherit' ? inheritedPricingType : rule.mode ?? null
+  const price = pricingType === 'fixed'
+    ? rule.mode === 'inherit' ? override?.price ?? item?.price ?? null : rule.price ?? null
+    : pricingType === 'included' ? 0 : null
+
   return JSON.stringify({
     sizeOptionKey: size._key ?? null,
     lengthM: size.lengthM ?? null,
@@ -75,7 +97,11 @@ export function createSizeRuleSnapshot(size: ValidationSizeOption, rule: Validat
     mode: rule.mode ?? null,
     price: rule.price ?? null,
     titleOverride: rule.titleOverride ?? null,
-    descriptionOverride: rule.descriptionOverride ?? null
+    descriptionOverride: rule.descriptionOverride ?? null,
+    resolvedPricingType: pricingType,
+    resolvedPrice: price,
+    resolvedTitle: rule.titleOverride ?? override?.titleOverride ?? item?.title ?? null,
+    resolvedDescription: rule.descriptionOverride ?? override?.descriptionOverride ?? item?.description ?? null
   })
 }
 
@@ -141,8 +167,8 @@ function validateCustomizationRules(
           return `Size Option rule for "${override.itemKey}" at "${rule.sizeOptionKey}" must be reviewed before publishing`
         }
         const size = sizes.find((candidate) => candidate._key === rule.sizeOptionKey)!
-        if (rule.review.snapshot !== createSizeRuleSnapshot(size, rule)) {
-          return `Size Option rule for "${override.itemKey}" at "${rule.sizeOptionKey}" must be reviewed again because dimensions changed`
+        if (rule.review.snapshot !== createSizeRuleSnapshot(size, rule, override, itemsByKey.get(override.itemKey))) {
+          return `Size Option rule for "${override.itemKey}" at "${rule.sizeOptionKey}" must be reviewed again because dimensions changed or resolved customization values changed`
         }
       }
     }
@@ -225,7 +251,7 @@ async function fetchProductCustomizationGroups(
     .getClient({ apiVersion: '2025-02-19' })
     .withConfig({ perspective: 'drafts' })
     .fetch<ValidationGroup[]>(
-      '*[_id in $groupIds]{_id, isMandatory, items[]{_key, scope}}',
+      '*[_id in $groupIds]{_id, isMandatory, items[]{_key, scope, title, description, pricingType, price}}',
       { groupIds }
     )
 }

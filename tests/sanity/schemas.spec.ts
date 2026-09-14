@@ -361,6 +361,68 @@ describe('Sanity Schemas Structure & Validation Rules', () => {
         .not.toBe(included)
     })
 
+    it('invalidates reviewed size rules when inherited Product or item values change', () => {
+      const size = { _key: 'small', lengthM: 3, widthM: 2.4, heightM: 2.6 }
+      const item = {
+        _key: 'elec-1',
+        scope: 'sizeDependent' as const,
+        title: '1 light, 2 sockets',
+        description: 'Standard electrical layout',
+        pricingType: 'fixed' as const,
+        price: 100
+      }
+      const override = {
+        itemKey: 'elec-1',
+        pricingType: 'fixed' as const,
+        price: 150,
+        titleOverride: 'Product electrical layout',
+        descriptionOverride: 'Product-specific electrical layout'
+      }
+      const rule = {
+        sizeOptionKey: 'small',
+        mode: 'inherit' as const,
+        review: { status: 'reviewed' as const, snapshot: createSizeRuleSnapshot(size, { mode: 'inherit' }, override, item) }
+      }
+      const document = {
+        status: 'published',
+        sizes: [size],
+        customizationConfigurations: [{ group: { _ref: 'group-electricity' }, itemOverrides: [{ ...override, sizeRules: [rule] }] }]
+      }
+      const group = { _id: 'group-electricity', isMandatory: false, items: [item] }
+
+      expect(validatePublishedCustomizationRules(document, [group])).toBe(true)
+
+      document.customizationConfigurations[0].itemOverrides[0].price = 175
+      expect(validatePublishedCustomizationRules(document, [group])).toContain('dimensions changed')
+      document.customizationConfigurations[0].itemOverrides[0].price = 150
+      document.customizationConfigurations[0].itemOverrides[0].titleOverride = 'Updated product layout'
+      expect(validatePublishedCustomizationRules(document, [group])).toContain('dimensions changed')
+      document.customizationConfigurations[0].itemOverrides[0].titleOverride = 'Product electrical layout'
+      document.customizationConfigurations[0].itemOverrides[0].descriptionOverride = 'Updated product description'
+      expect(validatePublishedCustomizationRules(document, [group])).toContain('dimensions changed')
+
+      const itemInheritedRule = {
+        sizeOptionKey: 'small',
+        mode: 'inherit' as const,
+        review: { status: 'reviewed' as const, snapshot: createSizeRuleSnapshot(size, { mode: 'inherit' }, undefined, item) }
+      }
+      const itemInheritedDocument = {
+        status: 'published',
+        sizes: [size],
+        customizationConfigurations: [{ group: { _ref: 'group-electricity' }, itemOverrides: [{ itemKey: 'elec-1', sizeRules: [itemInheritedRule] }] }]
+      }
+
+      expect(validatePublishedCustomizationRules(itemInheritedDocument, [group])).toBe(true)
+      group.items[0].price = 200
+      expect(validatePublishedCustomizationRules(itemInheritedDocument, [group])).toContain('dimensions changed')
+      group.items[0].price = 100
+      group.items[0].title = 'Updated item layout'
+      expect(validatePublishedCustomizationRules(itemInheritedDocument, [group])).toContain('dimensions changed')
+      group.items[0].title = '1 light, 2 sockets'
+      group.items[0].description = 'Updated item electrical layout'
+      expect(validatePublishedCustomizationRules(itemInheritedDocument, [group])).toContain('dimensions changed')
+    })
+
     it('lists Product Size Option keys and labels when a rule uses an unknown key', () => {
       const group = {
         _id: 'group-electricity',
