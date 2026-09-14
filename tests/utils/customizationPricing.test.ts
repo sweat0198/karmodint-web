@@ -392,7 +392,7 @@ describe('Product customization resolution', () => {
   })
 
   it('uses Product configurations, disables excluded items, and falls back to legacy groups', () => {
-    const configured = resolveCustomizationGroups({ customizationConfigurations: [configuration] })
+    const configured = resolveCustomizationGroups({ customizationConfigurations: [configuration] }, 'container-6m')
     expect(configured).toEqual([
       {
         ...groupPoaElectrical,
@@ -409,7 +409,7 @@ describe('Product customization resolution', () => {
         group: groupBooleanAc,
         itemOverrides: [{ itemKey: 'not-an-ac-item', enabled: false }]
       }]
-    })).toThrow('not-an-ac-item')
+    }, 'container-6m')).toThrow('not-an-ac-item')
   })
 
   const sizeRuleGroup: SanityCustomizationGroup = {
@@ -447,11 +447,18 @@ describe('Product customization resolution', () => {
       titleOverride: 'Product light points',
       descriptionOverride: 'Product description',
       sizeRules: [
-        { sizeOptionKey: 'fixed-size', mode: 'fixed' as const, price: 80, titleOverride: 'Size light points' },
+        {
+          sizeOptionKey: 'fixed-size',
+          mode: 'fixed' as const,
+          price: 80,
+          titleOverride: 'Size light points',
+          descriptionOverride: 'Size description'
+        },
         { sizeOptionKey: 'included-size', mode: 'included' as const },
         { sizeOptionKey: 'poa-size', mode: 'poa' as const },
         { sizeOptionKey: 'inherit-size', mode: 'inherit' as const },
-        { sizeOptionKey: 'unavailable-size', mode: 'unavailable' as const }
+        { sizeOptionKey: 'unavailable-size', mode: 'unavailable' as const },
+        { sizeOptionKey: 'unavailable-one', mode: 'unavailable' as const }
       ]
     }, {
       itemKey: 'four-sockets',
@@ -487,7 +494,7 @@ describe('Product customization resolution', () => {
     const inherited = resolveCustomizationGroups(product, 'inherit-size')[0].items[0]
     const defaulted = resolveCustomizationGroups(product, 'inherit-size')[0].items[1]
 
-    expect(fixed).toMatchObject({ title: 'Size light points', description: 'Product description' })
+    expect(fixed).toMatchObject({ title: 'Size light points', description: 'Size description' })
     expect(inherited).toMatchObject({ title: 'Product light points', description: 'Product description' })
     expect(defaulted).toMatchObject({ title: 'Four double sockets', description: 'Socket description' })
   })
@@ -495,6 +502,29 @@ describe('Product customization resolution', () => {
   it('filters unavailable items and removes groups left without any available items', () => {
     const product = { customizationConfigurations: [sizeRuleConfiguration] }
     expect(resolveCustomizationGroups(product, 'unavailable-size')).toEqual([])
+  })
+
+  it('removes an unavailable item while retaining its available sibling', () => {
+    const product = { customizationConfigurations: [sizeRuleConfiguration] }
+    expect(resolveCustomizationGroups(product, 'unavailable-one')[0].items.map((item) => item._key))
+      .toEqual(['four-sockets'])
+  })
+
+  it('requires a selected Size Option key for Product configurations', () => {
+    expect(() => resolveCustomizationGroups({ customizationConfigurations: [sizeRuleConfiguration] }))
+      .toThrow('selected Size Option')
+  })
+
+  it('rejects Product Size Options without unique keys', () => {
+    expect(() => resolveCustomizationGroups({
+      sizes: [{ ...sizeFixed, _key: undefined }],
+      customizationConfigurations: [sizeRuleConfiguration]
+    }, 'fixed-size')).toThrow('without a key')
+
+    expect(() => resolveCustomizationGroups({
+      sizes: [{ ...sizeFixed, _key: 'fixed-size' }, { ...sizePoa, _key: 'fixed-size' }],
+      customizationConfigurations: [sizeRuleConfiguration]
+    }, 'fixed-size')).toThrow('more than one Size Option')
   })
 
   it('rejects duplicate Size Option rules and Size Option rules for unknown items', () => {

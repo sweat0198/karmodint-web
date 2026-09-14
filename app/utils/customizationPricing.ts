@@ -64,6 +64,23 @@ function findSizeRule(
   return override.sizeRules?.find((sizeRule) => sizeRule.sizeOptionKey === selectedSizeOptionKey)
 }
 
+function validateSizeOptionKeys(sizes: SanitySizeOption[] | undefined): Set<string> | undefined {
+  if (!sizes) return undefined
+
+  const sizeOptionKeys = new Set<string>()
+  for (const size of sizes) {
+    if (!size._key) {
+      throw new Error('Product contains a Size Option without a key')
+    }
+    if (sizeOptionKeys.has(size._key)) {
+      throw new Error(`Product has more than one Size Option "${size._key}"`)
+    }
+    sizeOptionKeys.add(size._key)
+  }
+
+  return sizeOptionKeys
+}
+
 function resolveConfiguredGroup(
   configuration: SanityProductCustomizationConfiguration,
   selectedSizeOptionKey?: string,
@@ -105,7 +122,7 @@ function resolveConfiguredGroup(
         const override = overrides.get(item._key!)
         if (override?.enabled === false) return []
 
-        const sizeRule = findSizeRule(override, selectedSizeOptionKey, availableSizeOptionKeys)
+        const sizeRule = findSizeRule(override, selectedSizeOptionKey)
         if (sizeRule?.mode === 'unavailable') return []
 
         return [{
@@ -125,10 +142,12 @@ export function resolveCustomizationGroups(product: {
   customizationGroups?: SanityCustomizationGroup[]
 }, selectedSizeOptionKey?: string): SanityCustomizationGroup[] {
   if (product.customizationConfigurations?.length) {
-    const availableSizeOptionKeys = product.sizes
-      ? new Set(product.sizes.map((size) => size._key).filter((key): key is string => Boolean(key)))
-      : undefined
-    if (selectedSizeOptionKey && availableSizeOptionKeys && !availableSizeOptionKeys.has(selectedSizeOptionKey)) {
+    if (!selectedSizeOptionKey?.trim()) {
+      throw new Error('Customization resolver requires a selected Size Option key')
+    }
+
+    const availableSizeOptionKeys = validateSizeOptionKeys(product.sizes)
+    if (availableSizeOptionKeys && !availableSizeOptionKeys.has(selectedSizeOptionKey)) {
       throw new Error(`Customization resolver received unknown Size Option "${selectedSizeOptionKey}"`)
     }
 
