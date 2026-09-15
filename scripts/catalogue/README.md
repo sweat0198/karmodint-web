@@ -29,8 +29,10 @@ npm run customizations:prepare-dev
 
 This command is dev-only. It requires root `.env` credentials with `SANITY_DATASET=dev` and a
 write-capable `SANITY_API_TOKEN`. It creates missing checked-in Customization Group documents,
-appends only missing canonical Product configuration links, migrates any remaining legacy links,
-then runs the read-only catalogue verification. The sync refuses every dataset except `dev`.
+then migrates legacy Product links, appends only missing canonical Product configuration links,
+reruns the migration audit, and verifies no groups or links remain pending. Legacy Products are
+skipped until migration completes, so modern links cannot make a legacy Product unmigratable. The
+sync refuses every dataset except `dev`.
 
 Use it in dev CI before the existing build and any separate Studio deployment:
 

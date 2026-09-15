@@ -31,6 +31,7 @@ interface ExistingConfiguration {
 
 export interface SyncProduct {
   _id: string
+  customizationGroups?: Array<{ _ref?: string }>
   customizationConfigurations?: ExistingConfiguration[]
 }
 
@@ -115,7 +116,7 @@ export function loadCustomizationGroupSeeds(): SeedCustomizationGroupDocument[] 
   return parseCustomizationGroupSeeds(fs.readFileSync(repoPath(CUSTOMIZATION_GROUP_SEED_FILE), 'utf-8'))
 }
 
-/** Plans additive seed writes. Existing Group documents and configuration objects remain untouched. */
+/** Plans additive seed writes. Legacy Products wait for migration before modern links are appended. */
 export function buildDevCustomizationSeedSyncPlan(
   products: SyncProduct[],
   existingGroupIds: string[],
@@ -133,6 +134,7 @@ export function buildDevCustomizationSeedSyncPlan(
       review.push(`Product "${target.productId}" was not found`)
       continue
     }
+    if (product.customizationGroups?.length) continue
 
     const configuredGroupIds = new Set(
       product.customizationConfigurations?.flatMap((configuration) =>
@@ -156,6 +158,7 @@ const GROUP_IDS_QUERY = '*[_type == "customizationGroup"]._id'
 const TARGET_PRODUCTS_QUERY = `*[_type == "product" && _id in $ids] {
   _id,
   _rev,
+  customizationGroups[]{ _ref },
   customizationConfigurations[]{ group{ _ref } }
 }`
 
@@ -234,12 +237,16 @@ export async function runDevCustomizationSeedSync(
 
 async function main(): Promise<void> {
   const apply = process.argv.includes('--apply')
+  const verify = process.argv.includes('--verify')
+  if (apply && verify) throw new Error('Use either --apply or --verify')
   const dataset = readDataset()
   assertDevDataset(dataset)
   const client = createSanityClient(readSanityTarget())
-  const result = await runDevCustomizationSeedSync(client, dataset, apply)
-  console.log(JSON.stringify({ mode: apply ? 'apply' : 'dry-run', dataset, ...result }, null, 2))
-  if (result.review.length > 0) process.exitCode = 1
+  const result = await runDevCustomizationSeedSync(client, dataset, apply && !verify)
+  console.log(JSON.stringify({ mode: apply ? 'apply' : verify ? 'verify' : 'dry-run', dataset, ...result }, null, 2))
+  if (result.review.length > 0 || (verify && (result.plannedGroups > 0 || result.plannedProducts > 0))) {
+    process.exitCode = 1
+  }
 }
 
 if (process.argv[1] && pathToFileURL(process.argv[1]).href === import.meta.url) {

@@ -8,6 +8,7 @@ import {
   runDevCustomizationSeedSync,
   type SeedCustomizationGroupDocument
 } from '../../scripts/customizations/syncDevCustomizationSeeds'
+import { planProductCustomizationMigration } from '../../scripts/customizations/migrateProductConfigurations'
 
 const SEED_GROUPS: SeedCustomizationGroupDocument[] = [
   { _id: 'customizationGroup-electricity', _type: 'customizationGroup', title: 'Electricity' },
@@ -25,7 +26,10 @@ describe('dev customization seed sync', () => {
     )) as { scripts: Record<string, string> }
 
     expect(packageJson.scripts['customizations:prepare-dev']).toBe(
-      'npm run customizations:sync-dev -- --apply && npm run customizations:migrate -- --apply && npm run catalogue:verify'
+      'npm run customizations:sync-dev -- --apply && npm run customizations:migrate -- --apply && npm run customizations:sync-dev -- --apply && npm run customizations:migrate -- --apply && npm run customizations:verify-dev'
+    )
+    expect(packageJson.scripts['customizations:verify-dev']).toBe(
+      'jiti scripts/customizations/syncDevCustomizationSeeds.ts --verify'
     )
     for (const [name, command] of Object.entries(packageJson.scripts)) {
       if (name === 'build' || name.includes('deploy')) expect(command).not.toContain('customizations:')
@@ -38,6 +42,32 @@ describe('dev customization seed sync', () => {
     for (const [name, command] of Object.entries(studioPackage.scripts)) {
       if (name.includes('deploy')) expect(command).not.toContain('customizations:')
     }
+  })
+
+  it('creates missing groups before migrating legacy Products, then appends only missing modern links', () => {
+    const legacyProduct = {
+      _id: 'product-grp-cabin',
+      customizationGroups: [{ _ref: 'customizationGroup-electricity' }],
+      customizationConfigurations: []
+    }
+
+    const bootstrapPlan = buildDevCustomizationSeedSyncPlan([legacyProduct], [], SEED_GROUPS)
+    expect(bootstrapPlan.createGroups).toHaveLength(5)
+    expect(bootstrapPlan.productPatches).toEqual([])
+
+    const migrated = planProductCustomizationMigration(legacyProduct, SEED_GROUPS)
+    const postMigrationPlan = buildDevCustomizationSeedSyncPlan([{
+      _id: legacyProduct._id,
+      customizationConfigurations: migrated.configurations
+    }], SEED_GROUPS.map((group) => group._id), SEED_GROUPS)
+
+    expect(postMigrationPlan.productPatches).toEqual([{
+      productId: 'product-grp-cabin',
+      append: [
+        expect.objectContaining({ group: expect.objectContaining({ _ref: 'customizationGroup-heater' }) }),
+        expect.objectContaining({ group: expect.objectContaining({ _ref: 'customizationGroup-ac' }) })
+      ]
+    }])
   })
 
   it('refuses every non-dev dataset before fetching or writing', async () => {
