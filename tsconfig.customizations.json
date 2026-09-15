@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "noEmit": true,
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "skipLibCheck": true,
+    "types": ["node"],
+    "resolveJsonModule": true,
+    "esModuleInterop": true
+  },
+  "include": [
+    "scripts/customizations/syncDevCustomizationSeeds.ts",
+    "scripts/customizations/lib/seedRecipes.ts",
+    "tests/customizations/syncDevCustomizationSeeds.spec.ts",
+    "scripts/catalogue/lib/paths.ts",
+    "scripts/catalogue/lib/sanityEnv.ts",
+    "sanity/schemas/objects/productImageViews.ts"
+  ]
+}

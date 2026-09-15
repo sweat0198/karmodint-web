@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
+import { containerCustomizationConfigurations } from '../../scripts/customizations/lib/seedRecipes'
 
 const source = readFileSync(
   fileURLToPath(new URL('../../scripts/manual-products/add-container-products.ts', import.meta.url)),
@@ -9,15 +10,15 @@ const source = readFileSync(
 
 describe('Portable Cabin manual product', () => {
   it('assigns optional Electricity, Heater, AC, WC, and Kitchen configuration groups', () => {
-    for (const groupId of [
+    expect(source).toContain("import { containerCustomizationConfigurations } from '../customizations/lib/seedRecipes'")
+    expect(source).toContain('customizationConfigurations: containerCustomizationConfigurations()')
+    expect(containerCustomizationConfigurations().map((configuration) => configuration.group._ref)).toEqual([
       'customizationGroup-electricity',
       'customizationGroup-heater',
       'customizationGroup-ac',
       'customizationGroup-wc',
       'customizationGroup-kitchen'
-    ]) {
-      expect(source).toContain(groupId)
-    }
+    ])
   })
 
   it.each([

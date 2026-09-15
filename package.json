@@ -16,6 +16,8 @@
     "catalogue:format-size-labels": "jiti scripts/catalogue/format-size-labels.ts",
     "catalogue:verify": "jiti scripts/catalogue/verify-catalogue.ts",
     "customizations:migrate": "jiti scripts/customizations/migrateProductConfigurations.ts",
+    "customizations:sync-dev": "jiti scripts/customizations/syncDevCustomizationSeeds.ts",
+    "typecheck:customizations": "tsc -p tsconfig.customizations.json",
     "typecheck:catalogue": "tsc -p tsconfig.catalogue.json",
     "references:import": "jiti scripts/references/import-references.ts",
     "references:patch-websites": "jiti scripts/references/patch-websites.ts",
