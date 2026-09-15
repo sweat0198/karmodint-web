@@ -30,6 +30,32 @@ describe('dev customization seed sync', () => {
       .toThrow('refuses dataset "production"; only "dev" is allowed')
   })
 
+  it('dry-runs a non-empty plan without opening a transaction', async () => {
+    let transactionCalls = 0
+    const client = {
+      async fetch(query: string) {
+        if (query.includes(']._id')) return []
+        return [
+          ...CABIN_PRODUCT_IDS.map((_id) => ({ _id, customizationConfigurations: [] })),
+          ...CONTAINER_PRODUCT_IDS.map((_id) => ({ _id, customizationConfigurations: [] }))
+        ]
+      },
+      transaction() {
+        transactionCalls += 1
+        throw new Error('dry-run must not open a transaction')
+      }
+    }
+
+    await expect(runDevCustomizationSeedSync(client, 'dev', false, SEED_GROUPS)).resolves.toEqual({
+      appliedGroups: 0,
+      appliedProducts: 0,
+      plannedGroups: 5,
+      plannedProducts: 6,
+      review: []
+    })
+    expect(transactionCalls).toBe(0)
+  })
+
   it('plans missing group documents with only intended Product configuration additions', () => {
     const plan = buildDevCustomizationSeedSyncPlan([
       { _id: 'product-grp-cabin', customizationConfigurations: [] },
@@ -181,5 +207,57 @@ describe('dev customization seed sync', () => {
       review: []
     })
     expect(commits).toBe(1)
+  })
+
+  it('returns a review when post-apply verification cannot find an appended configuration', async () => {
+    const products = [
+      { _id: 'product-grp-cabin', customizationConfigurations: [] },
+      ...CABIN_PRODUCT_IDS.slice(1).map((_id) => ({
+        _id,
+        customizationConfigurations: ['customizationGroup-electricity', 'customizationGroup-heater', 'customizationGroup-ac']
+          .map((_ref) => ({ group: { _ref } }))
+      })),
+      ...CONTAINER_PRODUCT_IDS.map((_id) => ({
+        _id,
+        customizationConfigurations: [
+          'customizationGroup-electricity',
+          'customizationGroup-heater',
+          'customizationGroup-ac',
+          'customizationGroup-wc',
+          'customizationGroup-kitchen'
+        ].map((_ref) => ({ group: { _ref } }))
+      }))
+    ]
+    const groupIds: string[] = []
+    const transaction = {
+      createIfNotExists(group: { _id: string }) {
+        groupIds.push(group._id)
+        return transaction
+      },
+      patch(_id: string, _configure: unknown) {
+        return transaction
+      },
+      async commit() {}
+    }
+    const client = {
+      async fetch(query: string) {
+        return query.includes(']._id') ? groupIds : products
+      },
+      transaction() {
+        return transaction
+      }
+    }
+
+    await expect(runDevCustomizationSeedSync(client, 'dev', true, SEED_GROUPS)).resolves.toEqual({
+      appliedGroups: 5,
+      appliedProducts: 1,
+      plannedGroups: 5,
+      plannedProducts: 1,
+      review: [
+        'Product "product-grp-cabin" is missing Customization Group "customizationGroup-electricity" after sync',
+        'Product "product-grp-cabin" is missing Customization Group "customizationGroup-heater" after sync',
+        'Product "product-grp-cabin" is missing Customization Group "customizationGroup-ac" after sync'
+      ]
+    })
   })
 })
