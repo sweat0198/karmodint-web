@@ -146,7 +146,7 @@ describe('dev customization seed sync', () => {
 
   it('commits planned additions once then re-reads and verifies them', async () => {
     const products = [
-      { _id: 'product-grp-cabin', customizationConfigurations: [] as Array<{ group: { _ref: string } }> },
+      { _id: 'product-grp-cabin', _rev: 'cabin-revision', customizationConfigurations: [] as Array<{ group: { _ref: string } }> },
       ...CABIN_PRODUCT_IDS.slice(1).map((_id) => ({
         _id,
         customizationConfigurations: ['customizationGroup-electricity', 'customizationGroup-heater', 'customizationGroup-ac']
@@ -171,10 +171,14 @@ describe('dev customization seed sync', () => {
         return transaction
       },
       patch(id: string, configure: (patch: {
+        ifRevisionId(revision: string): typeof patch
         setIfMissing(value: { customizationConfigurations: [] }): typeof patch
         append(path: 'customizationConfigurations', value: Array<{ group: { _ref: string } }>): typeof patch
       }) => unknown) {
         const patch = {
+          ifRevisionId(_revision: string) {
+            return patch
+          },
           setIfMissing(_value: { customizationConfigurations: [] }) {
             return patch
           },
@@ -259,5 +263,68 @@ describe('dev customization seed sync', () => {
         'Product "product-grp-cabin" is missing Customization Group "customizationGroup-ac" after sync'
       ]
     })
+  })
+
+  it('guards Product patches by revision and propagates a concurrent-edit conflict', async () => {
+    const products = [
+      { _id: 'product-grp-cabin', _rev: 'cabin-revision', customizationConfigurations: [] },
+      ...CABIN_PRODUCT_IDS.slice(1).map((_id) => ({
+        _id,
+        _rev: `${_id}-revision`,
+        customizationConfigurations: ['customizationGroup-electricity', 'customizationGroup-heater', 'customizationGroup-ac']
+          .map((_ref) => ({ group: { _ref } }))
+      })),
+      ...CONTAINER_PRODUCT_IDS.map((_id) => ({
+        _id,
+        _rev: `${_id}-revision`,
+        customizationConfigurations: [
+          'customizationGroup-electricity',
+          'customizationGroup-heater',
+          'customizationGroup-ac',
+          'customizationGroup-wc',
+          'customizationGroup-kitchen'
+        ].map((_ref) => ({ group: { _ref } }))
+      }))
+    ]
+    const revisions: string[] = []
+    const transaction = {
+      createIfNotExists() {
+        return transaction
+      },
+      patch(_id: string, configure: (patch: {
+        ifRevisionId(revision: string): typeof patch
+        setIfMissing(value: { customizationConfigurations: [] }): typeof patch
+        append(path: 'customizationConfigurations', value: unknown[]): typeof patch
+      }) => unknown) {
+        const patch = {
+          ifRevisionId(revision: string) {
+            revisions.push(revision)
+            return patch
+          },
+          setIfMissing(_value: { customizationConfigurations: [] }) {
+            return patch
+          },
+          append(_path: 'customizationConfigurations', _value: unknown[]) {
+            return patch
+          }
+        }
+        configure(patch)
+        return transaction
+      },
+      async commit() {
+        throw new Error('revision conflict')
+      }
+    }
+    const client = {
+      async fetch(query: string) {
+        return query.includes(']._id') ? SEED_GROUPS.map((group) => group._id) : products
+      },
+      transaction() {
+        return transaction
+      }
+    }
+
+    await expect(runDevCustomizationSeedSync(client, 'dev', true, SEED_GROUPS)).rejects.toThrow('revision conflict')
+    expect(revisions).toEqual(['cabin-revision'])
   })
 })

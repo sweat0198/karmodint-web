@@ -34,6 +34,10 @@ export interface SyncProduct {
   customizationConfigurations?: ExistingConfiguration[]
 }
 
+export interface PatchableSyncProduct extends SyncProduct {
+  _rev: string
+}
+
 export interface DevCustomizationSeedSyncPlan {
   createGroups: SeedCustomizationGroupDocument[]
   productPatches: Array<{
@@ -53,6 +57,7 @@ export interface DevCustomizationSeedSyncTransaction {
 }
 
 export interface DevCustomizationSeedSyncPatch {
+  ifRevisionId(revision: string): DevCustomizationSeedSyncPatch
   setIfMissing(value: { customizationConfigurations: [] }): DevCustomizationSeedSyncPatch
   append(path: 'customizationConfigurations', value: SeedCustomizationConfiguration[]): DevCustomizationSeedSyncPatch
 }
@@ -150,18 +155,19 @@ function assertDevDataset(dataset: string): void {
 const GROUP_IDS_QUERY = '*[_type == "customizationGroup"]._id'
 const TARGET_PRODUCTS_QUERY = `*[_type == "product" && _id in $ids] {
   _id,
+  _rev,
   customizationConfigurations[]{ group{ _ref } }
 }`
 
 async function fetchSyncState(client: DevCustomizationSeedSyncClient): Promise<{
-  products: SyncProduct[]
+  products: PatchableSyncProduct[]
   groupIds: string[]
 }> {
   const [products, groupIds] = await Promise.all([
     client.fetch(TARGET_PRODUCTS_QUERY, { ids: [...CABIN_PRODUCT_IDS, ...CONTAINER_PRODUCT_IDS] }),
     client.fetch(GROUP_IDS_QUERY)
   ])
-  return { products: products as SyncProduct[], groupIds: groupIds as string[] }
+  return { products: products as PatchableSyncProduct[], groupIds: groupIds as string[] }
 }
 
 function verifyAppliedPlan(plan: DevCustomizationSeedSyncPlan, products: SyncProduct[], groupIds: string[]): string[] {
@@ -206,8 +212,12 @@ export async function runDevCustomizationSeedSync(
 
   let transaction = client.transaction()
   for (const group of plan.createGroups) transaction = transaction.createIfNotExists(group)
+  const productsById = new Map(products.map((product) => [product._id, product]))
   for (const patch of plan.productPatches) {
-    transaction = transaction.patch(patch.productId, (product: DevCustomizationSeedSyncPatch) => product
+    const product = productsById.get(patch.productId)
+    if (!product) throw new Error(`Product "${patch.productId}" disappeared before sync transaction`)
+    transaction = transaction.patch(patch.productId, (productPatch: DevCustomizationSeedSyncPatch) => productPatch
+      .ifRevisionId(product._rev)
       .setIfMissing({ customizationConfigurations: [] })
       .append('customizationConfigurations', patch.append))
   }
