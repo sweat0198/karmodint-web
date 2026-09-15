@@ -18,6 +18,12 @@ export const quoteItem = defineType({
       validation: (Rule) => Rule.required()
     }),
     defineField({
+      name: 'sizeOptionKey',
+      title: 'Size Option Key',
+      type: 'string',
+      description: 'The confirmed Size Option\'s stable key, for tracing this line back to the catalogue.'
+    }),
+    defineField({
       name: 'sizeLabel',
       title: 'Chosen Size',
       type: 'string',
@@ -51,10 +57,25 @@ export const quoteItem = defineType({
         {
           type: 'object',
           fields: [
+            { name: 'groupId', title: 'Customization Group Identity', type: 'string' },
             { name: 'groupTitle', title: 'Group (e.g. Electricity)', type: 'string' },
+            { name: 'itemKey', title: 'Customization Item Key', type: 'string' },
             { name: 'optionTitle', title: 'Option (e.g. 2 light 4 socket)', type: 'string' },
-            { name: 'price', title: 'Price (£)', type: 'number' },
+            { name: 'price', title: 'Confirmed Price (£, ex VAT)', type: 'number' },
             { name: 'isPoa', title: 'POA Flag', type: 'boolean' },
+            {
+              name: 'pricingType',
+              title: 'Pricing Type',
+              type: 'string',
+              options: { list: ['fixed', 'included', 'poa'] }
+            },
+            {
+              name: 'priceSource',
+              title: 'Price Source',
+              type: 'string',
+              description: 'Which precedence tier decided this price at submission time.',
+              options: { list: ['sizeRule', 'productOverride', 'itemDefault'] }
+            },
             { name: 'customNotes', title: 'Custom Specification Notes', type: 'string' }
           ]
         }

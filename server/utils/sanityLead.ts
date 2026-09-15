@@ -19,6 +19,7 @@ export interface CustomerPayload {
 export interface QuoteItemPayload extends QuoteLinePriceInputs {
   productId?: string
   productName: string
+  sizeKey?: string
   sizeLabel?: string
   notes?: string
   selectedCustomizations?: SanitySelectedCustomization[]
@@ -44,6 +45,7 @@ export interface SanityQuoteEnquiryDocument {
     _key: string
     product?: { _type: 'reference'; _ref: string }
     productTitle: string
+    sizeOptionKey?: string
     sizeLabel: string
     quantity: number
     unitPrice?: number
@@ -51,10 +53,14 @@ export interface SanityQuoteEnquiryDocument {
     subtotal?: number
     selectedCustomizations?: Array<{
       _key: string
+      groupId?: string
       groupTitle: string
+      itemKey?: string
       optionTitle: string
       price?: number
       isPoa?: boolean
+      pricingType?: string
+      priceSource?: string
       customNotes?: string
     }>
   }>
@@ -84,10 +90,14 @@ export function buildSanityQuoteEnquiry(input: QuoteEnquiryInput): SanityQuoteEn
       if (c.isPoa) hasPoa = true
       return {
         _key: `cust_${index}_${cIdx}`,
+        groupId: c.groupId,
         groupTitle: c.groupTitle,
+        itemKey: c.itemKey,
         optionTitle: c.optionTitle,
         price: c.price,
         isPoa: Boolean(c.isPoa),
+        pricingType: c.pricingType,
+        priceSource: c.priceSource,
         customNotes: c.customNotes
       }
     })
@@ -96,6 +106,7 @@ export function buildSanityQuoteEnquiry(input: QuoteEnquiryInput): SanityQuoteEn
       _type: 'quoteItem',
       _key: `item_${index}_${Date.now().toString(36)}`,
       productTitle: item.productName,
+      sizeOptionKey: item.sizeKey,
       sizeLabel: item.sizeLabel || 'Standard',
       quantity: item.quantity,
       unitPrice,
@@ -129,4 +140,45 @@ export function buildSanityQuoteEnquiry(input: QuoteEnquiryInput): SanityQuoteEn
     hasPoa,
     submittedAt: new Date().toISOString()
   }
+}
+
+export interface SanityWriteConfig {
+  projectId: string
+  dataset: string
+  apiToken: string
+  apiVersion?: string
+}
+
+/**
+ * Persists the confirmed Quote Enquiry snapshot to Sanity. Throws on any failure — a successful
+ * Quote Enquiry submission must be recorded, so callers should treat this as required rather than
+ * best-effort.
+ */
+export async function writeSanityQuoteEnquiry(
+  doc: SanityQuoteEnquiryDocument,
+  config: SanityWriteConfig
+): Promise<{ id: string }> {
+  const apiVersion = config.apiVersion ?? 'v2024-01-01'
+  const url = `https://${config.projectId}.api.sanity.io/${apiVersion}/data/mutate/${config.dataset}`
+
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${config.apiToken}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ mutations: [{ create: doc }] })
+  })
+
+  if (!res.ok) {
+    throw new Error(`Sanity quote enquiry write failed with status ${res.status}`)
+  }
+
+  const data = await res.json()
+  const id = data?.results?.[0]?.id
+  if (!id) {
+    throw new Error('Sanity quote enquiry write did not return a document id')
+  }
+
+  return { id }
 }

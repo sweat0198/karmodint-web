@@ -166,7 +166,7 @@
         <h2 class="text-xl font-bold text-gray-800 mb-2">Contact Details</h2>
         <p class="text-xs text-slate-500 mb-6">Enter your details so our sales team can prepare your formal quote.</p>
 
-        <form @submit.prevent="submitQuote" class="space-y-4">
+        <form @submit.prevent="submitQuote()" class="space-y-4">
           <div>
             <label class="label-caps text-slate-500 mb-1 block">Full Name *</label>
             <input 
@@ -235,6 +235,33 @@
             ></textarea>
           </div>
 
+          <div v-if="unavailableIssues.length > 0" class="p-4 bg-amber-50 border border-amber-200 text-amber-900 text-xs rounded space-y-2">
+            <p class="font-semibold">Some selections are no longer available:</p>
+            <ul class="list-disc list-inside space-y-1">
+              <li v-for="(issue, idx) in unavailableIssues" :key="idx">
+                {{ issue.productName }} ({{ issue.sizeLabel }}){{ issue.optionTitle ? ` — ${issue.groupTitle}: ${issue.optionTitle}` : '' }}
+              </li>
+            </ul>
+            <NuxtLink to="/customize" class="inline-block font-semibold underline">Review your customizations</NuxtLink>
+          </div>
+
+          <div v-else-if="priceChanges.length > 0" class="p-4 bg-amber-50 border border-amber-200 text-amber-900 text-xs rounded space-y-2">
+            <p class="font-semibold">Prices have changed since these items were added:</p>
+            <ul class="list-disc list-inside space-y-1">
+              <li v-for="(change, idx) in priceChanges" :key="idx">
+                {{ change.productName }} ({{ change.sizeLabel }}): {{ formatChangePrice(change.oldUnitPrice, change.oldIsPoa) }} → {{ formatChangePrice(change.newUnitPrice, change.newIsPoa) }}
+              </li>
+            </ul>
+            <button
+              type="button"
+              :disabled="submitting"
+              class="btn-primary px-4 py-2 text-xs font-semibold disabled:opacity-50"
+              @click="confirmAndResubmit"
+            >
+              Accept New Prices & Submit
+            </button>
+          </div>
+
           <div v-if="errorMessage" class="p-3 bg-red-50 border border-red-200 text-brand-red text-xs rounded">
             {{ errorMessage }}
           </div>
@@ -243,8 +270,9 @@
             Submitting this request is non-binding. The sales team will contact you about the delivery charge after reviewing your quote request. Your formal quote will confirm VAT, delivery and equipment-based offload costs, and the final payable total.
           </p>
 
-          <button 
-            type="submit" 
+          <button
+            v-if="priceChanges.length === 0"
+            type="submit"
             :disabled="submitting || hasUnresolvedPortableSize"
             class="btn-primary w-full py-3 text-sm font-semibold disabled:opacity-50 flex items-center justify-center gap-2"
           >
@@ -263,7 +291,25 @@ import { useQuoteStore } from '~/stores/quote'
 import { useAppSeo } from '~/composables/useAppSeo'
 import type { ParsedUkAddress } from '~/composables/useGooglePlacesAutocomplete'
 import { getQuoteLineFinancials, requiresSizeSelection } from '~~/shared/utils/quoteLine'
-import { getTotalLabel } from '~~/shared/utils/priceLabel'
+import { getPriceLabel, getTotalLabel } from '~~/shared/utils/priceLabel'
+
+interface QuotePriceChange {
+  lineId: string
+  productName: string
+  sizeLabel: string
+  oldUnitPrice: number
+  newUnitPrice: number
+  oldIsPoa: boolean
+  newIsPoa: boolean
+}
+
+interface QuoteUnavailableIssue {
+  lineId: string
+  productName: string
+  sizeLabel: string
+  groupTitle?: string
+  optionTitle?: string
+}
 
 const { setPageSeo } = useAppSeo()
 
@@ -288,13 +334,19 @@ const customer = ref({
 const submitting = ref(false)
 const submittedSuccess = ref(false)
 const errorMessage = ref('')
+const priceChanges = ref<QuotePriceChange[]>([])
+const unavailableIssues = ref<QuoteUnavailableIssue[]>([])
 const hasUnresolvedPortableSize = computed(() => quoteStore.items.some(requiresSizeSelection))
 
 onMounted(() => {
   quoteStore.setLastVisitedRoute('/quote')
 })
 
-async function submitQuote() {
+function formatChangePrice(price: number, isPoa: boolean): string {
+  return getPriceLabel({ price, isPoa })
+}
+
+async function submitQuote(confirmedPrices = false) {
   if (!customer.value.name || !customer.value.email) return
   if (hasUnresolvedPortableSize.value) {
     errorMessage.value = 'Choose a size for every portable container before requesting a quote.'
@@ -303,26 +355,46 @@ async function submitQuote() {
 
   submitting.value = true
   errorMessage.value = ''
+  if (!confirmedPrices) {
+    priceChanges.value = []
+    unavailableIssues.value = []
+  }
 
   try {
     const res: any = await $fetch('/api/quote', {
       method: 'POST',
       body: {
         items: quoteStore.items,
-        customer: customer.value
+        customer: customer.value,
+        confirmedPrices
       }
     })
 
     if (res?.success) {
       submittedSuccess.value = true
+      priceChanges.value = []
+      unavailableIssues.value = []
       quoteStore.clearQuote()
     } else {
       errorMessage.value = 'Failed to process request. Please check details.'
     }
   } catch (err: any) {
-    errorMessage.value = err?.data?.statusMessage || err.message || 'Submission error.'
+    const responseData = err?.data?.data
+    if (err?.data?.statusCode === 409 && responseData?.code === 'price_changed') {
+      priceChanges.value = responseData.changes ?? []
+      errorMessage.value = ''
+    } else if (err?.data?.statusCode === 409 && responseData?.code === 'unavailable') {
+      unavailableIssues.value = responseData.issues ?? []
+      errorMessage.value = ''
+    } else {
+      errorMessage.value = err?.data?.statusMessage || err.message || 'Submission error.'
+    }
   } finally {
     submitting.value = false
   }
+}
+
+function confirmAndResubmit() {
+  submitQuote(true)
 }
 </script>

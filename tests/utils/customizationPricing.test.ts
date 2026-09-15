@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { useCustomizationPricing, buildSpecSummary } from '~~/app/composables/useCustomizationPricing'
 import {
+  computeCustomizationTotals,
   reconcileCustomizationSelections,
   resolveCustomizationGroups,
   resolveCustomizationItemPricing,
@@ -281,7 +282,7 @@ describe('useCustomizationPricing', () => {
     expect(result.unsatisfiedMandatory.value).toEqual([])
   })
 
-  it('builds quote lines with groupTitle, optionTitle, price, isPoa and customNotes', () => {
+  it('builds quote lines with identity, provenance, and pricing fields', () => {
     const result = pricing(
       [groupPoaElectrical],
       { 'grp-electrical': 'custom' },
@@ -289,10 +290,14 @@ describe('useCustomizationPricing', () => {
     )
     expect(result.lines.value).toEqual([
       {
+        groupId: 'grp-electrical',
         groupTitle: 'Electrical Package',
+        itemKey: 'custom',
         optionTitle: 'Custom Electrical Layout',
         price: undefined,
         isPoa: true,
+        pricingType: 'poa',
+        priceSource: 'itemDefault',
         customNotes: 'Need an extra socket by the desk'
       }
     ])
@@ -301,8 +306,38 @@ describe('useCustomizationPricing', () => {
   it('omits customNotes when the item does not carry one', () => {
     const result = pricing([groupSingleFinish], { 'grp-finish': 'anthracite' })
     expect(result.lines.value).toEqual([
-      { groupTitle: 'Exterior Finish', optionTitle: 'Anthracite Grey', price: 320, isPoa: false, customNotes: undefined }
+      {
+        groupId: 'grp-finish',
+        groupTitle: 'Exterior Finish',
+        itemKey: 'anthracite',
+        optionTitle: 'Anthracite Grey',
+        price: 320,
+        isPoa: false,
+        pricingType: 'fixed',
+        priceSource: 'itemDefault',
+        customNotes: undefined
+      }
     ])
+  })
+})
+
+describe('computeCustomizationTotals', () => {
+  it('sums the size price with fixed customizations, excluding POA ones', () => {
+    expect(computeCustomizationTotals(sizeFixed, [
+      { price: 320, isPoa: false },
+      { price: undefined, isPoa: true },
+    ])).toEqual({ subtotal: 3240 + 320, hasPoa: true })
+  })
+
+  it('zeroes the subtotal entirely for a POA Size Option, ignoring any customization prices', () => {
+    expect(computeCustomizationTotals(sizePoa, [{ price: 999, isPoa: false }])).toEqual({
+      subtotal: 0,
+      hasPoa: true,
+    })
+  })
+
+  it('reports no POA and the plain size price when nothing is selected', () => {
+    expect(computeCustomizationTotals(sizeFixed, [])).toEqual({ subtotal: 3240, hasPoa: false })
   })
 })
 
@@ -400,7 +435,7 @@ describe('Product customization resolution', () => {
     expect(configured).toEqual([
       {
         ...groupPoaElectrical,
-        items: [{ ...groupPoaElectrical.items[0], pricingType: 'fixed', price: 1 }]
+        items: [{ ...groupPoaElectrical.items[0], pricingType: 'fixed', price: 1, priceSource: 'productOverride' }]
       }
     ])
 
@@ -488,8 +523,16 @@ describe('Product customization resolution', () => {
     const product = { customizationConfigurations: [sizeRuleConfiguration] }
     const inherited = resolveCustomizationGroups(product, 'inherit-size')[0].items
 
-    expect(inherited[0]).toMatchObject({ pricingType: 'fixed', price: 50 })
-    expect(inherited[1]).toMatchObject({ pricingType: 'fixed', price: 40 })
+    expect(inherited[0]).toMatchObject({ pricingType: 'fixed', price: 50, priceSource: 'productOverride' })
+    expect(inherited[1]).toMatchObject({ pricingType: 'fixed', price: 40, priceSource: 'itemDefault' })
+  })
+
+  it('attributes a resolved price to its precedence tier: Size Option rule, Product override, or item default', () => {
+    const product = { customizationConfigurations: [sizeRuleConfiguration] }
+
+    expect(resolveCustomizationGroups(product, 'fixed-size')[0].items[0]).toMatchObject({ priceSource: 'sizeRule' })
+    expect(resolveCustomizationGroups(product, 'inherit-size')[0].items[0]).toMatchObject({ priceSource: 'productOverride' })
+    expect(resolveCustomizationGroups(product, 'inherit-size')[0].items[1]).toMatchObject({ priceSource: 'itemDefault' })
   })
 
   it('uses selected Size Option text before Product text and item text', () => {

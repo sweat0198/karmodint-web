@@ -11,7 +11,7 @@ import type {
   SpecSummaryItem,
 } from "~/types/customization";
 import { getPriceLabel, getTotalLabel } from "~~/shared/utils/priceLabel";
-import { resolveCustomizationItemPricing } from "~/utils/customizationPricing";
+import { computeCustomizationTotals, resolveCustomizationItemPricing } from "~/utils/customizationPricing";
 
 function selectedItems(
   group: SanityCustomizationGroup,
@@ -35,10 +35,6 @@ function selectedItems(
     return group.items[0] ? [group.items[0]] : [];
   }
   return [];
-}
-
-function itemPrice(item: SanityCustomizationItem): number | undefined {
-  return resolveCustomizationItemPricing(item).price;
 }
 
 /** "<groupId>:<itemKey>" — the one place this composite key is built. */
@@ -114,11 +110,16 @@ export function useCustomizationPricing(
 
     for (const group of groupList) {
       for (const item of selectedItems(group, selectionMap)) {
+        const pricing = resolveCustomizationItemPricing(item);
         result.push({
+          groupId: group._id,
           groupTitle: group.title,
+          itemKey: item._key,
           optionTitle: item.title,
-          price: itemPrice(item),
-          isPoa: resolveCustomizationItemPricing(item).pricingType === "poa",
+          price: pricing.price,
+          isPoa: pricing.pricingType === "poa",
+          pricingType: pricing.pricingType,
+          priceSource: item.priceSource ?? "itemDefault",
           customNotes: item.requiresTextInput
             ? notesMap[noteKey(group._id, item._key)]
             : undefined,
@@ -131,18 +132,11 @@ export function useCustomizationPricing(
 
   const poaItems = computed(() => lines.value.filter((line) => line.isPoa));
 
-  const hasPoa = computed(() => sizeIsPoa.value || poaItems.value.length > 0);
+  const totals = computed(() => computeCustomizationTotals(toValue(size), lines.value));
 
-  const subtotal = computed(() => {
-    if (sizeIsPoa.value) return 0;
+  const hasPoa = computed(() => totals.value.hasPoa);
 
-    const sizePrice = toValue(size)?.price ?? 0;
-    const itemsTotal = lines.value.reduce(
-      (sum, line) => sum + (line.isPoa ? 0 : line.price ?? 0),
-      0,
-    );
-    return sizePrice + itemsTotal;
-  });
+  const subtotal = computed(() => totals.value.subtotal);
 
   const priceLabel = computed(() =>
     sizeIsPoa.value

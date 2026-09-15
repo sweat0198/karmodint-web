@@ -1,4 +1,5 @@
 import type {
+  CustomizationPriceSource,
   PricingType,
   SanityCustomizationGroup,
   SanityCustomizationItem,
@@ -12,6 +13,41 @@ import type { CustomizationNotes, CustomizationSelections } from '~/types/custom
 export interface ResolvedCustomizationItemPricing {
   pricingType: PricingType
   price: number | undefined
+}
+
+export interface CustomizationPricingTotals {
+  subtotal: number
+  hasPoa: boolean
+}
+
+/**
+ * The one place that turns a Size Option and its selected customizations into a subtotal and a
+ * POA flag: a POA Size Option zeroes the subtotal entirely, POA customizations are excluded from
+ * the sum rather than blended in (POA is additive — see docs/GLOSSARY.md). Shared by the client's
+ * live pricing composable and the server's revalidation module so this rule can't drift between
+ * the two.
+ */
+export function computeCustomizationTotals(
+  size: { price?: number; isPoa?: boolean } | undefined,
+  customizations: Array<{ price?: number; isPoa?: boolean }>,
+): CustomizationPricingTotals {
+  const sizeIsPoa = size?.isPoa === true
+  const itemsTotal = customizations.reduce((sum, item) => sum + (item.isPoa ? 0 : item.price ?? 0), 0)
+
+  return {
+    subtotal: sizeIsPoa ? 0 : (size?.price ?? 0) + itemsTotal,
+    hasPoa: sizeIsPoa || customizations.some((item) => item.isPoa === true),
+  }
+}
+
+/** Which precedence tier decided a resolved item's price — Size Option rule, Product override, or the item's own default. */
+export function resolveCustomizationPriceSource(
+  override?: SanityCustomizationItemOverride,
+  sizeRule?: SanityCustomizationSizeRule,
+): CustomizationPriceSource {
+  if (sizeRule && sizeRule.mode !== 'inherit' && sizeRule.mode !== 'unavailable') return 'sizeRule'
+  if (override && (override.pricingType !== undefined || override.price !== undefined)) return 'productOverride'
+  return 'itemDefault'
 }
 
 /** Resolves Size Option, Product, and item-default pricing in precedence order. */
@@ -128,6 +164,7 @@ function resolveConfiguredGroup(
           title: sizeRule?.titleOverride ?? override?.titleOverride ?? item.title,
           description: sizeRule?.descriptionOverride ?? override?.descriptionOverride ?? item.description,
           ...resolveCustomizationItemPricing(item, override, sizeRule),
+          priceSource: resolveCustomizationPriceSource(override, sizeRule),
         }]
       }),
   }

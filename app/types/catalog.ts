@@ -127,6 +127,9 @@ export type SanityCustomizationSizeRule =
       price?: never
     })
 
+/** Where a resolved item's price came from, in precedence order. Attached only by the resolver. */
+export type CustomizationPriceSource = 'sizeRule' | 'productOverride' | 'itemDefault'
+
 export interface SanityCustomizationItem {
   _key?: string
   title: string
@@ -137,6 +140,8 @@ export interface SanityCustomizationItem {
   description?: string
   image?: SanityImage
   scope?: CustomizationItemScope
+  /** Set by `resolveCustomizationGroups` once a Size Option/Product override has been applied. */
+  priceSource?: CustomizationPriceSource
 }
 
 /** A Product-level override for one item from a reusable Customization Group. */
@@ -219,10 +224,16 @@ export interface SanityProduct {
 export type LeadStatus = 'new' | 'in_progress' | 'quote_sent' | 'won' | 'lost'
 
 export interface SanitySelectedCustomization {
+  /** Customization Group identity (`SanityCustomizationGroup._id`). Absent on pre-#15 stored lines. */
+  groupId?: string
   groupTitle: string
+  /** Customization Item key (`SanityCustomizationItem._key`). Absent on pre-#15 stored lines. */
+  itemKey?: string
   optionTitle: string
   price?: number
   isPoa?: boolean
+  pricingType?: PricingType
+  priceSource?: CustomizationPriceSource
   customNotes?: string
 }
 
@@ -233,6 +244,8 @@ export interface SanityQuoteItem {
     _type: 'reference'
   }
   productTitle: string
+  /** Size Option identity (`SanitySizeOption._key`). Absent on pre-#15 stored lines. */
+  sizeOptionKey?: string
   sizeLabel: string
   quantity: number
   unitPrice?: number

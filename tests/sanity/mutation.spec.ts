@@ -1,7 +1,8 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import {
   buildSanityQuoteEnquiry,
   generateReferenceNumber,
+  writeSanityQuoteEnquiry,
   type QuoteEnquiryInput
 } from '../../server/utils/sanityLead'
 
@@ -133,5 +134,91 @@ describe('Sanity Quote Enquiry Mutation Builder', () => {
     expect(doc.items[1].isPoa).toBe(true)
     expect(doc.items[1].subtotal).toBe(500)
     expect(doc.estimatedTotal).toBe(2500)
+  })
+
+  it('carries Size Option and customization identity fields through to the stored document', () => {
+    const input: QuoteEnquiryInput = {
+      customer: { name: 'Sarah Connor', email: 'sarah@skynet-defence.co.uk', phone: '+44 7911 123456' },
+      items: [
+        {
+          productId: 'prod_kiosk_150x150',
+          productName: '1.50m x 1.50m Security Gatehouse Cabin',
+          sizeKey: 'compact',
+          sizeLabel: '1.50m x 1.50m (Compact)',
+          quantity: 1,
+          basePrice: 2450,
+          isPoa: false,
+          selectedCustomizations: [
+            {
+              groupId: 'grp-electrical',
+              groupTitle: 'Electrical',
+              itemKey: 'standard-uk',
+              optionTitle: 'Standard UK Electrical Package',
+              price: 350,
+              isPoa: false,
+              pricingType: 'fixed',
+              priceSource: 'itemDefault'
+            }
+          ]
+        }
+      ]
+    }
+
+    const doc = buildSanityQuoteEnquiry(input)
+
+    expect(doc.items[0].sizeOptionKey).toBe('compact')
+    expect(doc.items[0].selectedCustomizations?.[0]).toMatchObject({
+      groupId: 'grp-electrical',
+      itemKey: 'standard-uk',
+      pricingType: 'fixed',
+      priceSource: 'itemDefault'
+    })
+  })
+})
+
+describe('writeSanityQuoteEnquiry', () => {
+  const baseConfig = { projectId: 'proj123', dataset: 'production', apiToken: 'secret-token' }
+  const doc = buildSanityQuoteEnquiry({
+    customer: { name: 'Sarah Connor', email: 'sarah@skynet-defence.co.uk', phone: '+44 7911 123456' },
+    items: [{ productName: 'Site Office Cabin 20ft', sizeLabel: 'Standard', quantity: 1, basePrice: 8500, isPoa: false }]
+  })
+
+  it('posts a create mutation and returns the created document id', async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ results: [{ id: 'quoteEnquiry-abc123' }] })
+    })
+    vi.stubGlobal('fetch', fetchMock)
+
+    const result = await writeSanityQuoteEnquiry(doc, baseConfig)
+
+    expect(result).toEqual({ id: 'quoteEnquiry-abc123' })
+    expect(fetchMock).toHaveBeenCalledWith(
+      'https://proj123.api.sanity.io/v2024-01-01/data/mutate/production',
+      expect.objectContaining({
+        method: 'POST',
+        headers: expect.objectContaining({ Authorization: 'Bearer secret-token' })
+      })
+    )
+    const [, requestInit] = fetchMock.mock.calls[0]
+    expect(JSON.parse(requestInit.body)).toEqual({ mutations: [{ create: doc }] })
+
+    vi.unstubAllGlobals()
+  })
+
+  it('throws when the Sanity API responds with a non-OK status', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false, status: 401 }))
+
+    await expect(writeSanityQuoteEnquiry(doc, baseConfig)).rejects.toThrow(/401/)
+
+    vi.unstubAllGlobals()
+  })
+
+  it('throws when the response carries no document id', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: true, json: async () => ({ results: [] }) }))
+
+    await expect(writeSanityQuoteEnquiry(doc, baseConfig)).rejects.toThrow(/document id/)
+
+    vi.unstubAllGlobals()
   })
 })

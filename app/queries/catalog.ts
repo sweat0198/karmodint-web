@@ -57,7 +57,7 @@ export interface CategoryTreeNode extends CategoryTreeChild {
   children: CategoryTreeChild[];
 }
 
-const CUSTOMIZATION_GROUP_PROJECTION = `{
+export const CUSTOMIZATION_GROUP_PROJECTION = `{
   _id, _type, title, "identifier": identifier.current, selectionType, isMandatory, description, displayOrder,
   items[]{ _key, title, pricingType, price, requiresTextInput, textInputPlaceholder, description, image { asset, alt, caption }, scope }
 }`;
