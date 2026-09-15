@@ -69,6 +69,16 @@ interface ValidationGroup {
   }>
 }
 
+interface CustomizationGroupQueryClient {
+  withConfig(config: { perspective: 'drafts' }): {
+    fetch<T>(query: string, params: { groupIds: string[] }): Promise<T>
+  }
+}
+
+interface CustomizationGroupValidationContext {
+  getClient(config: { apiVersion: string }): CustomizationGroupQueryClient
+}
+
 interface ProductCustomizationValidationDocument {
   status?: string
   sizes?: ValidationSizeOption[]
@@ -224,7 +234,7 @@ export function getCustomizationConfigurationWarning(
 
 async function fetchProductCustomizationGroups(
   document: ProductCustomizationValidationDocument,
-  context: any,
+  context: CustomizationGroupValidationContext,
 ): Promise<ValidationGroup[]> {
   const groupIds = [...new Set([
     ...(document.customizationConfigurations ?? []).map((configuration) => configuration.group?._ref)
@@ -319,7 +329,8 @@ export const productType = defineType({
       type: 'array',
       description:
         'Shared model photography for Portable Cabins. These images are labelled representative and do not imply a floor plan or exact size.',
-      hidden: ({ document }) => !document?.categories?.some((category: any) => category?._ref === 'category-containers'),
+      hidden: ({ document }) => !(document as { categories?: Array<{ _ref?: string }> } | undefined)
+        ?.categories?.some((category) => category?._ref === 'category-containers'),
       of: [
         defineArrayMember({
           type: 'image',

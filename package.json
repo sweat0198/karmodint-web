@@ -19,6 +19,7 @@
     "customizations:sync-dev": "jiti scripts/customizations/syncDevCustomizationSeeds.ts",
     "customizations:verify-dev": "jiti scripts/customizations/syncDevCustomizationSeeds.ts --verify",
     "customizations:prepare-dev": "npm run customizations:sync-dev -- --apply && npm run customizations:migrate -- --apply && npm run customizations:sync-dev -- --apply && npm run customizations:migrate -- --apply && npm run customizations:verify-dev",
+    "sanity:deploy-dev": "npm run customizations:prepare-dev && npm --prefix sanity run deploy",
     "typecheck:customizations": "tsc -p tsconfig.customizations.json",
     "typecheck:catalogue": "tsc -p tsconfig.catalogue.json",
     "references:import": "jiti scripts/references/import-references.ts",

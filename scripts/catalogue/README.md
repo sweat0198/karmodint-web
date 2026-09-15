@@ -43,6 +43,15 @@ npm run build
 npm --prefix sanity run build
 ```
 
+Deploy the Studio to its configured dev hostname only through the root wrapper:
+
+```bash
+npm run sanity:deploy-dev
+```
+
+It completes the dev customization preflight before delegating to the unchanged generic
+`sanity deploy` command. Do not use this wrapper for production.
+
 The preflight preserves CMS edits: it never overwrites existing groups, configurations, or item
 overrides, and it never deletes documents. Do not add it to generic or production deployment
 scripts. Production data must be reviewed and promoted through a separate workflow.

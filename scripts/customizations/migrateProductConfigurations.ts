@@ -161,7 +161,9 @@ export function planProductCustomizationMigration(
   return {
     productId: product._id,
     configurations: (product.customizationGroups ?? []).map((reference, index) => {
-      const group = groupsById.get(reference._ref)!
+      const groupId = reference._ref
+      const group = groupId ? groupsById.get(groupId) : undefined
+      if (!groupId || !group) throw new Error(`Product ${product._id} has an unavailable Customization Group`)
       const itemOverrides = (group.items ?? [])
         .filter((item) => item.scope === 'sizeDependent')
         .map((item) => ({
@@ -173,7 +175,7 @@ export function planProductCustomizationMigration(
       return {
         _key: `legacy-group-${index + 1}`,
         _type: 'productCustomizationConfiguration',
-        group: { _type: 'reference', _ref: reference._ref },
+        group: { _type: 'reference', _ref: groupId },
         ...(itemOverrides.length > 0 ? { itemOverrides } : {})
       }
     })

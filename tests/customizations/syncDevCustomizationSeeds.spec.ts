@@ -7,7 +7,8 @@ import {
   CONTAINER_PRODUCT_IDS,
   runDevCustomizationSeedSync,
   verifyDevCustomizationSeedState,
-  type SeedCustomizationGroupDocument
+  type SeedCustomizationGroupDocument,
+  type SyncProduct
 } from '../../scripts/customizations/syncDevCustomizationSeeds'
 import { planProductCustomizationMigration } from '../../scripts/customizations/migrateProductConfigurations'
 
@@ -19,7 +20,7 @@ const SEED_GROUPS: SeedCustomizationGroupDocument[] = [
   { _id: 'customizationGroup-kitchen', _type: 'customizationGroup', title: 'Kitchen' }
 ]
 
-function fullyConfiguredProducts() {
+function fullyConfiguredProducts(): SyncProduct[] {
   const cabinConfigurations = [
     'customizationGroup-electricity',
     'customizationGroup-heater',
@@ -49,8 +50,13 @@ describe('dev customization seed sync', () => {
     expect(packageJson.scripts['customizations:verify-dev']).toBe(
       'jiti scripts/customizations/syncDevCustomizationSeeds.ts --verify'
     )
+    expect(packageJson.scripts['sanity:deploy-dev']).toBe(
+      'npm run customizations:prepare-dev && npm --prefix sanity run deploy'
+    )
     for (const [name, command] of Object.entries(packageJson.scripts)) {
-      if (name === 'build' || name.includes('deploy')) expect(command).not.toContain('customizations:')
+      if (name === 'build' || (name.includes('deploy') && name !== 'sanity:deploy-dev')) {
+        expect(command).not.toContain('customizations:')
+      }
     }
 
     const studioPackage = JSON.parse(fs.readFileSync(
@@ -60,6 +66,7 @@ describe('dev customization seed sync', () => {
     for (const [name, command] of Object.entries(studioPackage.scripts)) {
       if (name.includes('deploy')) expect(command).not.toContain('customizations:')
     }
+    expect(studioPackage.scripts.deploy).toBe('sanity deploy')
   })
 
   it('creates missing groups before migrating legacy Products, then appends only missing modern links', () => {
