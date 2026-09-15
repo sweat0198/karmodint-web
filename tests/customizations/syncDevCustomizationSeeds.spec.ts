@@ -11,6 +11,10 @@ import {
   type SyncProduct
 } from '../../scripts/customizations/syncDevCustomizationSeeds'
 import { planProductCustomizationMigration } from '../../scripts/customizations/migrateProductConfigurations'
+import {
+  buildDevStudioDeployCommand,
+  resolveDevStudioDeployHost
+} from '../../scripts/customizations/deployDevStudio'
 
 const SEED_GROUPS: SeedCustomizationGroupDocument[] = [
   { _id: 'customizationGroup-electricity', _type: 'customizationGroup', title: 'Electricity' },
@@ -51,7 +55,7 @@ describe('dev customization seed sync', () => {
       'jiti scripts/customizations/syncDevCustomizationSeeds.ts --verify'
     )
     expect(packageJson.scripts['sanity:deploy-dev']).toBe(
-      'npm run customizations:prepare-dev && npm --prefix sanity run deploy'
+      'npm run customizations:prepare-dev && jiti scripts/customizations/deployDevStudio.ts'
     )
     for (const [name, command] of Object.entries(packageJson.scripts)) {
       if (name === 'build' || (name.includes('deploy') && name !== 'sanity:deploy-dev')) {
@@ -67,6 +71,30 @@ describe('dev customization seed sync', () => {
       if (name.includes('deploy')) expect(command).not.toContain('customizations:')
     }
     expect(studioPackage.scripts.deploy).toBe('sanity deploy')
+  })
+
+  it('refuses dev Studio deployment without a valid Sanity Studio hostname', () => {
+    expect(() => resolveDevStudioDeployHost({ SANITY_DATASET: 'dev' }))
+      .toThrow('Missing SANITY_STUDIO_DEV_HOST')
+    expect(() => resolveDevStudioDeployHost({
+      SANITY_DATASET: 'dev',
+      SANITY_STUDIO_DEV_HOST: 'https://karmod-dev.sanity.studio'
+    })).toThrow('must be a .sanity.studio hostname')
+    expect(() => resolveDevStudioDeployHost({
+      SANITY_DATASET: 'production',
+      SANITY_STUDIO_DEV_HOST: 'karmod-dev.sanity.studio'
+    })).toThrow('refuses dataset "production"; only "dev" is allowed')
+  })
+
+  it('composes a hostname-pinned Studio deployment command', () => {
+    const hostname = resolveDevStudioDeployHost({
+      SANITY_DATASET: 'dev',
+      SANITY_STUDIO_DEV_HOST: 'karmod-dev.sanity.studio'
+    })
+
+    expect(buildDevStudioDeployCommand(hostname)).toEqual([
+      '--prefix', 'sanity', 'run', 'deploy', '--', '--url', 'karmod-dev.sanity.studio'
+    ])
   })
 
   it('creates missing groups before migrating legacy Products, then appends only missing modern links', () => {

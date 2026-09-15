@@ -49,8 +49,9 @@ Deploy the Studio to its configured dev hostname only through the root wrapper:
 npm run sanity:deploy-dev
 ```
 
-It completes the dev customization preflight before delegating to the unchanged generic
-`sanity deploy` command. Do not use this wrapper for production.
+It completes the dev customization preflight, requires `SANITY_DATASET=dev`, then deploys only to
+the explicit `SANITY_STUDIO_DEV_HOST` `.sanity.studio` hostname using `--url`. Set that hostname
+in root `.env` without a protocol or path. Do not use this wrapper for production.
 
 The preflight preserves CMS edits: it never overwrites existing groups, configurations, or item
 overrides, and it never deletes documents. Do not add it to generic or production deployment
