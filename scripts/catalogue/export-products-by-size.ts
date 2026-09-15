@@ -11,7 +11,7 @@ const query = `*[_type == "product" && !(_id in path("drafts.**"))] | order(name
   description,
   "categories": categories[]->{ _id, name, "slug": slug.current },
   lifestyleImages,
-  customizationGroups[]->{ _id, title, "identifier": identifier.current, selectionType, isMandatory, description, items },
+  customizationConfigurations[]{ _key, group->{ _id, title, "identifier": identifier.current, selectionType, isMandatory, description, items }, itemOverrides },
   specifications,
   isFeatured,
   status,
@@ -45,7 +45,7 @@ const records = products.flatMap((product) =>
     productDescription: product.description,
     categories: product.categories,
     lifestyleImages: product.lifestyleImages,
-    customizationGroups: product.customizationGroups,
+    customizationConfigurations: product.customizationConfigurations,
     specifications: product.specifications,
     seo: product.seo,
     sizeIndex,
@@ -181,7 +181,7 @@ interface Product {
   description?: unknown
   categories?: unknown[]
   lifestyleImages?: unknown[]
-  customizationGroups?: unknown[]
+  customizationConfigurations?: unknown[]
   specifications?: unknown[]
   seo?: unknown
   sizes?: Size[]

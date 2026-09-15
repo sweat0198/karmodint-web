@@ -131,9 +131,9 @@ export const mockProducts = [
         ]
       }
     ],
-    customizationGroups: [
-      { _type: 'reference', _ref: 'group_electrical' },
-      { _type: 'reference', _ref: 'group_hvac' }
+    customizationConfigurations: [
+      { _key: 'legacy-group-1', _type: 'productCustomizationConfiguration', group: { _type: 'reference', _ref: 'group_electrical' } },
+      { _key: 'legacy-group-2', _type: 'productCustomizationConfiguration', group: { _type: 'reference', _ref: 'group_hvac' } }
     ],
     seo: {
       metaTitle: '1.50m Security Gatehouse Cabin | Karmod UK',
@@ -172,8 +172,8 @@ export const mockProducts = [
         ]
       }
     ],
-    customizationGroups: [
-      { _type: 'reference', _ref: 'group_electrical' }
+    customizationConfigurations: [
+      { _key: 'legacy-group-1', _type: 'productCustomizationConfiguration', group: { _type: 'reference', _ref: 'group_electrical' } }
     ],
     seo: {
       metaTitle: 'Retail Concession Kiosk | Karmod UK',

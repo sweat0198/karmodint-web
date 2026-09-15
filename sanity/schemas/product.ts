@@ -72,7 +72,6 @@ interface ValidationGroup {
 interface ProductCustomizationValidationDocument {
   status?: string
   sizes?: ValidationSizeOption[]
-  customizationGroups?: Array<{ _ref?: string }>
   customizationConfigurations?: ValidationConfiguration[]
 }
 
@@ -203,20 +202,6 @@ function validateCustomizationRules(
     }
   }
 
-  const configuredGroupIds = new Set(
-    (document?.customizationConfigurations ?? [])
-      .map((configuration) => configuration.group?._ref)
-      .filter((groupId): groupId is string => Boolean(groupId))
-  )
-  for (const legacyGroupReference of document?.customizationGroups ?? []) {
-    const groupId = legacyGroupReference._ref
-    if (!groupId || configuredGroupIds.has(groupId)) continue
-    const group = groupsById.get(groupId)
-    if (group?.items?.some((item) => item.scope === 'sizeDependent')) {
-      return `Customization Group "${groupId}" contains size-dependent items and requires Product customization rules before publishing`
-    }
-  }
-
   return true
 }
 
@@ -242,8 +227,7 @@ async function fetchProductCustomizationGroups(
   context: any,
 ): Promise<ValidationGroup[]> {
   const groupIds = [...new Set([
-    ...(document.customizationConfigurations ?? []).map((configuration) => configuration.group?._ref),
-    ...(document.customizationGroups ?? []).map((group) => group._ref)
+    ...(document.customizationConfigurations ?? []).map((configuration) => configuration.group?._ref)
   ].filter((groupId): groupId is string => Boolean(groupId)))]
   if (groupIds.length === 0) return []
 
@@ -370,23 +354,11 @@ export const productType = defineType({
           )
     }),
     defineField({
-      name: 'customizationGroups',
-      title: 'Customization Options & Add-ons',
-      type: 'array',
-      of: [
-        defineArrayMember({
-          type: 'reference',
-          to: [{ type: 'customizationGroup' }]
-        })
-      ],
-      description: 'Select which global customization groups (Electricity, Heater, WC, Kitchen, etc.) apply to this product.'
-    }),
-    defineField({
       name: 'customizationConfigurations',
       title: 'Customization Configurations',
       type: 'array',
       of: [defineArrayMember({ type: 'productCustomizationConfiguration' })],
-      description: 'Product-specific groups and item availability or pricing overrides. Takes precedence over legacy Customization Options & Add-ons.',
+      description: 'Product-specific groups and item availability or pricing overrides.',
       validation: (Rule) => [
         Rule.custom(async (configurations: ValidationConfiguration[] | undefined, context: any) => {
           const document = {

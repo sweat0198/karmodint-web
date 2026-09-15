@@ -31,4 +31,8 @@ describe('toReferenceTiles', () => {
       toReferenceTiles([{ ...base, logo: { asset: { _type: 'reference', _ref: 'invalid' } } }], 'p', 'd')
     ).toEqual([])
   })
+
+  it('accepts an unresolved Sanity query result', () => {
+    expect(toReferenceTiles(null, 'project1', 'production')).toEqual([])
+  })
 })

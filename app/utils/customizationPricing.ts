@@ -174,7 +174,6 @@ function resolveConfiguredGroup(
 export function resolveCustomizationGroups(product: {
   sizes?: SanitySizeOption[]
   customizationConfigurations?: SanityProductCustomizationConfiguration[]
-  customizationGroups?: SanityCustomizationGroup[]
 }, selectedSizeOptionKey?: string): SanityCustomizationGroup[] {
   if (product.customizationConfigurations?.length) {
     if (!selectedSizeOptionKey?.trim()) {
@@ -191,7 +190,7 @@ export function resolveCustomizationGroups(product: {
       .filter((group) => group.items.length > 0)
   }
 
-  return product.customizationGroups ?? []
+  return []
 }
 
 export interface CustomizationSelectionReconciliation {

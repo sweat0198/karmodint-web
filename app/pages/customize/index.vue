@@ -261,7 +261,7 @@
                 @update:model-value="onSelectionsUpdate(item, $event)"
                 @update:notes="onNotesUpdate(item, $event)"
               >
-                <template v-if="item.isPortableContainer" #before-demo-notice>
+                <template v-if="item.isPortableContainer" #before-customizations>
                   <div
                     v-if="sizeChangeNotices[item.id]?.length"
                     class="mb-4 flex items-start justify-between gap-3 rounded border border-amber-300 bg-amber-50 px-3.5 py-2.5 text-xs text-amber-900"
@@ -437,17 +437,12 @@ function getItemNotes(id: string): CustomizationNotes {
   return itemNotes[id];
 }
 
-/** Live Product configurations take precedence over legacy Product group references. */
 function getItemGroups(item: QuoteItem) {
   const product = customizationProductById.value.get(item.productId)
   if (!product) return []
 
-  if (product.customizationConfigurations?.length) {
-    if (requiresSizeSelection(item) || !item.sizeKey) return []
-    return resolveCustomizationGroups(product, item.sizeKey)
-  }
-
-  return resolveCustomizationGroups(product)
+  if (requiresSizeSelection(item) || !item.sizeKey) return []
+  return resolveCustomizationGroups(product, item.sizeKey)
 }
 
 function getItemPricing(item: QuoteItem) {

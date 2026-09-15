@@ -430,7 +430,7 @@ describe('Product customization resolution', () => {
     })
   })
 
-  it('uses Product configurations, disables excluded items, and falls back to legacy groups', () => {
+  it('uses Product configurations, disables excluded items, and ignores legacy groups', () => {
     const configured = resolveCustomizationGroups({ customizationConfigurations: [configuration] }, 'container-6m')
     expect(configured).toEqual([
       {
@@ -439,7 +439,7 @@ describe('Product customization resolution', () => {
       }
     ])
 
-    expect(resolveCustomizationGroups({ customizationGroups: [groupBooleanAc] })).toEqual([groupBooleanAc])
+    expect(resolveCustomizationGroups({ customizationGroups: [groupBooleanAc] } as any, 'container-6m')).toEqual([])
   })
 
   it('rejects an override that does not identify an item in its Customization Group', () => {

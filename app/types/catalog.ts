@@ -213,7 +213,6 @@ export interface SanityProduct {
   /** Shared model render for portable containers when individual sizes have no render. */
   representativeImages?: SanityImage[]
   sizes: SanitySizeOption[]
-  customizationGroups?: SanityCustomizationGroup[]
   customizationConfigurations?: SanityProductCustomizationConfiguration[]
   specifications?: SanitySpecItem[]
   isFeatured?: boolean

@@ -129,7 +129,7 @@ describe('Sanity Schemas Structure & Validation Rules', () => {
       expect(fieldNames).toContain('lifestyleImages')
       expect(fieldNames).toContain('representativeImages')
       expect(fieldNames).toContain('sizes')
-      expect(fieldNames).toContain('customizationGroups')
+      expect(fieldNames).not.toContain('customizationGroups')
       expect(fieldNames).toContain('customizationConfigurations')
       expect(fieldNames).toContain('specifications')
       expect(fieldNames).toContain('status')
@@ -144,15 +144,7 @@ describe('Sanity Schemas Structure & Validation Rules', () => {
       expect(categoriesField.of[0].to).toEqual([{ type: 'category' }])
     })
 
-    it('references customizationGroup document in customizationGroups array', () => {
-      const custField: any = productType.fields.find((f: any) => f.name === 'customizationGroups')
-      expect(custField).toBeDefined()
-      expect(custField.type).toBe('array')
-      expect(custField.of[0].type).toBe('reference')
-      expect(custField.of[0].to).toEqual([{ type: 'customizationGroup' }])
-    })
-
-    it('defines Product customization configurations without removing legacy groups', () => {
+    it('defines Product customization configurations as the only customization relation', () => {
       const configurationsField: any = productType.fields.find((f: any) => f.name === 'customizationConfigurations')
 
       expect(configurationsField.type).toBe('array')
@@ -441,20 +433,6 @@ describe('Sanity Schemas Structure & Validation Rules', () => {
           }]
         }]
       }, [group])).toContain('small (Small Cabin)')
-    })
-
-    it('blocks published legacy groups containing size-dependent items without native rules', () => {
-      const group = {
-        _id: 'group-electricity',
-        isMandatory: false,
-        items: [{ _key: 'elec-1', scope: 'sizeDependent' as const }]
-      }
-
-      expect(validatePublishedCustomizationRules({
-        status: 'published',
-        sizes: [{ _key: 'small', lengthM: 3, widthM: 2.4 }],
-        customizationGroups: [{ _ref: 'group-electricity' }]
-      }, [group])).toContain('requires Product customization rules')
     })
 
     it('requires at least one size option', () => {

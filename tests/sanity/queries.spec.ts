@@ -5,6 +5,10 @@ import { REFERENCES_QUERY } from '~/queries/references'
 import { mockSanityDataset, mockProducts, mockSizeImage } from '../fixtures/sanityData'
 
 describe('Sanity GROQ Query Evaluation (SSG Data Fetching)', () => {
+  it('does not project legacy Product customization group references', () => {
+    expect(PRODUCTS_WITH_SIZES_QUERY).not.toContain('customizationGroups')
+  })
+
   it('normalises legacy category names for the UK catalogue UI', async () => {
     const legacyDataset = [
       {
@@ -101,7 +105,7 @@ describe('Sanity GROQ Query Evaluation (SSG Data Fetching)', () => {
     expect(gatehouse.thumbnail.asset._ref).toBe('image-gatehouse150-front-png')
   })
 
-  it('fetches single product detail by slug with resolved customization groups', async () => {
+  it('fetches single product detail by slug with resolved customization configurations', async () => {
     const query = `*[_type == "product" && slug.current == $slug][0] {
       _id,
       name,
@@ -128,17 +132,20 @@ describe('Sanity GROQ Query Evaluation (SSG Data Fetching)', () => {
           asset
         }
       },
-      customizationGroups[]-> {
-        _id,
-        title,
-        "identifier": identifier.current,
-        selectionType,
-        items[] {
-          _key,
+      customizationConfigurations[] {
+        _key,
+        "group": group-> {
+          _id,
           title,
-          pricingType,
-          price,
-          requiresTextInput
+          "identifier": identifier.current,
+          selectionType,
+          items[] {
+            _key,
+            title,
+            pricingType,
+            price,
+            requiresTextInput
+          }
         }
       },
       seo
@@ -150,7 +157,7 @@ describe('Sanity GROQ Query Evaluation (SSG Data Fetching)', () => {
     expect(product.name).toBe('1.50m x 1.50m Security Gatehouse Cabin')
     expect(product.categories[0].name).toBe('Portable Cabins')
     expect(product.sizes).toHaveLength(2)
-    expect(product.customizationGroups).toHaveLength(2)
+    expect(product.customizationConfigurations).toHaveLength(2)
 
     // The guarantee the schema restructure exists to provide: a size's gallery is reachable only
     // through that size, so it cannot surface another size's renders.
@@ -172,7 +179,7 @@ describe('Sanity GROQ Query Evaluation (SSG Data Fetching)', () => {
     expect(extended.weightKg).toBe(0)
     expect(extended.isPoa).toBe(true)
 
-    const elecGroup = product.customizationGroups.find((g: any) => g.identifier === 'electricity')
+    const elecGroup = product.customizationConfigurations.find((configuration: any) => configuration.group.identifier === 'electricity').group
     expect(elecGroup).toBeDefined()
     expect(elecGroup.items).toHaveLength(2)
     expect(elecGroup.items[0].pricingType).toBe('fixed')

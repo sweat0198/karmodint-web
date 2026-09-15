@@ -22,7 +22,6 @@ interface Props {
   groups: SanityCustomizationGroup[];
   modelValue?: CustomizationSelections;
   notes?: CustomizationNotes;
-  showDemoNotice?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -34,7 +33,6 @@ const props = withDefaults(defineProps<Props>(), {
   currencySymbol: "£",
   modelValue: () => ({}),
   notes: () => ({}),
-  showDemoNotice: false,
 });
 
 const emit = defineEmits<{
@@ -296,31 +294,7 @@ onBeforeUnmount(() => window.removeEventListener("resize", refreshView));
     <!-- Right Column: Customization Panel (45% width on desktop) -->
     <div class="lg:w-[45%] bg-white lg:border-l border-brand-rose-border/30">
       <div class="p-6 md:p-8">
-        <slot name="before-demo-notice" />
-        <div
-          v-if="showDemoNotice"
-          class="mb-6 flex items-start gap-2.5 rounded border border-amber-300 bg-amber-50 px-3.5 py-2.5 text-xs text-amber-900"
-        >
-          <svg
-            class="w-4 h-4 shrink-0 mt-0.5 text-amber-500"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"
-            />
-          </svg>
-          <span>
-            <strong class="font-semibold">Demo data.</strong> Options and prices
-            shown here are placeholders, not the live product data. Do not send
-            this quote to a customer.
-          </span>
-        </div>
-
+        <slot name="before-customizations" />
         <CustomizationGroups
           :groups="groups"
           :model-value="modelValue"

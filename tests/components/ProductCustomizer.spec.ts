@@ -59,41 +59,50 @@ function activeFrameIndex(wrapper: Customizer): number {
 }
 
 describe("ProductCustomizer", () => {
-  it("uses Products terminology in the demo-data notice", () => {
+  it("does not render demo customization content", () => {
     const wrapper = mount(ProductCustomizer, {
       props: {
         title: "Test product",
         previewImages: [{ src: "front.jpg", alt: "Front view" }],
         groups: [],
         showDemoNotice: true,
-      },
+      } as any,
       global: {
         components: { ProductImageCarousel },
         stubs: { CustomizationGroups: true },
       },
     });
 
-    expect(wrapper.text()).toContain("not the live product data");
-    expect(wrapper.text().toLowerCase()).not.toContain("catalog");
+    expect(wrapper.text()).not.toContain("Demo data.");
+    expect(wrapper.text()).not.toContain("not the live product data");
   });
 
-  it("places injected controls directly above the demo-data notice", () => {
+  it("does not retain the demo-only injected slot", () => {
     const wrapper = mount(ProductCustomizer, {
       props: {
         title: "Test product",
         groups: [],
         showDemoNotice: true,
-      },
+      } as any,
       slots: {
         "before-demo-notice": '<div data-testid="portable-size-picker">Choose size</div>',
       },
       global: { stubs: { CustomizationGroups: true } },
     });
 
-    const html = wrapper.html();
-    const pickerPosition = html.indexOf('data-testid="portable-size-picker"');
-    expect(pickerPosition).toBeGreaterThanOrEqual(0);
-    expect(pickerPosition).toBeLessThan(html.indexOf("Demo data."));
+    expect(wrapper.find('[data-testid="portable-size-picker"]').exists()).toBe(false);
+  });
+
+  it("renders live controls in the customization slot", () => {
+    const wrapper = mount(ProductCustomizer, {
+      props: { title: "Test product", groups: [] },
+      slots: {
+        "before-customizations": '<div data-testid="portable-size-picker">Choose size</div>',
+      },
+      global: { stubs: { CustomizationGroups: true } },
+    });
+
+    expect(wrapper.find('[data-testid="portable-size-picker"]').exists()).toBe(true);
   });
 
   it("does not render a separate selected-size floor-plan section", () => {

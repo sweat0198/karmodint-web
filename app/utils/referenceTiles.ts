@@ -2,7 +2,7 @@ import type { ClientReference, ReferenceTile } from '~/types/reference'
 import { sanityImageUrl } from '~/utils/sanityImageUrl'
 
 export function toReferenceTiles(
-  references: ClientReference[] | undefined,
+  references: ClientReference[] | null | undefined,
   projectId: string,
   dataset: string
 ): ReferenceTile[] {

@@ -1,5 +1,4 @@
 import type {
-  SanityCustomizationGroup,
   SanityImage,
   SanityProductCustomizationConfiguration,
   SanitySizeImage,
@@ -42,7 +41,6 @@ export interface CatalogProduct {
   categories: CatalogCategoryRef[];
   representativeImages: SanityImage[];
   sizes: CatalogSizeOption[];
-  customizationGroups?: SanityCustomizationGroup[];
   customizationConfigurations?: SanityProductCustomizationConfiguration[];
 }
 
@@ -106,7 +104,6 @@ export const PRODUCTS_WITH_SIZES_QUERY = `*[_type == "product" && status == "pub
     "fallbackThumbnail": images[0] { asset, alt, view },
     "images": images[view != "top"] { _key, asset, alt, view }
   },
-  "customizationGroups": customizationGroups[]->${CUSTOMIZATION_GROUP_PROJECTION},
   customizationConfigurations[]{
     _key,
     "group": group->${CUSTOMIZATION_GROUP_PROJECTION},

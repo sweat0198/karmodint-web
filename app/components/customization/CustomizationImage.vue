@@ -1,26 +1,18 @@
 <script setup lang="ts">
-import { computed } from "vue";
 import type { SanityImage } from "~/types/catalog";
-import { FIXTURE_ASSET_URLS } from "~/utils/customizationFixtures";
 
 interface Props {
   image?: SanityImage;
   alt: string;
 }
 
-const props = defineProps<Props>();
-
-const resolvedSrc = computed(() => {
-  const ref = props.image?.asset?._ref;
-  if (!ref) return undefined;
-  return FIXTURE_ASSET_URLS[ref];
-});
+defineProps<Props>();
 </script>
 
 <template>
-  <img
-    v-if="resolvedSrc"
-    :src="resolvedSrc"
+  <SanityImage
+    v-if="image?.asset?._ref"
+    :asset="image.asset"
     :alt="alt"
     class="w-full h-full object-cover"
   />
