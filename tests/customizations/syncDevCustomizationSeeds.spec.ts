@@ -1,3 +1,5 @@
+import fs from 'node:fs'
+import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 import {
   CABIN_PRODUCT_IDS,
@@ -16,6 +18,28 @@ const SEED_GROUPS: SeedCustomizationGroupDocument[] = [
 ]
 
 describe('dev customization seed sync', () => {
+  it('keeps the dev-only preflight additive and out of production deploy scripts', () => {
+    const packageJson = JSON.parse(fs.readFileSync(
+      fileURLToPath(new URL('../../package.json', import.meta.url)),
+      'utf8'
+    )) as { scripts: Record<string, string> }
+
+    expect(packageJson.scripts['customizations:prepare-dev']).toBe(
+      'npm run customizations:sync-dev -- --apply && npm run customizations:migrate -- --apply && npm run catalogue:verify'
+    )
+    for (const [name, command] of Object.entries(packageJson.scripts)) {
+      if (name === 'build' || name.includes('deploy')) expect(command).not.toContain('customizations:')
+    }
+
+    const studioPackage = JSON.parse(fs.readFileSync(
+      fileURLToPath(new URL('../../sanity/package.json', import.meta.url)),
+      'utf8'
+    )) as { scripts: Record<string, string> }
+    for (const [name, command] of Object.entries(studioPackage.scripts)) {
+      if (name.includes('deploy')) expect(command).not.toContain('customizations:')
+    }
+  })
+
   it('refuses every non-dev dataset before fetching or writing', async () => {
     const client = {
       fetch() {

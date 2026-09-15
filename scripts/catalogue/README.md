@@ -19,6 +19,31 @@ pnpm typecheck:catalogue && pnpm test # both guards
 The scrape is cached, so only the first run touches the network — tickets 03–06 need none.
 `--refresh` forces a re-crawl.
 
+## Dev customization preflight
+
+Before a dev deployment, run:
+
+```bash
+npm run customizations:prepare-dev
+```
+
+This command is dev-only. It requires root `.env` credentials with `SANITY_DATASET=dev` and a
+write-capable `SANITY_API_TOKEN`. It creates missing checked-in Customization Group documents,
+appends only missing canonical Product configuration links, migrates any remaining legacy links,
+then runs the read-only catalogue verification. The sync refuses every dataset except `dev`.
+
+Use it in dev CI before the existing build and any separate Studio deployment:
+
+```bash
+npm run customizations:prepare-dev
+npm run build
+npm --prefix sanity run build
+```
+
+The preflight preserves CMS edits: it never overwrites existing groups, configurations, or item
+overrides, and it never deletes documents. Do not add it to generic or production deployment
+scripts. Production data must be reviewed and promoted through a separate workflow.
+
 ## What owns what
 
 | File | Owns |
