@@ -32,7 +32,8 @@ write-capable `SANITY_API_TOKEN`. It creates missing checked-in Customization Gr
 then migrates legacy Product links, appends only missing canonical Product configuration links,
 reruns the migration audit, and verifies no groups or links remain pending. Legacy Products are
 skipped until migration completes, so modern links cannot make a legacy Product unmigratable. The
-sync refuses every dataset except `dev`.
+final verification also requires every seeded Customization Group document to match its checked-in
+content and rejects any remaining legacy Product links. The sync refuses every dataset except `dev`.
 
 Use it in dev CI before the existing build and any separate Studio deployment:
 

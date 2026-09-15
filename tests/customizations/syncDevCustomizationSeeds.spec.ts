@@ -6,6 +6,7 @@ import {
   buildDevCustomizationSeedSyncPlan,
   CONTAINER_PRODUCT_IDS,
   runDevCustomizationSeedSync,
+  verifyDevCustomizationSeedState,
   type SeedCustomizationGroupDocument
 } from '../../scripts/customizations/syncDevCustomizationSeeds'
 import { planProductCustomizationMigration } from '../../scripts/customizations/migrateProductConfigurations'
@@ -17,6 +18,23 @@ const SEED_GROUPS: SeedCustomizationGroupDocument[] = [
   { _id: 'customizationGroup-wc', _type: 'customizationGroup', title: 'WC' },
   { _id: 'customizationGroup-kitchen', _type: 'customizationGroup', title: 'Kitchen' }
 ]
+
+function fullyConfiguredProducts() {
+  const cabinConfigurations = [
+    'customizationGroup-electricity',
+    'customizationGroup-heater',
+    'customizationGroup-ac'
+  ].map((_ref) => ({ group: { _ref } }))
+  const containerConfigurations = [
+    ...cabinConfigurations,
+    { group: { _ref: 'customizationGroup-wc' } },
+    { group: { _ref: 'customizationGroup-kitchen' } }
+  ]
+  return [
+    ...CABIN_PRODUCT_IDS.map((_id) => ({ _id, customizationConfigurations: cabinConfigurations })),
+    ...CONTAINER_PRODUCT_IDS.map((_id) => ({ _id, customizationConfigurations: containerConfigurations }))
+  ]
+}
 
 describe('dev customization seed sync', () => {
   it('keeps the dev-only preflight additive and out of production deploy scripts', () => {
@@ -68,6 +86,53 @@ describe('dev customization seed sync', () => {
         expect.objectContaining({ group: expect.objectContaining({ _ref: 'customizationGroup-ac' }) })
       ]
     }])
+  })
+
+  it('flags a seeded group whose existing content diverges even when its ID exists', async () => {
+    const existingGroups = SEED_GROUPS.map((group) => group._id === 'customizationGroup-ac'
+      ? { ...group, items: [] }
+      : group)
+    const client = {
+      async fetch(query: string) {
+        return query.includes('_type == "product"') ? fullyConfiguredProducts() : existingGroups
+      },
+      transaction() {
+        throw new Error('verification must not write')
+      }
+    }
+
+    await expect(verifyDevCustomizationSeedState(client, 'dev', SEED_GROUPS)).resolves.toEqual({
+      appliedGroups: 0,
+      appliedProducts: 0,
+      plannedGroups: 0,
+      plannedProducts: 0,
+      review: ['Customization Group "customizationGroup-ac" differs from checked-in seed content']
+    })
+  })
+
+  it('flags canonical Products retaining legacy group references during verification', async () => {
+    const products = fullyConfiguredProducts()
+    products[0] = {
+      _id: 'product-grp-cabin',
+      customizationGroups: [{ _ref: 'customizationGroup-electricity' }],
+      customizationConfigurations: []
+    }
+    const client = {
+      async fetch(query: string) {
+        return query.includes('_type == "product"') ? products : SEED_GROUPS
+      },
+      transaction() {
+        throw new Error('verification must not write')
+      }
+    }
+
+    await expect(verifyDevCustomizationSeedState(client, 'dev', SEED_GROUPS)).resolves.toEqual({
+      appliedGroups: 0,
+      appliedProducts: 0,
+      plannedGroups: 0,
+      plannedProducts: 0,
+      review: ['Product "product-grp-cabin" retains legacy Customization Group references']
+    })
   })
 
   it('refuses every non-dev dataset before fetching or writing', async () => {
