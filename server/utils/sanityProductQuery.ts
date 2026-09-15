@@ -15,7 +15,6 @@ export interface SanityQueryConfig {
 const PRODUCT_VALIDATION_PROJECTION = `{
   _id, name, status,
   sizes[]{ _key, label, price, isPoa },
-  "customizationGroups": customizationGroups[]->${CUSTOMIZATION_GROUP_PROJECTION},
   customizationConfigurations[]{
     _key,
     "group": group->${CUSTOMIZATION_GROUP_PROJECTION},

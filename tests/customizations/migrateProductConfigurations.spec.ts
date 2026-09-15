@@ -56,8 +56,10 @@ describe('Product customization configuration migration', () => {
 
     expect(plan.configurations[0]).toMatchObject({
       itemOverrides: [{
+        _key: 'legacy-override-electricity',
         itemKey: 'electricity',
         sizeRules: [{
+          _key: 'legacy-rule-electricity-small',
           sizeOptionKey: 'small',
           mode: 'inherit',
           review: {
@@ -110,6 +112,47 @@ describe('Product customization configuration migration', () => {
       { productId: 'product-duplicate', reason: 'references Customization Group "group-ready" more than once' },
       { productId: 'product-orphaned', reason: 'references unavailable Customization Group "missing-group"' }
     ])
+  })
+
+  it('refuses a Group whose Customization Item key is duplicated', () => {
+    const report = buildCustomizationMigrationReport([{
+      _id: 'product-duplicate-item',
+      customizationGroups: [{ _ref: 'group-ready' }]
+    }], [{
+      _id: 'group-ready',
+      items: [
+        { _key: 'same-item', scope: 'universal' },
+        { _key: 'same-item', scope: 'universal' }
+      ]
+    }])
+
+    expect(report).toEqual({
+      plans: [],
+      review: [{
+        productId: 'product-duplicate-item',
+        reason: 'Customization Group "group-ready" contains more than one item "same-item"'
+      }]
+    })
+  })
+
+  it('reports published configuration rules rejected by the current schema validator', () => {
+    const report = buildCustomizationMigrationReport([{
+      _id: 'product-orphaned-rule',
+      status: 'published',
+      sizes: [{ _key: 'standard', lengthM: 3, widthM: 2.4 }],
+      customizationConfigurations: [{
+        group: { _ref: 'group-ready' },
+        itemOverrides: [{ itemKey: 'missing-item' }]
+      }]
+    }], [{ _id: 'group-ready', items: [{ _key: 'ready-item', scope: 'universal' }] }])
+
+    expect(report).toEqual({
+      plans: [],
+      review: [{
+        productId: 'product-orphaned-rule',
+        reason: 'published configuration invalid: Customization Item "missing-item" does not exist in the selected Customization Group'
+      }]
+    })
   })
 
   it('applies a clean report in one transaction and unsets legacy references', async () => {
@@ -180,5 +223,30 @@ describe('Product customization configuration migration', () => {
     expect(queries[0]).toContain('customizationGroups')
     expect(queries[0]).toContain('customizationConfigurations')
     expect(queries[1]).toContain('_type == "customizationGroup"')
+  })
+
+  it('returns the review report before refusing an apply run', async () => {
+    let transactions = 0
+    const client = {
+      async fetch(query: string) {
+        return query.includes('_type == "product"')
+          ? [{ _id: 'product-review', customizationGroups: [{ _ref: 'missing-group' }] }]
+          : []
+      },
+      transaction() {
+        transactions += 1
+        throw new Error('must not write')
+      }
+    }
+
+    await expect(runCustomizationMigration(client, true)).resolves.toEqual({
+      applied: 0,
+      planned: 0,
+      review: [{
+        productId: 'product-review',
+        reason: 'references unavailable Customization Group "missing-group"'
+      }]
+    })
+    expect(transactions).toBe(0)
   })
 })

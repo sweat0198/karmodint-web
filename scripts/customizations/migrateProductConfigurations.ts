@@ -1,3 +1,10 @@
+import { pathToFileURL } from 'node:url'
+import { createSanityClient, readSanityTarget } from '../catalogue/lib/sanityEnv'
+import {
+  createSizeRuleSnapshot,
+  validatePublishedCustomizationRules
+} from '../../sanity/schemas/product'
+
 export interface LegacyCustomizationGroupReference {
   _ref?: string
 }
@@ -11,13 +18,15 @@ export interface MigrationSizeOption {
 
 export interface MigrationProduct {
   _id: string
+  status?: 'published' | 'draft' | 'archived'
   sizes?: MigrationSizeOption[]
   customizationGroups?: LegacyCustomizationGroupReference[]
-  customizationConfigurations?: Array<{ _key?: string }>
+  customizationConfigurations?: MigrationConfiguration[]
 }
 
 export interface MigrationCustomizationGroup {
   _id: string
+  isMandatory?: boolean
   items?: Array<{
     _key?: string
     scope?: 'universal' | 'sizeDependent'
@@ -29,14 +38,30 @@ export interface MigrationCustomizationGroup {
 }
 
 interface MigrationSizeRule {
+  _key: string
   sizeOptionKey: string
-  mode: 'inherit'
-  review: { status: 'reviewed'; snapshot: string }
+  mode: 'inherit' | 'fixed' | 'included' | 'poa' | 'unavailable'
+  price?: number
+  titleOverride?: string
+  descriptionOverride?: string
+  review?: { status: 'pending' | 'reviewed'; snapshot?: string }
 }
 
 interface MigrationItemOverride {
+  _key: string
   itemKey: string
-  sizeRules: MigrationSizeRule[]
+  enabled?: boolean
+  pricingType?: 'fixed' | 'included' | 'poa'
+  price?: number
+  titleOverride?: string
+  descriptionOverride?: string
+  sizeRules?: MigrationSizeRule[]
+}
+
+interface MigrationConfiguration {
+  _key?: string
+  group?: { _type?: 'reference'; _ref?: string }
+  itemOverrides?: MigrationItemOverride[]
 }
 
 export interface ProductCustomizationMigrationPlan {
@@ -93,8 +118,13 @@ function migrationReason(
     }
     referencedGroupIds.add(reference._ref)
 
+    const itemKeys = new Set<string>()
     for (const item of groupsById.get(reference._ref)?.items ?? []) {
       if (!item._key) return `Customization Group "${reference._ref}" contains an item without a key`
+      if (itemKeys.has(item._key)) {
+        return `Customization Group "${reference._ref}" contains more than one item "${item._key}"`
+      }
+      itemKeys.add(item._key)
       if (item.scope === 'sizeDependent') {
         for (const size of product.sizes ?? []) {
           if (!size._key) return 'contains a Size Option without a key for a size-dependent Customization Item'
@@ -108,29 +138,14 @@ function createInheritedSizeRule(
   size: MigrationSizeOption,
   item: NonNullable<MigrationCustomizationGroup['items']>[number],
 ): MigrationSizeRule {
-  const pricingType = item.pricingType ?? 'fixed'
-  const resolvedPrice = pricingType === 'fixed' ? item.price ?? 0 : pricingType === 'included' ? 0 : null
-
-  return {
+  const rule: MigrationSizeRule = {
+    _key: `legacy-rule-${item._key}-${size._key}`,
     sizeOptionKey: size._key!,
-    mode: 'inherit',
-    review: {
-      status: 'reviewed',
-      snapshot: JSON.stringify({
-        sizeOptionKey: size._key,
-        lengthM: size.lengthM ?? null,
-        widthM: size.widthM ?? null,
-        heightM: size.heightM ?? null,
-        mode: 'inherit',
-        price: null,
-        titleOverride: null,
-        descriptionOverride: null,
-        resolvedPricingType: pricingType,
-        resolvedPrice,
-        resolvedTitle: item.title ?? null,
-        resolvedDescription: item.description ?? null
-      })
-    }
+    mode: 'inherit'
+  }
+  return {
+    ...rule,
+    review: { status: 'reviewed', snapshot: createSizeRuleSnapshot(size, rule, undefined, item) }
   }
 }
 
@@ -150,6 +165,7 @@ export function planProductCustomizationMigration(
       const itemOverrides = (group.items ?? [])
         .filter((item) => item.scope === 'sizeDependent')
         .map((item) => ({
+          _key: `legacy-override-${item._key}`,
           itemKey: item._key!,
           sizeRules: (product.sizes ?? []).map((size) => createInheritedSizeRule(size, item))
         }))
@@ -171,15 +187,30 @@ export function buildCustomizationMigrationReport(
 ): CustomizationMigrationReport {
   const groupsById = new Map(groups.map((group) => [group._id, group]))
   const productsToMigrate = products.filter((product) => product.customizationGroups?.length)
-  const review = productsToMigrate.flatMap((product) => {
+  const migrationReview = productsToMigrate.flatMap((product) => {
     const reason = migrationReason(product, groupsById)
     return reason ? [{ productId: product._id, reason }] : []
   })
+  const plans = migrationReview.length === 0
+    ? productsToMigrate.map((product) => planProductCustomizationMigration(product, groups))
+    : []
+  const plansByProductId = new Map(plans.map((plan) => [plan.productId, plan]))
+  const validationReview = products.flatMap((product) => {
+    if (product.status !== 'published') return []
+
+    const plan = plansByProductId.get(product._id)
+    const validation = validatePublishedCustomizationRules(
+      plan ? { ...product, customizationConfigurations: plan.configurations } : product,
+      groups,
+    )
+    return validation === true
+      ? []
+      : [{ productId: product._id, reason: `published configuration invalid: ${validation}` }]
+  })
+  const review = [...migrationReview, ...validationReview]
 
   return {
-    plans: review.length === 0
-      ? productsToMigrate.map((product) => planProductCustomizationMigration(product, groups))
-      : [],
+    plans: review.length === 0 ? plans : [],
     review
   }
 }
@@ -209,15 +240,24 @@ export async function applyCustomizationMigration(
   return { applied: report.plans.length, review: [] }
 }
 
-const MIGRATION_PRODUCTS_QUERY = `*[_type == "product" && count(customizationGroups) > 0] {
+const MIGRATION_PRODUCTS_QUERY = `*[_type == "product"] {
   _id,
+  status,
   sizes[]{ _key, lengthM, widthM, heightM },
   customizationGroups[]{ _ref },
-  customizationConfigurations[]{ _key }
+  customizationConfigurations[]{
+    _key,
+    group{ _ref },
+    itemOverrides[]{
+      _key, itemKey, enabled, pricingType, price, titleOverride, descriptionOverride,
+      sizeRules[]{ _key, sizeOptionKey, mode, price, titleOverride, descriptionOverride, review{ status, snapshot } }
+    }
+  }
 }`
 
 const MIGRATION_GROUPS_QUERY = `*[_type == "customizationGroup"] {
   _id,
+  isMandatory,
   items[]{ _key, scope, pricingType, price, title, description }
 }`
 
@@ -231,7 +271,9 @@ export async function runCustomizationMigration(
     client.fetch<MigrationCustomizationGroup[]>(MIGRATION_GROUPS_QUERY)
   ])
   const report = buildCustomizationMigrationReport(products, groups)
-  if (!apply) return { applied: 0, planned: report.plans.length, review: report.review }
+  if (!apply || report.review.length > 0) {
+    return { applied: 0, planned: report.plans.length, review: report.review }
+  }
 
   const result = await applyCustomizationMigration(client, report, true)
   return { ...result, planned: report.plans.length }
@@ -251,5 +293,3 @@ if (process.argv[1] && pathToFileURL(process.argv[1]).href === import.meta.url) 
     process.exitCode = 1
   })
 }
-import { pathToFileURL } from 'node:url'
-import { createSanityClient, readSanityTarget } from '../catalogue/lib/sanityEnv'

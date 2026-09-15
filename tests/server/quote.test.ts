@@ -208,6 +208,14 @@ describe('Quote Request API Endpoint', () => {
 
     const [savedDoc] = vi.mocked(writeSanityQuoteEnquiry).mock.calls[0]
     expect(savedDoc.items[0].subtotal).toBe(9800)
+    expect(savedDoc.items[0].selectedCustomizations).toEqual([
+      expect.objectContaining({
+        groupId: 'grp-electrical',
+        itemKey: 'upgraded-elec',
+        pricingType: 'fixed',
+        price: 1300
+      })
+    ])
   })
 
   it('stops submission and reports old and current ex-VAT prices when Sanity pricing has changed', async () => {
