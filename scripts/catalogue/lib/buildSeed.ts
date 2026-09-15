@@ -1,4 +1,8 @@
 import type { ProductImageView } from '../../../sanity/schemas/objects/productImageViews'
+import {
+  cabinCustomizationConfigurations,
+  type SeedCustomizationConfiguration
+} from '../../customizations/lib/seedRecipes'
 import { renderAltText } from './altText'
 import type { AssetManifest } from './assets'
 import type { ProductCopy } from './copy'
@@ -30,12 +34,7 @@ export interface SeedSize {
   images: SeedImage[]
 }
 
-export interface SeedCustomizationConfiguration {
-  _key: string
-  _type: 'productCustomizationConfiguration'
-  group: { _type: 'reference', _ref: string }
-  itemOverrides?: Array<{ _key: string, itemKey: string, enabled: boolean }>
-}
+export type { SeedCustomizationConfiguration } from '../../customizations/lib/seedRecipes'
 
 export interface SeedProduct {
   _id: string
@@ -50,28 +49,6 @@ export interface SeedProduct {
   isFeatured: boolean
   status: 'published'
   seo: { _type: 'seo', metaTitle: string, metaDescription: string }
-}
-
-/** All imported cabin families offer these optional groups; compact cabins omit elec-2. */
-function smallCabinCustomizationConfigurations(): SeedCustomizationConfiguration[] {
-  return [
-    {
-      _key: 'electricity',
-      _type: 'productCustomizationConfiguration',
-      group: { _type: 'reference', _ref: 'customizationGroup-electricity' },
-      itemOverrides: [{ _key: 'disable-elec-2', itemKey: 'elec-2', enabled: false }]
-    },
-    {
-      _key: 'heater',
-      _type: 'productCustomizationConfiguration',
-      group: { _type: 'reference', _ref: 'customizationGroup-heater' }
-    },
-    {
-      _key: 'air-conditioning',
-      _type: 'productCustomizationConfiguration',
-      group: { _type: 'reference', _ref: 'customizationGroup-ac' }
-    }
-  ]
 }
 
 /**
@@ -123,7 +100,7 @@ export function buildProductDocument(
       _type: 'reference' as const,
       _ref: categoryId
     })),
-    customizationConfigurations: smallCabinCustomizationConfigurations(),
+    customizationConfigurations: cabinCustomizationConfigurations(),
     sizes: product.sizes.map((size) => {
       const label = sizeLabel(size)
 

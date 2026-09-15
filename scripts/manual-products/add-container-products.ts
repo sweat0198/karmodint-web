@@ -19,6 +19,7 @@
  *   pnpm manual-products:containers --update-existing
  */
 import fs from 'node:fs'
+import { containerCustomizationConfigurations } from '../customizations/lib/seedRecipes'
 import { renderAltText } from '../catalogue/lib/altText'
 import { sizeLabel } from '../catalogue/lib/manifest'
 import { markdownToPortableText, validatePortableText } from '../catalogue/lib/portableText'
@@ -55,22 +56,6 @@ interface ManualProduct {
   categories: string[]
   bodyMarkdown: string
   sizes: ManualSize[]
-}
-
-const CONTAINER_CUSTOMIZATION_GROUP_IDS = [
-  'customizationGroup-electricity',
-  'customizationGroup-heater',
-  'customizationGroup-ac',
-  'customizationGroup-wc',
-  'customizationGroup-kitchen'
-] as const
-
-function containerCustomizationConfigurations() {
-  return CONTAINER_CUSTOMIZATION_GROUP_IDS.map((groupId) => ({
-    _key: groupId.replace('customizationGroup-', ''),
-    _type: 'productCustomizationConfiguration' as const,
-    group: { _type: 'reference' as const, _ref: groupId }
-  }))
 }
 
 /**
