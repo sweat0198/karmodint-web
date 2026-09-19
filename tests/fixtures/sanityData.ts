@@ -213,9 +213,65 @@ export const mockQuoteEnquiries = [
   }
 ]
 
+export const mockSolutions = [
+  {
+    _id: 'solution_site_setup',
+    _type: 'solution',
+    name: 'Construction Site Setup',
+    slug: { _type: 'slug', current: 'construction-site-setup' },
+    description: 'Everything needed to stand up a secure, staffed construction site.',
+    coverImage: {
+      _type: 'image',
+      alt: 'A fitted-out construction site compound',
+      asset: { _type: 'reference', _ref: 'image-site-setup-1600x900-jpg' }
+    },
+    displayOrder: 1,
+    products: [
+      {
+        _key: 'entry_gatehouse',
+        _type: 'solutionProduct',
+        product: { _type: 'reference', _ref: 'prod_kiosk_150x150' },
+        sizeOptionKey: 'size_1'
+      },
+      {
+        _key: 'entry_retail',
+        _type: 'solutionProduct',
+        product: { _type: 'reference', _ref: 'prod_kiosk_retail' },
+        sizeOptionKey: 'size_retail_1'
+      }
+    ],
+    seo: {
+      metaTitle: 'Construction Site Setup | Karmod UK',
+      metaDescription: 'Modular cabins and kiosks for construction sites.'
+    }
+  },
+  {
+    _id: 'solution_event',
+    _type: 'solution',
+    name: 'Event Infrastructure',
+    slug: { _type: 'slug', current: 'event-infrastructure' },
+    description: 'Ticket booths and concession units for outdoor events.',
+    coverImage: {
+      _type: 'image',
+      alt: 'A row of event ticket booths',
+      asset: { _type: 'reference', _ref: 'image-event-1600x900-jpg' }
+    },
+    displayOrder: 2,
+    products: [
+      {
+        _key: 'entry_event_retail',
+        _type: 'solutionProduct',
+        product: { _type: 'reference', _ref: 'prod_kiosk_retail' },
+        sizeOptionKey: 'size_retail_1'
+      }
+    ]
+  }
+]
+
 export const mockSanityDataset = [
   ...mockCategories,
   ...mockCustomizationGroups,
   ...mockProducts,
-  ...mockQuoteEnquiries
+  ...mockQuoteEnquiries,
+  ...mockSolutions
 ]

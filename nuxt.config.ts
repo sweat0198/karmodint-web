@@ -145,6 +145,7 @@ export default defineNuxtConfig({
         "/customize",
         "/quote",
         "/gallery",
+        "/solutions",
         "/contact",
         "/about",
         "/sitemap.xml",

@@ -39,6 +39,17 @@
           Products
         </NuxtLink>
         <NuxtLink
+          to="/solutions"
+          class="text-base transition-colors py-1 relative"
+          :class="
+            isSolutionsActive
+              ? 'text-white font-bold border-b-2 border-brand-red pb-1.5'
+              : 'text-brand-slate-light hover:text-white font-medium'
+          "
+        >
+          Solutions
+        </NuxtLink>
+        <NuxtLink
           to="/about"
           class="text-base transition-colors py-1 relative"
           :class="
@@ -193,6 +204,13 @@
         Products
       </NuxtLink>
       <NuxtLink
+        to="/solutions"
+        @click="isMobileMenuOpen = false"
+        class="block text-base font-medium text-brand-slate-light hover:text-white"
+      >
+        Solutions
+      </NuxtLink>
+      <NuxtLink
         to="/about"
         @click="isMobileMenuOpen = false"
         class="block text-base font-medium text-brand-slate-light hover:text-white"
@@ -286,6 +304,10 @@ const isMobileMenuOpen = ref(false);
 
 const isProductsActive = computed(() => {
   return route.path.startsWith("/products");
+});
+
+const isSolutionsActive = computed(() => {
+  return route.path.startsWith("/solutions");
 });
 
 function scrollToLocation() {

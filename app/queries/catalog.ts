@@ -64,18 +64,16 @@ export const CUSTOMIZATION_GROUP_PROJECTION = `{
 // customer-facing labels canonical at the query boundary, keyed by stable slugs; this also keeps
 // product category search and the sidebar in sync during the CMS migration.
 /**
- * Products with their sizes, shaped for the catalog fan-out (`toSizeCards`).
+ * The card-shaped projection of a Product, shared by the catalog and any other page that
+ * renders products through `toSizeCards`.
  *
- * The `drafts.` guard mirrors scripts/catalogue/lib/verifyCatalogue.ts — without it, opening a
- * product in the Studio doubles it, since the draft twin copies `status: "published"` too.
+ * The thumbnail is picked by view *name*, not array position (D8): `left-diagonal` first,
+ * falling back to the first image if a size has no three-quarter render.
  *
- * The thumbnail is picked by view *name*, not array position (D8): `left-diagonal` first, falling
- * back to the first image if a size has no three-quarter render.
- *
- * `images` feeds the card's hover carousel and excludes the `top` view: every size carries exactly
- * one, and it is a plan drawing rather than an angle of the unit.
+ * `images` feeds the card's hover carousel and excludes the `top` view: every size carries
+ * exactly one, and it is a plan drawing rather than an angle of the unit.
  */
-export const PRODUCTS_WITH_SIZES_QUERY = `*[_type == "product" && status == "published" && !(_id in path("drafts.**"))] | order(isFeatured desc, name asc) {
+export const PRODUCT_CARD_PROJECTION = `{
   _id, name, "slug": slug.current, isFeatured, shortDescription,
   "representativeImages": representativeImages[] { asset, alt, caption },
   "categories": categories[]->{
@@ -116,6 +114,14 @@ export const PRODUCTS_WITH_SIZES_QUERY = `*[_type == "product" && status == "pub
     }
   }
 }`;
+
+/**
+ * Products with their sizes, shaped for the catalog fan-out (`toSizeCards`).
+ *
+ * The `drafts.` guard mirrors scripts/catalogue/lib/verifyCatalogue.ts — without it, opening a
+ * product in the Studio doubles it, since the draft twin copies `status: "published"` too.
+ */
+export const PRODUCTS_WITH_SIZES_QUERY = `*[_type == "product" && status == "published" && !(_id in path("drafts.**"))] | order(isFeatured desc, name asc) ${PRODUCT_CARD_PROJECTION}`;
 
 /** The sidebar's category tree: top-level categories ordered by `displayOrder`, each with its children. */
 export const CATEGORY_TREE_QUERY = `*[_type == "category" && !defined(parent)] | order(displayOrder asc) {

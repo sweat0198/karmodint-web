@@ -23,6 +23,12 @@ export default defineEventHandler((event) => {
       priority: "0.8",
     },
     {
+      loc: "/solutions",
+      lastmod: now,
+      changefreq: "weekly",
+      priority: "0.9",
+    },
+    {
       loc: "/gallery",
       lastmod: now,
       changefreq: "weekly",

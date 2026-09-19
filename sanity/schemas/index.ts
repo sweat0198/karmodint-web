@@ -4,6 +4,7 @@ import { customizationGroupType } from './customizationGroup'
 import { quoteEnquiryType } from './quoteEnquiry'
 import { clientReferenceType } from './reference'
 import { galleryEntryType } from './galleryEntry'
+import { solutionType } from './solution'
 import { blockContent } from './objects/blockContent'
 import { sizeOption } from './objects/sizeOption'
 import { customizationItem } from './objects/customizationItem'
@@ -11,6 +12,7 @@ import { specItem } from './objects/specItem'
 import { seo } from './objects/seo'
 import { quoteItem } from './objects/quoteItem'
 import { productCustomizationConfiguration } from './objects/productCustomizationConfiguration'
+import { solutionProduct } from './objects/solutionProduct'
 
 export const schemaTypes = [
   // Document types
@@ -20,6 +22,7 @@ export const schemaTypes = [
   quoteEnquiryType,
   clientReferenceType,
   galleryEntryType,
+  solutionType,
 
   // Object types
   blockContent,
@@ -28,5 +31,6 @@ export const schemaTypes = [
   specItem,
   seo,
   quoteItem,
-  productCustomizationConfiguration
+  productCustomizationConfiguration,
+  solutionProduct
 ]
