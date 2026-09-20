@@ -56,7 +56,7 @@
                 <label
                   class="text-brand-rose-text text-xs font-semibold uppercase tracking-[1.2px]"
                 >
-                  Full Name
+                  Full Name *
                 </label>
                 <input
                   v-model="form.fullName"
@@ -71,7 +71,7 @@
                 <label
                   class="text-brand-rose-text text-xs font-semibold uppercase tracking-[1.2px]"
                 >
-                  Company / Organization
+                  Company / Organization *
                 </label>
                 <input
                   v-model="form.companyName"
@@ -89,7 +89,7 @@
                 <label
                   class="text-brand-rose-text text-xs font-semibold uppercase tracking-[1.2px]"
                 >
-                  Business Email
+                  Business Email *
                 </label>
                 <input
                   v-model="form.email"
@@ -109,7 +109,6 @@
                 <input
                   v-model="form.phone"
                   type="tel"
-                  required
                   placeholder="+44 ..."
                   class="w-full bg-white border border-brand-rose-border rounded px-4 py-3 text-gray-700 placeholder-gray-400 text-base focus:outline-none focus:border-brand-red transition-colors"
                 />
@@ -121,11 +120,12 @@
               <label
                 class="text-brand-rose-text text-xs font-semibold uppercase tracking-[1.2px]"
               >
-                Project Details
+                Project Details *
               </label>
               <textarea
                 v-model="form.details"
                 rows="4"
+                required
                 placeholder="Briefly describe your requirements, scale, and timeline..."
                 class="w-full bg-white border border-brand-rose-border rounded px-4 py-3 text-gray-700 placeholder-gray-400 text-base focus:outline-none focus:border-brand-red transition-colors resize-none"
               ></textarea>
@@ -344,7 +344,13 @@ const submitted = ref(false);
 const errorMessage = ref("");
 
 async function handleSubmit() {
-  if (!form.value.fullName || !form.value.email || !form.value.details) return;
+  if (
+    !form.value.fullName.trim() ||
+    !form.value.companyName.trim() ||
+    !form.value.email.trim() ||
+    !form.value.details.trim()
+  )
+    return;
 
   isSubmitting.value = true;
   errorMessage.value = "";

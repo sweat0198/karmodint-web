@@ -14,12 +14,13 @@ const handler = async (event: any) => {
 
   // Basic validation
   if (!fullName || typeof fullName !== 'string' || !fullName.trim() ||
+      !companyName || typeof companyName !== 'string' || !companyName.trim() ||
       !email || typeof email !== 'string' || !email.includes('@') ||
       !details || typeof details !== 'string' || !details.trim()) {
     const errorFn = typeof createError !== 'undefined' ? createError : (err: any) => Object.assign(new Error(err.statusMessage), err)
     throw errorFn({
       statusCode: 400,
-      statusMessage: 'Invalid contact submission. Full name, valid email address, and project details are required.'
+      statusMessage: 'Invalid contact submission. Full name, company/organization, valid email address, and project details are required.'
     })
   }
 
