@@ -1,15 +1,10 @@
 <template>
   <div
-    class="pointer-events-auto quick-contact-root"
+    class="origin-bottom-right pointer-events-auto quick-contact-root"
     :class="[
-      isLeftSide ? 'origin-bottom-left is-left-side' : 'origin-bottom-right',
       isAnchored
-        ? isLeftSide
-          ? 'relative flex flex-col items-start gap-2 is-anchored'
-          : 'relative flex flex-col items-end gap-2 is-anchored'
-        : isLeftSide
-          ? 'fixed left-4 sm:left-6 bottom-6 z-50 flex flex-col items-start gap-2'
-          : 'fixed right-4 sm:right-6 bottom-6 z-50 flex flex-col items-end gap-2',
+        ? 'relative flex flex-col items-end gap-2 is-anchored'
+        : 'fixed right-4 sm:right-6 bottom-6 z-50 flex flex-col items-end gap-2',
     ]"
     @mouseenter="isHovered = true"
     @mouseleave="isHovered = false"
@@ -171,9 +166,6 @@ const { phoneDisplay, phoneTelHref, whatsAppUrl, hasQuoteItems, quoteCount } =
   useQuickContact();
 
 const isHomePage = computed(() => route.path === "/");
-// Products page: category sidebar now lives on the left, so the floating
-// contact chips move to the left to keep clear of it.
-const isLeftSide = computed(() => route.path === "/products");
 
 const isHovered = ref(false);
 const isCollapsed = ref(false);
@@ -267,11 +259,6 @@ onUnmounted(() => {
 
 .quick-contact-root:not(.is-anchored) {
   will-change: transform, opacity;
-}
-
-.quick-contact-root.is-left-side .quick-contact-top-bar,
-.quick-contact-root.is-left-side .quick-contact-main-btn {
-  transform-origin: bottom left;
 }
 
 /* Top Action Bar (Map + Phone + Close) */

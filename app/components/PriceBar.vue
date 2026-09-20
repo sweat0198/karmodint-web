@@ -37,9 +37,6 @@ const quoteStore = useQuoteStore();
 // Hide sticky bar on final quote submission/review page to prevent UI clash with contact form
 const isQuotePage = computed(() => route.path === "/quote");
 
-// Products page: keep the anchored quick-contact chips over on the left with the widget below
-const isLeftSide = computed(() => route.path === "/products");
-
 // Display whenever user has items in quote queue across the whole application
 const isVisible = computed(() => {
   if (props.showWhenEmpty) return true;
@@ -104,10 +101,7 @@ const destinationRoute = computed(() => {
         v-if="showQuickContact"
         class="max-w-7xl mx-auto relative pointer-events-none"
       >
-        <div
-          class="absolute bottom-full mb-6 pointer-events-auto"
-          :class="isLeftSide ? 'left-0' : 'right-0'"
-        >
+        <div class="absolute bottom-full right-0 mb-6 pointer-events-auto">
           <QuickContactWidget :is-anchored="true" />
         </div>
       </div>
