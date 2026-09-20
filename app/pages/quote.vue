@@ -200,10 +200,11 @@
           </div>
 
           <div>
-            <label class="label-caps text-slate-500 mb-1 block">Company / Site Name</label>
-            <input 
-              v-model="customer.company" 
-              type="text" 
+            <label class="label-caps text-slate-500 mb-1 block">Company / Site Name *</label>
+            <input
+              v-model="customer.company"
+              type="text"
+              required
               placeholder="Acme Construction Ltd"
               class="w-full bg-white border border-slate-300 rounded px-3.5 py-2 text-sm text-gray-800 focus:outline-none focus:border-brand-red"
             />
@@ -226,10 +227,11 @@
           </div>
 
           <div>
-            <label class="label-caps text-slate-500 mb-1 block">General Instructions / Access Details</label>
-            <textarea 
-              v-model="customer.notes" 
-              rows="3" 
+            <label class="label-caps text-slate-500 mb-1 block">General Instructions / Access Details *</label>
+            <textarea
+              v-model="customer.notes"
+              rows="3"
+              required
               placeholder="Access restrictions, site contact, or target delivery date..."
               class="w-full bg-white border border-slate-300 rounded px-3.5 py-2 text-sm text-gray-800 focus:outline-none focus:border-brand-red"
             ></textarea>
@@ -347,7 +349,7 @@ function formatChangePrice(price: number, isPoa: boolean): string {
 }
 
 async function submitQuote(confirmedPrices = false) {
-  if (!customer.value.name || !customer.value.email) return
+  if (!customer.value.name.trim() || !customer.value.email.trim() || !customer.value.company.trim() || !customer.value.notes.trim()) return
   if (hasUnresolvedPortableSize.value) {
     errorMessage.value = 'Choose a size for every portable container before requesting a quote.'
     return

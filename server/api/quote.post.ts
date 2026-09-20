@@ -9,9 +9,9 @@ interface QuoteEnquiryCustomer {
   name: string
   email: string
   phone?: string
-  company?: string
+  company: string
   address?: string | { formattedAddress?: string; townCity?: string; postcode?: string }
-  notes?: string
+  notes: string
 }
 
 interface QuoteEnquiryRequestBody {
@@ -38,7 +38,15 @@ const handler = async (event: any) => {
   // just the fields (townCity/postcode) it checks for — dropping `formattedAddress` from its type.
   const customerAddress = customer?.address
 
-  if (!customer?.name || !customer?.email || !items || !Array.isArray(items) || items.length === 0) {
+  if (
+    !customer?.name?.trim() ||
+    !customer?.email?.trim() ||
+    !customer?.company?.trim() ||
+    !customer?.notes?.trim() ||
+    !items ||
+    !Array.isArray(items) ||
+    items.length === 0
+  ) {
     throw errorFn({
       statusCode: 400,
       statusMessage: 'Invalid quote submission payload. Missing contact details or quote items.'

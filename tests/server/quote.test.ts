@@ -85,6 +85,8 @@ describe('Quote Request API Endpoint', () => {
   const validCustomer = {
     name: 'David Miller',
     email: 'david@construction.co.uk',
+    company: 'Miller Construction Ltd',
+    notes: 'Deliver to the north gate; call site contact on arrival.',
     address: { formattedAddress: '10 High Street, Nottingham, NG1 1AA', townCity: 'Nottingham', postcode: 'NG1 1AA' }
   }
 
@@ -97,11 +99,46 @@ describe('Quote Request API Endpoint', () => {
     await expect(quoteHandler(event)).rejects.toThrow(/Invalid quote submission/i)
   })
 
+  it('rejects submissions with a missing company/site name or general instructions', async () => {
+    const missingCompany = createMockEvent({
+      customer: { ...validCustomer, company: '' },
+      items: [{ productName: 'Site Office Cabin 20ft', quantity: 1 }]
+    })
+    const missingNotes = createMockEvent({
+      customer: { ...validCustomer, notes: '' },
+      items: [{ productName: 'Site Office Cabin 20ft', quantity: 1 }]
+    })
+
+    await expect(quoteHandler(missingCompany)).rejects.toThrow(/Invalid quote submission/i)
+    await expect(quoteHandler(missingNotes)).rejects.toThrow(/Invalid quote submission/i)
+  })
+
+  it('rejects a whitespace-only company/site name or general instructions as not actually provided', async () => {
+    const event = createMockEvent({
+      customer: { ...validCustomer, company: '   ', notes: '   ' },
+      items: [{ productName: 'Site Office Cabin 20ft', quantity: 1 }]
+    })
+
+    await expect(quoteHandler(event)).rejects.toThrow(/Invalid quote submission/i)
+  })
+
+  it('accepts submissions with no phone number, since phone is the one optional contact field', async () => {
+    const event = createMockEvent({
+      customer: { ...validCustomer, phone: undefined },
+      items: [{
+        productId: 'site-office-cabin-20ft', productName: 'Site Office Cabin 20ft',
+        sizeKey: 'standard', sizeLabel: '2.40m x 6.00m (Standard)', quantity: 1, basePrice: 8500, customTotal: 8500
+      }]
+    })
+
+    const response = await quoteHandler(event)
+    expect(response.success).toBe(true)
+  })
+
   it('rejects submissions without a delivery destination', async () => {
     const event = createMockEvent({
       customer: {
-        name: 'David Miller',
-        email: 'david@construction.co.uk',
+        ...validCustomer,
         address: ''
       },
       items: [{ productName: 'Site Office Cabin 20ft', quantity: 1 }]
