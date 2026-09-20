@@ -1,7 +1,16 @@
 import { PRODUCT_CARD_PROJECTION } from "~/queries/catalog";
-import type { Solution, SolutionSummary } from "~/types/solution";
+import type { Solution, SolutionNavItem, SolutionSummary } from "~/types/solution";
 
-export type { Solution, SolutionSummary };
+export type { Solution, SolutionNavItem, SolutionSummary };
+
+/** The header submenu's solution list: just name and slug, in editor-chosen order. */
+export const SOLUTIONS_NAV_QUERY = `*[
+  _type == "solution" && !(_id in path("drafts.**"))
+] | order(displayOrder asc, name asc) {
+  _id,
+  name,
+  "slug": slug.current
+}`;
 
 /** The solutions listing: cover photo, name and description, in editor-chosen order. */
 export const SOLUTIONS_QUERY = `*[

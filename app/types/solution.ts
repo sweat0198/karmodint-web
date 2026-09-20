@@ -16,6 +16,13 @@ export interface SolutionProductEntry {
   sizeOptionKey: string;
 }
 
+/** A solution as the header submenu needs it — just enough to link to it. */
+export interface SolutionNavItem {
+  _id: string;
+  name: string;
+  slug: string;
+}
+
 /** A solution as the listing page needs it — no products dereferenced. */
 export interface SolutionSummary {
   _id: string;

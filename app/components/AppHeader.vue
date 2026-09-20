@@ -27,28 +27,97 @@
         >
           Home
         </NuxtLink>
-        <NuxtLink
-          to="/products"
-          class="text-base transition-colors py-1 relative"
-          :class="
-            isProductsActive
-              ? 'text-white font-bold border-b-2 border-brand-red pb-1.5'
-              : 'text-brand-slate-light hover:text-white font-medium'
-          "
-        >
-          Products
-        </NuxtLink>
-        <NuxtLink
-          to="/solutions"
-          class="text-base transition-colors py-1 relative"
-          :class="
-            isSolutionsActive
-              ? 'text-white font-bold border-b-2 border-brand-red pb-1.5'
-              : 'text-brand-slate-light hover:text-white font-medium'
-          "
-        >
-          Solutions
-        </NuxtLink>
+        <div class="relative group">
+          <NuxtLink
+            to="/products"
+            class="text-base transition-colors py-1 relative inline-flex items-center gap-1"
+            :class="
+              isProductsActive
+                ? 'text-white font-bold border-b-2 border-brand-red pb-1.5'
+                : 'text-brand-slate-light hover:text-white font-medium'
+            "
+          >
+            Products
+            <svg
+              class="w-3 h-3 shrink-0 transition-transform duration-150 [transition-timing-function:var(--ease-out)] group-hover:rotate-180 group-focus-within:rotate-180"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </NuxtLink>
+
+          <div
+            class="absolute left-0 top-full w-64 origin-top-left pt-3 opacity-0 invisible -translate-y-1 transition-[opacity,transform] duration-150 [transition-timing-function:var(--ease-out)] motion-reduce:transition-opacity motion-reduce:duration-200 motion-reduce:translate-y-0 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 group-focus-within:opacity-100 group-focus-within:visible group-focus-within:translate-y-0"
+          >
+            <div class="bg-white rounded-md border border-slate-100 shadow-lg py-2">
+              <NuxtLink
+                to="/products"
+                class="block px-4 py-2.5 text-sm font-semibold text-brand-red hover:bg-slate-50 hover:text-brand-red-dark"
+              >
+                Show all Products
+              </NuxtLink>
+              <template v-if="productCategories.length">
+                <div class="my-1.5 border-t border-slate-100" />
+                <NuxtLink
+                  v-for="cat in productCategories"
+                  :key="cat._id"
+                  :to="`/products?category=${cat.slug}`"
+                  class="block px-4 py-2 text-sm text-brand-slate-muted hover:bg-slate-50 hover:text-brand-navy-heading"
+                >
+                  {{ cat.name }}
+                </NuxtLink>
+              </template>
+            </div>
+          </div>
+        </div>
+
+        <div class="relative group">
+          <NuxtLink
+            to="/solutions"
+            class="text-base transition-colors py-1 relative inline-flex items-center gap-1"
+            :class="
+              isSolutionsActive
+                ? 'text-white font-bold border-b-2 border-brand-red pb-1.5'
+                : 'text-brand-slate-light hover:text-white font-medium'
+            "
+          >
+            Solutions
+            <svg
+              class="w-3 h-3 shrink-0 transition-transform duration-150 [transition-timing-function:var(--ease-out)] group-hover:rotate-180 group-focus-within:rotate-180"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </NuxtLink>
+
+          <div
+            class="absolute left-0 top-full w-72 origin-top-left pt-3 opacity-0 invisible -translate-y-1 transition-[opacity,transform] duration-150 [transition-timing-function:var(--ease-out)] motion-reduce:transition-opacity motion-reduce:duration-200 motion-reduce:translate-y-0 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 group-focus-within:opacity-100 group-focus-within:visible group-focus-within:translate-y-0"
+          >
+            <div class="bg-white rounded-md border border-slate-100 shadow-lg py-2">
+              <NuxtLink
+                to="/solutions"
+                class="block px-4 py-2.5 text-sm font-semibold text-brand-red hover:bg-slate-50 hover:text-brand-red-dark"
+              >
+                Show all Solutions
+              </NuxtLink>
+              <template v-if="solutionMenuItems.length">
+                <div class="my-1.5 border-t border-slate-100" />
+                <NuxtLink
+                  v-for="sol in solutionMenuItems"
+                  :key="sol._id"
+                  :to="`/solutions/${sol.slug}`"
+                  class="block px-4 py-2 text-sm text-brand-slate-muted hover:bg-slate-50 hover:text-brand-navy-heading"
+                >
+                  {{ sol.name }}
+                </NuxtLink>
+              </template>
+            </div>
+          </div>
+        </div>
         <NuxtLink
           to="/about"
           class="text-base transition-colors py-1 relative"
@@ -196,20 +265,92 @@
       >
         Home
       </NuxtLink>
-      <NuxtLink
-        to="/products"
-        @click="isMobileMenuOpen = false"
-        class="block text-base font-medium text-brand-slate-light hover:text-white"
-      >
-        Products
-      </NuxtLink>
-      <NuxtLink
-        to="/solutions"
-        @click="isMobileMenuOpen = false"
-        class="block text-base font-medium text-brand-slate-light hover:text-white"
-      >
-        Solutions
-      </NuxtLink>
+      <div>
+        <div class="flex items-center justify-between gap-2">
+          <NuxtLink
+            to="/products"
+            @click="isMobileMenuOpen = false"
+            class="block text-base font-medium text-brand-slate-light hover:text-white"
+          >
+            Products
+          </NuxtLink>
+          <button
+            v-if="productCategories.length"
+            type="button"
+            @click="isMobileProductsOpen = !isMobileProductsOpen"
+            class="p-2 -m-2 text-brand-slate-light hover:text-white"
+            :aria-expanded="isMobileProductsOpen"
+            aria-label="Toggle Products categories"
+          >
+            <svg
+              class="w-4 h-4 transition-transform duration-150 [transition-timing-function:var(--ease-out)]"
+              :class="{ 'rotate-180': isMobileProductsOpen }"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+        </div>
+        <div
+          v-if="isMobileProductsOpen && productCategories.length"
+          class="mt-2 ml-3 pl-3 border-l border-brand-rose-border/20 space-y-2.5"
+        >
+          <NuxtLink
+            v-for="cat in productCategories"
+            :key="cat._id"
+            :to="`/products?category=${cat.slug}`"
+            @click="isMobileMenuOpen = false"
+            class="block text-sm text-brand-slate-light/80 hover:text-white"
+          >
+            {{ cat.name }}
+          </NuxtLink>
+        </div>
+      </div>
+      <div>
+        <div class="flex items-center justify-between gap-2">
+          <NuxtLink
+            to="/solutions"
+            @click="isMobileMenuOpen = false"
+            class="block text-base font-medium text-brand-slate-light hover:text-white"
+          >
+            Solutions
+          </NuxtLink>
+          <button
+            v-if="solutionMenuItems.length"
+            type="button"
+            @click="isMobileSolutionsOpen = !isMobileSolutionsOpen"
+            class="p-2 -m-2 text-brand-slate-light hover:text-white"
+            :aria-expanded="isMobileSolutionsOpen"
+            aria-label="Toggle Solutions list"
+          >
+            <svg
+              class="w-4 h-4 transition-transform duration-150 [transition-timing-function:var(--ease-out)]"
+              :class="{ 'rotate-180': isMobileSolutionsOpen }"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+        </div>
+        <div
+          v-if="isMobileSolutionsOpen && solutionMenuItems.length"
+          class="mt-2 ml-3 pl-3 border-l border-brand-rose-border/20 space-y-2.5"
+        >
+          <NuxtLink
+            v-for="sol in solutionMenuItems"
+            :key="sol._id"
+            :to="`/solutions/${sol.slug}`"
+            @click="isMobileMenuOpen = false"
+            class="block text-sm text-brand-slate-light/80 hover:text-white"
+          >
+            {{ sol.name }}
+          </NuxtLink>
+        </div>
+      </div>
       <NuxtLink
         to="/about"
         @click="isMobileMenuOpen = false"
@@ -295,12 +436,24 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import { useSanityQuery } from "#imports";
 import { useQuickContact } from "~/composables/useQuickContact";
+import { CATEGORY_TREE_QUERY, type CategoryTreeNode } from "~/queries/catalog";
+import { SOLUTIONS_NAV_QUERY, type SolutionNavItem } from "~/queries/solutions";
 
 const route = useRoute();
 const router = useRouter();
 const { phoneDisplay, phoneTelHref, whatsAppDisplay, whatsAppUrl, hasQuoteItems, quoteCount } = useQuickContact();
 const isMobileMenuOpen = ref(false);
+const isMobileProductsOpen = ref(false);
+const isMobileSolutionsOpen = ref(false);
+
+const { data: categoryTree } = await useSanityQuery<CategoryTreeNode[]>(CATEGORY_TREE_QUERY);
+const { data: solutionsList } = await useSanityQuery<SolutionNavItem[]>(SOLUTIONS_NAV_QUERY);
+
+// Top-level categories only — the header submenu is a shortcut into a category, not a full tree.
+const productCategories = computed(() => categoryTree.value ?? []);
+const solutionMenuItems = computed(() => solutionsList.value ?? []);
 
 const isProductsActive = computed(() => {
   return route.path.startsWith("/products");
