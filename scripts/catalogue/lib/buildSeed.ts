@@ -100,7 +100,7 @@ export function buildProductDocument(
       _type: 'reference' as const,
       _ref: categoryId
     })),
-    customizationConfigurations: cabinCustomizationConfigurations(),
+    customizationConfigurations: cabinCustomizationConfigurations(product.id, product.sizes),
     sizes: product.sizes.map((size) => {
       const label = sizeLabel(size)
 

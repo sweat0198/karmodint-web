@@ -130,6 +130,13 @@ export type SanityCustomizationSizeRule =
 /** Where a resolved item's price came from, in precedence order. Attached only by the resolver. */
 export type CustomizationPriceSource = 'sizeRule' | 'productOverride' | 'itemDefault'
 
+export interface SanityCustomizationSelectionRequirement {
+  _key?: string
+  groupId: string
+  groupTitle?: string
+  itemKey: string
+}
+
 export interface SanityCustomizationItem {
   _key?: string
   title: string
@@ -140,6 +147,11 @@ export interface SanityCustomizationItem {
   description?: string
   image?: SanityImage
   scope?: CustomizationItemScope
+  selectionRequirements?: SanityCustomizationSelectionRequirement[]
+  /** Derived by the selection-constraint evaluator; never persisted to Sanity. */
+  selectionDisabled?: boolean
+  /** Customer-facing reason paired with `selectionDisabled`. */
+  selectionDisabledReason?: string
   /** Set by `resolveCustomizationGroups` once a Size Option/Product override has been applied. */
   priceSource?: CustomizationPriceSource
 }
@@ -166,6 +178,7 @@ export interface SanityCustomizationGroup {
   identifier: SanitySlug | string
   selectionType: CustomizationSelectionType
   isMandatory?: boolean
+  maxSelections?: number
   description?: string
   items: SanityCustomizationItem[]
   displayOrder?: number

@@ -58,7 +58,9 @@ interface ValidationConfiguration {
 
 interface ValidationGroup {
   _id: string
+  selectionType?: 'single' | 'multiple' | 'boolean'
   isMandatory?: boolean
+  maxSelections?: number
   items?: Array<{
     _key?: string
     scope?: 'universal' | 'sizeDependent'
@@ -66,6 +68,10 @@ interface ValidationGroup {
     description?: string
     pricingType?: 'fixed' | 'included' | 'poa'
     price?: number
+    selectionRequirements?: Array<{
+      group?: { _ref?: string }
+      itemKey?: string
+    }>
   }>
 }
 
@@ -139,6 +145,66 @@ function validateCustomizationRules(
   }
 
   const groupsById = new Map(groups.map((group) => [group._id, group]))
+  const configuredGroupIds = new Set(
+    (document?.customizationConfigurations ?? []).flatMap((configuration) => (
+      configuration.group?._ref ? [configuration.group._ref] : []
+    ))
+  )
+  const dependencyEdges = new Map<string, string[]>()
+
+  for (const groupId of configuredGroupIds) {
+    const group = groupsById.get(groupId)
+    if (!group) continue
+    if (
+      group.maxSelections !== undefined
+      && (group.selectionType !== 'multiple'
+        || !Number.isInteger(group.maxSelections)
+        || group.maxSelections < 1
+        || group.maxSelections > (group.items?.length ?? 0))
+    ) {
+      return `Customization Group "${groupId}" has an invalid maximum selection limit`
+    }
+
+    for (const item of group.items ?? []) {
+      if (!item._key) continue
+      const source = `${groupId}:${item._key}`
+      const targets: string[] = []
+      for (const requirement of item.selectionRequirements ?? []) {
+        const targetGroupId = requirement.group?._ref
+        const targetItemKey = requirement.itemKey
+        if (!targetGroupId || !targetItemKey) {
+          return `Customization Item "${item._key}" has an incomplete selection requirement`
+        }
+        if (!configuredGroupIds.has(targetGroupId)) {
+          return `Customization Item "${item._key}" requires unavailable group "${targetGroupId}"`
+        }
+        const targetGroup = groupsById.get(targetGroupId)
+        if (!targetGroup?.items?.some((candidate) => candidate._key === targetItemKey)) {
+          return `Customization Item "${item._key}" requires missing item "${targetItemKey}"`
+        }
+        targets.push(`${targetGroupId}:${targetItemKey}`)
+      }
+      dependencyEdges.set(source, targets)
+    }
+  }
+
+  const visiting = new Set<string>()
+  const visited = new Set<string>()
+  const visit = (node: string): boolean => {
+    if (visiting.has(node)) return true
+    if (visited.has(node)) return false
+    visiting.add(node)
+    for (const target of dependencyEdges.get(node) ?? []) {
+      if (visit(target)) return true
+    }
+    visiting.delete(node)
+    visited.add(node)
+    return false
+  }
+  for (const node of dependencyEdges.keys()) {
+    if (visit(node)) return 'Customization selection requirements contain a dependency cycle'
+  }
+
   for (const configuration of document?.customizationConfigurations ?? []) {
     const groupId = configuration.group?._ref
     if (!groupId) continue
@@ -245,7 +311,7 @@ async function fetchProductCustomizationGroups(
     .getClient({ apiVersion: '2025-02-19' })
     .withConfig({ perspective: 'drafts' })
     .fetch<ValidationGroup[]>(
-      '*[_id in $groupIds]{_id, isMandatory, items[]{_key, scope, title, description, pricingType, price}}',
+      '*[_id in $groupIds]{_id, selectionType, isMandatory, maxSelections, items[]{_key, scope, title, description, pricingType, price, selectionRequirements[]{group{_ref}, itemKey}}}',
       { groupIds }
     )
 }

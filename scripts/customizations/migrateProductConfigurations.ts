@@ -26,7 +26,9 @@ export interface MigrationProduct {
 
 export interface MigrationCustomizationGroup {
   _id: string
+  selectionType?: 'single' | 'multiple' | 'boolean'
   isMandatory?: boolean
+  maxSelections?: number
   items?: Array<{
     _key?: string
     scope?: 'universal' | 'sizeDependent'
@@ -34,6 +36,10 @@ export interface MigrationCustomizationGroup {
     price?: number
     title?: string
     description?: string
+    selectionRequirements?: Array<{
+      group?: { _ref?: string }
+      itemKey?: string
+    }>
   }>
 }
 
@@ -259,8 +265,13 @@ const MIGRATION_PRODUCTS_QUERY = `*[_type == "product"] {
 
 const MIGRATION_GROUPS_QUERY = `*[_type == "customizationGroup"] {
   _id,
+  selectionType,
   isMandatory,
-  items[]{ _key, scope, pricingType, price, title, description }
+  maxSelections,
+  items[]{
+    _key, scope, pricingType, price, title, description,
+    selectionRequirements[]{ group{ _ref }, itemKey }
+  }
 }`
 
 /** Fetches all migration inputs before deciding whether a transaction may be opened. */

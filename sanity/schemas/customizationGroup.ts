@@ -26,6 +26,19 @@ export function validateBooleanGroup(group: {
   return true
 }
 
+export function validateMaxSelections(
+  value: number | undefined,
+  group: { selectionType?: string; items?: unknown[] }
+): true | string {
+  if (value === undefined) return true
+  if (group.selectionType !== 'multiple') return 'Maximum selections applies only to Multiple Choice groups'
+  if (!Number.isInteger(value) || value < 1) return 'Maximum selections must be a positive whole number'
+  if (group.items?.length && value > group.items.length) {
+    return `Maximum selections cannot exceed the ${group.items.length} available choices`
+  }
+  return true
+}
+
 export const customizationGroupType = defineType({
   name: 'customizationGroup',
   title: 'Customization Group',
@@ -67,6 +80,17 @@ export const customizationGroupType = defineType({
       type: 'boolean',
       description: 'If true, user MUST pick an option from this group before submitting quote.',
       initialValue: false
+    }),
+    defineField({
+      name: 'maxSelections',
+      title: 'Maximum Selections',
+      type: 'number',
+      description: 'Optional cap for Multiple Choice groups.',
+      hidden: ({ parent }) => parent?.selectionType !== 'multiple',
+      validation: (Rule) => Rule.custom((value, context: any) => validateMaxSelections(value, {
+        selectionType: context.document?.selectionType,
+        items: context.document?.items
+      }))
     }),
     defineField({
       name: 'description',

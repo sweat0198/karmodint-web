@@ -43,6 +43,44 @@ const POA_PRODUCT: SanityProduct = {
   ],
 }
 
+const DEPENDENT_PRODUCT: SanityProduct = {
+  ...CABIN_PRODUCT,
+  customizationConfigurations: [{
+    group: {
+      _id: 'grp-electrical',
+      _type: 'customizationGroup',
+      title: 'Electricity',
+      identifier: 'electricity',
+      selectionType: 'multiple',
+      maxSelections: 2,
+      items: [{
+        _key: 'standard-elec',
+        title: 'Standard Electrical Pack',
+        pricingType: 'included',
+      }],
+    },
+  }, {
+    group: {
+      _id: 'grp-ac',
+      _type: 'customizationGroup',
+      title: 'Air Conditioning',
+      identifier: 'air-conditioning',
+      selectionType: 'boolean',
+      items: [{
+        _key: 'ac-unit',
+        title: 'Air Conditioning Unit',
+        pricingType: 'fixed',
+        price: 2950,
+        selectionRequirements: [{
+          groupId: 'grp-electrical',
+          groupTitle: 'Electricity',
+          itemKey: 'standard-elec',
+        }],
+      }],
+    },
+  }],
+}
+
 function productsById(...products: SanityProduct[]): Map<string, SanityProduct> {
   return new Map(products.map((p) => [p._id, p]))
 }
@@ -287,5 +325,60 @@ describe('revalidateQuoteItems', () => {
     expect(result.ok).toBe(false)
     if (result.ok) throw new Error('expected a blocked result')
     expect(result.reason).toBe('unavailable')
+  })
+
+  it('rejects a dependent customization submitted without its required selection', () => {
+    const line = baseLine({
+      customTotal: 11450,
+      selectedCustomizations: [{
+        groupId: 'grp-ac',
+        groupTitle: 'Air Conditioning',
+        itemKey: 'ac-unit',
+        optionTitle: 'Air Conditioning Unit',
+        price: 2950,
+        isPoa: false,
+        pricingType: 'fixed',
+      }],
+    })
+
+    const result = revalidateQuoteItems([line], productsById(DEPENDENT_PRODUCT))
+
+    expect(result.ok).toBe(false)
+    if (result.ok) throw new Error('expected a blocked result')
+    expect(result.reason).toBe('unavailable')
+    expect(result.issues).toEqual([
+      expect.objectContaining({
+        groupTitle: 'Air Conditioning',
+        optionTitle: 'Air Conditioning Unit',
+        reason: 'selection_unavailable',
+      }),
+    ])
+  })
+
+  it('rejects duplicate item keys even when their count equals the multiple-choice limit', () => {
+    const standard = {
+      groupId: 'grp-electrical',
+      groupTitle: 'Electricity',
+      itemKey: 'standard-elec',
+      optionTitle: 'Standard Electrical Pack',
+      price: 0,
+      isPoa: false,
+      pricingType: 'included' as const,
+    }
+    const line = baseLine({
+      selectedCustomizations: [standard, standard],
+    })
+
+    const result = revalidateQuoteItems([line], productsById(DEPENDENT_PRODUCT))
+
+    expect(result.ok).toBe(false)
+    if (result.ok) throw new Error('expected a blocked result')
+    expect(result.issues).toEqual([
+      expect.objectContaining({
+        groupTitle: 'Electricity',
+        optionTitle: 'Standard Electrical Pack',
+        reason: 'selection_unavailable',
+      }),
+    ])
   })
 })

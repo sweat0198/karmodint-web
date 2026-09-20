@@ -1,4 +1,4 @@
-import { defineType, defineField } from 'sanity'
+import { defineArrayMember, defineType, defineField } from 'sanity'
 
 export const customizationItem = defineType({
   name: 'customizationItem',
@@ -41,6 +41,35 @@ export const customizationItem = defineType({
       },
       initialValue: 'fixed',
       validation: (Rule) => Rule.required()
+    }),
+    defineField({
+      name: 'selectionRequirements',
+      title: 'Selection Requirements',
+      type: 'array',
+      description: 'Keep this choice disabled until every referenced choice has been selected.',
+      of: [
+        defineArrayMember({
+          name: 'customizationSelectionRequirement',
+          title: 'Required Selection',
+          type: 'object',
+          fields: [
+            defineField({
+              name: 'group',
+              title: 'Required Customization Group',
+              type: 'reference',
+              to: [{ type: 'customizationGroup' }],
+              validation: (Rule) => Rule.required()
+            }),
+            defineField({
+              name: 'itemKey',
+              title: 'Required Item Key',
+              type: 'string',
+              description: 'Stable _key of the required choice inside the selected group.',
+              validation: (Rule) => Rule.required()
+            })
+          ]
+        })
+      ]
     }),
     defineField({
       name: 'price',

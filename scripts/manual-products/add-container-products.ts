@@ -19,6 +19,7 @@
  *   pnpm manual-products:containers --update-existing
  */
 import fs from 'node:fs'
+import { pathToFileURL } from 'node:url'
 import { containerCustomizationConfigurations } from '../customizations/lib/seedRecipes'
 import { renderAltText } from '../catalogue/lib/altText'
 import { sizeLabel } from '../catalogue/lib/manifest'
@@ -146,6 +147,10 @@ Delivered ready for use — placement on site is the only step before it is in s
   }
 ]
 
+export function manualProductCustomizationConfigurations(product: ManualProduct) {
+  return containerCustomizationConfigurations(product.id, product.sizes)
+}
+
 function renderPath(renderFolder: string, view: ProductImageView): string {
   return `${RENDER_ROOT}/${renderFolder}/${view}.png`
 }
@@ -259,7 +264,7 @@ async function main(): Promise<void> {
             name: product.name,
              shortDescription: product.shortDescription,
              description,
-             customizationConfigurations: containerCustomizationConfigurations(),
+             customizationConfigurations: manualProductCustomizationConfigurations(product),
             'seo.metaTitle': product.seoTitle,
             'seo.metaDescription': product.seoDescription
           })
@@ -319,7 +324,7 @@ async function main(): Promise<void> {
         _type: 'reference' as const,
         _ref: categoryId
        })),
-       customizationConfigurations: containerCustomizationConfigurations(),
+       customizationConfigurations: manualProductCustomizationConfigurations(product),
       sizes,
       isFeatured: product.isFeatured,
       status: 'published' as const,
@@ -335,4 +340,4 @@ async function main(): Promise<void> {
   }
 }
 
-runScript(main)
+if (process.argv[1] && pathToFileURL(process.argv[1]).href === import.meta.url) runScript(main)

@@ -93,25 +93,16 @@ describe('Seed document construction', () => {
     expect('specifications' in document).toBe(false)
   })
 
-  it('assigns live Electricity, Heater, and AC groups, hiding the larger electricity option for small cabins', () => {
-    expect(document.customizationConfigurations).toEqual([
-      {
-        _key: 'electricity',
-        _type: 'productCustomizationConfiguration',
-        group: { _type: 'reference', _ref: 'customizationGroup-electricity' },
-        itemOverrides: [{ _key: 'disable-elec-2', itemKey: 'elec-2', enabled: false }]
-      },
-      {
-        _key: 'heater',
-        _type: 'productCustomizationConfiguration',
-        group: { _type: 'reference', _ref: 'customizationGroup-heater' }
-      },
-      {
-        _key: 'air-conditioning',
-        _type: 'productCustomizationConfiguration',
-        group: { _type: 'reference', _ref: 'customizationGroup-ac' }
-      }
+  it('assigns reviewed Size Option prices for live Electricity, Heater, and AC groups', () => {
+    expect(document.customizationConfigurations.map((configuration) => configuration.group._ref)).toEqual([
+      'customizationGroup-electricity',
+      'customizationGroup-heater',
+      'customizationGroup-ac'
     ])
+    const electricity = document.customizationConfigurations[0].itemOverrides![0]
+    expect(electricity.itemKey).toBe('standard-electrical-pack')
+    expect(electricity.sizeRules?.map((rule) => rule.price)).toEqual([475, 475, 475, 575, 675])
+    expect(electricity.sizeRules?.every((rule) => rule.review?.status === 'reviewed')).toBe(true)
   })
 
   it('converts the body to Portable Text inside the whitelist', () => {

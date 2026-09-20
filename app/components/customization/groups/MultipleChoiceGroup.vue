@@ -40,23 +40,40 @@ function updateNote(item: SanityCustomizationItem, value: string) {
       :key="item._key"
       class="border rounded p-4 flex flex-col gap-3 transition-colors"
       :class="[
-        isSelected(item)
+        item.selectionDisabled
+          ? 'border-slate-200 bg-slate-50 text-slate-400'
+          : isSelected(item)
           ? 'border-brand-red bg-brand-red/5 shadow-sm'
           : 'border-brand-rose-border/60 bg-white hover:border-brand-red/40',
       ]"
     >
-      <label class="flex items-center justify-between gap-3 cursor-pointer">
+      <label
+        class="flex items-center justify-between gap-3"
+        :class="item.selectionDisabled ? 'cursor-not-allowed' : 'cursor-pointer'"
+      >
         <span class="flex items-center gap-3">
           <input
             type="checkbox"
             class="rounded text-brand-red focus:ring-brand-red w-4 h-4 border-brand-rose-border"
             :checked="isSelected(item)"
+            :disabled="item.selectionDisabled"
             @change="toggle(item)"
           />
-          <span class="text-sm font-medium text-gray-800">{{ item.title }}</span>
+          <span class="text-sm font-medium" :class="item.selectionDisabled ? 'text-slate-400' : 'text-gray-800'">
+            {{ item.title }}
+          </span>
         </span>
-        <span class="text-sm font-medium text-gray-800 shrink-0">{{ formatPriceBadge(item) }}</span>
+        <span
+          class="text-sm font-medium shrink-0"
+          :class="item.selectionDisabled ? 'text-slate-400' : 'text-gray-800'"
+        >
+          {{ formatPriceBadge(item) }}
+        </span>
       </label>
+
+      <p v-if="item.selectionDisabledReason" class="text-xs font-medium text-amber-700">
+        {{ item.selectionDisabledReason }}
+      </p>
 
       <CustomizationNote
         v-if="isSelected(item) && item.requiresTextInput"

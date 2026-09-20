@@ -15,6 +15,11 @@ import {
   buildDevStudioDeployCommand,
   resolveDevStudioDeployHost
 } from '../../scripts/customizations/deployDevStudio'
+import {
+  cabinCustomizationConfigurations,
+  containerCustomizationConfigurations,
+  EXTRA_ITEM_COSTS
+} from '../../scripts/customizations/lib/seedRecipes'
 
 const SEED_GROUPS: SeedCustomizationGroupDocument[] = [
   { _id: 'customizationGroup-electricity', _type: 'customizationGroup', title: 'Electricity' },
@@ -24,20 +29,24 @@ const SEED_GROUPS: SeedCustomizationGroupDocument[] = [
   { _id: 'customizationGroup-kitchen', _type: 'customizationGroup', title: 'Kitchen' }
 ]
 
+function sizesFor(productId: string) {
+  return Object.keys(EXTRA_ITEM_COSTS[productId]).map((_key) => ({
+    _key,
+    lengthM: 1,
+    widthM: 1,
+  }))
+}
+
 function fullyConfiguredProducts(): SyncProduct[] {
-  const cabinConfigurations = [
-    'customizationGroup-electricity',
-    'customizationGroup-heater',
-    'customizationGroup-ac'
-  ].map((_ref) => ({ group: { _ref } }))
-  const containerConfigurations = [
-    ...cabinConfigurations,
-    { group: { _ref: 'customizationGroup-wc' } },
-    { group: { _ref: 'customizationGroup-kitchen' } }
-  ]
   return [
-    ...CABIN_PRODUCT_IDS.map((_id) => ({ _id, customizationConfigurations: cabinConfigurations })),
-    ...CONTAINER_PRODUCT_IDS.map((_id) => ({ _id, customizationConfigurations: containerConfigurations }))
+    ...CABIN_PRODUCT_IDS.map((_id) => {
+      const sizes = sizesFor(_id)
+      return { _id, sizes, customizationConfigurations: cabinCustomizationConfigurations(_id, sizes) }
+    }),
+    ...CONTAINER_PRODUCT_IDS.map((_id) => {
+      const sizes = sizesFor(_id)
+      return { _id, sizes, customizationConfigurations: containerCustomizationConfigurations(_id, sizes) }
+    })
   ]
 }
 
@@ -100,6 +109,7 @@ describe('dev customization seed sync', () => {
   it('creates missing groups before migrating legacy Products, then appends only missing modern links', () => {
     const legacyProduct = {
       _id: 'product-grp-cabin',
+      sizes: sizesFor('product-grp-cabin'),
       customizationGroups: [{ _ref: 'customizationGroup-electricity' }],
       customizationConfigurations: []
     }
@@ -111,15 +121,17 @@ describe('dev customization seed sync', () => {
     const migrated = planProductCustomizationMigration(legacyProduct, SEED_GROUPS)
     const postMigrationPlan = buildDevCustomizationSeedSyncPlan([{
       _id: legacyProduct._id,
+      sizes: legacyProduct.sizes,
       customizationConfigurations: migrated.configurations
     }], SEED_GROUPS.map((group) => group._id), SEED_GROUPS)
 
     expect(postMigrationPlan.productPatches).toEqual([{
       productId: 'product-grp-cabin',
-      append: [
+      configurations: expect.arrayContaining([
+        expect.objectContaining({ group: expect.objectContaining({ _ref: 'customizationGroup-electricity' }) }),
         expect.objectContaining({ group: expect.objectContaining({ _ref: 'customizationGroup-heater' }) }),
         expect.objectContaining({ group: expect.objectContaining({ _ref: 'customizationGroup-ac' }) })
-      ]
+      ])
     }])
   })
 
@@ -139,7 +151,7 @@ describe('dev customization seed sync', () => {
     await expect(verifyDevCustomizationSeedState(client, 'dev', SEED_GROUPS)).resolves.toEqual({
       appliedGroups: 0,
       appliedProducts: 0,
-      plannedGroups: 0,
+      plannedGroups: 1,
       plannedProducts: 0,
       review: ['Customization Group "customizationGroup-ac" differs from checked-in seed content']
     })
@@ -190,8 +202,8 @@ describe('dev customization seed sync', () => {
       async fetch(query: string) {
         if (query.includes(']._id')) return []
         return [
-          ...CABIN_PRODUCT_IDS.map((_id) => ({ _id, customizationConfigurations: [] })),
-          ...CONTAINER_PRODUCT_IDS.map((_id) => ({ _id, customizationConfigurations: [] }))
+          ...CABIN_PRODUCT_IDS.map((_id) => ({ _id, sizes: sizesFor(_id), customizationConfigurations: [] })),
+          ...CONTAINER_PRODUCT_IDS.map((_id) => ({ _id, sizes: sizesFor(_id), customizationConfigurations: [] }))
         ]
       },
       transaction() {
@@ -212,8 +224,8 @@ describe('dev customization seed sync', () => {
 
   it('plans missing group documents with only intended Product configuration additions', () => {
     const plan = buildDevCustomizationSeedSyncPlan([
-      { _id: 'product-grp-cabin', customizationConfigurations: [] },
-      { _id: 'product-k1002-portable-cabin', customizationConfigurations: [] },
+      { _id: 'product-grp-cabin', sizes: sizesFor('product-grp-cabin'), customizationConfigurations: [] },
+      { _id: 'product-k1002-portable-cabin', sizes: sizesFor('product-k1002-portable-cabin'), customizationConfigurations: [] },
       { _id: 'product-unrelated', customizationConfigurations: [] }
     ], ['customizationGroup-electricity'], SEED_GROUPS)
 
@@ -226,7 +238,7 @@ describe('dev customization seed sync', () => {
     expect(plan.productPatches).toEqual([
       {
         productId: 'product-grp-cabin',
-        append: expect.arrayContaining([
+        configurations: expect.arrayContaining([
           expect.objectContaining({ group: expect.objectContaining({ _ref: 'customizationGroup-electricity' }) }),
           expect.objectContaining({ group: expect.objectContaining({ _ref: 'customizationGroup-heater' }) }),
           expect.objectContaining({ group: expect.objectContaining({ _ref: 'customizationGroup-ac' }) })
@@ -234,7 +246,7 @@ describe('dev customization seed sync', () => {
       },
       {
         productId: 'product-k1002-portable-cabin',
-        append: expect.arrayContaining([
+        configurations: expect.arrayContaining([
           expect.objectContaining({ group: expect.objectContaining({ _ref: 'customizationGroup-electricity' }) }),
           expect.objectContaining({ group: expect.objectContaining({ _ref: 'customizationGroup-heater' }) }),
           expect.objectContaining({ group: expect.objectContaining({ _ref: 'customizationGroup-ac' }) }),
@@ -245,20 +257,22 @@ describe('dev customization seed sync', () => {
     ])
   })
 
-  it('appends only absent group references and preserves existing overrides', () => {
+  it('replaces canonical pricing while preserving unrelated configurations', () => {
     const existing = {
-      _key: 'electricity',
+      _key: 'unrelated',
       _type: 'productCustomizationConfiguration' as const,
-      group: { _type: 'reference' as const, _ref: 'customizationGroup-electricity' },
+      group: { _type: 'reference' as const, _ref: 'customizationGroup-unrelated' },
       itemOverrides: [{ _key: 'preserve', itemKey: 'elec-2', enabled: false }]
     }
     const plan = buildDevCustomizationSeedSyncPlan([
-      { _id: 'product-grp-cabin', customizationConfigurations: [existing] }
+      { _id: 'product-grp-cabin', sizes: sizesFor('product-grp-cabin'), customizationConfigurations: [existing] }
     ], SEED_GROUPS.map((group) => group._id), SEED_GROUPS)
 
     expect(plan.productPatches).toEqual([{
       productId: 'product-grp-cabin',
-      append: [
+      configurations: [
+        existing,
+        expect.objectContaining({ group: expect.objectContaining({ _ref: 'customizationGroup-electricity' }) }),
         expect.objectContaining({ group: expect.objectContaining({ _ref: 'customizationGroup-heater' }) }),
         expect.objectContaining({ group: expect.objectContaining({ _ref: 'customizationGroup-ac' }) })
       ]
@@ -267,21 +281,9 @@ describe('dev customization seed sync', () => {
   })
 
   it('is idempotent after every desired group is present', () => {
-    const cabinConfigurations = [
-      'customizationGroup-electricity',
-      'customizationGroup-heater',
-      'customizationGroup-ac'
-    ].map((groupId) => ({ group: { _ref: groupId } }))
-    const containerConfigurations = [
-      ...cabinConfigurations,
-      { group: { _ref: 'customizationGroup-wc' } },
-      { group: { _ref: 'customizationGroup-kitchen' } }
-    ]
-
     expect(buildDevCustomizationSeedSyncPlan([
-      ...CABIN_PRODUCT_IDS.map((_id) => ({ _id, customizationConfigurations: cabinConfigurations })),
-      ...CONTAINER_PRODUCT_IDS.map((_id) => ({ _id, customizationConfigurations: containerConfigurations }))
-    ], SEED_GROUPS.map((group) => group._id), SEED_GROUPS)).toEqual({
+      ...fullyConfiguredProducts()
+    ], SEED_GROUPS, SEED_GROUPS)).toEqual({
       createGroups: [],
       productPatches: [],
       review: []
@@ -300,44 +302,28 @@ describe('dev customization seed sync', () => {
 
   it('commits planned additions once then re-reads and verifies them', async () => {
     const products = [
-      { _id: 'product-grp-cabin', _rev: 'cabin-revision', customizationConfigurations: [] as Array<{ group: { _ref: string } }> },
-      ...CABIN_PRODUCT_IDS.slice(1).map((_id) => ({
-        _id,
-        customizationConfigurations: ['customizationGroup-electricity', 'customizationGroup-heater', 'customizationGroup-ac']
-          .map((_ref) => ({ group: { _ref } }))
-      })),
-      ...CONTAINER_PRODUCT_IDS.map((_id) => ({
-        _id,
-        customizationConfigurations: [
-          'customizationGroup-electricity',
-          'customizationGroup-heater',
-          'customizationGroup-ac',
-          'customizationGroup-wc',
-          'customizationGroup-kitchen'
-        ].map((_ref) => ({ group: { _ref } }))
-      }))
+      { _id: 'product-grp-cabin', _rev: 'cabin-revision', sizes: sizesFor('product-grp-cabin'), customizationConfigurations: [] as Array<{ group: { _ref: string } }> },
+      ...fullyConfiguredProducts().filter((product) => product._id !== 'product-grp-cabin')
     ]
-    const groupIds: string[] = []
+    const groups: SeedCustomizationGroupDocument[] = []
     let commits = 0
     const transaction = {
-      createIfNotExists(group: { _id: string }) {
-        groupIds.push(group._id)
+      createOrReplace(group: SeedCustomizationGroupDocument) {
+        const index = groups.findIndex((existing) => existing._id === group._id)
+        if (index === -1) groups.push(group)
+        else groups[index] = group
         return transaction
       },
       patch(id: string, configure: (patch: {
         ifRevisionId(revision: string): typeof patch
-        setIfMissing(value: { customizationConfigurations: [] }): typeof patch
-        append(path: 'customizationConfigurations', value: Array<{ group: { _ref: string } }>): typeof patch
+        set(value: { customizationConfigurations: Array<{ group: { _ref: string } }> }): typeof patch
       }) => unknown) {
         const patch = {
           ifRevisionId(_revision: string) {
             return patch
           },
-          setIfMissing(_value: { customizationConfigurations: [] }) {
-            return patch
-          },
-          append(path: 'customizationConfigurations', value: Array<{ group: { _ref: string } }>) {
-            products.find((product) => product._id === id)!.customizationConfigurations.push(...value)
+          set(value: { customizationConfigurations: Array<{ group: { _ref: string } }> }) {
+            products.find((product) => product._id === id)!.customizationConfigurations = value.customizationConfigurations
             return patch
           }
         }
@@ -350,7 +336,7 @@ describe('dev customization seed sync', () => {
     }
     const client = {
       async fetch(query: string) {
-        return query.includes(']._id') ? groupIds : products
+        return query.includes('_type == "product"') ? products : groups
       },
       transaction() {
         return transaction
@@ -369,27 +355,13 @@ describe('dev customization seed sync', () => {
 
   it('returns a review when post-apply verification cannot find an appended configuration', async () => {
     const products = [
-      { _id: 'product-grp-cabin', customizationConfigurations: [] },
-      ...CABIN_PRODUCT_IDS.slice(1).map((_id) => ({
-        _id,
-        customizationConfigurations: ['customizationGroup-electricity', 'customizationGroup-heater', 'customizationGroup-ac']
-          .map((_ref) => ({ group: { _ref } }))
-      })),
-      ...CONTAINER_PRODUCT_IDS.map((_id) => ({
-        _id,
-        customizationConfigurations: [
-          'customizationGroup-electricity',
-          'customizationGroup-heater',
-          'customizationGroup-ac',
-          'customizationGroup-wc',
-          'customizationGroup-kitchen'
-        ].map((_ref) => ({ group: { _ref } }))
-      }))
+      { _id: 'product-grp-cabin', sizes: sizesFor('product-grp-cabin'), customizationConfigurations: [] },
+      ...fullyConfiguredProducts().filter((product) => product._id !== 'product-grp-cabin')
     ]
-    const groupIds: string[] = []
+    const groups: SeedCustomizationGroupDocument[] = []
     const transaction = {
-      createIfNotExists(group: { _id: string }) {
-        groupIds.push(group._id)
+      createOrReplace(group: SeedCustomizationGroupDocument) {
+        groups.push(group)
         return transaction
       },
       patch(_id: string, _configure: unknown) {
@@ -399,7 +371,7 @@ describe('dev customization seed sync', () => {
     }
     const client = {
       async fetch(query: string) {
-        return query.includes(']._id') ? groupIds : products
+        return query.includes('_type == "product"') ? products : groups
       },
       transaction() {
         return transaction
@@ -412,53 +384,33 @@ describe('dev customization seed sync', () => {
       plannedGroups: 5,
       plannedProducts: 1,
       review: [
-        'Product "product-grp-cabin" is missing Customization Group "customizationGroup-electricity" after sync',
-        'Product "product-grp-cabin" is missing Customization Group "customizationGroup-heater" after sync',
-        'Product "product-grp-cabin" is missing Customization Group "customizationGroup-ac" after sync'
+        'Product "product-grp-cabin" customization pricing was not reconciled'
       ]
     })
   })
 
   it('guards Product patches by revision and propagates a concurrent-edit conflict', async () => {
     const products = [
-      { _id: 'product-grp-cabin', _rev: 'cabin-revision', customizationConfigurations: [] },
-      ...CABIN_PRODUCT_IDS.slice(1).map((_id) => ({
-        _id,
-        _rev: `${_id}-revision`,
-        customizationConfigurations: ['customizationGroup-electricity', 'customizationGroup-heater', 'customizationGroup-ac']
-          .map((_ref) => ({ group: { _ref } }))
-      })),
-      ...CONTAINER_PRODUCT_IDS.map((_id) => ({
-        _id,
-        _rev: `${_id}-revision`,
-        customizationConfigurations: [
-          'customizationGroup-electricity',
-          'customizationGroup-heater',
-          'customizationGroup-ac',
-          'customizationGroup-wc',
-          'customizationGroup-kitchen'
-        ].map((_ref) => ({ group: { _ref } }))
-      }))
+      { _id: 'product-grp-cabin', _rev: 'cabin-revision', sizes: sizesFor('product-grp-cabin'), customizationConfigurations: [] },
+      ...fullyConfiguredProducts()
+        .filter((product) => product._id !== 'product-grp-cabin')
+        .map((product) => ({ ...product, _rev: `${product._id}-revision` }))
     ]
     const revisions: string[] = []
     const transaction = {
-      createIfNotExists() {
+      createOrReplace() {
         return transaction
       },
       patch(_id: string, configure: (patch: {
         ifRevisionId(revision: string): typeof patch
-        setIfMissing(value: { customizationConfigurations: [] }): typeof patch
-        append(path: 'customizationConfigurations', value: unknown[]): typeof patch
+        set(value: { customizationConfigurations: unknown[] }): typeof patch
       }) => unknown) {
         const patch = {
           ifRevisionId(revision: string) {
             revisions.push(revision)
             return patch
           },
-          setIfMissing(_value: { customizationConfigurations: [] }) {
-            return patch
-          },
-          append(_path: 'customizationConfigurations', _value: unknown[]) {
+          set(_value: { customizationConfigurations: unknown[] }) {
             return patch
           }
         }
@@ -471,7 +423,7 @@ describe('dev customization seed sync', () => {
     }
     const client = {
       async fetch(query: string) {
-        return query.includes(']._id') ? SEED_GROUPS.map((group) => group._id) : products
+        return query.includes('_type == "product"') ? products : SEED_GROUPS
       },
       transaction() {
         return transaction

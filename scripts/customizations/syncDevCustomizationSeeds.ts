@@ -3,7 +3,8 @@ import { pathToFileURL } from 'node:url'
 import {
   cabinCustomizationConfigurations,
   containerCustomizationConfigurations,
-  type SeedCustomizationConfiguration
+  type SeedCustomizationConfiguration,
+  type SeedSizeInput,
 } from './lib/seedRecipes'
 import { repoPath } from '../catalogue/lib/paths'
 import { createSanityClient, readDataset, readSanityTarget } from '../catalogue/lib/sanityEnv'
@@ -31,6 +32,7 @@ interface ExistingConfiguration {
 
 export interface SyncProduct {
   _id: string
+  sizes?: SeedSizeInput[]
   customizationGroups?: Array<{ _ref?: string }>
   customizationConfigurations?: ExistingConfiguration[]
 }
@@ -43,13 +45,13 @@ export interface DevCustomizationSeedSyncPlan {
   createGroups: SeedCustomizationGroupDocument[]
   productPatches: Array<{
     productId: string
-    append: SeedCustomizationConfiguration[]
+    configurations: ExistingConfiguration[]
   }>
   review: string[]
 }
 
 export interface DevCustomizationSeedSyncTransaction {
-  createIfNotExists(document: SeedCustomizationGroupDocument): DevCustomizationSeedSyncTransaction
+  createOrReplace(document: SeedCustomizationGroupDocument): DevCustomizationSeedSyncTransaction
   patch(
     id: string,
     configure: (patch: any) => any
@@ -59,8 +61,7 @@ export interface DevCustomizationSeedSyncTransaction {
 
 export interface DevCustomizationSeedSyncPatch {
   ifRevisionId(revision: string): DevCustomizationSeedSyncPatch
-  setIfMissing(value: { customizationConfigurations: [] }): DevCustomizationSeedSyncPatch
-  append(path: 'customizationConfigurations', value: SeedCustomizationConfiguration[]): DevCustomizationSeedSyncPatch
+  set(value: { customizationConfigurations: ExistingConfiguration[] }): DevCustomizationSeedSyncPatch
 }
 
 export interface DevCustomizationSeedSyncClient {
@@ -76,20 +77,13 @@ export interface DevCustomizationSeedSyncResult {
   review: string[]
 }
 
-function requiredConfigurationGroups(): Array<{
-  productId: string
-  configurations: SeedCustomizationConfiguration[]
-}> {
-  return [
-    ...CABIN_PRODUCT_IDS.map((productId) => ({
-      productId,
-      configurations: cabinCustomizationConfigurations()
-    })),
-    ...CONTAINER_PRODUCT_IDS.map((productId) => ({
-      productId,
-      configurations: containerCustomizationConfigurations()
-    }))
-  ]
+function requiredConfigurations(product: SyncProduct): SeedCustomizationConfiguration[] {
+  if (!product.sizes?.length) {
+    throw new Error(`Product "${product._id}" has no Size Options for customization pricing`)
+  }
+  return (CONTAINER_PRODUCT_IDS as readonly string[]).includes(product._id)
+    ? containerCustomizationConfigurations(product._id, product.sizes)
+    : cabinCustomizationConfigurations(product._id, product.sizes)
 }
 
 /** Parses checked-in NDJSON without accepting unrelated document types. */
@@ -116,33 +110,55 @@ export function loadCustomizationGroupSeeds(): SeedCustomizationGroupDocument[] 
   return parseCustomizationGroupSeeds(fs.readFileSync(repoPath(CUSTOMIZATION_GROUP_SEED_FILE), 'utf-8'))
 }
 
-/** Plans additive seed writes. Legacy Products wait for migration before modern links are appended. */
+/** Plans canonical dev seed reconciliation. Legacy Products wait for migration before configurations are replaced. */
 export function buildDevCustomizationSeedSyncPlan(
   products: SyncProduct[],
-  existingGroupIds: string[],
+  existingGroups: Array<string | SeedCustomizationGroupDocument>,
   seedGroups: SeedCustomizationGroupDocument[],
 ): DevCustomizationSeedSyncPlan {
   const existingProductById = new Map(products.map((product) => [product._id, product]))
-  const existingGroups = new Set(existingGroupIds)
-  const createGroups = seedGroups.filter((group) => !existingGroups.has(group._id))
+  const existingGroupById = new Map(existingGroups.map((group) => [
+    typeof group === 'string' ? group : group._id,
+    typeof group === 'string' ? undefined : group,
+  ]))
+  const createGroups = seedGroups.filter((group) => {
+    if (!existingGroupById.has(group._id)) return true
+    const existing = existingGroupById.get(group._id)
+    return existing ? !hasMatchingSeedContent(existing, group) : false
+  })
   const productPatches: DevCustomizationSeedSyncPlan['productPatches'] = []
   const review: string[] = []
 
-  for (const target of requiredConfigurationGroups()) {
-    const product = existingProductById.get(target.productId)
+  for (const productId of [...CABIN_PRODUCT_IDS, ...CONTAINER_PRODUCT_IDS]) {
+    const product = existingProductById.get(productId)
     if (!product) {
-      review.push(`Product "${target.productId}" was not found`)
+      review.push(`Product "${productId}" was not found`)
       continue
     }
     if (product.customizationGroups?.length) continue
 
-    const configuredGroupIds = new Set(
-      product.customizationConfigurations?.flatMap((configuration) =>
-        configuration.group?._ref ? [configuration.group._ref] : []
-      ) ?? []
-    )
-    const append = target.configurations.filter((configuration) => !configuredGroupIds.has(configuration.group._ref))
-    if (append.length > 0) productPatches.push({ productId: product._id, append })
+    const requiredGroupIds = (CONTAINER_PRODUCT_IDS as readonly string[]).includes(product._id)
+      ? [
+          'customizationGroup-electricity',
+          'customizationGroup-heater',
+          'customizationGroup-ac',
+          'customizationGroup-wc',
+          'customizationGroup-kitchen',
+        ]
+      : ['customizationGroup-electricity', 'customizationGroup-heater', 'customizationGroup-ac']
+    const required = requiredConfigurations(product)
+    const existing = product.customizationConfigurations ?? []
+    const preserved = existing.filter((configuration) => {
+      const groupId = configuration.group?._ref
+      return !groupId || !requiredGroupIds.includes(groupId)
+    })
+    const configurations = [...preserved, ...required]
+    if (!hasMatchingSeedContent(
+      { _id: product._id, _type: 'customizationGroup', configurations: existing },
+      { _id: product._id, _type: 'customizationGroup', configurations },
+    )) {
+      productPatches.push({ productId: product._id, configurations })
+    }
   }
 
   return { createGroups, productPatches, review }
@@ -154,24 +170,34 @@ function assertDevDataset(dataset: string): void {
   }
 }
 
-const GROUP_IDS_QUERY = '*[_type == "customizationGroup"]._id'
 const VERIFICATION_GROUPS_QUERY = '*[_type == "customizationGroup" && _id in $ids]'
 const TARGET_PRODUCTS_QUERY = `*[_type == "product" && _id in $ids] {
   _id,
   _rev,
+  sizes[]{ _key, lengthM, widthM, heightM },
   customizationGroups[]{ _ref },
-  customizationConfigurations[]{ group{ _ref } }
+  customizationConfigurations[]{
+    _key, _type,
+    group{ _ref },
+    itemOverrides[]{
+      _key, itemKey, enabled, pricingType, price, titleOverride, descriptionOverride,
+      sizeRules[]{ _key, sizeOptionKey, mode, price, titleOverride, descriptionOverride, review{ status, snapshot } }
+    }
+  }
 }`
 
-async function fetchSyncState(client: DevCustomizationSeedSyncClient): Promise<{
+async function fetchSyncState(
+  client: DevCustomizationSeedSyncClient,
+  seedGroups: SeedCustomizationGroupDocument[],
+): Promise<{
   products: PatchableSyncProduct[]
-  groupIds: string[]
+  groups: SeedCustomizationGroupDocument[]
 }> {
-  const [products, groupIds] = await Promise.all([
+  const [products, groups] = await Promise.all([
     client.fetch(TARGET_PRODUCTS_QUERY, { ids: [...CABIN_PRODUCT_IDS, ...CONTAINER_PRODUCT_IDS] }),
-    client.fetch(GROUP_IDS_QUERY)
+    client.fetch(VERIFICATION_GROUPS_QUERY, { ids: seedGroups.map((group) => group._id) })
   ])
-  return { products: products as PatchableSyncProduct[], groupIds: groupIds as string[] }
+  return { products: products as PatchableSyncProduct[], groups: groups as SeedCustomizationGroupDocument[] }
 }
 
 function comparableSeedContent(value: unknown): unknown {
@@ -194,26 +220,31 @@ function hasMatchingSeedContent(
   return JSON.stringify(comparableSeedContent(existing)) === JSON.stringify(comparableSeedContent(seed))
 }
 
-function verifyAppliedPlan(plan: DevCustomizationSeedSyncPlan, products: SyncProduct[], groupIds: string[]): string[] {
-  const groupSet = new Set(groupIds)
+function verifyAppliedPlan(
+  plan: DevCustomizationSeedSyncPlan,
+  products: SyncProduct[],
+  groups: SeedCustomizationGroupDocument[],
+): string[] {
+  const groupById = new Map(groups.map((group) => [group._id, group]))
   const productById = new Map(products.map((product) => [product._id, product]))
   const review = plan.createGroups
-    .filter((group) => !groupSet.has(group._id))
-    .map((group) => `Customization Group "${group._id}" was not created`)
+    .flatMap((group) => {
+      const existing = groupById.get(group._id)
+      return existing && hasMatchingSeedContent(existing, group)
+        ? []
+        : [`Customization Group "${group._id}" was not reconciled`]
+    })
 
   for (const patch of plan.productPatches) {
-    const configuredGroupIds = new Set(productById.get(patch.productId)?.customizationConfigurations
-      ?.flatMap((configuration) => configuration.group?._ref ? [configuration.group._ref] : []) ?? [])
-    for (const configuration of patch.append) {
-      if (!configuredGroupIds.has(configuration.group._ref)) {
-        review.push(`Product "${patch.productId}" is missing Customization Group "${configuration.group._ref}" after sync`)
-      }
+    const actual = productById.get(patch.productId)?.customizationConfigurations ?? []
+    if (JSON.stringify(comparableSeedContent(actual)) !== JSON.stringify(comparableSeedContent(patch.configurations))) {
+      review.push(`Product "${patch.productId}" customization pricing was not reconciled`)
     }
   }
   return review
 }
 
-/** Refuses non-dev targets, dry-runs by default, then verifies committed additive writes. */
+/** Refuses non-dev targets, dry-runs by default, then verifies committed canonical writes. */
 export async function runDevCustomizationSeedSync(
   client: DevCustomizationSeedSyncClient,
   dataset: string,
@@ -221,8 +252,8 @@ export async function runDevCustomizationSeedSync(
   seedGroups = loadCustomizationGroupSeeds(),
 ): Promise<DevCustomizationSeedSyncResult> {
   assertDevDataset(dataset)
-  const { products, groupIds } = await fetchSyncState(client)
-  const plan = buildDevCustomizationSeedSyncPlan(products, groupIds, seedGroups)
+  const { products, groups } = await fetchSyncState(client, seedGroups)
+  const plan = buildDevCustomizationSeedSyncPlan(products, groups, seedGroups)
   const result = {
     appliedGroups: 0,
     appliedProducts: 0,
@@ -235,24 +266,23 @@ export async function runDevCustomizationSeedSync(
   }
 
   let transaction = client.transaction()
-  for (const group of plan.createGroups) transaction = transaction.createIfNotExists(group)
+  for (const group of plan.createGroups) transaction = transaction.createOrReplace(group)
   const productsById = new Map(products.map((product) => [product._id, product]))
   for (const patch of plan.productPatches) {
     const product = productsById.get(patch.productId)
     if (!product) throw new Error(`Product "${patch.productId}" disappeared before sync transaction`)
     transaction = transaction.patch(patch.productId, (productPatch: DevCustomizationSeedSyncPatch) => productPatch
       .ifRevisionId(product._rev)
-      .setIfMissing({ customizationConfigurations: [] })
-      .append('customizationConfigurations', patch.append))
+      .set({ customizationConfigurations: patch.configurations }))
   }
   await transaction.commit()
 
-  const verified = await fetchSyncState(client)
+  const verified = await fetchSyncState(client, seedGroups)
   return {
     ...result,
     appliedGroups: plan.createGroups.length,
     appliedProducts: plan.productPatches.length,
-    review: verifyAppliedPlan(plan, verified.products, verified.groupIds)
+    review: verifyAppliedPlan(plan, verified.products, verified.groups)
   }
 }
 
@@ -272,7 +302,7 @@ export async function verifyDevCustomizationSeedState(
   const groupDocuments = existingGroups as SeedCustomizationGroupDocument[]
   const plan = buildDevCustomizationSeedSyncPlan(
     syncProducts,
-    groupDocuments.map((group) => group._id),
+    groupDocuments,
     seedGroups,
   )
   const groupsById = new Map(groupDocuments.map((group) => [group._id, group]))

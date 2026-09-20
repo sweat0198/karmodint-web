@@ -223,6 +223,8 @@ describe('Product customization configuration migration', () => {
     expect(queries[0]).toContain('customizationGroups')
     expect(queries[0]).toContain('customizationConfigurations')
     expect(queries[1]).toContain('_type == "customizationGroup"')
+    expect(queries[1]).toContain('maxSelections')
+    expect(queries[1]).toContain('selectionRequirements')
   })
 
   it('returns the review report before refusing an apply run', async () => {

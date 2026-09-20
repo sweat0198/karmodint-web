@@ -598,13 +598,74 @@ describe('Sanity Schemas Structure & Validation Rules', () => {
   })
 
   describe('Customization Item Schema', () => {
-    it('defines title, pricingType, price, and requiresTextInput', () => {
+    it('defines pricing and cross-item selection requirements', () => {
       const fieldNames = customizationItem.fields.map((f: any) => f.name)
       expect(fieldNames).toContain('title')
       expect(fieldNames).toContain('pricingType')
       expect(fieldNames).toContain('price')
       expect(fieldNames).toContain('requiresTextInput')
       expect(fieldNames).toContain('scope')
+      expect(fieldNames).toContain('selectionRequirements')
+
+      const requirements: any = customizationItem.fields.find((field: any) => (
+        field.name === 'selectionRequirements'
+      ))
+      expect(requirements.type).toBe('array')
+      expect(requirements.of[0].fields.map((field: any) => field.name)).toEqual([
+        'group',
+        'itemKey'
+      ])
+      expect(requirements.of[0].fields[0].to).toEqual([{ type: 'customizationGroup' }])
+    })
+
+    it('supports a selection limit only for multiple-choice groups', () => {
+      const fields = Object.fromEntries(customizationGroupType.fields.map((field: any) => [field.name, field]))
+
+      expect(fields.maxSelections.type).toBe('number')
+      expect(fields.maxSelections.hidden({ parent: { selectionType: 'multiple' } })).toBe(false)
+      expect(fields.maxSelections.hidden({ parent: { selectionType: 'single' } })).toBe(true)
+    })
+
+    it('rejects missing dependency targets and dependency cycles on published products', () => {
+      const sizes = [{ _key: 'small', lengthM: 1, widthM: 1 }]
+      const product = {
+        status: 'published',
+        sizes,
+        customizationConfigurations: [
+          { group: { _ref: 'electricity' } },
+          { group: { _ref: 'heater' } }
+        ]
+      }
+      const missingTargetGroups = [{
+        _id: 'electricity',
+        items: [{
+          _key: 'blue',
+          selectionRequirements: [{ group: { _ref: 'electricity' }, itemKey: 'missing' }]
+        }]
+      }, {
+        _id: 'heater',
+        items: [{ _key: 'heater', selectionRequirements: [] }]
+      }]
+
+      expect(validatePublishedCustomizationRules(product, missingTargetGroups))
+        .toContain('missing')
+
+      const cyclicGroups = [{
+        _id: 'electricity',
+        items: [{
+          _key: 'standard',
+          selectionRequirements: [{ group: { _ref: 'heater' }, itemKey: 'heater' }]
+        }]
+      }, {
+        _id: 'heater',
+        items: [{
+          _key: 'heater',
+          selectionRequirements: [{ group: { _ref: 'electricity' }, itemKey: 'standard' }]
+        }]
+      }]
+
+      expect(validatePublishedCustomizationRules(product, cyclicGroups))
+        .toContain('cycle')
     })
   })
 

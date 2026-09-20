@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { describe, it, expect } from "vitest";
-import { shallowMount } from "@vue/test-utils";
+import { mount, shallowMount } from "@vue/test-utils";
 import CustomizationGroups from "~~/app/components/customization/CustomizationGroups.vue";
 import SingleChoiceGroup from "~~/app/components/customization/groups/SingleChoiceGroup.vue";
 import MultipleChoiceGroup from "~~/app/components/customization/groups/MultipleChoiceGroup.vue";
@@ -71,5 +71,71 @@ describe("CustomizationGroups", () => {
   it("shows the standard-specification message for an empty groups array", () => {
     const wrapper = mountGroups([]);
     expect(wrapper.text()).toContain("Standard specification — no options for this unit");
+  });
+
+  it("keeps unmet multiple-choice requirements visible but disabled with a reason", () => {
+    const wrapper = mount(MultipleChoiceGroup, {
+      props: {
+        group: {
+          ...multipleGroup,
+          items: [{
+            _key: "blue",
+            title: "Blue Male Socket",
+            pricingType: "fixed",
+            price: 75,
+            selectionDisabled: true,
+            selectionDisabledReason: "Requires Standard Electrical Pack",
+          }],
+        },
+        modelValue: [],
+        notes: {},
+      },
+      global: { stubs: { CustomizationNote: true } },
+    });
+
+    expect(wrapper.get('input[type="checkbox"]').attributes("disabled")).toBeDefined();
+    expect(wrapper.text()).toContain("Requires Standard Electrical Pack");
+  });
+
+  it("disables a boolean option without hiding its requirement reason", () => {
+    const wrapper = mount(BooleanToggleGroup, {
+      props: {
+        group: {
+          ...booleanGroup,
+          items: [{
+            ...booleanGroup.items[0],
+            selectionDisabled: true,
+            selectionDisabledReason: "Requires Standard Electrical Pack",
+          }],
+        },
+        modelValue: false,
+        notes: {},
+      },
+      global: { stubs: { CustomizationNote: true } },
+    });
+
+    expect(wrapper.get('button[role="switch"]').attributes("disabled")).toBeDefined();
+    expect(wrapper.text()).toContain("Requires Standard Electrical Pack");
+  });
+
+  it("disables a single-choice item through the same item contract", () => {
+    const wrapper = mount(SingleChoiceGroup, {
+      props: {
+        group: {
+          ...singleGroup,
+          items: [{
+            ...singleGroup.items[0],
+            selectionDisabled: true,
+            selectionDisabledReason: "Requires another option",
+          }],
+        },
+        modelValue: null,
+        notes: {},
+      },
+      global: { stubs: { CustomizationNote: true, CustomizationImage: true } },
+    });
+
+    expect(wrapper.findAll('button').at(-1)?.attributes("disabled")).toBeDefined();
+    expect(wrapper.text()).toContain("Requires another option");
   });
 });

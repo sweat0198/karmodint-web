@@ -256,6 +256,7 @@
                 :preview-images="item.images ?? []"
                 :spec-summary-items="getItemSpecSummary(item)"
                 :groups="getItemGroups(item)"
+                :constraint-removed-titles="constraintChangeNotices[item.id] ?? []"
                 :model-value="getItemSelections(item.id)"
                 :notes="getItemNotes(item.id)"
                 @update:model-value="onSelectionsUpdate(item, $event)"
@@ -308,6 +309,10 @@ import { toPortableContainerCards } from '~/utils/portableContainerCards'
 import { requiresSizeSelection } from '~~/shared/utils/quoteLine'
 import { moveQuoteItemState } from '~/utils/quoteItemState'
 import { reconcileCustomizationSelections, resolveCustomizationGroups } from '~/utils/customizationPricing'
+import {
+  evaluateCustomizationConstraints,
+  reconcileCustomizationConstraints,
+} from '~/utils/customizationConstraints'
 
 const { setPageSeo } = useAppSeo();
 
@@ -393,6 +398,8 @@ const itemNotes = reactive<Record<string, CustomizationNotes>>({});
 const itemPricingCache = new Map<string, ReturnType<typeof useCustomizationPricing>>();
 /** Titles removed by the most recent Size Option change, keyed by the line's current id. */
 const sizeChangeNotices = reactive<Record<string, string[]>>({});
+/** Dependent choices cleared after their prerequisite was removed. */
+const constraintChangeNotices = reactive<Record<string, string[]>>({});
 
 function isExpanded(id: string): boolean {
   return expandedItemId.value === id;
@@ -437,12 +444,26 @@ function getItemNotes(id: string): CustomizationNotes {
   return itemNotes[id];
 }
 
-function getItemGroups(item: QuoteItem) {
+function getItemBaseGroups(item: QuoteItem) {
   const product = customizationProductById.value.get(item.productId)
   if (!product) return []
 
   if (requiresSizeSelection(item) || !item.sizeKey) return []
   return resolveCustomizationGroups(product, item.sizeKey)
+}
+
+function getItemGroups(item: QuoteItem) {
+  return evaluateCustomizationConstraints(
+    getItemBaseGroups(item),
+    getItemSelections(item.id),
+  ).groups
+}
+
+function getItemConstraintViolations(item: QuoteItem) {
+  return evaluateCustomizationConstraints(
+    getItemBaseGroups(item),
+    getItemSelections(item.id),
+  ).violations
 }
 
 function getItemPricing(item: QuoteItem) {
@@ -490,18 +511,27 @@ function onPortableSizeChange(item: QuoteItem, sizeKey: string) {
   const updatedItem = sizeId ? quoteStore.items.find((candidate) => candidate.id === sizeId) : undefined
   if (!sizeId || !updatedItem) return
 
-  const { selections, notes, removedTitles } = reconcileCustomizationSelections(
+  const sizeReconciliation = reconcileCustomizationSelections(
     previousGroups,
-    getItemGroups(updatedItem),
+    getItemBaseGroups(updatedItem),
     previousSelections,
     previousNotes,
   )
-  itemSelections[sizeId] = selections
-  itemNotes[sizeId] = notes
+  const constraintReconciliation = reconcileCustomizationConstraints(
+    getItemBaseGroups(updatedItem),
+    sizeReconciliation.selections,
+    sizeReconciliation.notes,
+  )
+  itemSelections[sizeId] = constraintReconciliation.selections
+  itemNotes[sizeId] = constraintReconciliation.notes
 
   const finalId = persistItemConfig(updatedItem)
   migrateCustomizerState(sizeId, finalId)
 
+  const removedTitles = [
+    ...sizeReconciliation.removedTitles,
+    ...constraintReconciliation.removedTitles,
+  ]
   if (removedTitles.length > 0) {
     sizeChangeNotices[finalId ?? sizeId] = removedTitles
   }
@@ -537,6 +567,7 @@ function migrateCustomizerState(previousId: string, nextId: string | undefined) 
   if (!nextId || previousId === nextId) return
   moveQuoteItemState(itemSelections, previousId, nextId)
   moveQuoteItemState(itemNotes, previousId, nextId)
+  moveQuoteItemState(constraintChangeNotices, previousId, nextId)
   itemPricingCache.delete(previousId)
   itemPricingCache.delete(nextId)
   if (expandedItemId.value === previousId) expandedItemId.value = nextId
@@ -548,8 +579,19 @@ function migrateCustomizerState(previousId: string, nextId: string | undefined) 
 
 function onSelectionsUpdate(item: QuoteItem, next: CustomizationSelections) {
   const previousId = item.id
-  itemSelections[previousId] = next;
-  migrateCustomizerState(previousId, persistItemConfig(item));
+  delete constraintChangeNotices[previousId]
+  const reconciliation = reconcileCustomizationConstraints(
+    getItemBaseGroups(item),
+    next,
+    getItemNotes(previousId),
+  )
+  itemSelections[previousId] = reconciliation.selections
+  itemNotes[previousId] = reconciliation.notes
+  const nextId = persistItemConfig(item)
+  migrateCustomizerState(previousId, nextId)
+  if (reconciliation.removedTitles.length > 0) {
+    constraintChangeNotices[nextId ?? previousId] = reconciliation.removedTitles
+  }
 }
 
 function onNotesUpdate(item: QuoteItem, next: CustomizationNotes) {
@@ -560,7 +602,11 @@ function onNotesUpdate(item: QuoteItem, next: CustomizationNotes) {
 
 const canProceedToQuote = computed(() =>
   quoteStore.items.every(
-    (item) => !requiresSizeSelection(item) && getItemUnsatisfiedMandatory(item).length === 0,
+    (item) => (
+      !requiresSizeSelection(item)
+      && getItemUnsatisfiedMandatory(item).length === 0
+      && getItemConstraintViolations(item).length === 0
+    ),
   ),
 );
 
@@ -571,7 +617,11 @@ function handleProceedClick() {
   }
 
   const offendingItem = quoteStore.items.find(
-    (item) => requiresSizeSelection(item) || getItemUnsatisfiedMandatory(item).length > 0,
+    (item) => (
+      requiresSizeSelection(item)
+      || getItemUnsatisfiedMandatory(item).length > 0
+      || getItemConstraintViolations(item).length > 0
+    ),
   );
   if (!offendingItem) return;
 
@@ -582,16 +632,32 @@ function handleProceedClick() {
     });
     return;
   }
-  const offendingGroup = getItemUnsatisfiedMandatory(offendingItem)[0];
+  const offendingGroupId = getItemUnsatisfiedMandatory(offendingItem)[0]?._id
+    ?? getItemConstraintViolations(offendingItem)[0]?.groupId
   nextTick(() => {
     document
-      .getElementById(`group-${offendingGroup?._id}`)
+      .getElementById(`group-${offendingGroupId}`)
       ?.scrollIntoView({ behavior: prefersReducedMotion() ? "auto" : "smooth", block: "center" });
   });
 }
 
 onMounted(() => {
   quoteStore.setLastVisitedRoute('/customize');
+  for (const item of [...quoteStore.items]) {
+    const previousId = item.id
+    const reconciliation = reconcileCustomizationConstraints(
+      getItemBaseGroups(item),
+      getItemSelections(previousId),
+      getItemNotes(previousId),
+    )
+    if (reconciliation.removedTitles.length === 0) continue
+
+    itemSelections[previousId] = reconciliation.selections
+    itemNotes[previousId] = reconciliation.notes
+    const nextId = persistItemConfig(item)
+    migrateCustomizerState(previousId, nextId)
+    constraintChangeNotices[nextId ?? previousId] = reconciliation.removedTitles
+  }
   // Expand the first item by default if items exist
   const first = quoteStore.items[0];
   if (first) {

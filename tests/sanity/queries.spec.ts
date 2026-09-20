@@ -231,7 +231,18 @@ describe('Sanity GROQ Query Evaluation (SSG Data Fetching)', () => {
       const electricalGroup = mockSanityDataset.find((document) => document._id === 'group_electrical')!
       const scopedElectricalGroup = {
         ...electricalGroup,
-        items: electricalGroup.items.map((item: any) => ({ ...item, scope: 'universal' }))
+        maxSelections: 2,
+        items: electricalGroup.items.map((item: any, index: number) => ({
+          ...item,
+          scope: 'universal',
+          ...(index === 0 ? {
+            selectionRequirements: [{
+              _key: 'requires-standard',
+              group: { _ref: 'group_electrical' },
+              itemKey: 'opt_std_elec'
+            }]
+          } : {})
+        }))
       }
       const dataset = [
         ...mockSanityDataset.filter((document) => document._id !== electricalGroup._id),
@@ -247,7 +258,16 @@ describe('Sanity GROQ Query Evaluation (SSG Data Fetching)', () => {
           group: expect.objectContaining({
             _id: 'group_electrical',
             title: 'Electrical & Lighting Package',
-            items: expect.arrayContaining([expect.objectContaining({ scope: 'universal' })])
+            maxSelections: 2,
+            items: expect.arrayContaining([expect.objectContaining({
+              scope: 'universal',
+              selectionRequirements: [{
+                _key: 'requires-standard',
+                groupId: 'group_electrical',
+                groupTitle: 'Electrical & Lighting Package',
+                itemKey: 'opt_std_elec'
+              }]
+            })])
           }),
           itemOverrides: [expect.objectContaining({
             _key: 'disable-premium',

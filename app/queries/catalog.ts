@@ -56,8 +56,17 @@ export interface CategoryTreeNode extends CategoryTreeChild {
 }
 
 export const CUSTOMIZATION_GROUP_PROJECTION = `{
-  _id, _type, title, "identifier": identifier.current, selectionType, isMandatory, description, displayOrder,
-  items[]{ _key, title, pricingType, price, requiresTextInput, textInputPlaceholder, description, image { asset, alt, caption }, scope }
+  _id, _type, title, "identifier": identifier.current, selectionType, isMandatory, maxSelections, description, displayOrder,
+  items[]{
+    _key, title, pricingType, price, requiresTextInput, textInputPlaceholder, description,
+    image { asset, alt, caption }, scope,
+    selectionRequirements[]{
+      _key,
+      "groupId": group->_id,
+      "groupTitle": group->title,
+      itemKey
+    }
+  }
 }`;
 
 // Category documents may lag behind the seed files in an already-populated Sanity dataset. Keep

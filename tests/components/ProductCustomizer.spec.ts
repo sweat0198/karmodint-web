@@ -105,6 +105,21 @@ describe("ProductCustomizer", () => {
     expect(wrapper.find('[data-testid="portable-size-picker"]').exists()).toBe(true);
   });
 
+  it("reports dependent selections cleared after their requirement is removed", () => {
+    const wrapper = mount(ProductCustomizer, {
+      props: {
+        title: "Test product",
+        groups: [],
+        constraintRemovedTitles: ["Blue Male Socket", "Air Conditioning Unit"],
+      },
+      global: { stubs: { CustomizationGroups: true } },
+    });
+
+    expect(wrapper.get('[data-testid="constraint-removal-notice"]').text()).toContain(
+      "Blue Male Socket, Air Conditioning Unit",
+    );
+  });
+
   it("does not render a separate selected-size floor-plan section", () => {
     const wrapper = mount(ProductCustomizer, {
       props: {

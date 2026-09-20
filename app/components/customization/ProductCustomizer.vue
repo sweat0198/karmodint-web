@@ -20,6 +20,7 @@ interface Props {
   specSheetUrl?: string;
   currencySymbol?: string;
   groups: SanityCustomizationGroup[];
+  constraintRemovedTitles?: string[];
   modelValue?: CustomizationSelections;
   notes?: CustomizationNotes;
 }
@@ -31,6 +32,7 @@ const props = withDefaults(defineProps<Props>(), {
   specSummaryItems: () => [],
   specSheetUrl: "#",
   currencySymbol: "£",
+  constraintRemovedTitles: () => [],
   modelValue: () => ({}),
   notes: () => ({}),
 });
@@ -295,6 +297,15 @@ onBeforeUnmount(() => window.removeEventListener("resize", refreshView));
     <div class="lg:w-[45%] bg-white lg:border-l border-brand-rose-border/30">
       <div class="p-6 md:p-8">
         <slot name="before-customizations" />
+        <div
+          v-if="constraintRemovedTitles.length"
+          data-testid="constraint-removal-notice"
+          role="status"
+          class="mb-4 rounded border border-amber-300 bg-amber-50 px-3.5 py-2.5 text-xs text-amber-900"
+        >
+          <strong class="font-semibold">Removed:</strong>
+          {{ constraintRemovedTitles.join(", ") }} — selection requirements are no longer met.
+        </div>
         <CustomizationGroups
           :groups="groups"
           :model-value="modelValue"

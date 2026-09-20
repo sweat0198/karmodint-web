@@ -1,5 +1,7 @@
 import { computeCustomizationTotals, resolveCustomizationGroups } from '../../app/utils/customizationPricing'
+import { evaluateCustomizationConstraints } from '../../app/utils/customizationConstraints'
 import type { SanityProduct, SanitySelectedCustomization } from '../../app/types/catalog'
+import type { CustomizationSelections } from '../../app/types/customization'
 import { getQuoteLineFinancials, type QuoteLine } from '../../shared/utils/quoteLine'
 
 export type UnavailableReason = 'product_unavailable' | 'size_unavailable' | 'selection_unavailable'
@@ -31,6 +33,22 @@ export type QuoteRevalidationResult =
 export interface RevalidateQuoteItemsOptions {
   /** The customer has already seen a price diff and asked to proceed at whatever Sanity now says. */
   confirmedPrices?: boolean
+}
+
+function selectionsFromLines(
+  groups: ReturnType<typeof resolveCustomizationGroups>,
+  lines: SanitySelectedCustomization[],
+): CustomizationSelections {
+  const selections: CustomizationSelections = {}
+  for (const group of groups) {
+    const itemKeys = lines
+      .filter((line) => line.groupId === group._id && line.itemKey)
+      .map((line) => line.itemKey!)
+    if (group.selectionType === 'multiple') selections[group._id] = itemKeys
+    else if (group.selectionType === 'single') selections[group._id] = itemKeys[0] ?? null
+    else selections[group._id] = itemKeys.length > 0
+  }
+  return selections
 }
 
 /**
@@ -85,6 +103,7 @@ export function revalidateQuoteItems(
     }
 
     const resolvedCustomizations: SanitySelectedCustomization[] = []
+    const resolvedSelectionKeys = new Set<string>()
     let lineHasUnavailableSelection = false
 
     for (const selected of item.selectedCustomizations ?? []) {
@@ -104,6 +123,21 @@ export function revalidateQuoteItems(
         continue
       }
 
+      const selectionKey = `${group._id}:${resolvedItem._key}`
+      if (resolvedSelectionKeys.has(selectionKey)) {
+        issues.push({
+          lineId: item.id,
+          productName: item.productName,
+          sizeLabel: item.sizeLabel,
+          groupTitle: group.title,
+          optionTitle: resolvedItem.title,
+          reason: 'selection_unavailable',
+        })
+        lineHasUnavailableSelection = true
+        continue
+      }
+      resolvedSelectionKeys.add(selectionKey)
+
       resolvedCustomizations.push({
         groupId: group._id,
         groupTitle: group.title,
@@ -118,6 +152,23 @@ export function revalidateQuoteItems(
     }
 
     if (lineHasUnavailableSelection) continue
+
+    const constraintEvaluation = evaluateCustomizationConstraints(
+      resolvedGroups,
+      selectionsFromLines(resolvedGroups, resolvedCustomizations),
+    )
+    for (const violation of constraintEvaluation.violations) {
+      const group = resolvedGroups.find((candidate) => candidate._id === violation.groupId)
+      issues.push({
+        lineId: item.id,
+        productName: item.productName,
+        sizeLabel: item.sizeLabel,
+        groupTitle: group?.title,
+        optionTitle: violation.itemTitle,
+        reason: 'selection_unavailable',
+      })
+    }
+    if (constraintEvaluation.violations.length > 0) continue
 
     const { subtotal: authoritativeUnitPrice, hasPoa: authoritativeIsPoa } = computeCustomizationTotals(
       size,

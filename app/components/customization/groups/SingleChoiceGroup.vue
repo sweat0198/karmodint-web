@@ -56,9 +56,12 @@ function updateNote(item: SanityCustomizationItem, value: string) {
         v-for="item in group.items"
         :key="item._key"
         type="button"
+        :disabled="item.selectionDisabled"
         class="border rounded p-3 transition-colors flex flex-col gap-2 text-left"
         :class="[
-          modelValue === item._key
+          item.selectionDisabled
+            ? 'border-slate-200 bg-slate-50 text-slate-400 cursor-not-allowed'
+            : modelValue === item._key
             ? 'border-2 border-brand-red bg-white shadow-sm'
             : 'border-brand-rose-border/60 bg-white hover:border-brand-red/40',
         ]"
@@ -68,8 +71,15 @@ function updateNote(item: SanityCustomizationItem, value: string) {
           <CustomizationImage :image="item.image" :alt="item.title" />
         </div>
         <div class="text-center">
-          <h3 class="text-sm font-medium text-gray-800 leading-tight">{{ item.title }}</h3>
-          <p class="text-xs text-brand-slate-muted mt-0.5">{{ formatPriceBadge(item) }}</p>
+          <h3 class="text-sm font-medium leading-tight" :class="item.selectionDisabled ? 'text-slate-400' : 'text-gray-800'">
+            {{ item.title }}
+          </h3>
+          <p class="text-xs mt-0.5" :class="item.selectionDisabled ? 'text-slate-400' : 'text-brand-slate-muted'">
+            {{ formatPriceBadge(item) }}
+          </p>
+          <p v-if="item.selectionDisabledReason" class="text-xs font-medium text-amber-700 mt-1">
+            {{ item.selectionDisabledReason }}
+          </p>
         </div>
       </button>
     </div>
@@ -79,16 +89,28 @@ function updateNote(item: SanityCustomizationItem, value: string) {
         v-for="item in group.items"
         :key="item._key"
         type="button"
+        :disabled="item.selectionDisabled"
         class="border rounded p-4 flex items-center justify-between transition-colors text-left"
         :class="[
-          modelValue === item._key
+          item.selectionDisabled
+            ? 'border-slate-200 bg-slate-50 text-slate-400 cursor-not-allowed'
+            : modelValue === item._key
             ? 'border-brand-red bg-brand-red/5 shadow-sm'
             : 'border-brand-rose-border/60 bg-white hover:border-brand-red/40',
         ]"
         @click="select(item._key ?? null)"
       >
-        <span class="text-sm font-medium text-gray-800">{{ item.title }}</span>
-        <span class="text-sm font-medium text-gray-800">{{ formatPriceBadge(item) }}</span>
+        <span class="flex flex-col gap-1">
+          <span class="text-sm font-medium" :class="item.selectionDisabled ? 'text-slate-400' : 'text-gray-800'">
+            {{ item.title }}
+          </span>
+          <span v-if="item.selectionDisabledReason" class="text-xs font-medium text-amber-700">
+            {{ item.selectionDisabledReason }}
+          </span>
+        </span>
+        <span class="text-sm font-medium" :class="item.selectionDisabled ? 'text-slate-400' : 'text-gray-800'">
+          {{ formatPriceBadge(item) }}
+        </span>
       </button>
     </template>
 
