@@ -29,6 +29,8 @@ function makeRouter(initialPath: string) {
       { path: "/", component: { template: "<div />" } },
       { path: "/contact", component: { template: "<div />" } },
       { path: "/products", component: { template: "<div />" } },
+      { path: "/solutions", component: { template: "<div />" } },
+      { path: "/solutions/:slug", component: { template: "<div />" } },
     ],
   });
   router.push(initialPath);
@@ -254,6 +256,113 @@ describe("AppHeader Products and Solutions submenus", () => {
     await wrapper.get('button[aria-label="Toggle Products categories"]').trigger("click");
 
     expect(wrapper.findAll('a[to="/products?category=cabin&subcategory=grp"]')).toHaveLength(2);
+
+    wrapper.unmount();
+  });
+});
+
+describe("AppHeader submenu active state", () => {
+  beforeEach(() => {
+    setActivePinia(createPinia());
+    categoryTreeQuery.data.value = [];
+    solutionsNavQuery.data.value = [];
+  });
+
+  it("marks the selected category as the current page and the Show all link as inactive", async () => {
+    categoryTreeQuery.data.value = [
+      { _id: "cat-containers", name: "Portable Cabins", slug: "containers", displayOrder: 1, children: [] },
+      { _id: "cat-cabin", name: "Gatehouses & Kiosks", slug: "cabin", displayOrder: 2, children: [] },
+    ];
+
+    const { wrapper } = await mountHeader("/products?category=containers");
+
+    const activeCategory = wrapper.get('a[to="/products?category=containers"]');
+    expect(activeCategory.attributes("aria-current")).toBe("page");
+    expect(activeCategory.classes()).toContain("text-brand-red");
+
+    const otherCategory = wrapper.get('a[to="/products?category=cabin"]');
+    expect(otherCategory.attributes("aria-current")).toBeUndefined();
+
+    const showAllLink = wrapper.findAll('a[to="/products"]').find((a) => a.text().includes("Show all"))!;
+    expect(showAllLink.attributes("aria-current")).toBeUndefined();
+
+    wrapper.unmount();
+  });
+
+  it("marks a selected subcategory and its parent category as active, but only the subcategory as the current page", async () => {
+    categoryTreeQuery.data.value = [
+      {
+        _id: "cat-cabin",
+        name: "Gatehouses & Kiosks",
+        slug: "cabin",
+        displayOrder: 1,
+        children: [
+          { _id: "sub-grp", name: "GRP", slug: "grp", displayOrder: 1 },
+          { _id: "sub-panel", name: "Panel", slug: "panel", displayOrder: 2 },
+        ],
+      },
+    ];
+
+    const { wrapper } = await mountHeader("/products?category=cabin&subcategory=grp");
+
+    const activeSubcategory = wrapper.get('a[to="/products?category=cabin&subcategory=grp"]');
+    expect(activeSubcategory.attributes("aria-current")).toBe("page");
+    expect(activeSubcategory.classes()).toContain("text-brand-red");
+
+    const parentCategory = wrapper.get('a[to="/products?category=cabin"]');
+    expect(parentCategory.classes()).toContain("text-brand-red");
+    expect(parentCategory.attributes("aria-current")).toBeUndefined();
+
+    const otherSubcategory = wrapper.get('a[to="/products?category=cabin&subcategory=panel"]');
+    expect(otherSubcategory.attributes("aria-current")).toBeUndefined();
+    expect(otherSubcategory.classes()).not.toContain("text-brand-red");
+
+    wrapper.unmount();
+  });
+
+  it("marks Show all Products as the current page when no category is selected", async () => {
+    categoryTreeQuery.data.value = [
+      { _id: "cat-containers", name: "Portable Cabins", slug: "containers", displayOrder: 1, children: [] },
+    ];
+
+    const { wrapper } = await mountHeader("/products");
+
+    const showAllLink = wrapper.findAll('a[to="/products"]').find((a) => a.text().includes("Show all"))!;
+    expect(showAllLink.attributes("aria-current")).toBe("page");
+
+    wrapper.unmount();
+  });
+
+  it("marks the selected solution as the current page in the Solutions dropdown", async () => {
+    solutionsNavQuery.data.value = [
+      { _id: "sol-1", name: "Construction Site Compound", slug: "construction-site" },
+      { _id: "sol-2", name: "Event Site Kiosk", slug: "event-site" },
+    ];
+
+    const { wrapper } = await mountHeader("/solutions/construction-site");
+
+    const activeSolution = wrapper.get('a[to="/solutions/construction-site"]');
+    expect(activeSolution.attributes("aria-current")).toBe("page");
+    expect(activeSolution.classes()).toContain("text-brand-red");
+
+    const otherSolution = wrapper.get('a[to="/solutions/event-site"]');
+    expect(otherSolution.attributes("aria-current")).toBeUndefined();
+
+    const showAllLink = wrapper.findAll('a[to="/solutions"]').find((a) => a.text().includes("Show all"))!;
+    expect(showAllLink.attributes("aria-current")).toBeUndefined();
+
+    wrapper.unmount();
+  });
+
+  it("marks Show all Solutions as the current page on the solutions index", async () => {
+    solutionsNavQuery.data.value = [
+      { _id: "sol-1", name: "Construction Site Compound", slug: "construction-site" },
+    ];
+
+    const { wrapper } = await mountHeader("/solutions");
+
+    const showAllLink = wrapper.findAll('a[to="/solutions"]').find((a) => a.text().includes("Show all"))!;
+    expect(showAllLink.attributes("aria-current")).toBe("page");
 
     wrapper.unmount();
   });

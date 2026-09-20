@@ -55,6 +55,8 @@
               <NuxtLink
                 to="/products"
                 class="block px-4 py-2.5 text-sm font-semibold text-brand-red hover:bg-slate-50 hover:text-brand-red-dark"
+                :class="{ 'bg-slate-50': isProductsShowAllActive }"
+                :aria-current="isProductsShowAllActive ? 'page' : undefined"
               >
                 Show all Products
               </NuxtLink>
@@ -63,7 +65,13 @@
                 <template v-for="cat in productCategories" :key="cat._id">
                   <NuxtLink
                     :to="`/products?category=${cat.slug}`"
-                    class="block px-4 py-2 text-sm font-semibold text-brand-navy-heading hover:bg-slate-50"
+                    class="block px-4 py-2 text-sm font-semibold hover:bg-slate-50"
+                    :class="
+                      isCategoryActive(cat)
+                        ? 'bg-slate-50 text-brand-red'
+                        : 'text-brand-navy-heading'
+                    "
+                    :aria-current="isCategoryCurrentPage(cat) ? 'page' : undefined"
                   >
                     {{ cat.name }}
                   </NuxtLink>
@@ -71,7 +79,13 @@
                     v-for="sub in cat.children"
                     :key="sub._id"
                     :to="`/products?category=${cat.slug}&subcategory=${sub.slug}`"
-                    class="block pl-7 pr-4 py-1.5 text-sm text-brand-slate-muted hover:bg-slate-50 hover:text-brand-navy-heading"
+                    class="block pl-7 pr-4 py-1.5 text-sm hover:bg-slate-50"
+                    :class="
+                      isSubcategoryActive(cat, sub)
+                        ? 'bg-slate-50 text-brand-red font-semibold'
+                        : 'text-brand-slate-muted hover:text-brand-navy-heading'
+                    "
+                    :aria-current="isSubcategoryActive(cat, sub) ? 'page' : undefined"
                   >
                     {{ sub.name }}
                   </NuxtLink>
@@ -109,6 +123,8 @@
               <NuxtLink
                 to="/solutions"
                 class="block px-4 py-2.5 text-sm font-semibold text-brand-red hover:bg-slate-50 hover:text-brand-red-dark"
+                :class="{ 'bg-slate-50': isSolutionsShowAllActive }"
+                :aria-current="isSolutionsShowAllActive ? 'page' : undefined"
               >
                 Show all Solutions
               </NuxtLink>
@@ -118,7 +134,13 @@
                   v-for="sol in solutionMenuItems"
                   :key="sol._id"
                   :to="`/solutions/${sol.slug}`"
-                  class="block px-4 py-2 text-sm text-brand-slate-muted hover:bg-slate-50 hover:text-brand-navy-heading"
+                  class="block px-4 py-2 text-sm hover:bg-slate-50"
+                  :class="
+                    isSolutionActive(sol)
+                      ? 'bg-slate-50 text-brand-red font-semibold'
+                      : 'text-brand-slate-muted hover:text-brand-navy-heading'
+                  "
+                  :aria-current="isSolutionActive(sol) ? 'page' : undefined"
                 >
                   {{ sol.name }}
                 </NuxtLink>
@@ -309,7 +331,13 @@
             <NuxtLink
               :to="`/products?category=${cat.slug}`"
               @click="isMobileMenuOpen = false"
-              class="block text-sm text-brand-slate-light/80 hover:text-white"
+              class="block text-sm hover:text-white"
+              :class="
+                isCategoryActive(cat)
+                  ? 'text-white font-semibold'
+                  : 'text-brand-slate-light/80'
+              "
+              :aria-current="isCategoryCurrentPage(cat) ? 'page' : undefined"
             >
               {{ cat.name }}
             </NuxtLink>
@@ -318,7 +346,13 @@
               :key="sub._id"
               :to="`/products?category=${cat.slug}&subcategory=${sub.slug}`"
               @click="isMobileMenuOpen = false"
-              class="block pl-3 text-sm text-brand-slate-light/60 hover:text-white"
+              class="block pl-3 text-sm hover:text-white"
+              :class="
+                isSubcategoryActive(cat, sub)
+                  ? 'text-white font-semibold'
+                  : 'text-brand-slate-light/60'
+              "
+              :aria-current="isSubcategoryActive(cat, sub) ? 'page' : undefined"
             >
               {{ sub.name }}
             </NuxtLink>
@@ -362,7 +396,9 @@
             :key="sol._id"
             :to="`/solutions/${sol.slug}`"
             @click="isMobileMenuOpen = false"
-            class="block text-sm text-brand-slate-light/80 hover:text-white"
+            class="block text-sm hover:text-white"
+            :class="isSolutionActive(sol) ? 'text-white font-semibold' : 'text-brand-slate-light/80'"
+            :aria-current="isSolutionActive(sol) ? 'page' : undefined"
           >
             {{ sol.name }}
           </NuxtLink>
@@ -455,7 +491,7 @@ import { computed, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useSanityQuery } from "#imports";
 import { useQuickContact } from "~/composables/useQuickContact";
-import { CATEGORY_TREE_QUERY, type CategoryTreeNode } from "~/queries/catalog";
+import { CATEGORY_TREE_QUERY, type CategoryTreeChild, type CategoryTreeNode } from "~/queries/catalog";
 import { SOLUTIONS_NAV_QUERY, type SolutionNavItem } from "~/queries/solutions";
 
 const route = useRoute();
@@ -478,6 +514,38 @@ const isProductsActive = computed(() => {
 const isSolutionsActive = computed(() => {
   return route.path.startsWith("/solutions");
 });
+
+const activeCategorySlug = computed(() => {
+  const category = route.query.category;
+  return typeof category === "string" ? category : null;
+});
+
+const activeSubcategorySlug = computed(() => {
+  const subcategory = route.query.subcategory;
+  return typeof subcategory === "string" ? subcategory : null;
+});
+
+const isProductsShowAllActive = computed(() => {
+  return route.path === "/products" && !activeCategorySlug.value;
+});
+
+function isCategoryActive(cat: CategoryTreeNode) {
+  return route.path === "/products" && activeCategorySlug.value === cat.slug;
+}
+
+function isCategoryCurrentPage(cat: CategoryTreeNode) {
+  return isCategoryActive(cat) && !activeSubcategorySlug.value;
+}
+
+function isSubcategoryActive(cat: CategoryTreeNode, sub: CategoryTreeChild) {
+  return isCategoryActive(cat) && activeSubcategorySlug.value === sub.slug;
+}
+
+const isSolutionsShowAllActive = computed(() => route.path === "/solutions");
+
+function isSolutionActive(sol: SolutionNavItem) {
+  return route.path === `/solutions/${sol.slug}`;
+}
 
 function scrollToLocation() {
   isMobileMenuOpen.value = false;
