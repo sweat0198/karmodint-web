@@ -76,16 +76,16 @@ export function evaluateCustomizationConstraints(
         })
         const selected = itemKey ? selectedKeys.includes(itemKey) : false
         const disabledByLimit = Boolean(itemKey && limitReached && !selected)
-        const disabledReason = missingRequirement
+        const missingRequirementMessage = missingRequirement
           ? requirementMessage(groupsById, missingRequirement.groupId, missingRequirement.itemKey)
-          : disabledByLimit ? limitMessage : undefined
+          : undefined
 
         if (itemKey && selected && missingRequirement) {
           violations.push({
             groupId: group._id,
             itemKey,
             itemTitle: item.title,
-            message: disabledReason!,
+            message: missingRequirementMessage!,
             reason: 'missingRequirement',
           })
         } else if (itemKey && duplicateKeys.has(itemKey)) {
@@ -108,8 +108,10 @@ export function evaluateCustomizationConstraints(
 
         return {
           ...item,
-          selectionDisabled: Boolean(disabledReason),
-          selectionDisabledReason: disabledReason,
+          selectionDisabled: Boolean(missingRequirement || disabledByLimit),
+          ...(missingRequirementMessage
+            ? { selectionDisabledReason: missingRequirementMessage }
+            : {}),
         }
       }),
     }

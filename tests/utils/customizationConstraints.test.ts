@@ -94,10 +94,10 @@ describe('customization selection constraints', () => {
       electricity: ['standard-electrical-pack', 'blue-male-socket'],
     })
 
-    expect(result.groups[0].items.find((item) => item._key === 'custom-electricity')).toMatchObject({
-      selectionDisabled: true,
-      selectionDisabledReason: 'Choose no more than 2 Electricity options',
-    })
+    const item = result.groups[0].items.find((candidate) => candidate._key === 'custom-electricity')
+
+    expect(item).toMatchObject({ selectionDisabled: true })
+    expect(item).not.toHaveProperty('selectionDisabledReason')
   })
 
   it('clears dependent selections and notes after Standard Electrical Pack is removed', () => {
