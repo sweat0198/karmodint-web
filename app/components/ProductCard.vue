@@ -136,6 +136,12 @@ const quoteStore = useQuoteStore();
 const router = useRouter();
 const route = useRoute();
 
+/**
+ * Routes that sell the card in place. Adding from anywhere else — the homepage, say — sends the
+ * visitor to the catalogue so they can see what they just added in context.
+ */
+const SELLING_ROUTE_PREFIXES = ["/products", "/solutions"];
+
 const isHovering = ref(false);
 
 const quantityInBasket = computed(() =>
@@ -153,7 +159,7 @@ const carouselImages = computed(() => {
 
 function handleAdd() {
   quoteStore.addSizeOption(props.card);
-  if (route.path === "/" || !route.path.startsWith("/products")) {
+  if (!SELLING_ROUTE_PREFIXES.some((prefix) => route.path.startsWith(prefix))) {
     router.push("/products");
   }
 }

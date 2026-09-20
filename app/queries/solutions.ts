@@ -13,7 +13,7 @@ export const SOLUTIONS_QUERY = `*[
   description,
   coverImage,
   displayOrder,
-  "productCount": count(products)
+  "productCount": count(products[@.product->status == "published"])
 }`;
 
 /**

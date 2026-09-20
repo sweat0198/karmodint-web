@@ -26,7 +26,7 @@
             :src="coverSrc"
             :srcset="coverSrcset"
             sizes="(min-width: 1280px) 1216px, 100vw"
-            :alt="solution.coverImage.alt"
+            :alt="solution.coverImage?.alt"
             fetchpriority="high"
             decoding="async"
             class="h-full w-full object-cover"
@@ -102,7 +102,7 @@ import { createError, useRuntimeConfig, useSanityQuery } from "#imports";
 import ProductCard from "~/components/ProductCard.vue";
 import { useAppSeo } from "~/composables/useAppSeo";
 import { SOLUTION_BY_SLUG_QUERY, type Solution } from "~/queries/solutions";
-import { sanityImageUrl } from "~/utils/sanityImageUrl";
+import { sanityImageSrcset, sanityImageUrl } from "~/utils/sanityImageUrl";
 import { toSolutionCards } from "~/utils/solutionCards";
 
 const SRCSET_WIDTHS = [640, 1024, 1600, 2000];
@@ -117,11 +117,14 @@ const { data } = await useSanityQuery<Solution | null>(SOLUTION_BY_SLUG_QUERY, {
   slug: slug.value,
 });
 
-if (!data.value) {
+// Identity, not truthiness: an unmatched `*[...][0]{...}` can arrive as an object of null fields
+// rather than null itself, and that object would otherwise render as a solution named "undefined".
+const found = data.value?._id ? data.value : null;
+if (!found) {
   throw createError({ statusCode: 404, statusMessage: "Solution not found", fatal: true });
 }
 
-const solution = computed(() => data.value!);
+const solution = computed(() => (data.value?._id ? data.value : found));
 const cards = computed(() => toSolutionCards(solution.value.products));
 
 const coverRef = computed(() => solution.value.coverImage?.asset?._ref);
@@ -134,15 +137,12 @@ const coverSrc = computed(() =>
 );
 
 const coverSrcset = computed(() =>
-  SRCSET_WIDTHS.map((width) => {
-    const url = sanityImageUrl(
-      coverRef.value,
-      config.public.sanityProjectId,
-      config.public.sanityDataset,
-      { width, fit: "max" },
-    );
-    return `${url} ${width}w`;
-  }).join(", "),
+  sanityImageSrcset(
+    coverRef.value,
+    config.public.sanityProjectId,
+    config.public.sanityDataset,
+    SRCSET_WIDTHS,
+  ),
 );
 
 setPageSeo({

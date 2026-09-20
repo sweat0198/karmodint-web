@@ -59,3 +59,23 @@ export function sanityImageUrl(
 
   return query ? `${base}?${query}` : base;
 }
+
+/**
+ * A `srcset` string for one asset across the widths a layout can actually reach. Callers pass the
+ * widths, because what a masonry tile needs and what a full-bleed cover needs are not the same.
+ *
+ * Returns an empty string for an asset reference that will not parse, which `<img>` ignores.
+ */
+export function sanityImageSrcset(
+  assetRef: string | undefined,
+  projectId: string,
+  dataset: string,
+  widths: number[],
+): string {
+  return widths
+    .flatMap((width) => {
+      const url = sanityImageUrl(assetRef, projectId, dataset, { width, fit: "max" });
+      return url ? [`${url} ${width}w`] : [];
+    })
+    .join(", ");
+}

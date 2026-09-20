@@ -58,6 +58,8 @@ async function mountAt(path: string, card: SizeCard = grpCard()) {
       { path: "/", component: { template: "<div />" } },
       { path: "/products", component: { template: "<div />" } },
       { path: "/products/:slug", component: { template: "<div />" } },
+      { path: "/solutions", component: { template: "<div />" } },
+      { path: "/solutions/:slug", component: { template: "<div />" } },
       { path: "/customize", component: { template: "<div />" } },
     ],
   });
@@ -112,6 +114,17 @@ describe("ProductCard", () => {
       await flushPromises();
 
       expect(router.currentRoute.value.path).toBe("/products/grp-cabin");
+    });
+
+    // A solution page sells the units it curates; bouncing the visitor to the catalogue on Add
+    // would throw away the page they were reading.
+    it("does not redirect when adding from a solution page", async () => {
+      const { wrapper, router } = await mountAt("/solutions/construction-site-setup");
+
+      await addButton(wrapper).trigger("click");
+      await flushPromises();
+
+      expect(router.currentRoute.value.path).toBe("/solutions/construction-site-setup");
     });
   });
 

@@ -14,7 +14,8 @@ function withFallbackMedia(
   product: CatalogProduct,
   size: CatalogSizeOption,
 ): CatalogSizeOption {
-  if (size.thumbnail ?? size.fallbackThumbnail) return size;
+  const hasOwnMedia = Boolean(size.thumbnail || size.fallbackThumbnail);
+  if (hasOwnMedia) return size;
 
   const representative = product.representativeImages?.[0];
   if (!representative?.asset) return size;

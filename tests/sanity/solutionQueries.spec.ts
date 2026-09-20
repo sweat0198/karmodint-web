@@ -21,6 +21,19 @@ describe('Solution GROQ queries', () => {
       expect(solutions[0].coverImage.alt).toBe('A fitted-out construction site compound')
     })
 
+    // The detail page drops entries whose product is unpublished, so a raw array length would
+    // advertise more products than the page goes on to show.
+    it('counts only the entries whose product is still published', async () => {
+      const withArchived = mockSanityDataset.map((doc: any) =>
+        doc._id === 'prod_kiosk_retail' ? { ...doc, status: 'archived' } : doc
+      )
+
+      const solutions = await executeGroq<any[]>(SOLUTIONS_QUERY, {}, withArchived)
+      const siteSetup = solutions.find((solution) => solution.slug === 'construction-site-setup')
+
+      expect(siteSetup.productCount).toBe(1)
+    })
+
     it('excludes drafts, so an open Studio document does not duplicate its card', async () => {
       const withDraft = [
         ...mockSanityDataset,

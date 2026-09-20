@@ -9,7 +9,7 @@
         :src="coverSrc"
         :srcset="coverSrcset"
         sizes="(min-width: 1024px) 384px, (min-width: 768px) 50vw, 100vw"
-        :alt="solution.coverImage.alt"
+        :alt="solution.coverImage?.alt"
         loading="lazy"
         decoding="async"
         class="h-full w-full object-cover transition-transform duration-300 [transition-timing-function:var(--ease-out)] motion-safe:group-hover:scale-[1.03]"
@@ -45,7 +45,7 @@
 import { computed } from "vue";
 import type { SolutionSummary } from "~/types/solution";
 import { resolveSanityImageConfig } from "~/utils/sanityImageConfig";
-import { sanityImageUrl } from "~/utils/sanityImageUrl";
+import { sanityImageSrcset, sanityImageUrl } from "~/utils/sanityImageUrl";
 
 const SRCSET_WIDTHS = [400, 800, 1200];
 
@@ -61,13 +61,12 @@ const coverSrc = computed(() => {
 
 const coverSrcset = computed(() => {
   const { projectId, dataset } = resolveSanityImageConfig();
-  return SRCSET_WIDTHS.map((width) => {
-    const url = sanityImageUrl(props.solution.coverImage?.asset?._ref, projectId, dataset, {
-      width,
-      fit: "max",
-    });
-    return `${url} ${width}w`;
-  }).join(", ");
+  return sanityImageSrcset(
+    props.solution.coverImage?.asset?._ref,
+    projectId,
+    dataset,
+    SRCSET_WIDTHS,
+  );
 });
 
 const productCountLabel = computed(() => {

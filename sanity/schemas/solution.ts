@@ -138,7 +138,7 @@ export const solutionType = defineType({
       validation: (Rule) =>
         Rule.required()
           .min(1)
-          .custom(async (entries: SolutionProductEntry[] | undefined, context: any) =>
+          .custom(async (entries: SolutionProductEntry[] | undefined, context: SolutionValidationContext) =>
             validateSolutionProducts(entries, await fetchReferencedProducts(entries, context))
           )
     }),
