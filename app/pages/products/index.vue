@@ -257,76 +257,8 @@
         </div>
       </div>
 
-      <!-- Main Layout Container: Product Grid + Sidebar -->
+      <!-- Main Layout Container: Sidebar + Product Grid -->
       <div class="flex flex-col lg:flex-row gap-8 items-start w-full">
-        <!-- Main Product Grid Section -->
-        <main class="flex-1 w-full flex flex-col gap-6" id="catalog-results">
-          <!-- Category Title & Description -->
-          <div class="flex flex-col gap-2 pb-2">
-            <h1
-              class="text-brand-navy-heading text-3xl font-bold tracking-tight"
-            >
-              {{ activeSubcategoryName }}
-            </h1>
-            <p class="text-brand-slate-muted text-base leading-relaxed">
-              Durable, high-performance modular units and cabins tailored for
-              site facilities, offices, and custom requirements.
-            </p>
-            <p
-              v-if="hasSearchQuery"
-              class="text-sm font-medium text-brand-slate-muted"
-            >
-              {{ catalogSearchStatus }}
-            </p>
-            <p
-              id="catalog-search-status"
-              class="sr-only"
-              aria-live="polite"
-              aria-atomic="true"
-            >
-              {{ catalogSearchStatus }}
-            </p>
-          </div>
-
-          <!-- Empty State: a real category with no Products yet -->
-          <div
-            v-if="visibleCards.length === 0"
-            class="bg-slate-50 border border-slate-200 rounded p-12 text-center flex flex-col items-center gap-3"
-          >
-            <template v-if="hasSearchQuery">
-              <p class="text-brand-navy-heading text-lg font-semibold">
-                {{ searchEmptyStateMessage }}
-              </p>
-              <button
-                type="button"
-                class="text-brand-red hover:text-brand-red-dark text-sm font-semibold underline underline-offset-2"
-                @click="clearSearch"
-              >
-                Clear search
-              </button>
-            </template>
-            <template v-else>
-              <p class="text-brand-navy-heading text-lg font-semibold">
-                No products in this category yet — talk to us.
-              </p>
-              <NuxtLink
-                to="/contact"
-                class="text-brand-red hover:text-brand-red-dark text-sm font-semibold underline underline-offset-2"
-              >
-                Contact us
-              </NuxtLink>
-            </template>
-          </div>
-
-          <!-- Product Cards Grid (3 Columns) -->
-          <div v-else class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-            <template v-for="card in visibleCards" :key="card.cardId">
-              <PortableContainerCard v-if="isPortableCard(card)" :card="card" />
-              <ProductCard v-else :card="card" />
-            </template>
-          </div>
-        </main>
-
         <!-- Sidebar - Categories (Desktop 290px width) -->
         <aside
           class="hidden lg:block sticky top-24 self-start w-[290px] shrink-0 bg-white border border-slate-100 rounded p-6 shadow-sm"
@@ -401,6 +333,74 @@
             </div>
           </div>
         </aside>
+
+        <!-- Main Product Grid Section -->
+        <main class="flex-1 w-full flex flex-col gap-6" id="catalog-results">
+          <!-- Category Title & Description -->
+          <div class="flex flex-col gap-2 pb-2">
+            <h1
+              class="text-brand-navy-heading text-3xl font-bold tracking-tight"
+            >
+              {{ activeSubcategoryName }}
+            </h1>
+            <p class="text-brand-slate-muted text-base leading-relaxed">
+              Durable, high-performance modular units and cabins tailored for
+              site facilities, offices, and custom requirements.
+            </p>
+            <p
+              v-if="hasSearchQuery"
+              class="text-sm font-medium text-brand-slate-muted"
+            >
+              {{ catalogSearchStatus }}
+            </p>
+            <p
+              id="catalog-search-status"
+              class="sr-only"
+              aria-live="polite"
+              aria-atomic="true"
+            >
+              {{ catalogSearchStatus }}
+            </p>
+          </div>
+
+          <!-- Empty State: a real category with no Products yet -->
+          <div
+            v-if="visibleCards.length === 0"
+            class="bg-slate-50 border border-slate-200 rounded p-12 text-center flex flex-col items-center gap-3"
+          >
+            <template v-if="hasSearchQuery">
+              <p class="text-brand-navy-heading text-lg font-semibold">
+                {{ searchEmptyStateMessage }}
+              </p>
+              <button
+                type="button"
+                class="text-brand-red hover:text-brand-red-dark text-sm font-semibold underline underline-offset-2"
+                @click="clearSearch"
+              >
+                Clear search
+              </button>
+            </template>
+            <template v-else>
+              <p class="text-brand-navy-heading text-lg font-semibold">
+                No products in this category yet — talk to us.
+              </p>
+              <NuxtLink
+                to="/contact"
+                class="text-brand-red hover:text-brand-red-dark text-sm font-semibold underline underline-offset-2"
+              >
+                Contact us
+              </NuxtLink>
+            </template>
+          </div>
+
+          <!-- Product Cards Grid (3 Columns) -->
+          <div v-else class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            <template v-for="card in visibleCards" :key="card.cardId">
+              <PortableContainerCard v-if="isPortableCard(card)" :card="card" />
+              <ProductCard v-else :card="card" />
+            </template>
+          </div>
+        </main>
       </div>
 
       <!-- Footer CTA Section -->
