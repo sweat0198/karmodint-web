@@ -166,6 +166,32 @@ describe("AppHeader Products and Solutions submenus", () => {
     wrapper.unmount();
   });
 
+  it("nests subcategories under their parent category in the Products dropdown", async () => {
+    categoryTreeQuery.data.value = [
+      {
+        _id: "cat-cabin",
+        name: "Gatehouses & Kiosks",
+        slug: "cabin",
+        displayOrder: 1,
+        children: [
+          { _id: "sub-grp", name: "GRP", slug: "grp", displayOrder: 1 },
+          { _id: "sub-panel", name: "Panel", slug: "panel", displayOrder: 2 },
+          { _id: "sub-metro-city", name: "Metro City", slug: "metro-city", displayOrder: 3 },
+          { _id: "sub-composite", name: "Composite", slug: "composite", displayOrder: 4 },
+        ],
+      },
+    ];
+
+    const { wrapper } = await mountHeader("/");
+
+    expect(wrapper.find('a[to="/products?category=cabin&subcategory=grp"]').text()).toBe("GRP");
+    expect(wrapper.find('a[to="/products?category=cabin&subcategory=panel"]').text()).toBe("Panel");
+    expect(wrapper.find('a[to="/products?category=cabin&subcategory=metro-city"]').text()).toBe("Metro City");
+    expect(wrapper.find('a[to="/products?category=cabin&subcategory=composite"]').text()).toBe("Composite");
+
+    wrapper.unmount();
+  });
+
   it("lists solutions with a Show all link in the Solutions dropdown", async () => {
     solutionsNavQuery.data.value = [
       { _id: "sol-1", name: "Construction Site Compound", slug: "construction-site" },
@@ -205,6 +231,29 @@ describe("AppHeader Products and Solutions submenus", () => {
 
     // Desktop dropdown copy + the now-expanded mobile drawer copy.
     expect(wrapper.findAll('a[to="/products?category=containers"]')).toHaveLength(2);
+
+    wrapper.unmount();
+  });
+
+  it("reveals nested subcategory links after opening the mobile Products toggle", async () => {
+    categoryTreeQuery.data.value = [
+      {
+        _id: "cat-cabin",
+        name: "Gatehouses & Kiosks",
+        slug: "cabin",
+        displayOrder: 1,
+        children: [{ _id: "sub-grp", name: "GRP", slug: "grp", displayOrder: 1 }],
+      },
+    ];
+
+    const { wrapper } = await mountHeader("/");
+
+    await wrapper.get('button[aria-label="Toggle Navigation Menu"]').trigger("click");
+    expect(wrapper.findAll('a[to="/products?category=cabin&subcategory=grp"]')).toHaveLength(1);
+
+    await wrapper.get('button[aria-label="Toggle Products categories"]').trigger("click");
+
+    expect(wrapper.findAll('a[to="/products?category=cabin&subcategory=grp"]')).toHaveLength(2);
 
     wrapper.unmount();
   });

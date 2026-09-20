@@ -49,9 +49,9 @@
           </NuxtLink>
 
           <div
-            class="absolute left-0 top-full w-64 origin-top-left pt-3 opacity-0 invisible -translate-y-1 transition-[opacity,transform] duration-150 [transition-timing-function:var(--ease-out)] motion-reduce:transition-opacity motion-reduce:duration-200 motion-reduce:translate-y-0 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 group-focus-within:opacity-100 group-focus-within:visible group-focus-within:translate-y-0"
+            class="absolute left-0 top-full w-72 origin-top-left pt-3 opacity-0 invisible -translate-y-1 transition-[opacity,transform] duration-150 [transition-timing-function:var(--ease-out)] motion-reduce:transition-opacity motion-reduce:duration-200 motion-reduce:translate-y-0 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 group-focus-within:opacity-100 group-focus-within:visible group-focus-within:translate-y-0"
           >
-            <div class="bg-white rounded-md border border-slate-100 shadow-lg py-2">
+            <div class="bg-white rounded-md border border-slate-100 shadow-lg py-2 max-h-[70vh] overflow-y-auto">
               <NuxtLink
                 to="/products"
                 class="block px-4 py-2.5 text-sm font-semibold text-brand-red hover:bg-slate-50 hover:text-brand-red-dark"
@@ -60,14 +60,22 @@
               </NuxtLink>
               <template v-if="productCategories.length">
                 <div class="my-1.5 border-t border-slate-100" />
-                <NuxtLink
-                  v-for="cat in productCategories"
-                  :key="cat._id"
-                  :to="`/products?category=${cat.slug}`"
-                  class="block px-4 py-2 text-sm text-brand-slate-muted hover:bg-slate-50 hover:text-brand-navy-heading"
-                >
-                  {{ cat.name }}
-                </NuxtLink>
+                <template v-for="cat in productCategories" :key="cat._id">
+                  <NuxtLink
+                    :to="`/products?category=${cat.slug}`"
+                    class="block px-4 py-2 text-sm font-semibold text-brand-navy-heading hover:bg-slate-50"
+                  >
+                    {{ cat.name }}
+                  </NuxtLink>
+                  <NuxtLink
+                    v-for="sub in cat.children"
+                    :key="sub._id"
+                    :to="`/products?category=${cat.slug}&subcategory=${sub.slug}`"
+                    class="block pl-7 pr-4 py-1.5 text-sm text-brand-slate-muted hover:bg-slate-50 hover:text-brand-navy-heading"
+                  >
+                    {{ sub.name }}
+                  </NuxtLink>
+                </template>
               </template>
             </div>
           </div>
@@ -297,15 +305,24 @@
           v-if="isMobileProductsOpen && productCategories.length"
           class="mt-2 ml-3 pl-3 border-l border-brand-rose-border/20 space-y-2.5"
         >
-          <NuxtLink
-            v-for="cat in productCategories"
-            :key="cat._id"
-            :to="`/products?category=${cat.slug}`"
-            @click="isMobileMenuOpen = false"
-            class="block text-sm text-brand-slate-light/80 hover:text-white"
-          >
-            {{ cat.name }}
-          </NuxtLink>
+          <template v-for="cat in productCategories" :key="cat._id">
+            <NuxtLink
+              :to="`/products?category=${cat.slug}`"
+              @click="isMobileMenuOpen = false"
+              class="block text-sm text-brand-slate-light/80 hover:text-white"
+            >
+              {{ cat.name }}
+            </NuxtLink>
+            <NuxtLink
+              v-for="sub in cat.children"
+              :key="sub._id"
+              :to="`/products?category=${cat.slug}&subcategory=${sub.slug}`"
+              @click="isMobileMenuOpen = false"
+              class="block pl-3 text-sm text-brand-slate-light/60 hover:text-white"
+            >
+              {{ sub.name }}
+            </NuxtLink>
+          </template>
         </div>
       </div>
       <div>
@@ -451,7 +468,6 @@ const isMobileSolutionsOpen = ref(false);
 const { data: categoryTree } = await useSanityQuery<CategoryTreeNode[]>(CATEGORY_TREE_QUERY);
 const { data: solutionsList } = await useSanityQuery<SolutionNavItem[]>(SOLUTIONS_NAV_QUERY);
 
-// Top-level categories only — the header submenu is a shortcut into a category, not a full tree.
 const productCategories = computed(() => categoryTree.value ?? []);
 const solutionMenuItems = computed(() => solutionsList.value ?? []);
 
