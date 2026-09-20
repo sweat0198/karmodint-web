@@ -278,7 +278,9 @@ describe("AppHeader submenu active state", () => {
 
     const activeCategory = wrapper.get('a[to="/products?category=containers"]');
     expect(activeCategory.attributes("aria-current")).toBe("page");
-    expect(activeCategory.classes()).toContain("text-brand-red");
+    expect(activeCategory.classes()).toContain("bg-brand-rose-card");
+    expect(activeCategory.classes()).toContain("border-brand-red");
+    expect(activeCategory.classes()).not.toContain("text-brand-red");
 
     const otherCategory = wrapper.get('a[to="/products?category=cabin"]');
     expect(otherCategory.attributes("aria-current")).toBeUndefined();
@@ -307,15 +309,22 @@ describe("AppHeader submenu active state", () => {
 
     const activeSubcategory = wrapper.get('a[to="/products?category=cabin&subcategory=grp"]');
     expect(activeSubcategory.attributes("aria-current")).toBe("page");
-    expect(activeSubcategory.classes()).toContain("text-brand-red");
+    expect(activeSubcategory.classes()).toContain("bg-brand-rose-card");
+    expect(activeSubcategory.classes()).toContain("border-brand-red");
+    expect(activeSubcategory.classes()).not.toContain("text-brand-red");
 
+    // The parent category is "in section" (its own subcategory is selected) but not the exact
+    // current page — a lighter cue (red text, no card/border) so it doesn't compete with the
+    // subcategory's stronger "you are here" treatment above.
     const parentCategory = wrapper.get('a[to="/products?category=cabin"]');
     expect(parentCategory.classes()).toContain("text-brand-red");
+    expect(parentCategory.classes()).not.toContain("bg-brand-rose-card");
     expect(parentCategory.attributes("aria-current")).toBeUndefined();
 
     const otherSubcategory = wrapper.get('a[to="/products?category=cabin&subcategory=panel"]');
     expect(otherSubcategory.attributes("aria-current")).toBeUndefined();
     expect(otherSubcategory.classes()).not.toContain("text-brand-red");
+    expect(otherSubcategory.classes()).not.toContain("bg-brand-rose-card");
 
     wrapper.unmount();
   });
@@ -343,7 +352,9 @@ describe("AppHeader submenu active state", () => {
 
     const activeSolution = wrapper.get('a[to="/solutions/construction-site"]');
     expect(activeSolution.attributes("aria-current")).toBe("page");
-    expect(activeSolution.classes()).toContain("text-brand-red");
+    expect(activeSolution.classes()).toContain("bg-brand-rose-card");
+    expect(activeSolution.classes()).toContain("border-brand-red");
+    expect(activeSolution.classes()).not.toContain("text-brand-red");
 
     const otherSolution = wrapper.get('a[to="/solutions/event-site"]');
     expect(otherSolution.attributes("aria-current")).toBeUndefined();
@@ -363,6 +374,80 @@ describe("AppHeader submenu active state", () => {
 
     const showAllLink = wrapper.findAll('a[to="/solutions"]').find((a) => a.text().includes("Show all"))!;
     expect(showAllLink.attributes("aria-current")).toBe("page");
+
+    wrapper.unmount();
+  });
+});
+
+describe("AppHeader desktop dropdown closes on navigation", () => {
+  beforeEach(() => {
+    setActivePinia(createPinia());
+    categoryTreeQuery.data.value = [];
+    solutionsNavQuery.data.value = [];
+  });
+
+  it("closes the Products dropdown after a link inside it is clicked, and re-arms once the pointer leaves", async () => {
+    categoryTreeQuery.data.value = [
+      { _id: "cat-containers", name: "Portable Cabins", slug: "containers", displayOrder: 1, children: [] },
+    ];
+
+    const { wrapper } = await mountHeader("/");
+
+    const panel = wrapper.find(".absolute.top-full");
+    expect(panel.classes()).not.toContain("opacity-0!");
+
+    await wrapper.get('a[to="/products?category=containers"]').trigger("click");
+    expect(panel.classes()).toContain("opacity-0!");
+
+    // Clicking again while the pointer never left shouldn't reopen it — only leaving does.
+    await wrapper.get('div.group').trigger("mouseleave");
+    expect(panel.classes()).not.toContain("opacity-0!");
+
+    wrapper.unmount();
+  });
+
+  it("closes the Solutions dropdown after a link inside it is clicked, and re-arms once the pointer leaves", async () => {
+    solutionsNavQuery.data.value = [
+      { _id: "sol-1", name: "Construction Site Compound", slug: "construction-site" },
+    ];
+
+    const { wrapper } = await mountHeader("/");
+
+    const panels = wrapper.findAll(".absolute.top-full");
+    const solutionsPanel = panels[1]!;
+    expect(solutionsPanel.classes()).not.toContain("opacity-0!");
+
+    await wrapper.get('a[to="/solutions/construction-site"]').trigger("click");
+    expect(solutionsPanel.classes()).toContain("opacity-0!");
+
+    const groups = wrapper.findAll("div.group");
+    await groups[1]!.trigger("mouseleave");
+    expect(solutionsPanel.classes()).not.toContain("opacity-0!");
+
+    wrapper.unmount();
+  });
+
+  it("closes the Products dropdown once focus genuinely leaves it, not when it moves between its own links", async () => {
+    categoryTreeQuery.data.value = [
+      { _id: "cat-containers", name: "Portable Cabins", slug: "containers", displayOrder: 1, children: [] },
+    ];
+
+    const { wrapper } = await mountHeader("/");
+
+    const panel = wrapper.find(".absolute.top-full");
+    const categoryLink = wrapper.get('a[to="/products?category=containers"]');
+    const showAllLink = wrapper.findAll('a[to="/products"]').find((a) => a.text().includes("Show all"))!;
+
+    await categoryLink.trigger("click");
+    expect(panel.classes()).toContain("opacity-0!");
+
+    // Focus moving to a sibling link inside the same dropdown isn't "leaving" it.
+    await categoryLink.trigger("focusout", { relatedTarget: showAllLink.element });
+    expect(panel.classes()).toContain("opacity-0!");
+
+    // Focus moving outside the dropdown entirely re-arms it.
+    await categoryLink.trigger("focusout", { relatedTarget: document.body });
+    expect(panel.classes()).not.toContain("opacity-0!");
 
     wrapper.unmount();
   });

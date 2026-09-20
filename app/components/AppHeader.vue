@@ -27,7 +27,11 @@
         >
           Home
         </NuxtLink>
-        <div class="relative group">
+        <div
+          class="relative group"
+          @mouseleave="productsMenuClosedByNav = false"
+          @focusout="onProductsMenuFocusOut"
+        >
           <NuxtLink
             to="/products"
             class="text-base transition-colors py-1 relative inline-flex items-center gap-1"
@@ -50,8 +54,12 @@
 
           <div
             class="absolute left-0 top-full w-72 origin-top-left pt-3 opacity-0 invisible -translate-y-1 transition-[opacity,transform] duration-150 [transition-timing-function:var(--ease-out)] motion-reduce:transition-opacity motion-reduce:duration-200 motion-reduce:translate-y-0 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 group-focus-within:opacity-100 group-focus-within:visible group-focus-within:translate-y-0"
+            :class="{ 'opacity-0! invisible! pointer-events-none!': productsMenuClosedByNav }"
           >
-            <div class="bg-white rounded-md border border-slate-100 shadow-lg py-2 max-h-[70vh] overflow-y-auto">
+            <div
+              class="bg-white rounded-md border border-slate-100 shadow-lg py-2 max-h-[70vh] overflow-y-auto"
+              @click="productsMenuClosedByNav = true"
+            >
               <NuxtLink
                 to="/products"
                 class="block px-4 py-2.5 text-sm font-semibold text-brand-red hover:bg-slate-50 hover:text-brand-red-dark"
@@ -65,11 +73,13 @@
                 <template v-for="cat in productCategories" :key="cat._id">
                   <NuxtLink
                     :to="`/products?category=${cat.slug}`"
-                    class="block px-4 py-2 text-sm font-semibold hover:bg-slate-50"
+                    class="block pl-3.5 pr-4 py-2 text-sm font-semibold border-l-2 hover:bg-slate-50"
                     :class="
-                      isCategoryActive(cat)
-                        ? 'bg-slate-50 text-brand-red'
-                        : 'text-brand-navy-heading'
+                      isCategoryCurrentPage(cat)
+                        ? 'border-brand-red bg-brand-rose-card text-brand-navy-heading'
+                        : isCategoryActive(cat)
+                          ? 'border-transparent text-brand-red'
+                          : 'border-transparent text-brand-navy-heading'
                     "
                     :aria-current="isCategoryCurrentPage(cat) ? 'page' : undefined"
                   >
@@ -79,11 +89,11 @@
                     v-for="sub in cat.children"
                     :key="sub._id"
                     :to="`/products?category=${cat.slug}&subcategory=${sub.slug}`"
-                    class="block pl-7 pr-4 py-1.5 text-sm hover:bg-slate-50"
+                    class="block pl-6.5 pr-4 py-1.5 text-sm border-l-2 hover:bg-slate-50"
                     :class="
                       isSubcategoryActive(cat, sub)
-                        ? 'bg-slate-50 text-brand-red font-semibold'
-                        : 'text-brand-slate-muted hover:text-brand-navy-heading'
+                        ? 'border-brand-red bg-brand-rose-card text-brand-navy-heading font-semibold'
+                        : 'border-transparent text-brand-slate-muted hover:text-brand-navy-heading'
                     "
                     :aria-current="isSubcategoryActive(cat, sub) ? 'page' : undefined"
                   >
@@ -95,7 +105,11 @@
           </div>
         </div>
 
-        <div class="relative group">
+        <div
+          class="relative group"
+          @mouseleave="solutionsMenuClosedByNav = false"
+          @focusout="onSolutionsMenuFocusOut"
+        >
           <NuxtLink
             to="/solutions"
             class="text-base transition-colors py-1 relative inline-flex items-center gap-1"
@@ -118,8 +132,12 @@
 
           <div
             class="absolute left-0 top-full w-72 origin-top-left pt-3 opacity-0 invisible -translate-y-1 transition-[opacity,transform] duration-150 [transition-timing-function:var(--ease-out)] motion-reduce:transition-opacity motion-reduce:duration-200 motion-reduce:translate-y-0 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 group-focus-within:opacity-100 group-focus-within:visible group-focus-within:translate-y-0"
+            :class="{ 'opacity-0! invisible! pointer-events-none!': solutionsMenuClosedByNav }"
           >
-            <div class="bg-white rounded-md border border-slate-100 shadow-lg py-2">
+            <div
+              class="bg-white rounded-md border border-slate-100 shadow-lg py-2"
+              @click="solutionsMenuClosedByNav = true"
+            >
               <NuxtLink
                 to="/solutions"
                 class="block px-4 py-2.5 text-sm font-semibold text-brand-red hover:bg-slate-50 hover:text-brand-red-dark"
@@ -134,11 +152,11 @@
                   v-for="sol in solutionMenuItems"
                   :key="sol._id"
                   :to="`/solutions/${sol.slug}`"
-                  class="block px-4 py-2 text-sm hover:bg-slate-50"
+                  class="block pl-3.5 pr-4 py-2 text-sm border-l-2 hover:bg-slate-50"
                   :class="
                     isSolutionActive(sol)
-                      ? 'bg-slate-50 text-brand-red font-semibold'
-                      : 'text-brand-slate-muted hover:text-brand-navy-heading'
+                      ? 'border-brand-red bg-brand-rose-card text-brand-navy-heading font-semibold'
+                      : 'border-transparent text-brand-slate-muted hover:text-brand-navy-heading'
                   "
                   :aria-current="isSolutionActive(sol) ? 'page' : undefined"
                 >
@@ -500,6 +518,27 @@ const { phoneDisplay, phoneTelHref, whatsAppDisplay, whatsAppUrl, hasQuoteItems,
 const isMobileMenuOpen = ref(false);
 const isMobileProductsOpen = ref(false);
 const isMobileSolutionsOpen = ref(false);
+
+// Desktop dropdowns open on CSS hover/focus-within. Clicking a link inside one navigates without
+// moving the pointer or focus, so the dropdown would otherwise stay visually open over the new
+// page until the pointer/focus actually leaves it. These flags force it closed on click, and clear
+// once the pointer or focus genuinely leaves so hovering it again behaves normally.
+const productsMenuClosedByNav = ref(false);
+const solutionsMenuClosedByNav = ref(false);
+
+function onProductsMenuFocusOut(event: FocusEvent) {
+  const container = event.currentTarget as HTMLElement;
+  if (!container.contains(event.relatedTarget as Node | null)) {
+    productsMenuClosedByNav.value = false;
+  }
+}
+
+function onSolutionsMenuFocusOut(event: FocusEvent) {
+  const container = event.currentTarget as HTMLElement;
+  if (!container.contains(event.relatedTarget as Node | null)) {
+    solutionsMenuClosedByNav.value = false;
+  }
+}
 
 const { data: categoryTree } = await useSanityQuery<CategoryTreeNode[]>(CATEGORY_TREE_QUERY);
 const { data: solutionsList } = await useSanityQuery<SolutionNavItem[]>(SOLUTIONS_NAV_QUERY);
