@@ -124,6 +124,29 @@ describe("toSolutionCards", () => {
     expect(card!.images).toHaveLength(1);
   });
 
+  // The real Portable Cabin carries renders on one size only and has no representativeImages at
+  // all, so without a sibling fallback three of its four sizes vanish from every solution that
+  // lists them. `toPortableContainerCards` already borrows a sibling render for the catalogue.
+  it("borrows a sibling size's render when the product has no representative image", () => {
+    const sparse = {
+      ...cabin,
+      _id: "product-sparse",
+      name: "Portable Cabin",
+      representativeImages: [],
+      sizes: [
+        size("300x700", 3, 7, 6200),
+        { ...size("300x500", 3, 5, 5100), thumbnail: null, fallbackThumbnail: null, images: [] },
+      ],
+    };
+
+    const [card] = toSolutionCards([entry(sparse, "300x500")]);
+
+    expect(card!.cardId).toBe("product-sparse-300x500");
+    expect(card!.thumbnail.asset?._ref).toBe("image-diagonal-300x700");
+    // The borrowed render depicts another size, so it must not claim to be this one.
+    expect(card!.thumbnail.alt).not.toContain("300x700");
+  });
+
   it("still drops a size with no render and no representative image to fall back on", () => {
     const medialess = {
       ...cabin,

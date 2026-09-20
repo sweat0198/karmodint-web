@@ -13,7 +13,9 @@ export const SOLUTIONS_QUERY = `*[
   description,
   coverImage,
   displayOrder,
-  "productCount": count(products[@.product->status == "published"])
+  // Membership test rather than a dereference: @nuxtjs/sanity pins apiVersion "1", whose GROQ
+  // silently evaluates \`@.product->status\` inside a filter to 0 rather than erroring.
+  "productCount": count(products[product._ref in *[_type == "product" && status == "published"]._id])
 }`;
 
 /**

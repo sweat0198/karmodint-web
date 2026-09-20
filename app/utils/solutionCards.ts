@@ -4,12 +4,27 @@ import type { SolutionProductEntry } from "~/types/solution";
 import { toSizeCards, type SizeCard } from "~/utils/sizeCards";
 
 /**
- * Gives a size the product's representative photography when it has none of its own.
+ * A stand-in render for a size that carries none of its own: the product's representative
+ * photography, or failing that any sibling size's render.
  *
- * Portable cabins are the case this exists for: their schema lets a size carry no render because
- * the product holds one shared representative image instead. Without this, `toSizeCards` would
- * drop such a size for want of a thumbnail, silently removing a product the editor chose.
+ * Portable cabins are the case this exists for. Their schema lets a size carry no render, and in
+ * practice one size holds the photography for the whole model while the rest hold none. Without a
+ * stand-in, `toSizeCards` drops those sizes for want of a thumbnail and they vanish from every
+ * solution that lists them. `toPortableContainerCards` borrows a sibling render the same way.
  */
+function standInImage(product: CatalogProduct): SanitySizeImage | undefined {
+  const representative = product.representativeImages?.[0];
+  if (representative?.asset) {
+    return { ...representative, view: "front", alt: representative.alt ?? `${product.name} representative image` };
+  }
+
+  const sibling = (product.sizes ?? []).find((size) => size.thumbnail ?? size.fallbackThumbnail);
+  const borrowed = sibling?.thumbnail ?? sibling?.fallbackThumbnail;
+  // The borrowed render depicts a different size, so its original alt text would misdescribe this
+  // card. Say what it actually is instead.
+  return borrowed ? { ...borrowed, alt: `${product.name} representative image` } : undefined;
+}
+
 function withFallbackMedia(
   product: CatalogProduct,
   size: CatalogSizeOption,
@@ -17,14 +32,8 @@ function withFallbackMedia(
   const hasOwnMedia = Boolean(size.thumbnail || size.fallbackThumbnail);
   if (hasOwnMedia) return size;
 
-  const representative = product.representativeImages?.[0];
-  if (!representative?.asset) return size;
-
-  const image: SanitySizeImage = {
-    ...representative,
-    view: "front",
-    alt: representative.alt ?? `${product.name}, ${size.label}`,
-  };
+  const image = standInImage(product);
+  if (!image) return size;
 
   return { ...size, thumbnail: image, fallbackThumbnail: image, images: [image] };
 }
