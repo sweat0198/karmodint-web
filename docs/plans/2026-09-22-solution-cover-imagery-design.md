@@ -6,7 +6,7 @@
 
 ## Goal
 
-Create one new review-only cover image for each of the 12 published Solution entries. Images must present real Karmod product forms in attractive, feasible project settings.
+Create one new review-only cover image for each of the 12 published Solution entries. Images must present real Karmod product forms in attractive, feasible UK project settings.
 
 ## Chosen Direction
 
@@ -22,7 +22,8 @@ Existing generated Solution images are excluded from all references.
 - Photorealistic commercial project photography.
 - Wide landscape composition, composed for both 16:9 and centred 21:9 crops.
 - Product occupies the primary focal area and remains readable at card size.
-- Natural daylight, restrained grading, realistic material texture, and credible wear.
+- Soft UK daylight, restrained grading, realistic material texture, and credible wear.
+- British site practice, road markings, kerbs, temporary fencing, planting, architecture, and weather establish the target market.
 - Sparse people only when needed for scale; no identifiable faces.
 - No customer branding, invented logos, promotional text, watermarks, fake certification marks, or implausible luxury finishes.
 - No structural additions unsupported by Karmod products. Solution-specific fit-out remains feasible and visually secondary.
