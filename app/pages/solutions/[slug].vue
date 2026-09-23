@@ -18,17 +18,14 @@
         <span class="font-bold text-brand-navy-heading">{{ solution.name }}</span>
       </nav>
 
-      <!-- Cover photo beside the title on large screens, above it on smaller ones. The box stays
-           16:9 — the covers' own ratio — so the whole scene shows rather than a banner-cropped strip. -->
-      <header
-        class="grid gap-6 border-b border-slate-100 pb-6 lg:grid-cols-[3fr_2fr] lg:items-center lg:gap-10"
-      >
-        <div class="aspect-16/9 w-full overflow-hidden rounded bg-slate-50">
+      <!-- Cover photo, then the title and short description beneath it -->
+      <header class="flex flex-col gap-6">
+        <div class="aspect-16/9 w-full overflow-hidden rounded bg-slate-50 md:aspect-21/9">
           <img
             v-if="coverSrc"
             :src="coverSrc"
             :srcset="coverSrcset"
-            sizes="(min-width: 1280px) 706px, (min-width: 1024px) 57vw, 100vw"
+            sizes="(min-width: 1280px) 1216px, 100vw"
             :alt="solution.coverImage?.alt"
             fetchpriority="high"
             decoding="async"
@@ -36,7 +33,7 @@
           />
         </div>
 
-        <div class="flex flex-col gap-3">
+        <div class="flex flex-col gap-3 border-b border-slate-100 pb-6">
           <h1
             class="text-3xl font-bold leading-tight tracking-tight text-brand-navy-heading md:text-4xl lg:text-5xl"
           >
