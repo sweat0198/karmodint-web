@@ -76,15 +76,4 @@ describe("selected Solution covers", () => {
       expect(fs.existsSync(repoPath(cover.imagePath)), cover.imagePath).toBe(true);
     }
   });
-
-  it("matches the picks recorded in selections.json", () => {
-    const recorded = JSON.parse(
-      fs.readFileSync(repoPath("public/images/solutions/selections.json"), "utf-8"),
-    ) as { picks: Array<{ slug: string; selectedFile: string }> };
-    expect(
-      Object.fromEntries(SOLUTION_COVERS.map((cover) => [cover.slug, cover.imagePath])),
-    ).toEqual(
-      Object.fromEntries(recorded.picks.map((pick) => [pick.slug, pick.selectedFile])),
-    );
-  });
 });

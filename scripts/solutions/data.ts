@@ -7,7 +7,7 @@ export interface SolutionCover {
 const COVERS_DIR = 'public/images/solutions'
 
 /**
- * The chosen cover for each Solution, as recorded in `public/images/solutions/selections.json`.
+ * The chosen cover for each Solution, one image per slug in `public/images/solutions/`.
  *
  * Alt text describes what each image actually shows, not the prompt it was generated from.
  */
