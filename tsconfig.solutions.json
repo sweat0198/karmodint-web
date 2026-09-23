@@ -1,0 +1,21 @@
+{
+  "//": "Typechecks the Solution cover migration. Same reasoning as tsconfig.catalogue.json: the root tsconfig extends Nuxt's, which includes only app/, so scripts/ and tests/ need their own strict config.",
+  "compilerOptions": {
+    "strict": true,
+    "noEmit": true,
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "skipLibCheck": true,
+    "types": ["node", "vitest/globals"],
+    "resolveJsonModule": true,
+    "esModuleInterop": true
+  },
+  "include": [
+    "scripts/solutions/**/*.ts",
+    "tests/solutions/**/*.ts",
+    "scripts/catalogue/lib/paths.ts",
+    "scripts/catalogue/lib/runScript.ts",
+    "scripts/catalogue/lib/sanityEnv.ts"
+  ]
+}

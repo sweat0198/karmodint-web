@@ -33,6 +33,8 @@
     "typecheck:gallery": "tsc -p tsconfig.gallery.json",
     "manual-products:containers": "jiti scripts/manual-products/add-container-products.ts",
     "typecheck:manual-products": "tsc -p tsconfig.manual-products.json",
+    "solutions:patch-covers": "jiti scripts/solutions/patch-covers.ts",
+    "typecheck:solutions": "tsc -p tsconfig.solutions.json",
     "test": "vitest run",
     "test:watch": "vitest"
   },
