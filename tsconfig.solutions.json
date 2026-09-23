@@ -7,7 +7,7 @@
     "module": "ESNext",
     "moduleResolution": "bundler",
     "skipLibCheck": true,
-    "types": ["node", "vitest/globals"],
+    "types": ["node"],
     "resolveJsonModule": true,
     "esModuleInterop": true
   },

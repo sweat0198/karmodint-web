@@ -14,6 +14,8 @@ export interface CoverPatch {
   }
 }
 
+const isDraft = (id: string): boolean => id.startsWith('drafts.')
+
 /**
  * One `coverImage` patch per Solution document, published and draft alike.
  *
@@ -33,7 +35,7 @@ export function planCoverPatches(
   return covers.flatMap((cover) => {
     const documents = solutions
       .filter((solution) => solution.slug === cover.slug)
-      .sort((a, b) => Number(a._id.startsWith('drafts.')) - Number(b._id.startsWith('drafts.')))
+      .sort((a, b) => Number(isDraft(a._id)) - Number(isDraft(b._id)))
     if (documents.length === 0) throw new Error(`No Solution with slug "${cover.slug}" in the dataset`)
 
     const assetId = assetIds[cover.imagePath]

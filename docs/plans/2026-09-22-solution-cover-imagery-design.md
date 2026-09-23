@@ -50,7 +50,7 @@ Existing generated Solution images are excluded from all references.
 - Twelve new versioned review assets under `public/images/solutions/review/`.
 - Prompt and reference manifest under the same directory.
 - Existing Solution images unchanged.
-- No Sanity upload or document mutation.
+- No Sanity upload or document mutation during generation; selected covers are applied afterwards with `pnpm solutions:patch-covers`.
 
 ## Review Standard
 

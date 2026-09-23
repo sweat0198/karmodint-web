@@ -8,10 +8,9 @@ const covers = [
   { slug: "site-offices", imagePath: "public/images/solutions/selection/site-offices.png", alt: "Site office" },
   { slug: "accommodation-units", imagePath: "public/images/solutions/selection/accommodation-units.png", alt: "Accommodation" },
 ];
-const assetIds = {
-  "public/images/solutions/selection/site-offices.png": "image-aaa-1536x864-png",
-  "public/images/solutions/selection/accommodation-units.png": "image-bbb-1536x864-png",
-};
+const assetIds = Object.fromEntries(
+  covers.map((cover, index) => [cover.imagePath, `image-${"ab"[index].repeat(3)}-1536x864-png`]),
+);
 const solutions: SolutionRecord[] = [
   { _id: "solution-site-offices", slug: "site-offices" },
   { _id: "solution-accommodation-units", slug: "accommodation-units" },
@@ -76,5 +75,16 @@ describe("selected Solution covers", () => {
       expect(cover.alt.trim(), cover.slug).not.toBe("");
       expect(fs.existsSync(repoPath(cover.imagePath)), cover.imagePath).toBe(true);
     }
+  });
+
+  it("matches the picks recorded in selections.json", () => {
+    const recorded = JSON.parse(
+      fs.readFileSync(repoPath("public/images/solutions/selection/selections.json"), "utf-8"),
+    ) as { picks: Array<{ slug: string; selectedFile: string }> };
+    expect(
+      Object.fromEntries(SOLUTION_COVERS.map((cover) => [cover.slug, cover.imagePath])),
+    ).toEqual(
+      Object.fromEntries(recorded.picks.map((pick) => [pick.slug, pick.selectedFile])),
+    );
   });
 });

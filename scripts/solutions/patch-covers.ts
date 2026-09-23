@@ -1,7 +1,8 @@
 /**
  * Set `coverImage` on every Solution document from the selected covers in `scripts/solutions/data.ts`.
  *
- * Only `coverImage` is written; the Studio's other edits to each Solution are left alone. Uploads
+ * Only `coverImage` is written, and it is replaced whole: a hotspot or crop set for the old image
+ * does not carry over. Every other field is left alone. Uploads
  * are safe to repeat — Sanity keys an image asset by its content hash, so re-running reuses the
  * existing assets and rewrites the same references.
  *
@@ -29,7 +30,8 @@ async function main(): Promise<void> {
   const target = readSanityTarget()
   const client = createSanityClient(target)
   const solutions = await client.fetch<SolutionRecord[]>(
-    '*[_type == "solution"]{_id, "slug": slug.current}',
+    // Release versions (`versions.*`) belong to scheduled releases, not to this migration.
+    '*[_type == "solution" && !(_id in path("versions.**"))]{_id, "slug": slug.current}',
     {},
     { perspective: 'raw' }
   )
