@@ -5,7 +5,7 @@
       "slug": "site-offices",
       "source": "chatgpt",
       "sourceFile": "public/images/solutions/review/site-offices-v2.png",
-      "selectedFile": "public/images/solutions/selection/21x9/site-offices.png",
+      "selectedFile": "public/images/solutions/site-offices.png",
       "note": "21:9 AI-generated wide version",
       "extendedFrom": "public/images/solutions/selection/site-offices.png"
     },
@@ -13,7 +13,7 @@
       "slug": "security-gatehouses-and-access-control",
       "source": "chatgpt",
       "sourceFile": "public/images/solutions/review/security-gatehouses-and-access-control-v2.png",
-      "selectedFile": "public/images/solutions/selection/21x9/security-gatehouses-and-access-control.png",
+      "selectedFile": "public/images/solutions/security-gatehouses-and-access-control.png",
       "note": "21:9 AI-generated wide version",
       "extendedFrom": "public/images/solutions/selection/security-gatehouses-and-access-control.png"
     },
@@ -21,7 +21,7 @@
       "slug": "ticket-information-and-service-kiosks",
       "source": "chatgpt",
       "sourceFile": "public/images/solutions/review/ticket-information-and-service-kiosks-v2.png",
-      "selectedFile": "public/images/solutions/selection/21x9/ticket-information-and-service-kiosks.png",
+      "selectedFile": "public/images/solutions/ticket-information-and-service-kiosks.png",
       "note": "21:9 AI-generated wide version",
       "extendedFrom": "public/images/solutions/selection/ticket-information-and-service-kiosks.png"
     },
@@ -29,7 +29,7 @@
       "slug": "canteens-and-break-rooms",
       "source": "chatgpt",
       "sourceFile": "public/images/solutions/review/canteens-and-break-rooms-v2.png",
-      "selectedFile": "public/images/solutions/selection/21x9/canteens-and-break-rooms.png",
+      "selectedFile": "public/images/solutions/canteens-and-break-rooms.png",
       "note": "21:9 AI-generated wide version",
       "extendedFrom": "public/images/solutions/selection/canteens-and-break-rooms.png"
     },
@@ -37,7 +37,7 @@
       "slug": "welfare-and-wc-units",
       "source": "chatgpt",
       "sourceFile": "public/images/solutions/review/welfare-and-wc-units-v2.png",
-      "selectedFile": "public/images/solutions/selection/21x9/welfare-and-wc-units.png",
+      "selectedFile": "public/images/solutions/welfare-and-wc-units.png",
       "note": "21:9 AI-generated wide version",
       "extendedFrom": "public/images/solutions/selection/welfare-and-wc-units.png"
     },
@@ -45,7 +45,7 @@
       "slug": "high-security-cabins",
       "source": "chatgpt",
       "sourceFile": "public/images/solutions/review/high-security-cabins-v2.png",
-      "selectedFile": "public/images/solutions/selection/21x9/high-security-cabins.png",
+      "selectedFile": "public/images/solutions/high-security-cabins.png",
       "note": "21:9 AI-generated wide version",
       "extendedFrom": "public/images/solutions/selection/high-security-cabins.png"
     },
@@ -53,7 +53,7 @@
       "slug": "visitor-reception-and-sign-in",
       "source": "chatgpt",
       "sourceFile": "public/images/solutions/review/visitor-reception-and-sign-in-v2.png",
-      "selectedFile": "public/images/solutions/selection/21x9/visitor-reception-and-sign-in.png",
+      "selectedFile": "public/images/solutions/visitor-reception-and-sign-in.png",
       "note": "21:9 AI-generated wide version",
       "extendedFrom": "public/images/solutions/selection/visitor-reception-and-sign-in.png"
     },
@@ -61,7 +61,7 @@
       "slug": "car-park-valet-and-weighbridge-cabins",
       "source": "chatgpt",
       "sourceFile": "public/images/solutions/review/car-park-valet-and-weighbridge-cabins-v2.png",
-      "selectedFile": "public/images/solutions/selection/21x9/car-park-valet-and-weighbridge-cabins.png",
+      "selectedFile": "public/images/solutions/car-park-valet-and-weighbridge-cabins.png",
       "note": "21:9 AI-generated wide version",
       "extendedFrom": "public/images/solutions/selection/car-park-valet-and-weighbridge-cabins.png"
     },
@@ -69,7 +69,7 @@
       "slug": "retail-and-food-service-kiosks",
       "source": "gemini",
       "sourceFile": "public/images/solutions/retail-and-food-service-kiosks.jpg",
-      "selectedFile": "public/images/solutions/selection/21x9/retail-and-food-service-kiosks.png",
+      "selectedFile": "public/images/solutions/retail-and-food-service-kiosks.png",
       "note": "21:9 AI-generated wide version",
       "extendedFrom": "public/images/solutions/selection/retail-and-food-service-kiosks.jpg"
     },
@@ -77,7 +77,7 @@
       "slug": "garden-rooms-and-garden-offices",
       "source": "chatgpt-v3",
       "sourceFile": "public/images/solutions/review/garden-rooms-and-garden-offices-v3.png",
-      "selectedFile": "public/images/solutions/selection/21x9/garden-rooms-and-garden-offices.png",
+      "selectedFile": "public/images/solutions/garden-rooms-and-garden-offices.png",
       "note": "Manual override: v3 replaces picked v2; 21:9 AI-generated wide version",
       "extendedFrom": "public/images/solutions/selection/garden-rooms-and-garden-offices.png"
     },
@@ -85,7 +85,7 @@
       "slug": "healthcare-and-consultation-rooms",
       "source": "chatgpt",
       "sourceFile": "public/images/solutions/review/healthcare-and-consultation-rooms-v2.png",
-      "selectedFile": "public/images/solutions/selection/21x9/healthcare-and-consultation-rooms.png",
+      "selectedFile": "public/images/solutions/healthcare-and-consultation-rooms.png",
       "note": "21:9 AI-generated wide version",
       "extendedFrom": "public/images/solutions/selection/healthcare-and-consultation-rooms.png"
     },
@@ -93,7 +93,7 @@
       "slug": "accommodation-units",
       "source": "chatgpt",
       "sourceFile": "public/images/solutions/review/accommodation-units-v2.png",
-      "selectedFile": "public/images/solutions/selection/21x9/accommodation-units.png",
+      "selectedFile": "public/images/solutions/accommodation-units.png",
       "note": "21:9 AI-generated wide version",
       "extendedFrom": "public/images/solutions/selection/accommodation-units.png"
     }

@@ -5,8 +5,8 @@ import { planCoverPatches, type SolutionRecord } from "../../scripts/solutions/p
 import { repoPath } from "../../scripts/catalogue/lib/paths";
 
 const covers = [
-  { slug: "site-offices", imagePath: "public/images/solutions/selection/site-offices.png", alt: "Site office" },
-  { slug: "accommodation-units", imagePath: "public/images/solutions/selection/accommodation-units.png", alt: "Accommodation" },
+  { slug: "site-offices", imagePath: "public/images/solutions/site-offices.png", alt: "Site office" },
+  { slug: "accommodation-units", imagePath: "public/images/solutions/accommodation-units.png", alt: "Accommodation" },
 ];
 const assetIds = Object.fromEntries(
   covers.map((cover, index) => [cover.imagePath, `image-${"ab"[index].repeat(3)}-1536x864-png`]),
@@ -79,7 +79,7 @@ describe("selected Solution covers", () => {
 
   it("matches the picks recorded in selections.json", () => {
     const recorded = JSON.parse(
-      fs.readFileSync(repoPath("public/images/solutions/selection/selections.json"), "utf-8"),
+      fs.readFileSync(repoPath("public/images/solutions/selections.json"), "utf-8"),
     ) as { picks: Array<{ slug: string; selectedFile: string }> };
     expect(
       Object.fromEntries(SOLUTION_COVERS.map((cover) => [cover.slug, cover.imagePath])),
