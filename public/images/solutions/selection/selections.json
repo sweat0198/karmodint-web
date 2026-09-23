@@ -1,0 +1,89 @@
+{
+  "selectedAt": "2026-09-23",
+  "picks": [
+    {
+      "slug": "site-offices",
+      "source": "chatgpt",
+      "sourceFile": "public/images/solutions/review/site-offices-v2.png",
+      "selectedFile": "public/images/solutions/selection/site-offices.png",
+      "note": ""
+    },
+    {
+      "slug": "security-gatehouses-and-access-control",
+      "source": "chatgpt",
+      "sourceFile": "public/images/solutions/review/security-gatehouses-and-access-control-v2.png",
+      "selectedFile": "public/images/solutions/selection/security-gatehouses-and-access-control.png",
+      "note": ""
+    },
+    {
+      "slug": "ticket-information-and-service-kiosks",
+      "source": "chatgpt",
+      "sourceFile": "public/images/solutions/review/ticket-information-and-service-kiosks-v2.png",
+      "selectedFile": "public/images/solutions/selection/ticket-information-and-service-kiosks.png",
+      "note": ""
+    },
+    {
+      "slug": "canteens-and-break-rooms",
+      "source": "chatgpt",
+      "sourceFile": "public/images/solutions/review/canteens-and-break-rooms-v2.png",
+      "selectedFile": "public/images/solutions/selection/canteens-and-break-rooms.png",
+      "note": ""
+    },
+    {
+      "slug": "welfare-and-wc-units",
+      "source": "chatgpt",
+      "sourceFile": "public/images/solutions/review/welfare-and-wc-units-v2.png",
+      "selectedFile": "public/images/solutions/selection/welfare-and-wc-units.png",
+      "note": ""
+    },
+    {
+      "slug": "high-security-cabins",
+      "source": "chatgpt",
+      "sourceFile": "public/images/solutions/review/high-security-cabins-v2.png",
+      "selectedFile": "public/images/solutions/selection/high-security-cabins.png",
+      "note": ""
+    },
+    {
+      "slug": "visitor-reception-and-sign-in",
+      "source": "chatgpt",
+      "sourceFile": "public/images/solutions/review/visitor-reception-and-sign-in-v2.png",
+      "selectedFile": "public/images/solutions/selection/visitor-reception-and-sign-in.png",
+      "note": ""
+    },
+    {
+      "slug": "car-park-valet-and-weighbridge-cabins",
+      "source": "chatgpt",
+      "sourceFile": "public/images/solutions/review/car-park-valet-and-weighbridge-cabins-v2.png",
+      "selectedFile": "public/images/solutions/selection/car-park-valet-and-weighbridge-cabins.png",
+      "note": ""
+    },
+    {
+      "slug": "retail-and-food-service-kiosks",
+      "source": "gemini",
+      "sourceFile": "public/images/solutions/retail-and-food-service-kiosks.jpg",
+      "selectedFile": "public/images/solutions/selection/retail-and-food-service-kiosks.jpg",
+      "note": ""
+    },
+    {
+      "slug": "garden-rooms-and-garden-offices",
+      "source": "chatgpt-v3",
+      "sourceFile": "public/images/solutions/review/garden-rooms-and-garden-offices-v3.png",
+      "selectedFile": "public/images/solutions/selection/garden-rooms-and-garden-offices.png",
+      "note": "Manual override: v3 replaces picked v2"
+    },
+    {
+      "slug": "healthcare-and-consultation-rooms",
+      "source": "chatgpt",
+      "sourceFile": "public/images/solutions/review/healthcare-and-consultation-rooms-v2.png",
+      "selectedFile": "public/images/solutions/selection/healthcare-and-consultation-rooms.png",
+      "note": ""
+    },
+    {
+      "slug": "accommodation-units",
+      "source": "chatgpt",
+      "sourceFile": "public/images/solutions/review/accommodation-units-v2.png",
+      "selectedFile": "public/images/solutions/selection/accommodation-units.png",
+      "note": ""
+    }
+  ]
+}
