@@ -150,10 +150,16 @@ export default defineNuxtConfig({
     preset: "cloudflare-pages",
     cloudflare: {
       nodeCompat: true,
-      // Sanity Studio is built into dist/studio after Nuxt; Pages serves it as static files.
+      // `_routes.json`: only the runtime API (ADR-002) runs in the worker. Everything else is static, Sanity Studio
+      // (built into dist/studio after Nuxt) included. Nitro's default (`/*` minus built files, capped at 100 rules)
+      // sent every unbuilt path, Legacy redirect sources too, to the worker, and Pages skips `_redirects` and
+      // `_headers` there. modules/legacy-redirects fails the build if a redirect source reaches the worker again.
       pages: {
+        defaultRoutes: false,
         routes: {
-          exclude: ["/studio", "/studio/*"],
+          version: 1,
+          include: ["/api/*"],
+          exclude: [],
         },
       },
     },
@@ -169,6 +175,9 @@ export default defineNuxtConfig({
         "/contact/",
         "/about/",
         "/sitemap.xml",
+        // With no worker fallback, Pages answers unknown paths with the top-level 404.html and a 404 status
+        // (without one it serves `/` with a 200). `nuxi generate` adds it on its own; `nuxi build` doesn't.
+        "/404.html",
       ],
       ignore: [
         "/api/**",
@@ -180,10 +189,7 @@ export default defineNuxtConfig({
   },
 
   routeRules: {
-    // 301 Permanent Redirect for legacy about-contact path
-    "/about-contact": {
-      redirect: { to: "/about/", statusCode: 301 },
-    },
+    // No redirects here: `_redirects` is generated from shared/migration/redirects.ts (modules/legacy-redirects).
     // Prerender static pages at build time
     "/**": { prerender: true },
     // Ensure API endpoints remain runtime/dynamic functions
