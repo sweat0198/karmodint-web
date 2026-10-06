@@ -18,7 +18,7 @@
 
         <!-- Button to Gallery -->
         <NuxtLink
-          to="/gallery"
+          to="/gallery/"
           class="inline-flex items-center gap-2 border border-brand-navy text-brand-navy hover:bg-brand-navy hover:text-white px-6 py-2.5 rounded-xs text-xs font-semibold uppercase tracking-[1.2px] transition-colors self-start sm:self-auto shrink-0 shadow-sm"
         >
           <span>EXPLORE FULL GALLERY</span>

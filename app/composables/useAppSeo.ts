@@ -5,6 +5,7 @@ import {
   COMPANY_SOCIAL,
 } from "~/constants/company";
 import { hasPublishablePrice } from "~~/shared/utils/priceLabel";
+import { toAbsoluteSiteUrl } from "~~/shared/utils/sitePath";
 
 export interface PageSeoOptions {
   title: string;
@@ -24,7 +25,7 @@ export function useAppSeo() {
 
   function setPageSeo(options: PageSeoOptions) {
     const canonicalUrl = options.canonicalPath
-      ? `${siteUrl.replace(/\/$/, "")}${options.canonicalPath.startsWith("/") ? options.canonicalPath : `/${options.canonicalPath}`}`
+      ? toAbsoluteSiteUrl(siteUrl, options.canonicalPath)
       : undefined;
 
     const imageUrl = options.image
@@ -72,7 +73,7 @@ export function useAppSeo() {
       "@type": "Organization",
       name: "Karmod International",
       legalName: "Karmod International Ltd",
-      url: siteUrl.replace(/\/$/, ""),
+      url: toAbsoluteSiteUrl(siteUrl, "/"),
       logo: `${siteUrl.replace(/\/$/, "")}/images/karmod-logo.png`,
       description:
         "Specialist manufacturer of portable cabins, kiosks, security gatehouses, and modular building solutions across the UK and worldwide.",
@@ -99,7 +100,7 @@ export function useAppSeo() {
       "@context": "https://schema.org",
       "@type": "WebSite",
       name: "Karmod International",
-      url: siteUrl.replace(/\/$/, ""),
+      url: toAbsoluteSiteUrl(siteUrl, "/"),
       description:
         "Engineered for durability, designed for efficiency. Premium modular and portable buildings across the UK.",
     };
@@ -126,7 +127,7 @@ export function useAppSeo() {
           priceCurrency: "GBP",
           availability: "https://schema.org/InStock",
           itemCondition: "https://schema.org/NewCondition",
-          url: `${siteUrl.replace(/\/$/, "")}/products`,
+          url: toAbsoluteSiteUrl(siteUrl, "/products/"),
           seller: {
             "@type": "Organization",
             name: "Karmod International",
@@ -159,7 +160,7 @@ export function useAppSeo() {
         "@type": "ListItem",
         position: index + 1,
         name: item.name,
-        item: `${siteUrl.replace(/\/$/, "")}${item.path.startsWith("/") ? item.path : `/${item.path}`}`,
+        item: toAbsoluteSiteUrl(siteUrl, item.path),
       })),
     };
   }

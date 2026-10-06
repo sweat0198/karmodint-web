@@ -41,11 +41,11 @@ setPageSeo({
   title: "Modular Building Project Gallery | Karmod International",
   description:
     "Explore Karmod's portfolio of modular construction projects across the UK and internationally, from portable cabins and containers to bulletproof security units.",
-  canonicalPath: "/gallery",
+  canonicalPath: "/gallery/",
   jsonLd: [
     getBreadcrumbSchema([
       { name: "Home", path: "/" },
-      { name: "Project Gallery", path: "/gallery" },
+      { name: "Project Gallery", path: "/gallery/" },
     ]),
     {
       "@context": "https://schema.org",

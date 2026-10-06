@@ -93,20 +93,20 @@ describe("AppHeader location button", () => {
   });
 
   it("navigates to the contact page's map section when it isn't on the current page", async () => {
-    const { wrapper, router } = await mountHeader("/products");
+    const { wrapper, router } = await mountHeader("/products/");
     const pushSpy = vi.spyOn(router, "push");
 
     await wrapper.get('button[aria-label="Scroll to Location Map"]').trigger("click");
     await flushRouterNavigation(router);
 
-    expect(pushSpy).toHaveBeenCalledWith("/contact#map-section");
-    expect(router.currentRoute.value.fullPath).toBe("/contact#map-section");
+    expect(pushSpy).toHaveBeenCalledWith("/contact/#map-section");
+    expect(router.currentRoute.value.fullPath).toBe("/contact/#map-section");
 
     wrapper.unmount();
   });
 
   it("uses Products terminology on the products route", async () => {
-    const { wrapper } = await mountHeader("/products");
+    const { wrapper } = await mountHeader("/products/");
 
     expect(wrapper.text()).toContain("Products");
     expect(wrapper.text()).not.toContain("Catalog");
@@ -160,10 +160,10 @@ describe("AppHeader Products and Solutions submenus", () => {
 
     const { wrapper } = await mountHeader("/");
 
-    const showAllLinks = wrapper.findAll('a[to="/products"]').filter((a) => a.text().includes("Show all"));
+    const showAllLinks = wrapper.findAll('a[to="/products/"]').filter((a) => a.text().includes("Show all"));
     expect(showAllLinks).toHaveLength(1);
-    expect(wrapper.find('a[to="/products?category=containers"]').text()).toBe("Portable Cabins");
-    expect(wrapper.find('a[to="/products?category=cabin"]').text()).toBe("Gatehouses & Kiosks");
+    expect(wrapper.find('a[to="/products/?category=containers"]').text()).toBe("Portable Cabins");
+    expect(wrapper.find('a[to="/products/?category=cabin"]').text()).toBe("Gatehouses & Kiosks");
 
     wrapper.unmount();
   });
@@ -186,10 +186,10 @@ describe("AppHeader Products and Solutions submenus", () => {
 
     const { wrapper } = await mountHeader("/");
 
-    expect(wrapper.find('a[to="/products?category=cabin&subcategory=grp"]').text()).toBe("GRP");
-    expect(wrapper.find('a[to="/products?category=cabin&subcategory=panel"]').text()).toBe("Panel");
-    expect(wrapper.find('a[to="/products?category=cabin&subcategory=metro-city"]').text()).toBe("Metro City");
-    expect(wrapper.find('a[to="/products?category=cabin&subcategory=composite"]').text()).toBe("Composite");
+    expect(wrapper.find('a[to="/products/?category=cabin&subcategory=grp"]').text()).toBe("GRP");
+    expect(wrapper.find('a[to="/products/?category=cabin&subcategory=panel"]').text()).toBe("Panel");
+    expect(wrapper.find('a[to="/products/?category=cabin&subcategory=metro-city"]').text()).toBe("Metro City");
+    expect(wrapper.find('a[to="/products/?category=cabin&subcategory=composite"]').text()).toBe("Composite");
 
     wrapper.unmount();
   });
@@ -201,9 +201,9 @@ describe("AppHeader Products and Solutions submenus", () => {
 
     const { wrapper } = await mountHeader("/");
 
-    const showAllLinks = wrapper.findAll('a[to="/solutions"]').filter((a) => a.text().includes("Show all"));
+    const showAllLinks = wrapper.findAll('a[to="/solutions/"]').filter((a) => a.text().includes("Show all"));
     expect(showAllLinks).toHaveLength(1);
-    expect(wrapper.find('a[to="/solutions/construction-site"]').text()).toBe("Construction Site Compound");
+    expect(wrapper.find('a[to="/solutions/construction-site/"]').text()).toBe("Construction Site Compound");
 
     wrapper.unmount();
   });
@@ -227,12 +227,12 @@ describe("AppHeader Products and Solutions submenus", () => {
 
     await wrapper.get('button[aria-label="Toggle Navigation Menu"]').trigger("click");
     // Just the always-present (CSS-hidden) desktop dropdown copy; the mobile drawer's is still collapsed.
-    expect(wrapper.findAll('a[to="/products?category=containers"]')).toHaveLength(1);
+    expect(wrapper.findAll('a[to="/products/?category=containers"]')).toHaveLength(1);
 
     await wrapper.get('button[aria-label="Toggle Products categories"]').trigger("click");
 
     // Desktop dropdown copy + the now-expanded mobile drawer copy.
-    expect(wrapper.findAll('a[to="/products?category=containers"]')).toHaveLength(2);
+    expect(wrapper.findAll('a[to="/products/?category=containers"]')).toHaveLength(2);
 
     wrapper.unmount();
   });
@@ -251,11 +251,11 @@ describe("AppHeader Products and Solutions submenus", () => {
     const { wrapper } = await mountHeader("/");
 
     await wrapper.get('button[aria-label="Toggle Navigation Menu"]').trigger("click");
-    expect(wrapper.findAll('a[to="/products?category=cabin&subcategory=grp"]')).toHaveLength(1);
+    expect(wrapper.findAll('a[to="/products/?category=cabin&subcategory=grp"]')).toHaveLength(1);
 
     await wrapper.get('button[aria-label="Toggle Products categories"]').trigger("click");
 
-    expect(wrapper.findAll('a[to="/products?category=cabin&subcategory=grp"]')).toHaveLength(2);
+    expect(wrapper.findAll('a[to="/products/?category=cabin&subcategory=grp"]')).toHaveLength(2);
 
     wrapper.unmount();
   });
@@ -274,18 +274,18 @@ describe("AppHeader submenu active state", () => {
       { _id: "cat-cabin", name: "Gatehouses & Kiosks", slug: "cabin", displayOrder: 2, children: [] },
     ];
 
-    const { wrapper } = await mountHeader("/products?category=containers");
+    const { wrapper } = await mountHeader("/products/?category=containers");
 
-    const activeCategory = wrapper.get('a[to="/products?category=containers"]');
+    const activeCategory = wrapper.get('a[to="/products/?category=containers"]');
     expect(activeCategory.attributes("aria-current")).toBe("page");
     expect(activeCategory.classes()).toContain("bg-brand-rose-card");
     expect(activeCategory.classes()).toContain("border-brand-red");
     expect(activeCategory.classes()).not.toContain("text-brand-red");
 
-    const otherCategory = wrapper.get('a[to="/products?category=cabin"]');
+    const otherCategory = wrapper.get('a[to="/products/?category=cabin"]');
     expect(otherCategory.attributes("aria-current")).toBeUndefined();
 
-    const showAllLink = wrapper.findAll('a[to="/products"]').find((a) => a.text().includes("Show all"))!;
+    const showAllLink = wrapper.findAll('a[to="/products/"]').find((a) => a.text().includes("Show all"))!;
     expect(showAllLink.attributes("aria-current")).toBeUndefined();
 
     wrapper.unmount();
@@ -305,9 +305,9 @@ describe("AppHeader submenu active state", () => {
       },
     ];
 
-    const { wrapper } = await mountHeader("/products?category=cabin&subcategory=grp");
+    const { wrapper } = await mountHeader("/products/?category=cabin&subcategory=grp");
 
-    const activeSubcategory = wrapper.get('a[to="/products?category=cabin&subcategory=grp"]');
+    const activeSubcategory = wrapper.get('a[to="/products/?category=cabin&subcategory=grp"]');
     expect(activeSubcategory.attributes("aria-current")).toBe("page");
     expect(activeSubcategory.classes()).toContain("bg-brand-rose-card");
     expect(activeSubcategory.classes()).toContain("border-brand-red");
@@ -316,12 +316,12 @@ describe("AppHeader submenu active state", () => {
     // The parent category is "in section" (its own subcategory is selected) but not the exact
     // current page — a lighter cue (red text, no card/border) so it doesn't compete with the
     // subcategory's stronger "you are here" treatment above.
-    const parentCategory = wrapper.get('a[to="/products?category=cabin"]');
+    const parentCategory = wrapper.get('a[to="/products/?category=cabin"]');
     expect(parentCategory.classes()).toContain("text-brand-red");
     expect(parentCategory.classes()).not.toContain("bg-brand-rose-card");
     expect(parentCategory.attributes("aria-current")).toBeUndefined();
 
-    const otherSubcategory = wrapper.get('a[to="/products?category=cabin&subcategory=panel"]');
+    const otherSubcategory = wrapper.get('a[to="/products/?category=cabin&subcategory=panel"]');
     expect(otherSubcategory.attributes("aria-current")).toBeUndefined();
     expect(otherSubcategory.classes()).not.toContain("text-brand-red");
     expect(otherSubcategory.classes()).not.toContain("bg-brand-rose-card");
@@ -334,9 +334,9 @@ describe("AppHeader submenu active state", () => {
       { _id: "cat-containers", name: "Portable Cabins", slug: "containers", displayOrder: 1, children: [] },
     ];
 
-    const { wrapper } = await mountHeader("/products");
+    const { wrapper } = await mountHeader("/products/");
 
-    const showAllLink = wrapper.findAll('a[to="/products"]').find((a) => a.text().includes("Show all"))!;
+    const showAllLink = wrapper.findAll('a[to="/products/"]').find((a) => a.text().includes("Show all"))!;
     expect(showAllLink.attributes("aria-current")).toBe("page");
 
     wrapper.unmount();
@@ -348,18 +348,18 @@ describe("AppHeader submenu active state", () => {
       { _id: "sol-2", name: "Event Site Kiosk", slug: "event-site" },
     ];
 
-    const { wrapper } = await mountHeader("/solutions/construction-site");
+    const { wrapper } = await mountHeader("/solutions/construction-site/");
 
-    const activeSolution = wrapper.get('a[to="/solutions/construction-site"]');
+    const activeSolution = wrapper.get('a[to="/solutions/construction-site/"]');
     expect(activeSolution.attributes("aria-current")).toBe("page");
     expect(activeSolution.classes()).toContain("bg-brand-rose-card");
     expect(activeSolution.classes()).toContain("border-brand-red");
     expect(activeSolution.classes()).not.toContain("text-brand-red");
 
-    const otherSolution = wrapper.get('a[to="/solutions/event-site"]');
+    const otherSolution = wrapper.get('a[to="/solutions/event-site/"]');
     expect(otherSolution.attributes("aria-current")).toBeUndefined();
 
-    const showAllLink = wrapper.findAll('a[to="/solutions"]').find((a) => a.text().includes("Show all"))!;
+    const showAllLink = wrapper.findAll('a[to="/solutions/"]').find((a) => a.text().includes("Show all"))!;
     expect(showAllLink.attributes("aria-current")).toBeUndefined();
 
     wrapper.unmount();
@@ -370,9 +370,9 @@ describe("AppHeader submenu active state", () => {
       { _id: "sol-1", name: "Construction Site Compound", slug: "construction-site" },
     ];
 
-    const { wrapper } = await mountHeader("/solutions");
+    const { wrapper } = await mountHeader("/solutions/");
 
-    const showAllLink = wrapper.findAll('a[to="/solutions"]').find((a) => a.text().includes("Show all"))!;
+    const showAllLink = wrapper.findAll('a[to="/solutions/"]').find((a) => a.text().includes("Show all"))!;
     expect(showAllLink.attributes("aria-current")).toBe("page");
 
     wrapper.unmount();
@@ -396,7 +396,7 @@ describe("AppHeader desktop dropdown closes on navigation", () => {
     const panel = wrapper.find(".absolute.top-full");
     expect(panel.classes()).not.toContain("opacity-0!");
 
-    await wrapper.get('a[to="/products?category=containers"]').trigger("click");
+    await wrapper.get('a[to="/products/?category=containers"]').trigger("click");
     expect(panel.classes()).toContain("opacity-0!");
 
     // Clicking again while the pointer never left shouldn't reopen it — only leaving does.
@@ -417,7 +417,7 @@ describe("AppHeader desktop dropdown closes on navigation", () => {
     const solutionsPanel = panels[1]!;
     expect(solutionsPanel.classes()).not.toContain("opacity-0!");
 
-    await wrapper.get('a[to="/solutions/construction-site"]').trigger("click");
+    await wrapper.get('a[to="/solutions/construction-site/"]').trigger("click");
     expect(solutionsPanel.classes()).toContain("opacity-0!");
 
     const groups = wrapper.findAll("div.group");
@@ -435,8 +435,8 @@ describe("AppHeader desktop dropdown closes on navigation", () => {
     const { wrapper } = await mountHeader("/");
 
     const panel = wrapper.find(".absolute.top-full");
-    const categoryLink = wrapper.get('a[to="/products?category=containers"]');
-    const showAllLink = wrapper.findAll('a[to="/products"]').find((a) => a.text().includes("Show all"))!;
+    const categoryLink = wrapper.get('a[to="/products/?category=containers"]');
+    const showAllLink = wrapper.findAll('a[to="/products/"]').find((a) => a.text().includes("Show all"))!;
 
     await categoryLink.trigger("click");
     expect(panel.classes()).toContain("opacity-0!");

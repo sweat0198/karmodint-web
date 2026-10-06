@@ -7,7 +7,7 @@ describe("toCategoryProductsLink", () => {
     const category: GalleryCategoryRef = { _id: "c1", name: "Containers", slug: "containers" };
 
     expect(toCategoryProductsLink(category)).toEqual({
-      path: "/products",
+      path: "/products/",
       query: { category: "containers" },
     });
   });
@@ -21,7 +21,7 @@ describe("toCategoryProductsLink", () => {
     };
 
     expect(toCategoryProductsLink(category)).toEqual({
-      path: "/products",
+      path: "/products/",
       query: { category: "cabin", subcategory: "metro-city" },
     });
   });

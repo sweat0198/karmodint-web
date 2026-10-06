@@ -23,11 +23,11 @@ setPageSeo({
   title: "About Us | Karmod International - Modular Construction Pioneers",
   description:
     "Learn about Karmod's legacy of engineering excellence in modular buildings, our mission, vision, and high-performance prefabricated projects across the UK and internationally.",
-  canonicalPath: "/about",
+  canonicalPath: "/about/",
   jsonLd: [
     getBreadcrumbSchema([
       { name: "Home", path: "/" },
-      { name: "About Us", path: "/about" },
+      { name: "About Us", path: "/about/" },
     ]),
     {
       "@context": "https://schema.org",

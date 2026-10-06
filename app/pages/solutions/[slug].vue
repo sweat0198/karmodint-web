@@ -9,7 +9,7 @@
         <svg class="h-3 w-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
         </svg>
-        <NuxtLink to="/solutions" class="transition-colors hover:text-brand-navy-heading">
+        <NuxtLink to="/solutions/" class="transition-colors hover:text-brand-navy-heading">
           Solutions
         </NuxtLink>
         <svg class="h-3 w-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -59,7 +59,7 @@
             The units for this solution are being updated — talk to us.
           </p>
           <NuxtLink
-            to="/contact"
+            to="/contact/"
             class="text-sm font-semibold text-brand-red underline underline-offset-2 hover:text-brand-red-dark"
           >
             Contact us
@@ -82,7 +82,7 @@
           requirements.
         </p>
         <NuxtLink
-          to="/contact"
+          to="/contact/"
           class="mt-2 inline-flex items-center gap-2 rounded-xs border border-brand-navy-heading px-8 py-3 text-xs font-semibold uppercase tracking-wider text-brand-navy-heading transition-colors hover:bg-brand-navy-heading hover:text-white"
         >
           <span>Contact Us</span>
@@ -148,14 +148,14 @@ const coverSrcset = computed(() =>
 setPageSeo({
   title: solution.value.seo?.metaTitle || `${solution.value.name} | Karmod International`,
   description: solution.value.seo?.metaDescription || solution.value.description,
-  canonicalPath: `/solutions/${solution.value.slug}`,
+  canonicalPath: `/solutions/${solution.value.slug}/`,
   image: coverSrc.value,
   noindex: solution.value.seo?.noIndex,
   jsonLd: [
     getBreadcrumbSchema([
       { name: "Home", path: "/" },
-      { name: "Solutions", path: "/solutions" },
-      { name: solution.value.name, path: `/solutions/${solution.value.slug}` },
+      { name: "Solutions", path: "/solutions/" },
+      { name: solution.value.name, path: `/solutions/${solution.value.slug}/` },
     ]),
     {
       "@context": "https://schema.org",

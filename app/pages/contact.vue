@@ -13,11 +13,11 @@ setPageSeo({
   title: "Contact Us | Karmod International - Modular Building Experts",
   description:
     "Get in touch with Karmod International engineering experts for bespoke modular building solutions, portable cabins, kiosk specifications, and project sales enquiries.",
-  canonicalPath: "/contact",
+  canonicalPath: "/contact/",
   jsonLd: [
     getBreadcrumbSchema([
       { name: "Home", path: "/" },
-      { name: "Contact Us", path: "/contact" },
+      { name: "Contact Us", path: "/contact/" },
     ]),
     {
       "@context": "https://schema.org",

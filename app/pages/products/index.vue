@@ -11,7 +11,7 @@
         <div class="flex flex-wrap items-center gap-3">
           <NuxtLink
             v-if="!quoteStore.isEmpty"
-            to="/customize"
+            to="/customize/"
             class="flex items-center justify-center gap-2 px-8 py-3 bg-brand-red hover:bg-brand-red-hover text-white font-semibold text-xs tracking-wider uppercase rounded-xs transition-colors duration-150 shadow-sm hover:shadow"
           >
             <span>Customize Selected</span>
@@ -37,7 +37,7 @@
 
           <NuxtLink
             v-if="!quoteStore.isEmpty && quoteStore.isStepUnlocked(3)"
-            to="/quote"
+            to="/quote/"
             class="flex items-center justify-center gap-2 px-6 py-3 bg-white hover:bg-slate-100 text-brand-navy-heading border border-slate-300 font-semibold text-xs tracking-wider uppercase rounded-xs transition-colors duration-150 shadow-sm hover:shadow"
           >
             <span>Review Quote</span>
@@ -129,7 +129,7 @@
           />
         </svg>
         <NuxtLink
-          to="/products"
+          to="/products/"
           class="hover:text-slate-900 active:opacity-70 transition-opacity duration-150 shrink-0"
         >
           Products
@@ -206,7 +206,7 @@
             />
           </svg>
           <NuxtLink
-            to="/products"
+            to="/products/"
             class="hover:text-brand-navy-heading transition-colors"
             >Products</NuxtLink
           >
@@ -385,7 +385,7 @@
                 No products in this category yet — talk to us.
               </p>
               <NuxtLink
-                to="/contact"
+                to="/contact/"
                 class="text-brand-red hover:text-brand-red-dark text-sm font-semibold underline underline-offset-2"
               >
                 Contact us
@@ -418,7 +418,7 @@
           reinforced panels, and integrated facilities.
         </p>
         <NuxtLink
-          to="/contact"
+          to="/contact/"
           class="mt-2 border border-brand-navy-heading text-brand-navy-heading hover:bg-brand-navy-heading hover:text-white px-8 py-3 rounded-xs text-xs font-semibold tracking-wider uppercase transition-colors inline-flex items-center gap-2"
         >
           <span>Contact Us</span>
@@ -566,18 +566,18 @@ onBeforeUnmount(() => {
 });
 
 onMounted(() => {
-  quoteStore.setLastVisitedRoute("/products");
+  quoteStore.setLastVisitedRoute("/products/");
 });
 
 setPageSeo({
   title: "Portable Cabins, Gatehouses & Kiosks | Karmod International",
   description:
     "Explore Karmod's full range of modular buildings, portable cabins, security gatehouses, retail kiosks, and sanitary units with customizable engineering options.",
-  canonicalPath: "/products",
+  canonicalPath: "/products/",
   jsonLd: [
     getBreadcrumbSchema([
       { name: "Home", path: "/" },
-      { name: "Modular Products", path: "/products" },
+      { name: "Modular Products", path: "/products/" },
     ]),
     {
       "@context": "https://schema.org",

@@ -1,3 +1,5 @@
+import { toAbsoluteSiteUrl } from "../../shared/utils/sitePath";
+
 export default defineEventHandler((event) => {
   const config = useRuntimeConfig();
   const siteUrl = (config.public.siteUrl as string) || "https://www.karmodint.co.uk";
@@ -11,31 +13,31 @@ export default defineEventHandler((event) => {
       priority: "1.0",
     },
     {
-      loc: "/products",
+      loc: "/products/",
       lastmod: now,
       changefreq: "daily",
       priority: "0.9",
     },
     {
-      loc: "/about",
+      loc: "/about/",
       lastmod: now,
       changefreq: "monthly",
       priority: "0.8",
     },
     {
-      loc: "/solutions",
+      loc: "/solutions/",
       lastmod: now,
       changefreq: "weekly",
       priority: "0.9",
     },
     {
-      loc: "/gallery",
+      loc: "/gallery/",
       lastmod: now,
       changefreq: "weekly",
       priority: "0.8",
     },
     {
-      loc: "/contact",
+      loc: "/contact/",
       lastmod: now,
       changefreq: "monthly",
       priority: "0.8",
@@ -47,7 +49,7 @@ export default defineEventHandler((event) => {
 ${routes
   .map(
     (r) => `  <url>
-    <loc>${siteUrl.replace(/\/$/, "")}${r.loc}</loc>
+    <loc>${toAbsoluteSiteUrl(siteUrl, r.loc)}</loc>
     <lastmod>${r.lastmod}</lastmod>
     <changefreq>${r.changefreq}</changefreq>
     <priority>${r.priority}</priority>

@@ -1,6 +1,6 @@
 <template>
   <NuxtLink
-    :to="`/solutions/${solution.slug}`"
+    :to="`/solutions/${solution.slug}/`"
     class="group flex flex-col overflow-hidden rounded border border-slate-100 bg-white shadow-sm transition-shadow duration-150 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-red"
   >
     <div class="aspect-4/3 overflow-hidden bg-slate-50">

@@ -81,7 +81,7 @@ describe("ProductCard", () => {
 
   describe("Add", () => {
     it("adds the Size Option to the Quote List", async () => {
-      const { wrapper } = await mountAt("/products");
+      const { wrapper } = await mountAt("/products/");
       const store = useQuoteStore();
 
       await addButton(wrapper).trigger("click");
@@ -95,54 +95,54 @@ describe("ProductCard", () => {
       await addButton(wrapper).trigger("click");
       await flushPromises();
 
-      expect(router.currentRoute.value.path).toBe("/products");
+      expect(router.currentRoute.value.path).toBe("/products/");
     });
 
     it("does not redirect when already within the catalogue", async () => {
-      const { wrapper, router } = await mountAt("/products");
+      const { wrapper, router } = await mountAt("/products/");
 
       await addButton(wrapper).trigger("click");
       await flushPromises();
 
-      expect(router.currentRoute.value.path).toBe("/products");
+      expect(router.currentRoute.value.path).toBe("/products/");
     });
 
     it("does not redirect when already on a catalogue subroute", async () => {
-      const { wrapper, router } = await mountAt("/products/grp-cabin");
+      const { wrapper, router } = await mountAt("/products/grp-cabin/");
 
       await addButton(wrapper).trigger("click");
       await flushPromises();
 
-      expect(router.currentRoute.value.path).toBe("/products/grp-cabin");
+      expect(router.currentRoute.value.path).toBe("/products/grp-cabin/");
     });
 
     // A solution page sells the units it curates; bouncing the visitor to the catalogue on Add
     // would throw away the page they were reading.
     it("does not redirect when adding from a solution page", async () => {
-      const { wrapper, router } = await mountAt("/solutions/construction-site-setup");
+      const { wrapper, router } = await mountAt("/solutions/construction-site-setup/");
 
       await addButton(wrapper).trigger("click");
       await flushPromises();
 
-      expect(router.currentRoute.value.path).toBe("/solutions/construction-site-setup");
+      expect(router.currentRoute.value.path).toBe("/solutions/construction-site-setup/");
     });
   });
 
   describe("Customize", () => {
     it("adds the Size Option to the Quote List when it is not already there, then navigates to /customize", async () => {
-      const { wrapper, router } = await mountAt("/products");
+      const { wrapper, router } = await mountAt("/products/");
       const store = useQuoteStore();
 
       await customizeButton(wrapper).trigger("click");
       await flushPromises();
 
       expect(store.getItemQuantity("product-grp-cabin-150x150")).toBe(1);
-      expect(router.currentRoute.value.path).toBe("/customize");
+      expect(router.currentRoute.value.path).toBe("/customize/");
     });
 
     it("does not add a second line when the Size Option is already in the Quote List", async () => {
       const card = grpCard();
-      const { wrapper } = await mountAt("/products", card);
+      const { wrapper } = await mountAt("/products/", card);
       const store = useQuoteStore();
       store.addSizeOption(card);
       await wrapper.vm.$nextTick();
