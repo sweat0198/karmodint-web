@@ -1,7 +1,7 @@
 import type { GalleryCategoryRef } from "~/types/gallery";
 
 export interface CategoryProductsLink {
-  path: "/products";
+  path: "/products/";
   query: { category: string; subcategory?: string };
 }
 
@@ -15,6 +15,6 @@ export interface CategoryProductsLink {
  */
 export function toCategoryProductsLink(category: GalleryCategoryRef): CategoryProductsLink {
   return category.parentSlug
-    ? { path: "/products", query: { category: category.parentSlug, subcategory: category.slug } }
-    : { path: "/products", query: { category: category.slug } };
+    ? { path: "/products/", query: { category: category.parentSlug, subcategory: category.slug } }
+    : { path: "/products/", query: { category: category.slug } };
 }

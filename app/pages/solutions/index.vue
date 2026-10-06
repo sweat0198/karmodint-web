@@ -23,7 +23,7 @@
           No solutions published yet — tell us what you need.
         </p>
         <NuxtLink
-          to="/contact"
+          to="/contact/"
           class="text-sm font-semibold text-brand-red underline underline-offset-2 hover:text-brand-red-dark"
         >
           Contact us
@@ -54,11 +54,11 @@ setPageSeo({
   title: "Modular Building Solutions | Karmod International",
   description:
     "Curated combinations of Karmod portable cabins, kiosks and gatehouses for construction sites, events, schools and more — each with the exact units and sizes you need.",
-  canonicalPath: "/solutions",
+  canonicalPath: "/solutions/",
   jsonLd: [
     getBreadcrumbSchema([
       { name: "Home", path: "/" },
-      { name: "Solutions", path: "/solutions" },
+      { name: "Solutions", path: "/solutions/" },
     ]),
     {
       "@context": "https://schema.org",

@@ -91,7 +91,26 @@ describe("useQuoteStore", () => {
   it("starts the quote journey at the products route", () => {
     const store = useQuoteStore();
 
-    expect(store.lastVisitedRoute).toBe("/products");
+    expect(store.lastVisitedRoute).toBe("/products/");
+  });
+
+  it("resumes a basket persisted with a slashless route at its `/`-ending address", () => {
+    const store = useQuoteStore();
+    store.addItem(grpItem({ sizeKey: "150x150" }));
+    store.$patch({ lastVisitedRoute: "/customize" });
+
+    expect(store.continueRoute).toBe("/customize/");
+    expect(store.continueStepNumber).toBe(2);
+  });
+
+  it("records a visited step whichever form its route arrives in", () => {
+    const store = useQuoteStore();
+    store.addItem(grpItem({ sizeKey: "150x150" }));
+    store.setLastVisitedRoute("/quote");
+
+    expect(store.lastVisitedRoute).toBe("/quote/");
+    expect(store.continueRoute).toBe("/quote/");
+    expect(store.maxVisitedStep).toBe(3);
   });
 
   it("gives two Size Options of the same Product distinct lines", () => {

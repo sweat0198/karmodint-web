@@ -160,7 +160,7 @@ const carouselImages = computed(() => {
 function handleAdd() {
   quoteStore.addSizeOption(props.card);
   if (!SELLING_ROUTE_PREFIXES.some((prefix) => route.path.startsWith(prefix))) {
-    router.push("/products");
+    router.push("/products/");
   }
 }
 
@@ -168,7 +168,7 @@ function handleCustomize() {
   if (quantityInBasket.value === 0) {
     quoteStore.addSizeOption(props.card);
   }
-  router.push("/customize");
+  router.push("/customize/");
 }
 
 function handleIncrement() {

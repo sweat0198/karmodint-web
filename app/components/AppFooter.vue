@@ -98,7 +98,7 @@
           <ul class="flex flex-col gap-2 w-full">
             <li>
               <NuxtLink
-                to="/about"
+                to="/about/"
                 class="text-brand-slate-light hover:text-white transition-colors text-base leading-6"
               >
                 About Us
@@ -106,7 +106,7 @@
             </li>
             <li>
               <NuxtLink
-                to="/gallery"
+                to="/gallery/"
                 class="text-brand-slate-light hover:text-white transition-colors text-base leading-6"
               >
                 Projects Gallery
@@ -114,7 +114,7 @@
             </li>
             <li>
               <NuxtLink
-                to="/about"
+                to="/about/"
                 class="text-brand-slate-light hover:text-white transition-colors text-base leading-6"
               >
                 ISO 9001 Certified
@@ -122,7 +122,7 @@
             </li>
             <li>
               <NuxtLink
-                to="/about"
+                to="/about/"
                 class="text-brand-slate-light hover:text-white transition-colors text-base leading-6"
               >
                 Environment Policy
@@ -143,7 +143,7 @@
           <ul class="flex flex-col gap-2 w-full">
             <li>
               <NuxtLink
-                to="/about"
+                to="/about/"
                 class="text-brand-slate-light hover:text-white transition-colors text-base leading-6"
               >
                 Terms of Service
@@ -151,7 +151,7 @@
             </li>
             <li>
               <NuxtLink
-                to="/about"
+                to="/about/"
                 class="text-brand-slate-light hover:text-white transition-colors text-base leading-6"
               >
                 Privacy Policy
@@ -159,7 +159,7 @@
             </li>
             <li>
               <NuxtLink
-                to="/about"
+                to="/about/"
                 class="text-brand-slate-light hover:text-white transition-colors text-base leading-6"
               >
                 Cookie Policy

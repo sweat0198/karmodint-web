@@ -59,14 +59,14 @@ describe("ProgressTracker", () => {
   it("returns to Select when the last product is removed on Review", async () => {
     const { wrapper, store } = mountTracker(3);
     const id = addProduct(store);
-    store.setLastVisitedRoute("/quote");
+    store.setLastVisitedRoute("/quote/");
     await nextTick();
     expect(wrapper.get('[aria-current="step"]').text()).toContain("REVIEW");
 
     store.removeItem(id);
     await nextTick();
 
-    expect(wrapper.findAll("a").map((link) => link.attributes("href"))).toEqual(["/products"]);
+    expect(wrapper.findAll("a").map((link) => link.attributes("href"))).toEqual(["/products/"]);
     expect(wrapper.get('[aria-current="step"]').text()).toContain("SELECT");
     expect(wrapper.get('[style*="width"]').attributes("style")).toBe("width: 0%;");
   });
@@ -74,27 +74,27 @@ describe("ProgressTracker", () => {
   it.each(["decrement", "zero quantity", "clear all"])("resets progress through %s and starts a fresh basket", async (action) => {
     const { wrapper, store } = mountTracker(2);
     const id = addProduct(store);
-    store.setLastVisitedRoute("/quote");
+    store.setLastVisitedRoute("/quote/");
     if (action === "decrement") store.decrementItem(id);
     else if (action === "zero quantity") store.updateQuantity(id, 0);
     else store.clearQuote();
     await nextTick();
 
     expect(wrapper.findAll("a")).toHaveLength(1);
-    expect(store.continueRoute).toBe("/products");
+    expect(store.continueRoute).toBe("/products/");
     await wrapper.setProps({ currentStep: 1 });
     addProduct(store);
     await nextTick();
-    expect(wrapper.findAll("a").map((link) => link.attributes("href"))).toEqual(["/products", "/customize"]);
+    expect(wrapper.findAll("a").map((link) => link.attributes("href"))).toEqual(["/products/", "/customize/"]);
   });
 
   it("preserves Review access while products remain, including when navigating back", async () => {
     const { wrapper, store } = mountTracker(3);
     const id = addProduct(store);
     addProduct(store);
-    store.setLastVisitedRoute("/quote");
+    store.setLastVisitedRoute("/quote/");
     store.decrementItem(id);
-    store.setLastVisitedRoute("/products");
+    store.setLastVisitedRoute("/products/");
     await wrapper.setProps({ currentStep: 1 });
 
     expect(wrapper.findAll("a")).toHaveLength(3);
@@ -104,7 +104,7 @@ describe("ProgressTracker", () => {
   it("keeps submission confirmation complete after clearing the basket", async () => {
     const { wrapper, store } = mountTracker(3);
     addProduct(store);
-    store.setLastVisitedRoute("/quote");
+    store.setLastVisitedRoute("/quote/");
     store.clearQuote();
     await wrapper.setProps({ currentStep: 4 });
 
@@ -114,10 +114,10 @@ describe("ProgressTracker", () => {
 
   it("ignores stale persisted visits for an empty basket and its next selection", async () => {
     const { wrapper, store } = mountTracker();
-    store.$patch({ items: [], lastVisitedRoute: "/quote", maxVisitedStep: 3 });
+    store.$patch({ items: [], lastVisitedRoute: "/quote/", maxVisitedStep: 3 });
     await nextTick();
     expect(wrapper.findAll("a")).toHaveLength(1);
-    expect(store.continueRoute).toBe("/products");
+    expect(store.continueRoute).toBe("/products/");
     expect(store.continueStepNumber).toBe(1);
 
     addProduct(store);

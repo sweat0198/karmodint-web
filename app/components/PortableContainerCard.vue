@@ -66,6 +66,6 @@ const imageUrl = computed(() => {
 
 function chooseSizeAndCustomize() {
   quoteStore.addPortableContainer(props.card)
-  router.push('/customize')
+  router.push('/customize/')
 }
 </script>

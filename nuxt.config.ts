@@ -1,10 +1,19 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import { isSitePath } from "./shared/utils/sitePath";
+
 export default defineNuxtConfig({
   compatibilityDate: "2024-11-01",
   devtools: { enabled: true },
 
   experimental: {
     appManifest: false,
+    // ADR-003: every public URL ends in `/`. Source paths are written in that form already; this makes
+    // any `<NuxtLink>` that slips through (or builds its `to` from a route object) render the `/` form too.
+    defaults: {
+      nuxtLink: {
+        trailingSlash: "append",
+      },
+    },
   },
 
   components: [
@@ -147,23 +156,28 @@ export default defineNuxtConfig({
       crawlLinks: true,
       routes: [
         "/",
-        "/products",
-        "/customize",
-        "/quote",
-        "/gallery",
-        "/solutions",
-        "/contact",
-        "/about",
+        "/products/",
+        "/customize/",
+        "/quote/",
+        "/gallery/",
+        "/solutions/",
+        "/contact/",
+        "/about/",
         "/sitemap.xml",
       ],
-      ignore: ["/api/**"],
+      ignore: [
+        "/api/**",
+        // Nuxt queues every static page in its slashless form (`/products`) alongside the crawled
+        // `/products/`; both write `products/index.html`. Build only the `/`-ending address (ADR-003).
+        (path: string) => !isSitePath(path),
+      ],
     },
   },
 
   routeRules: {
     // 301 Permanent Redirect for legacy about-contact path
     "/about-contact": {
-      redirect: { to: "/about", statusCode: 301 },
+      redirect: { to: "/about/", statusCode: 301 },
     },
     // Prerender static pages at build time
     "/**": { prerender: true },
