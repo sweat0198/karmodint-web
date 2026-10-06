@@ -136,6 +136,12 @@ export default defineNuxtConfig({
     preset: "cloudflare-pages",
     cloudflare: {
       nodeCompat: true,
+      // Sanity Studio is built into dist/studio after Nuxt; Pages serves it as static files.
+      pages: {
+        routes: {
+          exclude: ["/studio", "/studio/*"],
+        },
+      },
     },
     prerender: {
       crawlLinks: true,

@@ -3,7 +3,8 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "build": "nuxi build",
+    "build": "nuxi build && npm run studio:build",
+    "studio:build": "pnpm --dir sanity install --frozen-lockfile --ignore-workspace && npm --prefix sanity run build:site",
     "dev": "nuxi dev",
     "generate": "nuxi generate",
     "preview": "nuxi preview",

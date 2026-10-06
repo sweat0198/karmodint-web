@@ -8,6 +8,7 @@
     "dev": "sanity dev",
     "start": "sanity start",
     "build": "sanity build",
+    "build:site": "SANITY_STUDIO_BASEPATH=/studio sanity build ../dist/studio --yes",
     "deploy": "sanity deploy",
     "deploy-graphql": "sanity graphql deploy"
   },

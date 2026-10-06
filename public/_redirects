@@ -1,0 +1,4 @@
+# Sanity Studio client-side routes (static assets under /studio/static/ must stay unmatched)
+/studio/structure     /studio/  200
+/studio/structure/*   /studio/  200
+/studio/intent/*      /studio/  200

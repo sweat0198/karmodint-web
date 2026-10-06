@@ -3,5 +3,6 @@ Allow: /
 Disallow: /api/
 Disallow: /quote
 Disallow: /customize
+Disallow: /studio/
 
 Sitemap: https://www.karmodint.co.uk/sitemap.xml
