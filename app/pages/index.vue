@@ -16,14 +16,13 @@
 
 <script setup lang="ts">
 import { useAppSeo } from "~/composables/useAppSeo";
+import { PAGE_SEO } from "~/constants/pageSeo";
 import { HERO_SLIDES } from "~/constants/heroSlides";
 
 const { setPageSeo, getOrganizationSchema, getWebSiteSchema } = useAppSeo();
 
 setPageSeo({
-  title: "Karmod International - Portable Cabins, Kiosks & Modular Buildings",
-  description:
-    "Engineered for durability, designed for efficiency. Premium modular buildings, portable cabins, retail kiosks, and security gatehouses across the UK and worldwide.",
+  ...PAGE_SEO.home,
   canonicalPath: "/",
   jsonLd: [getOrganizationSchema(), getWebSiteSchema()],
 });
