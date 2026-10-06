@@ -164,6 +164,12 @@ describe('buildProductLineDocuments', () => {
     ).toThrow(/"\/portable-cabin" must end in "\/"/)
   })
 
+  it('rejects a path that is not one of the migration’s Kept URLs', () => {
+    expect(() =>
+      buildProductLineDocuments([{ ...hub, path: '/new-landing-page/' }], options())
+    ).toThrow(/"\/new-landing-page\/" is not a Kept URL/)
+  })
+
   it('rejects a seed whose cover was not uploaded', () => {
     expect(() => buildProductLineDocuments([hub], options({ assetIds: {} }))).toThrow(
       /no uploaded cover for covers\/hub\.jpg/

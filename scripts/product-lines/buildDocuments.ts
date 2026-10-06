@@ -1,4 +1,5 @@
 import { validateProductLinePath } from '../../sanity/schemas/objects/productLinePath'
+import { isKeptUrl } from '../../shared/migration/keptUrls'
 import { isSitePath } from '../../shared/utils/sitePath'
 import {
   markdownToPortableText,
@@ -76,7 +77,8 @@ function linkProblems(blocks: PortableTextBlock[], redirectSources: Set<string>)
  * Turn the seeds into `productLine` documents, or throw listing every problem.
  *
  * The seed is held to the same rules Studio enforces (path shape, parent prefix, uniqueness, the
- * block-content whitelist) so nothing reaches the dataset that an editor could not have saved.
+ * block-content whitelist) so nothing reaches the dataset that an editor could not have saved, and
+ * every path must be one of the migration's Kept URLs.
  * Keys are deterministic, so re-running produces identical documents.
  */
 export function buildProductLineDocuments(
@@ -98,6 +100,7 @@ export function buildProductLineDocuments(
       duplicate: seenPaths.has(seed.path)
     })
     if (pathCheck !== true) report(pathCheck)
+    else if (!isKeptUrl(seed.path)) report(`"${seed.path}" is not a Kept URL (shared/migration/keptUrls.ts)`)
     seenPaths.add(seed.path)
 
     if (seed.description.length > 500) report('description is longer than 500 characters')

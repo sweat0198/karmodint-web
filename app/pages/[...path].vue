@@ -142,6 +142,7 @@ import PortableTextContent from "~/components/content/PortableTextContent.vue";
 import PortableContainerCard from "~/components/PortableContainerCard.vue";
 import ProductCard from "~/components/ProductCard.vue";
 import { useAppSeo } from "~/composables/useAppSeo";
+import { productLinePageSeo } from "~/constants/pageSeo";
 import type { CatalogProduct } from "~/queries/catalog";
 import {
   PRODUCT_LINE_BY_PATH_QUERY,
@@ -209,8 +210,7 @@ const coverSrcset = computed(() =>
 const faqPageSchema = getFaqPageSchema(faqs.value);
 
 setPageSeo({
-  title: line.value.seo?.metaTitle || `${line.value.name} for Sale UK | Karmod`,
-  description: line.value.seo?.metaDescription || line.value.description,
+  ...productLinePageSeo(line.value),
   canonicalPath: line.value.path,
   image: coverSrc.value,
   noindex: line.value.seo?.noIndex,
