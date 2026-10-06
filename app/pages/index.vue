@@ -3,11 +3,20 @@
     <!-- Hero Section -->
     <HeroSection :slides="HERO_SLIDES" />
 
+    <!-- Legacy home copy: category tiles -->
+    <HomeCategoriesSection />
+
     <!-- Product Catalog Section -->
     <ProductCatalogSection />
 
+    <!-- Legacy home copy: about, slogan, WhatsApp, catalogues, certificates -->
+    <HomeAboutSection />
+
     <!-- Customer References Section -->
     <ReferencesSection />
+
+    <!-- Legacy home copy: company overview -->
+    <HomeCompanySection />
 
     <!-- Contact Section -->
     <ContactSection />
