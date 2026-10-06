@@ -98,7 +98,7 @@ The other four Solutions keep their current content.
 
 ## Redirects
 
-`public/_redirects` (Cloudflare Pages) is generated from one typed redirect map in the repo. The full map is in `docs/plans/2026-10-06-uk-migration-redirects.tsv`: 192 rules: 135 from the sheet, 55 from the Legacy sitemap that the sheet missed, and 2 interim 302s.
+Cloudflare Pages' `_redirects` is generated at build time from one typed redirect map, `shared/migration/redirects.ts` (written into `dist/_redirects` ahead of the hand-written Studio rewrites in `public/_redirects`, by `modules/legacy-redirects/`). A group of rules ships once its target page exists; the rest wait in `PENDING_REDIRECT_GROUPS`. The full map is in `docs/plans/2026-10-06-uk-migration-redirects.tsv`: 192 rules: 135 from the sheet, 55 from the Legacy sitemap that the sheet missed, and 2 interim 302s.
 
 | Source group | Target | Code |
 |---|---|---|
@@ -118,9 +118,9 @@ Test invariants:
 - No source is a Kept URL.
 - Every path ends in `/`.
 
-To verify before launch: whether Cloudflare Pages matches a source without its trailing slash (e.g. `/container`). If it doesn't, also emit the slashless form of each source.
+Settled: Cloudflare Pages matches sources exactly, trailing slash included, so `/container/` does not catch `/container`. Each source is written in both forms. Redirects also never run for requests routed to the Pages Functions worker, so `_routes.json` sends only `/api/*` there, and unknown paths get the static `404.html`. Evidence and limits: `docs/research/cloudflare-pages-redirects.md`.
 
-Delete the stale `/about-contact` `routeRules` entry once `_redirects` owns redirects.
+The stale `/about-contact` `routeRules` entry is gone: `_redirects` is the only source of redirects.
 
 ## Sitemap
 
