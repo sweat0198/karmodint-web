@@ -6,6 +6,8 @@ import {
 } from "~/constants/company";
 import { hasPublishablePrice } from "~~/shared/utils/priceLabel";
 import { toAbsoluteSiteUrl } from "~~/shared/utils/sitePath";
+import type { FaqItem } from "~/types/productLine";
+import { portableTextToPlainText } from "~/utils/portableText";
 
 export interface PageSeoOptions {
   title: string;
@@ -15,6 +17,15 @@ export interface PageSeoOptions {
   type?: "website" | "article";
   noindex?: boolean;
   jsonLd?: Record<string, any> | Record<string, any>[];
+}
+
+export interface ProductSchemaInput {
+  name: string;
+  description?: string;
+  image?: string;
+  price?: number;
+  isPoa?: boolean;
+  specs?: string[];
 }
 
 export function useAppSeo() {
@@ -106,14 +117,7 @@ export function useAppSeo() {
     };
   }
 
-  function getProductSchema(product: {
-    name: string;
-    description?: string;
-    image?: string;
-    price?: number;
-    isPoa?: boolean;
-    specs?: string[];
-  }) {
+  function getProductSchema(product: ProductSchemaInput) {
     const imageUrl = product.image
       ? product.image.startsWith("http")
         ? product.image
@@ -165,6 +169,56 @@ export function useAppSeo() {
     };
   }
 
+  /**
+   * An ItemList of Product entries, in the order the page shows them. Each entry gets an offer only
+   * where its price is publishable (`getProductSchema`), so POA sizes carry none.
+   */
+  function getProductItemListSchema(list: {
+    name: string;
+    description?: string;
+    products: ProductSchemaInput[];
+  }) {
+    return {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      name: list.name,
+      ...(list.description ? { description: list.description } : {}),
+      itemListElement: list.products.map((product, index) => ({
+        "@type": "ListItem",
+        position: index + 1,
+        item: getProductSchema(product),
+      })),
+    };
+  }
+
+  /**
+   * A FAQPage built from the same `faqItem` list the page's accordion renders, so the markup and
+   * the visible Q&A always match. `undefined` when no entry has both a question and answer text,
+   * since an empty FAQPage is invalid.
+   */
+  function getFaqPageSchema(faqs: FaqItem[] | null | undefined) {
+    const mainEntity = (faqs ?? []).flatMap((faq) => {
+      const answer = portableTextToPlainText(faq.answer).trim();
+      const question = faq.question?.trim();
+      if (!question || !answer) return [];
+      return [
+        {
+          "@type": "Question",
+          name: question,
+          acceptedAnswer: { "@type": "Answer", text: answer },
+        },
+      ];
+    });
+
+    if (mainEntity.length === 0) return undefined;
+
+    return {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity,
+    };
+  }
+
   return {
     siteUrl,
     setPageSeo,
@@ -172,5 +226,7 @@ export function useAppSeo() {
     getWebSiteSchema,
     getProductSchema,
     getBreadcrumbSchema,
+    getProductItemListSchema,
+    getFaqPageSchema,
   };
 }
