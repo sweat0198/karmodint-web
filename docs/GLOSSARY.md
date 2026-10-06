@@ -27,3 +27,11 @@ This document defines the key domain terminology for Karmod International's web 
 - **POA (Price on Application)**: No published price for this size; the UI shows "POA" rather than a figure. The stored `price` is a placeholder and must be excluded from "from £x" calculations, or cards will advertise "From £0".
 - **Unsupplied Weight (`weightKg: 0`)**: `0` means **weight not yet supplied**, NOT a weightless unit. Rendered naively it reads as "0 kg" on a live page. Anything displaying weight must handle the sentinel explicitly.
 - **Lifestyle Image**: Size-agnostic product photography (installed units in context). Distinct from size renders, and deliberately named so it cannot quietly become a per-size gallery.
+
+## Site Migration
+
+- **Legacy Site**: The previous website served at www.karmodint.co.uk, which the new site replaces at launch.
+- **Legacy URL**: Any URL the Legacy Site served that search engines or visitors may still request. The known set is the migration sheet plus the Legacy Site's sitemap.
+- **Kept URL**: A Legacy URL the new site serves at the exact same address. By default it carries over the Legacy Site's title, description and body copy word for word; the Privacy Policy is the exception, replaced with new text from the client. _Avoid_: preserved page, legacy page.
+- **Redirect**: A permanent (301), single-hop move from a Legacy URL that isn't kept to the new page that best replaces it. Never a chain, never pointing at another Redirect.
+- **Product Line page**: A Kept URL presenting one construction type of unit (e.g. GRP Kiosk Cabin, Bulletproof Cabin, Steel Cabin), tied to one catalogue category or subcategory. Distinct from a **Solution**, which groups units by use. Several Product Line pages can share one category and differ only in copy. _Avoid_: category page, legacy landing page.
