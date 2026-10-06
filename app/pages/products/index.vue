@@ -459,6 +459,7 @@ import { useRoute, useRouter } from "vue-router";
 import { useRuntimeConfig, useSanityQuery } from "#imports";
 import { useQuoteStore } from "~/stores/quote";
 import { useAppSeo } from "~/composables/useAppSeo";
+import { PAGE_SEO } from "~/constants/pageSeo";
 import { useCatalogBrowse } from "~/composables/useCatalogBrowse";
 import { sanityImageUrl } from "~/utils/sanityImageUrl";
 import { toSizeCards } from "~/utils/sizeCards";
@@ -570,9 +571,7 @@ onMounted(() => {
 });
 
 setPageSeo({
-  title: "Portable Cabins, Gatehouses & Kiosks | Karmod International",
-  description:
-    "Explore Karmod's full range of modular buildings, portable cabins, security gatehouses, retail kiosks, and sanitary units with customizable engineering options.",
+  ...PAGE_SEO.products,
   canonicalPath: "/products/",
   jsonLd: [
     getBreadcrumbSchema([

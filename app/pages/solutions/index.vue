@@ -42,6 +42,7 @@ import { computed } from "vue";
 import { useSanityQuery } from "#imports";
 import SolutionCard from "~/components/SolutionCard.vue";
 import { useAppSeo } from "~/composables/useAppSeo";
+import { PAGE_SEO } from "~/constants/pageSeo";
 import { SOLUTIONS_QUERY, type SolutionSummary } from "~/queries/solutions";
 
 const { setPageSeo, getBreadcrumbSchema } = useAppSeo();
@@ -51,9 +52,7 @@ const { data } = await useSanityQuery<SolutionSummary[]>(SOLUTIONS_QUERY);
 const solutions = computed(() => data.value ?? []);
 
 setPageSeo({
-  title: "Modular Building Solutions | Karmod International",
-  description:
-    "Curated combinations of Karmod portable cabins, kiosks and gatehouses for construction sites, events, schools and more — each with the exact units and sizes you need.",
+  ...PAGE_SEO.solutions,
   canonicalPath: "/solutions/",
   jsonLd: [
     getBreadcrumbSchema([

@@ -25,6 +25,7 @@ import { computed } from "vue";
 import { useRuntimeConfig, useSanityQuery } from "#imports";
 import GalleryMasonry from "~/components/gallery/GalleryMasonry.vue";
 import { useAppSeo } from "~/composables/useAppSeo";
+import { PAGE_SEO } from "~/constants/pageSeo";
 import { GALLERY_ENTRIES_QUERY, type GalleryEntry } from "~/queries/gallery";
 import { toGalleryTiles } from "~/utils/galleryTiles";
 
@@ -38,9 +39,7 @@ const tiles = computed(() =>
 );
 
 setPageSeo({
-  title: "Modular Building Project Gallery | Karmod International",
-  description:
-    "Explore Karmod's portfolio of modular construction projects across the UK and internationally, from portable cabins and containers to bulletproof security units.",
+  ...PAGE_SEO.gallery,
   canonicalPath: "/gallery/",
   jsonLd: [
     getBreadcrumbSchema([

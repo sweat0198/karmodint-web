@@ -101,6 +101,7 @@ import { useRoute } from "vue-router";
 import { createError, useRuntimeConfig, useSanityQuery } from "#imports";
 import ProductCard from "~/components/ProductCard.vue";
 import { useAppSeo } from "~/composables/useAppSeo";
+import { solutionPageSeo } from "~/constants/pageSeo";
 import { SOLUTION_BY_SLUG_QUERY, type Solution } from "~/queries/solutions";
 import { sanityImageSrcset, sanityImageUrl } from "~/utils/sanityImageUrl";
 import { toSolutionCards } from "~/utils/solutionCards";
@@ -146,8 +147,7 @@ const coverSrcset = computed(() =>
 );
 
 setPageSeo({
-  title: solution.value.seo?.metaTitle || `${solution.value.name} | Karmod International`,
-  description: solution.value.seo?.metaDescription || solution.value.description,
+  ...solutionPageSeo(solution.value),
   canonicalPath: `/solutions/${solution.value.slug}/`,
   image: coverSrc.value,
   noindex: solution.value.seo?.noIndex,
