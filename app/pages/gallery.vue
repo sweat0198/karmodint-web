@@ -25,6 +25,7 @@ import { computed } from "vue";
 import { useRuntimeConfig, useSanityQuery } from "#imports";
 import GalleryMasonry from "~/components/gallery/GalleryMasonry.vue";
 import { useAppSeo } from "~/composables/useAppSeo";
+import { STATIC_PAGES } from "~~/shared/utils/sitePages";
 import { PAGE_SEO } from "~/constants/pageSeo";
 import { GALLERY_ENTRIES_QUERY, type GalleryEntry } from "~/queries/gallery";
 import { toGalleryTiles } from "~/utils/galleryTiles";
@@ -40,7 +41,7 @@ const tiles = computed(() =>
 
 setPageSeo({
   ...PAGE_SEO.gallery,
-  canonicalPath: "/gallery/",
+  canonicalPath: STATIC_PAGES.gallery.path,
   jsonLd: [
     getBreadcrumbSchema([
       { name: "Home", path: "/" },

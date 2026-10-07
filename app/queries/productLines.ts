@@ -1,11 +1,10 @@
 import { PRODUCT_CARD_PROJECTION } from "~/queries/catalog";
+import { PUBLISHED_PRODUCT_LINE_FILTER } from "~~/shared/utils/productLineRoutes";
 import type { ProductLine, ProductLineNavItem } from "~/types/productLine";
 
 export type { ProductLine, ProductLineNavItem };
-/** Every published Product Line path: the prerender list (and, later, the sitemap). */
+/** Every published Product Line path: the prerender list. The sitemap filters the same set (server/utils/sitemap.ts). */
 export { PRODUCT_LINE_PATHS_QUERY } from "~~/shared/utils/productLineRoutes";
-
-const PUBLISHED_PRODUCT_LINES = `_type == "productLine" && defined(path) && !(_id in path("drafts.**"))`;
 
 /**
  * The Product Line served at `$path`, with what the page needs around it: the parent chain for
@@ -16,7 +15,7 @@ const PUBLISHED_PRODUCT_LINES = `_type == "productLine" && defined(path) && !(_i
  * `PRODUCTS_IN_CATEGORIES_QUERY`: @nuxtjs/sanity pins apiVersion "1", where a nested `^.^` scope
  * inside a product filter is not something to rely on.
  */
-export const PRODUCT_LINE_BY_PATH_QUERY = `*[${PUBLISHED_PRODUCT_LINES} && path == $path][0] {
+export const PRODUCT_LINE_BY_PATH_QUERY = `*[${PUBLISHED_PRODUCT_LINE_FILTER} && path == $path][0] {
   _id,
   name,
   path,
@@ -43,7 +42,7 @@ export const PRODUCT_LINE_BY_PATH_QUERY = `*[${PUBLISHED_PRODUCT_LINES} && path 
  * Every published Product Line in display order, as the header and footer link to them: the footer
  * lists them all; the header's Products menu matches catalogue entries on `categoryId`.
  */
-export const PRODUCT_LINES_NAV_QUERY = `*[${PUBLISHED_PRODUCT_LINES}] | order(displayOrder asc, name asc) {
+export const PRODUCT_LINES_NAV_QUERY = `*[${PUBLISHED_PRODUCT_LINE_FILTER}] | order(displayOrder asc, name asc) {
   _id,
   name,
   path,

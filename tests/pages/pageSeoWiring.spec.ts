@@ -31,7 +31,7 @@ describe("static page SEO wiring", () => {
   it("privacy-policy.vue is indexable, with its own /-ending canonical and a Home › Privacy Policy BreadcrumbList", () => {
     const source = fs.readFileSync(path.resolve(process.cwd(), "app/pages/privacy-policy.vue"), "utf-8");
 
-    expect(source).toContain('canonicalPath: "/privacy-policy/",');
+    expect(source).toContain("canonicalPath: STATIC_PAGES.privacyPolicy.path,");
     expect(source).not.toMatch(/noindex/);
     expect(source.replace(/\s+/g, " ")).toContain(
       'getBreadcrumbSchema([ { name: "Home", path: "/" }, { name: "Privacy Policy", path: "/privacy-policy/" }, ])',

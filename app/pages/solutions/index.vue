@@ -42,6 +42,7 @@ import { computed } from "vue";
 import { useSanityQuery } from "#imports";
 import SolutionCard from "~/components/SolutionCard.vue";
 import { useAppSeo } from "~/composables/useAppSeo";
+import { STATIC_PAGES } from "~~/shared/utils/sitePages";
 import { PAGE_SEO } from "~/constants/pageSeo";
 import { SOLUTIONS_QUERY, type SolutionSummary } from "~/queries/solutions";
 
@@ -53,7 +54,7 @@ const solutions = computed(() => data.value ?? []);
 
 setPageSeo({
   ...PAGE_SEO.solutions,
-  canonicalPath: "/solutions/",
+  canonicalPath: STATIC_PAGES.solutions.path,
   jsonLd: [
     getBreadcrumbSchema([
       { name: "Home", path: "/" },

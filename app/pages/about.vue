@@ -16,13 +16,14 @@
 
 <script setup lang="ts">
 import { useAppSeo } from "~/composables/useAppSeo";
+import { STATIC_PAGES } from "~~/shared/utils/sitePages";
 import { PAGE_SEO } from "~/constants/pageSeo";
 
 const { setPageSeo, getOrganizationSchema, getBreadcrumbSchema } = useAppSeo();
 
 setPageSeo({
   ...PAGE_SEO.about,
-  canonicalPath: "/about/",
+  canonicalPath: STATIC_PAGES.about.path,
   jsonLd: [
     getBreadcrumbSchema([
       { name: "Home", path: "/" },

@@ -304,6 +304,7 @@ import { useQuoteStore, type QuoteItem } from "~/stores/quote";
 import type { CustomizationNotes, CustomizationSelections, SpecSummaryItem } from "~/types/customization";
 import { buildSpecSummary, useCustomizationPricing } from "~/composables/useCustomizationPricing";
 import { useAppSeo } from "~/composables/useAppSeo";
+import { STATIC_PAGES } from "~~/shared/utils/sitePages";
 import { PRODUCTS_WITH_SIZES_QUERY, type CatalogProduct } from '~/queries/catalog'
 import { toPortableContainerCards } from '~/utils/portableContainerCards'
 import { requiresSizeSelection } from '~~/shared/utils/quoteLine'
@@ -320,7 +321,7 @@ setPageSeo({
   title: "Customize Modular Units | Karmod International",
   description:
     "Interactive engineering configuration for Karmod modular cabins, security gatehouses, and portable buildings.",
-  canonicalPath: "/customize/",
+  canonicalPath: STATIC_PAGES.customize.path,
   noindex: true,
 });
 

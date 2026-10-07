@@ -459,6 +459,7 @@ import { useRoute, useRouter } from "vue-router";
 import { useRuntimeConfig, useSanityQuery } from "#imports";
 import { useQuoteStore } from "~/stores/quote";
 import { useAppSeo } from "~/composables/useAppSeo";
+import { STATIC_PAGES } from "~~/shared/utils/sitePages";
 import { PAGE_SEO } from "~/constants/pageSeo";
 import { useCatalogBrowse } from "~/composables/useCatalogBrowse";
 import { sanityImageUrl } from "~/utils/sanityImageUrl";
@@ -565,7 +566,7 @@ onMounted(() => {
 
 setPageSeo({
   ...PAGE_SEO.products,
-  canonicalPath: "/products/",
+  canonicalPath: STATIC_PAGES.products.path,
   jsonLd: [
     getBreadcrumbSchema([
       { name: "Home", path: "/" },
