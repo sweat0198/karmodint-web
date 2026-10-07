@@ -6,7 +6,7 @@ import {
   type BuildOptions
 } from '../../scripts/product-lines/buildDocuments'
 import { PRODUCT_LINE_SEEDS, type ProductLineSeed } from '../../scripts/product-lines/data'
-import { loadRedirectSources } from '../../scripts/product-lines/redirectSources'
+import { loadRedirectSources } from '../../scripts/catalogue/lib/redirectSources'
 import { repoPath } from '../../scripts/catalogue/lib/paths'
 
 const files: Record<string, string> = {

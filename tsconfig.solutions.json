@@ -18,6 +18,6 @@
     "scripts/catalogue/lib/runScript.ts",
     "scripts/catalogue/lib/sanityEnv.ts",
     "scripts/catalogue/lib/pageCopy.ts",
-    "scripts/product-lines/redirectSources.ts"
+    "scripts/catalogue/lib/redirectSources.ts"
   ]
 }

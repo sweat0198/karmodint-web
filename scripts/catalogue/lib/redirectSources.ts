@@ -2,7 +2,7 @@ import {
   PENDING_REDIRECT_GROUPS,
   REDIRECT_GROUPS,
   toRedirects
-} from '../../shared/migration/redirects'
+} from '../../../shared/migration/redirects'
 
 /**
  * Every Legacy URL the migration redirects, shipped or still pending. Ported copy must link a

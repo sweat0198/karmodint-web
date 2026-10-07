@@ -5,7 +5,7 @@ import { SOLUTION_COPY, type SolutionCopy } from '../../scripts/solutions/data'
 import type { PageCopyOptions } from '../../scripts/catalogue/lib/pageCopy'
 import type { PortableTextBlock } from '../../scripts/catalogue/lib/portableText'
 import { repoPath } from '../../scripts/catalogue/lib/paths'
-import { loadRedirectSources } from '../../scripts/product-lines/redirectSources'
+import { loadRedirectSources } from '../../scripts/catalogue/lib/redirectSources'
 import { PENDING_REDIRECT_GROUPS, REDIRECT_GROUPS, toRedirects } from '../../shared/migration/redirects'
 
 const files: Record<string, string> = {
