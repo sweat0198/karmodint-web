@@ -9,8 +9,26 @@ import { sanityImageUrl } from "~/utils/sanityImageUrl";
 import { toCarouselImages } from "~/utils/carouselImages";
 import { resolveSanityImageConfig } from "~/utils/sanityImageConfig";
 import { getQuoteLineId } from "~~/shared/utils/quoteLine";
+import { toSitePath } from "~~/shared/utils/sitePath";
 
 export type QuoteItem = QuoteLine;
+
+/** The buy-flow steps a basket resumes at, in their public `/`-ending form (ADR-003), keyed to step number. */
+const BUY_FLOW_STEPS: Record<string, number> = {
+  "/products/": 1,
+  "/customize/": 2,
+  "/quote/": 3,
+};
+
+/**
+ * A buy-flow route in `/`-ending form, or `null` if it is not one. Baskets persisted before ADR-003
+ * hold slashless routes (`/customize`), so stored values are normalised on read as well as on write.
+ */
+function toBuyFlowRoute(route: string | undefined): string | null {
+  if (!route) return null;
+  const path = toSitePath(route);
+  return path in BUY_FLOW_STEPS ? path : null;
+}
 
 /** Wider than the card's frames — the customize page shows these in a large primary viewer. */
 const CUSTOMIZE_VIEWER_IMAGE_WIDTH = 1200;
@@ -36,7 +54,7 @@ export const useQuoteStore = defineStore("quote", {
   state: () => ({
     items: [] as QuoteItem[],
     portableSelectionSequence: 0,
-    lastVisitedRoute: "/products" as string,
+    lastVisitedRoute: "/products/" as string,
     maxVisitedStep: 1 as number,
   }),
 
@@ -47,24 +65,13 @@ export const useQuoteStore = defineStore("quote", {
     hasPoa: (state) => state.items.some((item) => item.isPoa),
     isEmpty: (state) => state.items.length === 0,
     continueRoute: (state) => {
-      if (state.items.length === 0) return "/products";
-      if (
-        state.lastVisitedRoute &&
-        ["/products", "/customize", "/quote"].includes(state.lastVisitedRoute)
-      ) {
-        return state.lastVisitedRoute;
-      }
-      if (state.items.length > 0) {
-        return "/customize";
-      }
-      return "/products";
+      if (state.items.length === 0) return "/products/";
+      return toBuyFlowRoute(state.lastVisitedRoute) ?? "/customize/";
     },
     continueStepNumber: (state) => {
       if (state.items.length === 0) return 1;
-      if (state.lastVisitedRoute === "/quote") return 3;
-      if (state.lastVisitedRoute === "/customize") return 2;
-      if (state.lastVisitedRoute === "/products") return 1;
-      return state.items.length > 0 ? 2 : 1;
+      const route = toBuyFlowRoute(state.lastVisitedRoute);
+      return route ? BUY_FLOW_STEPS[route]! : 2;
     },
     isStepUnlocked: (state) => (stepNumber: number) => {
       if (stepNumber === 1) return true;
@@ -250,22 +257,17 @@ export const useQuoteStore = defineStore("quote", {
     },
 
     setLastVisitedRoute(route: string) {
-      if (["/products", "/customize", "/quote"].includes(route)) {
-        this.lastVisitedRoute = route;
-        if (route === "/products") {
-          this.updateMaxVisitedStep(1);
-        } else if (route === "/customize") {
-          this.updateMaxVisitedStep(2);
-        } else if (route === "/quote") {
-          this.updateMaxVisitedStep(3);
-        }
+      const buyFlowRoute = toBuyFlowRoute(route);
+      if (buyFlowRoute) {
+        this.lastVisitedRoute = buyFlowRoute;
+        this.updateMaxVisitedStep(BUY_FLOW_STEPS[buyFlowRoute]!);
       }
     },
 
     clearQuote() {
       this.items = [];
       this.portableSelectionSequence = 0;
-      this.lastVisitedRoute = "/products";
+      this.lastVisitedRoute = "/products/";
       this.maxVisitedStep = 1;
     },
   },

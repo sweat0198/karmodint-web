@@ -185,7 +185,7 @@ describe("GalleryMasonry", () => {
     // t1 "Container house" is a top-level category (no parentSlug) — plain ?category=.
     await openTile(wrapper, "Container house");
     const containersLink = document.querySelector('a[href^="/products"]');
-    expect(containersLink!.getAttribute("href")).toBe("/products?category=containers");
+    expect(containersLink!.getAttribute("href")).toBe("/products/?category=containers");
     expect(containersLink!.textContent?.toLowerCase()).toContain("request a quote");
 
     document.querySelector('[aria-label="Close"]')!.dispatchEvent(new MouseEvent("click", { bubbles: true }));
@@ -194,6 +194,6 @@ describe("GalleryMasonry", () => {
     // t2 "Metro City cabin" is a subcategory of "cabin" — nested ?category=cabin&subcategory=.
     await openTile(wrapper, "Metro City cabin");
     const metroCityLink = document.querySelector('a[href^="/products"]');
-    expect(metroCityLink!.getAttribute("href")).toBe("/products?category=cabin&subcategory=metro-city");
+    expect(metroCityLink!.getAttribute("href")).toBe("/products/?category=cabin&subcategory=metro-city");
   });
 });

@@ -120,7 +120,7 @@
 
 <script setup lang="ts">
 import { computed, ref } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { useRouter } from "vue-router";
 import { useQuoteStore } from "~/stores/quote";
 import { toCarouselImages } from "~/utils/carouselImages";
 import { resolveSanityImageConfig } from "~/utils/sanityImageConfig";
@@ -129,18 +129,17 @@ import { getPriceLabel } from "~~/shared/utils/priceLabel";
 
 export interface ProductCardProps {
   card: SizeCard;
+  /**
+   * Go to the catalogue after Add, so the visitor sees what they just added in context. For a
+   * showcase card away from any product grid (the home page); a grid (catalogue, Solution,
+   * Product Line) sells in place.
+   */
+  catalogueOnAdd?: boolean;
 }
 
 const props = defineProps<ProductCardProps>();
 const quoteStore = useQuoteStore();
 const router = useRouter();
-const route = useRoute();
-
-/**
- * Routes that sell the card in place. Adding from anywhere else — the homepage, say — sends the
- * visitor to the catalogue so they can see what they just added in context.
- */
-const SELLING_ROUTE_PREFIXES = ["/products", "/solutions"];
 
 const isHovering = ref(false);
 
@@ -159,16 +158,14 @@ const carouselImages = computed(() => {
 
 function handleAdd() {
   quoteStore.addSizeOption(props.card);
-  if (!SELLING_ROUTE_PREFIXES.some((prefix) => route.path.startsWith(prefix))) {
-    router.push("/products");
-  }
+  if (props.catalogueOnAdd) router.push("/products/");
 }
 
 function handleCustomize() {
   if (quantityInBasket.value === 0) {
     quoteStore.addSizeOption(props.card);
   }
-  router.push("/customize");
+  router.push("/customize/");
 }
 
 function handleIncrement() {

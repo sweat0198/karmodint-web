@@ -7,7 +7,7 @@
     <main
       class="grow"
       :class="{
-        'pb-24': quoteStore.totalItemsCount > 0 && route.path !== '/quote',
+        'pb-24': quoteStore.totalItemsCount > 0 && !isSameSitePath(route.path, '/quote/'),
       }"
     >
       <slot />
@@ -30,12 +30,13 @@ import { useRoute } from "vue-router";
 import PriceBar from "~/components/PriceBar.vue";
 import QuickContactWidget from "~/components/QuickContactWidget.vue";
 import { useQuoteStore } from "~/stores/quote";
+import { isSameSitePath } from "~~/shared/utils/sitePath";
 
 const route = useRoute();
 const quoteStore = useQuoteStore();
 
 const hasPriceBar = computed(() => {
-  if (route.path === "/quote") return false;
+  if (isSameSitePath(route.path, "/quote/")) return false;
   return quoteStore.totalItemsCount > 0;
 });
 </script>

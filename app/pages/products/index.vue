@@ -11,7 +11,7 @@
         <div class="flex flex-wrap items-center gap-3">
           <NuxtLink
             v-if="!quoteStore.isEmpty"
-            to="/customize"
+            to="/customize/"
             class="flex items-center justify-center gap-2 px-8 py-3 bg-brand-red hover:bg-brand-red-hover text-white font-semibold text-xs tracking-wider uppercase rounded-xs transition-colors duration-150 shadow-sm hover:shadow"
           >
             <span>Customize Selected</span>
@@ -37,7 +37,7 @@
 
           <NuxtLink
             v-if="!quoteStore.isEmpty && quoteStore.isStepUnlocked(3)"
-            to="/quote"
+            to="/quote/"
             class="flex items-center justify-center gap-2 px-6 py-3 bg-white hover:bg-slate-100 text-brand-navy-heading border border-slate-300 font-semibold text-xs tracking-wider uppercase rounded-xs transition-colors duration-150 shadow-sm hover:shadow"
           >
             <span>Review Quote</span>
@@ -129,7 +129,7 @@
           />
         </svg>
         <NuxtLink
-          to="/products"
+          to="/products/"
           class="hover:text-slate-900 active:opacity-70 transition-opacity duration-150 shrink-0"
         >
           Products
@@ -206,7 +206,7 @@
             />
           </svg>
           <NuxtLink
-            to="/products"
+            to="/products/"
             class="hover:text-brand-navy-heading transition-colors"
             >Products</NuxtLink
           >
@@ -385,7 +385,7 @@
                 No products in this category yet — talk to us.
               </p>
               <NuxtLink
-                to="/contact"
+                to="/contact/"
                 class="text-brand-red hover:text-brand-red-dark text-sm font-semibold underline underline-offset-2"
               >
                 Contact us
@@ -418,7 +418,7 @@
           reinforced panels, and integrated facilities.
         </p>
         <NuxtLink
-          to="/contact"
+          to="/contact/"
           class="mt-2 border border-brand-navy-heading text-brand-navy-heading hover:bg-brand-navy-heading hover:text-white px-8 py-3 rounded-xs text-xs font-semibold tracking-wider uppercase transition-colors inline-flex items-center gap-2"
         >
           <span>Contact Us</span>
@@ -459,10 +459,14 @@ import { useRoute, useRouter } from "vue-router";
 import { useRuntimeConfig, useSanityQuery } from "#imports";
 import { useQuoteStore } from "~/stores/quote";
 import { useAppSeo } from "~/composables/useAppSeo";
+import { STATIC_PAGES } from "~~/shared/utils/sitePages";
+import { PAGE_SEO } from "~/constants/pageSeo";
 import { useCatalogBrowse } from "~/composables/useCatalogBrowse";
-import { sanityImageUrl } from "~/utils/sanityImageUrl";
-import { toSizeCards } from "~/utils/sizeCards";
-import { isPortableContainerProduct, toPortableContainerCards, type PortableContainerCard } from '~/utils/portableContainerCards'
+import {
+  catalogCardSchemaProducts,
+  isPortableContainerCard as isPortableCard,
+  toCatalogDisplayCards,
+} from "~/utils/catalogCards";
 import type { CatalogDisplayCard } from '~/utils/catalogSearch'
 import {
   CATEGORY_TREE_QUERY,
@@ -475,7 +479,7 @@ const router = useRouter();
 const route = useRoute();
 const quoteStore = useQuoteStore();
 const config = useRuntimeConfig();
-const { setPageSeo, getProductSchema, getBreadcrumbSchema } = useAppSeo();
+const { setPageSeo, getBreadcrumbSchema, getProductItemListSchema } = useAppSeo();
 
 const isCategoryDrawerOpen = ref(false);
 // Categories section is expanded by default. Stores explicitly collapsed categories: { [slug]: true }
@@ -488,17 +492,7 @@ function isCategoryExpanded(categorySlug: string): boolean {
 const { data: products } = await useSanityQuery<CatalogProduct[]>(PRODUCTS_WITH_SIZES_QUERY);
 const { data: categoryTree } = await useSanityQuery<CategoryTreeNode[]>(CATEGORY_TREE_QUERY);
 
-const cards = computed<CatalogDisplayCard[]>(() => {
-  const catalogue = products.value ?? []
-  return [
-    ...toPortableContainerCards(catalogue),
-    ...toSizeCards(catalogue.filter((product) => !isPortableContainerProduct(product)))
-  ]
-});
-
-function isPortableCard(card: CatalogDisplayCard): card is PortableContainerCard {
-  return 'isPoaOnly' in card
-}
+const cards = computed<CatalogDisplayCard[]>(() => toCatalogDisplayCards(products.value ?? []));
 
 // The filter lives in the URL (D10: `?category=cabin&subcategory=grp`), not local state, so it
 // survives a reload and is shareable.
@@ -566,39 +560,24 @@ onBeforeUnmount(() => {
 });
 
 onMounted(() => {
-  quoteStore.setLastVisitedRoute("/products");
+  quoteStore.setLastVisitedRoute("/products/");
 });
 
 setPageSeo({
-  title: "Portable Cabins, Gatehouses & Kiosks | Karmod International",
-  description:
-    "Explore Karmod's full range of modular buildings, portable cabins, security gatehouses, retail kiosks, and sanitary units with customizable engineering options.",
-  canonicalPath: "/products",
+  ...PAGE_SEO.products,
+  canonicalPath: STATIC_PAGES.products.path,
   jsonLd: [
     getBreadcrumbSchema([
       { name: "Home", path: "/" },
-      { name: "Modular Products", path: "/products" },
+      { name: "Modular Products", path: "/products/" },
     ]),
-    {
-      "@context": "https://schema.org",
-      "@type": "ItemList",
+    getProductItemListSchema({
       name: "Portable Cabins, Gatehouses & Kiosks",
-      itemListElement: cards.value.map((card, idx) => ({
-        "@type": "ListItem",
-        position: idx + 1,
-        item: getProductSchema({
-          name: isPortableCard(card) ? card.productName : `${card.productName} ${card.sizeLabel}`,
-          image: sanityImageUrl(
-            isPortableCard(card) ? card.representativeImage?.asset?._ref : card.thumbnail.asset?._ref,
-            config.public.sanityProjectId,
-            config.public.sanityDataset,
-          ),
-          price: isPortableCard(card) ? card.lowestPrice : card.price,
-          isPoa: isPortableCard(card) ? card.isPoaOnly : card.isPoa,
-          specs: isPortableCard(card) ? card.sizes.flatMap((size) => size.specs) : card.specs,
-        }),
-      })),
-    },
+      products: catalogCardSchemaProducts(cards.value, {
+        projectId: config.public.sanityProjectId,
+        dataset: config.public.sanityDataset,
+      }),
+    }),
   ],
 });
 </script>

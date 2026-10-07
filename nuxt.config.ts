@@ -1,10 +1,27 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import { createClient } from "@sanity/client";
+import { PRODUCT_LINE_URLS } from "./shared/migration/keptUrls";
+import { productLinePrerenderRoutes } from "./shared/utils/productLineRoutes";
+import { hasSanityProject, PLACEHOLDER_SANITY_PROJECT_ID } from "./shared/utils/sanityProject";
+import { STATIC_PAGE_PATHS } from "./shared/utils/sitePages";
+import { isSitePath } from "./shared/utils/sitePath";
+
+const sanityProjectId = process.env.SANITY_PROJECT_ID || PLACEHOLDER_SANITY_PROJECT_ID;
+const sanityDataset = process.env.SANITY_DATASET || "production";
+
 export default defineNuxtConfig({
   compatibilityDate: "2024-11-01",
   devtools: { enabled: true },
 
   experimental: {
     appManifest: false,
+    // ADR-003: every public URL ends in `/`. Source paths are written in that form already; this makes
+    // any `<NuxtLink>` that slips through (or builds its `to` from a route object) render the `/` form too.
+    defaults: {
+      nuxtLink: {
+        trailingSlash: "append",
+      },
+    },
   },
 
   components: [
@@ -43,8 +60,8 @@ export default defineNuxtConfig({
   },
 
   sanity: {
-    projectId: process.env.SANITY_PROJECT_ID || "dummy_project_id",
-    dataset: process.env.SANITY_DATASET || "production",
+    projectId: sanityProjectId,
+    dataset: sanityDataset,
   },
 
   app: {
@@ -121,8 +138,8 @@ export default defineNuxtConfig({
     public: {
       siteUrl:
         process.env.NUXT_PUBLIC_SITE_URL || "https://www.karmodint.co.uk",
-      sanityProjectId: process.env.SANITY_PROJECT_ID || "dummy_project_id",
-      sanityDataset: process.env.SANITY_DATASET || "production",
+      sanityProjectId: sanityProjectId,
+      sanityDataset: sanityDataset,
       googleMapsApiKey: process.env.NUXT_PUBLIC_GOOGLE_MAPS_API_KEY || "",
     },
   },
@@ -136,38 +153,63 @@ export default defineNuxtConfig({
     preset: "cloudflare-pages",
     cloudflare: {
       nodeCompat: true,
-      // Sanity Studio is built into dist/studio after Nuxt; Pages serves it as static files.
+      // `_routes.json`: only the runtime API (ADR-002) runs in the worker. Everything else is static, Sanity Studio
+      // (built into dist/studio after Nuxt) included. Nitro's default (`/*` minus built files, capped at 100 rules)
+      // sent every unbuilt path, Legacy redirect sources too, to the worker, and Pages skips `_redirects` and
+      // `_headers` there. modules/legacy-redirects fails the build if a redirect source reaches the worker again.
       pages: {
+        defaultRoutes: false,
         routes: {
-          exclude: ["/studio", "/studio/*"],
+          version: 1,
+          include: ["/api/*"],
+          exclude: [],
         },
       },
     },
     prerender: {
       crawlLinks: true,
       routes: [
-        "/",
-        "/products",
-        "/customize",
-        "/quote",
-        "/gallery",
-        "/solutions",
-        "/contact",
-        "/about",
+        // Every static page, noindex ones included (shared/utils/sitePages.ts: the sitemap reads the same list).
+        ...STATIC_PAGE_PATHS,
         "/sitemap.xml",
+        // With no worker fallback, Pages answers unknown paths with the top-level 404.html and a 404 status
+        // (without one it serves `/` with a 200). `nuxi generate` adds it on its own; `nuxi build` doesn't.
+        "/404.html",
       ],
-      ignore: ["/api/**"],
+      ignore: [
+        "/api/**",
+        // Nuxt queues every static page in its slashless form (`/products`) alongside the crawled
+        // `/products/`; both write `products/index.html`. Build only the `/`-ending address (ADR-003).
+        (path: string) => !isSitePath(path),
+      ],
     },
   },
 
   routeRules: {
-    // 301 Permanent Redirect for legacy about-contact path
-    "/about-contact": {
-      redirect: { to: "/about", statusCode: 301 },
-    },
+    // No redirects here: `_redirects` is generated from shared/migration/redirects.ts (modules/legacy-redirects).
     // Prerender static pages at build time
     "/**": { prerender: true },
     // Ensure API endpoints remain runtime/dynamic functions
     "/api/**": { prerender: false },
+  },
+
+  hooks: {
+    // Product Line pages (ADR-004) live at Kept URLs read from Sanity, so they are added to the
+    // prerender list by path instead of relying on the crawler finding a link to each one.
+    async "prerender:routes"(ctx) {
+      // A checkout with no Sanity project configured (tests, a fresh clone) has no paths to read.
+      if (!hasSanityProject(sanityProjectId)) return;
+
+      const client = createClient({
+        projectId: sanityProjectId,
+        dataset: sanityDataset,
+        apiVersion: "2025-02-19",
+        useCdn: false,
+      });
+      const routes = await productLinePrerenderRoutes((query) => client.fetch(query), { required: PRODUCT_LINE_URLS });
+      for (const route of routes) {
+        ctx.routes.add(route);
+      }
+    },
   },
 });

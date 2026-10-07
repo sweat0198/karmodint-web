@@ -16,18 +16,18 @@
 
 <script setup lang="ts">
 import { useAppSeo } from "~/composables/useAppSeo";
+import { STATIC_PAGES } from "~~/shared/utils/sitePages";
+import { PAGE_SEO } from "~/constants/pageSeo";
 
 const { setPageSeo, getOrganizationSchema, getBreadcrumbSchema } = useAppSeo();
 
 setPageSeo({
-  title: "About Us | Karmod International - Modular Construction Pioneers",
-  description:
-    "Learn about Karmod's legacy of engineering excellence in modular buildings, our mission, vision, and high-performance prefabricated projects across the UK and internationally.",
-  canonicalPath: "/about",
+  ...PAGE_SEO.about,
+  canonicalPath: STATIC_PAGES.about.path,
   jsonLd: [
     getBreadcrumbSchema([
       { name: "Home", path: "/" },
-      { name: "About Us", path: "/about" },
+      { name: "About Us", path: "/about/" },
     ]),
     {
       "@context": "https://schema.org",

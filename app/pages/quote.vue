@@ -11,7 +11,7 @@
       <template #actions>
         <div class="flex flex-wrap items-center gap-3">
           <NuxtLink
-            to="/products"
+            to="/products/"
             class="flex items-center justify-center gap-2 px-6 sm:px-8 py-3 bg-white hover:bg-slate-100 text-brand-navy-heading border border-slate-300 font-semibold text-xs tracking-wider uppercase rounded-xs transition-colors duration-150 shadow-sm hover:shadow"
           >
             <svg
@@ -32,7 +32,7 @@
 
           <NuxtLink
             v-if="!quoteStore.isEmpty"
-            to="/customize"
+            to="/customize/"
             class="flex items-center justify-center gap-2 px-6 sm:px-8 py-3 bg-brand-red hover:bg-brand-red-hover text-white font-semibold text-xs tracking-wider uppercase rounded-xs transition-colors duration-150 shadow-sm hover:shadow"
           >
             <span>Customize Units</span>
@@ -64,7 +64,7 @@
     >
       <template #actions>
         <NuxtLink
-          to="/products"
+          to="/products/"
           class="flex items-center justify-center gap-2 px-8 py-3 bg-brand-navy-heading hover:bg-brand-navy text-white font-semibold text-xs tracking-wider uppercase rounded-xs transition-colors duration-150 shadow-sm hover:shadow"
         >
           <span>Return to Products</span>
@@ -83,7 +83,7 @@
           Our sales team is reviewing your requested products and delivery destination. They will contact you regarding delivery pricing based on equipment status and offload requirements before issuing a formal quote.
         </p>
         <div class="flex justify-center gap-4">
-          <NuxtLink to="/products" class="btn-primary px-6 py-3 text-sm font-semibold">
+          <NuxtLink to="/products/" class="btn-primary px-6 py-3 text-sm font-semibold">
             Return to Products
           </NuxtLink>
         </div>
@@ -92,7 +92,7 @@
       <!-- Empty State -->
       <EmptyQuoteState
         v-else-if="quoteStore.isEmpty"
-        button-to="/products"
+        button-to="/products/"
       />
 
     <!-- Active Quote List & Contact Form -->
@@ -244,7 +244,7 @@
                 {{ issue.productName }} ({{ issue.sizeLabel }}){{ issue.optionTitle ? ` — ${issue.groupTitle}: ${issue.optionTitle}` : '' }}
               </li>
             </ul>
-            <NuxtLink to="/customize" class="inline-block font-semibold underline">Review your customizations</NuxtLink>
+            <NuxtLink to="/customize/" class="inline-block font-semibold underline">Review your customizations</NuxtLink>
           </div>
 
           <div v-else-if="priceChanges.length > 0" class="p-4 bg-amber-50 border border-amber-200 text-amber-900 text-xs rounded space-y-2">
@@ -291,6 +291,7 @@
 <script setup lang="ts">
 import { useQuoteStore } from '~/stores/quote'
 import { useAppSeo } from '~/composables/useAppSeo'
+import { STATIC_PAGES } from '~~/shared/utils/sitePages'
 import type { ParsedUkAddress } from '~/composables/useGooglePlacesAutocomplete'
 import { getQuoteLineFinancials, requiresSizeSelection } from '~~/shared/utils/quoteLine'
 import { getPriceLabel, getTotalLabel } from '~~/shared/utils/priceLabel'
@@ -318,7 +319,7 @@ const { setPageSeo } = useAppSeo()
 setPageSeo({
   title: 'Review Quote & Request Pricing | Karmod International',
   description: 'Review chosen modular building specifications and submit for official direct quotation.',
-  canonicalPath: '/quote',
+  canonicalPath: STATIC_PAGES.quote.path,
   noindex: true
 })
 
@@ -341,7 +342,7 @@ const unavailableIssues = ref<QuoteUnavailableIssue[]>([])
 const hasUnresolvedPortableSize = computed(() => quoteStore.items.some(requiresSizeSelection))
 
 onMounted(() => {
-  quoteStore.setLastVisitedRoute('/quote')
+  quoteStore.setLastVisitedRoute('/quote/')
 })
 
 function formatChangePrice(price: number, isPoa: boolean): string {

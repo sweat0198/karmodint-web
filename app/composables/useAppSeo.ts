@@ -5,6 +5,9 @@ import {
   COMPANY_SOCIAL,
 } from "~/constants/company";
 import { hasPublishablePrice } from "~~/shared/utils/priceLabel";
+import { toAbsoluteSiteUrl } from "~~/shared/utils/sitePath";
+import type { FaqItem } from "~/types/faq";
+import { portableTextToPlainText } from "~/utils/portableText";
 
 export interface PageSeoOptions {
   title: string;
@@ -16,22 +19,32 @@ export interface PageSeoOptions {
   jsonLd?: Record<string, any> | Record<string, any>[];
 }
 
+export interface ProductSchemaInput {
+  name: string;
+  description?: string;
+  image?: string;
+  price?: number;
+  isPoa?: boolean;
+  specs?: string[];
+}
+
 export function useAppSeo() {
   const config = useRuntimeConfig();
   const siteUrl =
     (config.public.siteUrl as string) || "https://www.karmodint.co.uk";
-  const defaultOgImage = `${siteUrl.replace(/\/$/, "")}/images/hero-building-kiosk.png`;
+
+  /** An image as structured data and og:image need it: absolute, on this site unless already on another host. */
+  const toAbsoluteImageUrl = (image: string) =>
+    image.startsWith("http") ? image : toAbsoluteSiteUrl(siteUrl, image);
+
+  const defaultOgImage = toAbsoluteImageUrl("/images/hero-building-kiosk.png");
 
   function setPageSeo(options: PageSeoOptions) {
     const canonicalUrl = options.canonicalPath
-      ? `${siteUrl.replace(/\/$/, "")}${options.canonicalPath.startsWith("/") ? options.canonicalPath : `/${options.canonicalPath}`}`
+      ? toAbsoluteSiteUrl(siteUrl, options.canonicalPath)
       : undefined;
 
-    const imageUrl = options.image
-      ? options.image.startsWith("http")
-        ? options.image
-        : `${siteUrl.replace(/\/$/, "")}${options.image.startsWith("/") ? options.image : `/${options.image}`}`
-      : defaultOgImage;
+    const imageUrl = options.image ? toAbsoluteImageUrl(options.image) : defaultOgImage;
 
     useSeoMeta({
       title: options.title,
@@ -72,8 +85,8 @@ export function useAppSeo() {
       "@type": "Organization",
       name: "Karmod International",
       legalName: "Karmod International Ltd",
-      url: siteUrl.replace(/\/$/, ""),
-      logo: `${siteUrl.replace(/\/$/, "")}/images/karmod-logo.png`,
+      url: toAbsoluteSiteUrl(siteUrl, "/"),
+      logo: toAbsoluteImageUrl("/images/karmod-logo.png"),
       description:
         "Specialist manufacturer of portable cabins, kiosks, security gatehouses, and modular building solutions across the UK and worldwide.",
       address: getCompanyPostalAddressSchema(),
@@ -99,25 +112,14 @@ export function useAppSeo() {
       "@context": "https://schema.org",
       "@type": "WebSite",
       name: "Karmod International",
-      url: siteUrl.replace(/\/$/, ""),
+      url: toAbsoluteSiteUrl(siteUrl, "/"),
       description:
         "Engineered for durability, designed for efficiency. Premium modular and portable buildings across the UK.",
     };
   }
 
-  function getProductSchema(product: {
-    name: string;
-    description?: string;
-    image?: string;
-    price?: number;
-    isPoa?: boolean;
-    specs?: string[];
-  }) {
-    const imageUrl = product.image
-      ? product.image.startsWith("http")
-        ? product.image
-        : `${siteUrl.replace(/\/$/, "")}${product.image.startsWith("/") ? product.image : `/${product.image}`}`
-      : undefined;
+  function getProductSchema(product: ProductSchemaInput) {
+    const imageUrl = product.image ? toAbsoluteImageUrl(product.image) : undefined;
 
     const offers = hasPublishablePrice(product)
       ? {
@@ -126,7 +128,7 @@ export function useAppSeo() {
           priceCurrency: "GBP",
           availability: "https://schema.org/InStock",
           itemCondition: "https://schema.org/NewCondition",
-          url: `${siteUrl.replace(/\/$/, "")}/products`,
+          url: toAbsoluteSiteUrl(siteUrl, "/products/"),
           seller: {
             "@type": "Organization",
             name: "Karmod International",
@@ -159,7 +161,47 @@ export function useAppSeo() {
         "@type": "ListItem",
         position: index + 1,
         name: item.name,
-        item: `${siteUrl.replace(/\/$/, "")}${item.path.startsWith("/") ? item.path : `/${item.path}`}`,
+        item: toAbsoluteSiteUrl(siteUrl, item.path),
+      })),
+    };
+  }
+
+  /**
+   * An ItemList of Product entries, in the order the page shows them. Each entry gets an offer only
+   * where its price is publishable (`getProductSchema`), so POA sizes carry none.
+   */
+  function getProductItemListSchema(list: {
+    name: string;
+    description?: string;
+    products: ProductSchemaInput[];
+  }) {
+    return {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      name: list.name,
+      ...(list.description ? { description: list.description } : {}),
+      itemListElement: list.products.map((product, index) => ({
+        "@type": "ListItem",
+        position: index + 1,
+        item: getProductSchema(product),
+      })),
+    };
+  }
+
+  /**
+   * A FAQPage built from the list the page's accordion renders (`publishableFaqs`), so the markup
+   * and the visible Q&A always match. `undefined` for an empty list, since an empty FAQPage is invalid.
+   */
+  function getFaqPageSchema(faqs: FaqItem[]) {
+    if (faqs.length === 0) return undefined;
+
+    return {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: faqs.map((faq) => ({
+        "@type": "Question",
+        name: faq.question.trim(),
+        acceptedAnswer: { "@type": "Answer", text: portableTextToPlainText(faq.answer).trim() },
       })),
     };
   }
@@ -171,5 +213,7 @@ export function useAppSeo() {
     getWebSiteSchema,
     getProductSchema,
     getBreadcrumbSchema,
+    getProductItemListSchema,
+    getFaqPageSchema,
   };
 }

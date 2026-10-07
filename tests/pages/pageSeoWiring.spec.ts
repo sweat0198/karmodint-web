@@ -1,0 +1,48 @@
+import fs from "node:fs";
+import path from "node:path";
+import { describe, expect, it } from "vitest";
+
+// Each static page takes its title and description from PAGE_SEO (asserted in
+// tests/constants/pageSeo.spec.ts) rather than its own literal.
+function setPageSeoCall(page: string): string {
+  const source = fs.readFileSync(path.resolve(process.cwd(), "app/pages", page), "utf-8");
+  const start = source.indexOf("setPageSeo({");
+  expect(start, `${page} calls setPageSeo`).toBeGreaterThan(-1);
+  return source.slice(start, source.indexOf("canonicalPath", start));
+}
+
+describe("static page SEO wiring", () => {
+  it.each([
+    ["index.vue", "home"],
+    ["products/index.vue", "products"],
+    ["solutions/index.vue", "solutions"],
+    ["gallery.vue", "gallery"],
+    ["about.vue", "about"],
+    ["contact.vue", "contact"],
+    ["privacy-policy.vue", "privacyPolicy"],
+  ])("%s uses PAGE_SEO.%s", (page, key) => {
+    const call = setPageSeoCall(page);
+
+    expect(call).toContain(`...PAGE_SEO.${key},`);
+    expect(call).not.toMatch(/\btitle:/);
+    expect(call).not.toMatch(/\bdescription:/);
+  });
+
+  it("privacy-policy.vue is indexable, with its own /-ending canonical and a Home › Privacy Policy BreadcrumbList", () => {
+    const source = fs.readFileSync(path.resolve(process.cwd(), "app/pages/privacy-policy.vue"), "utf-8");
+
+    expect(source).toContain("canonicalPath: STATIC_PAGES.privacyPolicy.path,");
+    expect(source).not.toMatch(/noindex/);
+    expect(source.replace(/\s+/g, " ")).toContain(
+      'getBreadcrumbSchema([ { name: "Home", path: "/" }, { name: "Privacy Policy", path: "/privacy-policy/" }, ])',
+    );
+  });
+
+  it("solutions/[slug].vue uses solutionPageSeo", () => {
+    expect(setPageSeoCall("solutions/[slug].vue")).toContain("...solutionPageSeo(solution.value),");
+  });
+
+  it("[...path].vue (Product Lines) uses productLinePageSeo", () => {
+    expect(setPageSeoCall("[...path].vue")).toContain("...productLinePageSeo(line.value),");
+  });
+});

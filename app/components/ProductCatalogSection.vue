@@ -19,7 +19,7 @@
         </div>
 
         <NuxtLink
-          to="/products"
+          to="/products/"
           class="text-brand-red-dark hover:text-brand-red-deep text-xs font-semibold tracking-[1.2px] uppercase inline-flex items-center gap-1 transition-colors"
         >
           <span>VIEW ALL SPECIFICATIONS</span>
@@ -41,7 +41,7 @@
 
       <!-- Products Grid -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <ProductCard v-for="card in featuredCards" :key="card.cardId" :card="card" />
+        <ProductCard v-for="card in featuredCards" :key="card.cardId" :card="card" catalogue-on-add />
       </div>
     </div>
   </section>

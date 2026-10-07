@@ -3,20 +3,24 @@ import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 
 describe('homepage references placement', () => {
-  it('places references between catalogue and contact', () => {
+  it('keeps the Legacy section order: categories, catalogue, about, references, company, contact', () => {
     const source = fs.readFileSync(
       path.resolve(process.cwd(), 'app/pages/index.vue'),
       'utf-8'
     )
 
-    const hero = source.indexOf('<HeroSection')
-    const catalogue = source.indexOf('<ProductCatalogSection')
-    const references = source.indexOf('<ReferencesSection')
-    const contact = source.indexOf('<ContactSection')
+    const order = [
+      '<HeroSection',
+      '<HomeCategoriesSection',
+      '<ProductCatalogSection',
+      '<HomeAboutSection',
+      '<ReferencesSection',
+      '<HomeCompanySection',
+      '<ContactSection',
+    ].map((tag) => source.indexOf(tag))
 
-    expect(hero).toBeGreaterThan(-1)
-    expect(catalogue).toBeGreaterThan(hero)
-    expect(references).toBeGreaterThan(catalogue)
-    expect(contact).toBeGreaterThan(references)
+    expect(order[0]).toBeGreaterThan(-1)
+    expect(order).toEqual([...order].sort((a, b) => a - b))
+    expect(order).not.toContain(-1)
   })
 })

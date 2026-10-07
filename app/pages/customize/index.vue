@@ -10,7 +10,7 @@
       <template #actions>
         <div class="flex flex-wrap items-center gap-3">
           <NuxtLink
-            to="/products"
+            to="/products/"
             class="flex items-center justify-center gap-2 px-6 py-3 bg-white hover:bg-slate-100 text-brand-navy-heading border border-slate-300 font-semibold text-xs tracking-wider uppercase rounded-xs transition-colors duration-150 shadow-sm"
           >
             <span>+ Add Products</span>
@@ -51,7 +51,7 @@
       <!-- Empty State View (Shown only if user clears all items) -->
       <EmptyQuoteState
         v-if="quoteStore.isEmpty"
-        button-to="/products"
+        button-to="/products/"
       />
 
       <!-- Multi-Item Expandable List View -->
@@ -304,6 +304,7 @@ import { useQuoteStore, type QuoteItem } from "~/stores/quote";
 import type { CustomizationNotes, CustomizationSelections, SpecSummaryItem } from "~/types/customization";
 import { buildSpecSummary, useCustomizationPricing } from "~/composables/useCustomizationPricing";
 import { useAppSeo } from "~/composables/useAppSeo";
+import { STATIC_PAGES } from "~~/shared/utils/sitePages";
 import { PRODUCTS_WITH_SIZES_QUERY, type CatalogProduct } from '~/queries/catalog'
 import { toPortableContainerCards } from '~/utils/portableContainerCards'
 import { requiresSizeSelection } from '~~/shared/utils/quoteLine'
@@ -320,7 +321,7 @@ setPageSeo({
   title: "Customize Modular Units | Karmod International",
   description:
     "Interactive engineering configuration for Karmod modular cabins, security gatehouses, and portable buildings.",
-  canonicalPath: "/customize",
+  canonicalPath: STATIC_PAGES.customize.path,
   noindex: true,
 });
 
@@ -612,7 +613,7 @@ const canProceedToQuote = computed(() =>
 
 function handleProceedClick() {
   if (canProceedToQuote.value) {
-    navigateTo("/quote");
+    navigateTo("/quote/");
     return;
   }
 
@@ -642,7 +643,7 @@ function handleProceedClick() {
 }
 
 onMounted(() => {
-  quoteStore.setLastVisitedRoute('/customize');
+  quoteStore.setLastVisitedRoute('/customize/');
   for (const item of [...quoteStore.items]) {
     const previousId = item.id
     const reconciliation = reconcileCustomizationConstraints(

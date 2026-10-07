@@ -9,7 +9,7 @@
         <svg class="h-3 w-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
         </svg>
-        <NuxtLink to="/solutions" class="transition-colors hover:text-brand-navy-heading">
+        <NuxtLink to="/solutions/" class="transition-colors hover:text-brand-navy-heading">
           Solutions
         </NuxtLink>
         <svg class="h-3 w-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -59,7 +59,7 @@
             The units for this solution are being updated — talk to us.
           </p>
           <NuxtLink
-            to="/contact"
+            to="/contact/"
             class="text-sm font-semibold text-brand-red underline underline-offset-2 hover:text-brand-red-dark"
           >
             Contact us
@@ -70,6 +70,13 @@
           <ProductCard v-for="card in cards" :key="card.cardId" :card="card" />
         </div>
       </section>
+
+      <!-- Legacy copy of the Legacy URL that now redirects to this Solution, where there was one -->
+      <PageCopy
+        :body="solution.body"
+        :faqs="faqs"
+        :faq-heading="`${solution.name} Frequently Asked Questions`"
+      />
 
       <section
         class="mt-2 flex flex-col items-center gap-4 rounded border border-brand-rose-border bg-brand-rose-bg p-8 text-center shadow-sm lg:p-12"
@@ -82,7 +89,7 @@
           requirements.
         </p>
         <NuxtLink
-          to="/contact"
+          to="/contact/"
           class="mt-2 inline-flex items-center gap-2 rounded-xs border border-brand-navy-heading px-8 py-3 text-xs font-semibold uppercase tracking-wider text-brand-navy-heading transition-colors hover:bg-brand-navy-heading hover:text-white"
         >
           <span>Contact Us</span>
@@ -99,17 +106,21 @@
 import { computed } from "vue";
 import { useRoute } from "vue-router";
 import { createError, useRuntimeConfig, useSanityQuery } from "#imports";
+import PageCopy from "~/components/content/PageCopy.vue";
 import ProductCard from "~/components/ProductCard.vue";
 import { useAppSeo } from "~/composables/useAppSeo";
+import { solutionPageSeo } from "~/constants/pageSeo";
 import { SOLUTION_BY_SLUG_QUERY, type Solution } from "~/queries/solutions";
+import { publishableFaqs } from "~/utils/faqs";
 import { sanityImageSrcset, sanityImageUrl } from "~/utils/sanityImageUrl";
 import { toSolutionCards } from "~/utils/solutionCards";
+import { solutionPagePath } from "~~/shared/utils/sitePages";
 
 const SRCSET_WIDTHS = [640, 1024, 1600, 2000];
 
 const route = useRoute();
 const config = useRuntimeConfig();
-const { setPageSeo, getProductSchema, getBreadcrumbSchema } = useAppSeo();
+const { setPageSeo, getProductSchema, getBreadcrumbSchema, getFaqPageSchema } = useAppSeo();
 
 const slug = computed(() => String(route.params.slug));
 
@@ -126,6 +137,7 @@ if (!found) {
 
 const solution = computed(() => (data.value?._id ? data.value : found));
 const cards = computed(() => toSolutionCards(solution.value.products));
+const faqs = computed(() => publishableFaqs(solution.value.faqs));
 
 const coverRef = computed(() => solution.value.coverImage?.asset?._ref);
 
@@ -145,17 +157,19 @@ const coverSrcset = computed(() =>
   ),
 );
 
+// Built from the same list the accordion renders, so the markup always matches the visible Q&A.
+const faqPageSchema = getFaqPageSchema(faqs.value);
+
 setPageSeo({
-  title: solution.value.seo?.metaTitle || `${solution.value.name} | Karmod International`,
-  description: solution.value.seo?.metaDescription || solution.value.description,
-  canonicalPath: `/solutions/${solution.value.slug}`,
+  ...solutionPageSeo(solution.value),
+  canonicalPath: solutionPagePath(solution.value.slug),
   image: coverSrc.value,
   noindex: solution.value.seo?.noIndex,
   jsonLd: [
     getBreadcrumbSchema([
       { name: "Home", path: "/" },
-      { name: "Solutions", path: "/solutions" },
-      { name: solution.value.name, path: `/solutions/${solution.value.slug}` },
+      { name: "Solutions", path: "/solutions/" },
+      { name: solution.value.name, path: solutionPagePath(solution.value.slug) },
     ]),
     {
       "@context": "https://schema.org",
@@ -178,6 +192,7 @@ setPageSeo({
         }),
       })),
     },
+    ...(faqPageSchema ? [faqPageSchema] : []),
   ],
 });
 </script>

@@ -4,9 +4,9 @@
     :class="{ 'pb-36 sm:pb-24': hasPriceBar }"
   >
     <div class="max-w-7xl mx-auto px-6 lg:px-12 py-12">
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-12">
-        <!-- Col 1: Brand & Description (Spans 2 cols on desktop) -->
-        <div class="md:col-span-2 flex flex-col gap-4 items-start">
+      <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-8 md:gap-12">
+        <!-- Col 1: Brand & Description (full row on tablet, 2 cols on desktop) -->
+        <div class="md:col-span-3 lg:col-span-2 flex flex-col gap-4 items-start">
           <div>
             <span
               class="text-brand-red text-xs font-semibold tracking-[1.2px] uppercase"
@@ -86,6 +86,31 @@
           </div>
         </div>
 
+        <!-- Product Lines, in display order -->
+        <nav
+          v-if="productLines.length"
+          aria-label="Product lines"
+          class="flex flex-col gap-4 items-start"
+        >
+          <div>
+            <h4
+              class="text-brand-red text-xs font-semibold tracking-[0.6px] uppercase"
+            >
+              PRODUCTS
+            </h4>
+          </div>
+          <ul class="flex flex-col gap-2 w-full">
+            <li v-for="line in productLines" :key="line._id">
+              <NuxtLink
+                :to="line.path"
+                class="text-brand-slate-light hover:text-white transition-colors text-base leading-6"
+              >
+                {{ line.name }}
+              </NuxtLink>
+            </li>
+          </ul>
+        </nav>
+
         <!-- Col 2: Company Links -->
         <div class="flex flex-col gap-4 items-start">
           <div>
@@ -98,7 +123,7 @@
           <ul class="flex flex-col gap-2 w-full">
             <li>
               <NuxtLink
-                to="/about"
+                to="/about/"
                 class="text-brand-slate-light hover:text-white transition-colors text-base leading-6"
               >
                 About Us
@@ -106,7 +131,7 @@
             </li>
             <li>
               <NuxtLink
-                to="/gallery"
+                to="/gallery/"
                 class="text-brand-slate-light hover:text-white transition-colors text-base leading-6"
               >
                 Projects Gallery
@@ -114,7 +139,7 @@
             </li>
             <li>
               <NuxtLink
-                to="/about"
+                to="/about/"
                 class="text-brand-slate-light hover:text-white transition-colors text-base leading-6"
               >
                 ISO 9001 Certified
@@ -122,7 +147,7 @@
             </li>
             <li>
               <NuxtLink
-                to="/about"
+                to="/about/"
                 class="text-brand-slate-light hover:text-white transition-colors text-base leading-6"
               >
                 Environment Policy
@@ -143,7 +168,7 @@
           <ul class="flex flex-col gap-2 w-full">
             <li>
               <NuxtLink
-                to="/about"
+                to="/about/"
                 class="text-brand-slate-light hover:text-white transition-colors text-base leading-6"
               >
                 Terms of Service
@@ -151,7 +176,7 @@
             </li>
             <li>
               <NuxtLink
-                to="/about"
+                to="/privacy-policy/"
                 class="text-brand-slate-light hover:text-white transition-colors text-base leading-6"
               >
                 Privacy Policy
@@ -159,7 +184,7 @@
             </li>
             <li>
               <NuxtLink
-                to="/about"
+                to="/about/"
                 class="text-brand-slate-light hover:text-white transition-colors text-base leading-6"
               >
                 Cookie Policy
@@ -174,7 +199,9 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
+import { useSanityQuery } from "#imports";
 import { COMPANY_SOCIAL } from "~/constants/company";
+import { PRODUCT_LINES_NAV_QUERY, type ProductLineNavItem } from "~/queries/productLines";
 
 interface Props {
   hasPriceBar?: boolean;
@@ -185,4 +212,7 @@ withDefaults(defineProps<Props>(), {
 });
 
 const currentYear = computed(() => new Date().getFullYear());
+
+const { data: productLinesData } = await useSanityQuery<ProductLineNavItem[]>(PRODUCT_LINES_NAV_QUERY);
+const productLines = computed(() => productLinesData.value ?? []);
 </script>

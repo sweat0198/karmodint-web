@@ -4,6 +4,7 @@ import { useRoute } from "vue-router";
 import QuickContactWidget from "~/components/QuickContactWidget.vue";
 import { useQuoteStore } from "~/stores/quote";
 import { getTotalLabel } from "~~/shared/utils/priceLabel";
+import { isSameSitePath } from "~~/shared/utils/sitePath";
 
 interface Props {
   estimatedTotal?: number;
@@ -35,7 +36,7 @@ const route = useRoute();
 const quoteStore = useQuoteStore();
 
 // Hide sticky bar on final quote submission/review page to prevent UI clash with contact form
-const isQuotePage = computed(() => route.path === "/quote");
+const isQuotePage = computed(() => isSameSitePath(route.path, "/quote/"));
 
 // Display whenever user has items in quote queue across the whole application
 const isVisible = computed(() => {
@@ -74,10 +75,10 @@ const actionText = computed(() => {
 // Destination route to continue where the user left off
 const destinationRoute = computed(() => {
   if (route.path.startsWith("/products")) {
-    return "/customize";
+    return "/customize/";
   }
   if (route.path.startsWith("/customize")) {
-    return "/quote";
+    return "/quote/";
   }
   return quoteStore.continueRoute;
 });

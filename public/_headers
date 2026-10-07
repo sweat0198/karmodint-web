@@ -1,0 +1,8 @@
+# Keep pages.dev out of Google; www.karmodint.co.uk stays indexable from the same build.
+# robots.txt must keep allowing crawling, or Google never sees this header.
+# A placeholder never matches a dot in the host, so preview deploys need their own rule.
+https://:project.pages.dev/*
+  X-Robots-Tag: noindex
+
+https://:version.:project.pages.dev/*
+  X-Robots-Tag: noindex

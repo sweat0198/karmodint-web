@@ -61,8 +61,9 @@ async function mountCatalogue() {
       stubs: {
         NuxtLink: { template: "<a><slot /></a>" },
         ProductCard: {
-          props: ["card"],
-          template: '<article class="product-card" :data-card-id="card.cardId" />',
+          props: { card: Object, catalogueOnAdd: Boolean },
+          template:
+            '<article class="product-card" :data-card-id="card.cardId" :data-catalogue-on-add="String(catalogueOnAdd)" />',
         },
         PortableContainerCard: {
           props: ["card"],
@@ -96,5 +97,14 @@ describe("ProductCatalogSection", () => {
       "product-insulated-panel-cabin-135x210",
     ]);
     expect(wrapper.find(".portable-card").exists()).toBe(false);
+  });
+
+  // The home page has no grid to sell in place: Add takes the visitor to the catalogue.
+  it("sends Add on a featured card to the catalogue", async () => {
+    sanityQuery.data.value = [product("product-grp-cabin", "GRP Cabin", [size("150x150", 1.5, 1.5)], true)];
+
+    const wrapper = await mountCatalogue();
+
+    expect(wrapper.get(".product-card").attributes("data-catalogue-on-add")).toBe("true");
   });
 });

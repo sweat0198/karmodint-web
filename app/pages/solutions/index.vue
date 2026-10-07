@@ -23,7 +23,7 @@
           No solutions published yet — tell us what you need.
         </p>
         <NuxtLink
-          to="/contact"
+          to="/contact/"
           class="text-sm font-semibold text-brand-red underline underline-offset-2 hover:text-brand-red-dark"
         >
           Contact us
@@ -42,6 +42,8 @@ import { computed } from "vue";
 import { useSanityQuery } from "#imports";
 import SolutionCard from "~/components/SolutionCard.vue";
 import { useAppSeo } from "~/composables/useAppSeo";
+import { STATIC_PAGES } from "~~/shared/utils/sitePages";
+import { PAGE_SEO } from "~/constants/pageSeo";
 import { SOLUTIONS_QUERY, type SolutionSummary } from "~/queries/solutions";
 
 const { setPageSeo, getBreadcrumbSchema } = useAppSeo();
@@ -51,14 +53,12 @@ const { data } = await useSanityQuery<SolutionSummary[]>(SOLUTIONS_QUERY);
 const solutions = computed(() => data.value ?? []);
 
 setPageSeo({
-  title: "Modular Building Solutions | Karmod International",
-  description:
-    "Curated combinations of Karmod portable cabins, kiosks and gatehouses for construction sites, events, schools and more — each with the exact units and sizes you need.",
-  canonicalPath: "/solutions",
+  ...PAGE_SEO.solutions,
+  canonicalPath: STATIC_PAGES.solutions.path,
   jsonLd: [
     getBreadcrumbSchema([
       { name: "Home", path: "/" },
-      { name: "Solutions", path: "/solutions" },
+      { name: "Solutions", path: "/solutions/" },
     ]),
     {
       "@context": "https://schema.org",

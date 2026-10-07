@@ -1,4 +1,7 @@
 import type { CatalogProduct } from "~/queries/catalog";
+import type { SanitySEO } from "~/types/catalog";
+import type { FaqItem } from "~/types/faq";
+import type { PortableTextBlock } from "~/types/portableText";
 
 export interface SolutionCoverImage {
   _type?: "image";
@@ -43,9 +46,8 @@ export interface Solution {
   coverImage: SolutionCoverImage;
   displayOrder?: number;
   products: SolutionProductEntry[];
-  seo?: {
-    metaTitle?: string;
-    metaDescription?: string;
-    noIndex?: boolean;
-  };
+  /** Long-form copy; only the Solutions a Legacy URL now redirects to have it, as that URL's Legacy copy. */
+  body?: PortableTextBlock[] | null;
+  faqs?: FaqItem[] | null;
+  seo?: SanitySEO;
 }

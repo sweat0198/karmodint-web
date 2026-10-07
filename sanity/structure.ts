@@ -153,6 +153,20 @@ export const structure: StructureResolver = (S) =>
 
       S.divider(),
 
+      // Product Lines Section (Kept URL pages, ADR-004)
+      S.listItem()
+        .title('Product Lines')
+        .child(
+          S.documentTypeList('productLine')
+            .title('Product Lines')
+            .defaultOrdering([
+              { field: 'displayOrder', direction: 'asc' },
+              { field: 'path', direction: 'asc' }
+            ])
+        ),
+
+      S.divider(),
+
       // References Section
       S.listItem()
         .title('References')

@@ -49,7 +49,7 @@ describe('PortableContainerCard', () => {
       history: createMemoryHistory(),
       routes: [{ path: '/customize', component: { template: '<div />' } }]
     })
-    await router.push('/customize')
+    await router.push('/customize/')
     await router.isReady()
     const wrapper = mount(PortableContainerCard, { props: { card }, global: { plugins: [createPinia(), router] } })
 
@@ -57,6 +57,6 @@ describe('PortableContainerCard', () => {
     await flushPromises()
 
     expect(useQuoteStore().items[0]).toMatchObject({ hasSelectedSize: false, sizeKey: '' })
-    expect(router.currentRoute.value.path).toBe('/customize')
+    expect(router.currentRoute.value.path).toBe('/customize/')
   })
 })
