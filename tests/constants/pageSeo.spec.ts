@@ -39,6 +39,16 @@ describe("page titles and descriptions", () => {
   );
 });
 
+describe("privacy policy title and description", () => {
+  // The Legacy /privacy-policy/ answers 404 (checked 2026-10-06), so there is no Legacy title to keep, and a policy
+  // isn't for sale: it gets a plain title instead of the commercial pattern.
+  it("names the page and says what the policy covers", () => {
+    expect(PAGE_SEO.privacyPolicy.title).toBe("Privacy Policy | Karmod International");
+    expect(PAGE_SEO.privacyPolicy.description).toMatch(/personal data/);
+    expect(PAGE_SEO.privacyPolicy.description.length).toBeLessThanOrEqual(160);
+  });
+});
+
 describe("solution page titles and descriptions", () => {
   it("uses the commercial pattern when Studio has no SEO title", () => {
     const seo = solutionPageSeo({ name: "Site Offices" });

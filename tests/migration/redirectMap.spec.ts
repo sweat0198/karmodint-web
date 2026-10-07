@@ -53,14 +53,14 @@ describe("redirect map", () => {
     expect(mapped).toHaveLength(192);
   });
 
-  it("ships only rules whose targets exist today: Solutions, /gallery/, /about/, /contact/, /products/ and /", () => {
-    const existing = /^\/(solutions\/[a-z0-9-]+\/|gallery\/|about\/|contact\/|products\/|)$/;
+  it("ships only rules whose targets exist today: Solutions, /gallery/, /about/, /contact/, /products/, /privacy-policy/ and /", () => {
+    const existing = /^\/(solutions\/[a-z0-9-]+\/|gallery\/|about\/|contact\/|products\/|privacy-policy\/|)$/;
 
     expect(REDIRECTS.map((rule) => pathnameOf(rule.to)).filter((target) => !existing.test(target))).toEqual([]);
-    expect(REDIRECTS).toHaveLength(116);
+    expect(REDIRECTS).toHaveLength(118);
   });
 
-  it("holds back the rules targeting /privacy-policy/ and Product Line pages", () => {
+  it("holds back the rules targeting Product Line pages", () => {
     const pendingTargets = new Set(toRedirects(PENDING_REDIRECT_GROUPS).map((rule) => rule.to));
 
     expect([...pendingTargets].sort()).toEqual([
@@ -69,7 +69,13 @@ describe("redirect map", () => {
       "/panel-cabin/",
       "/portable-cabin/",
       "/portable-cabin/portable-classroom/",
-      "/privacy-policy/",
+    ]);
+  });
+
+  it("moves the Legacy policy pages to /privacy-policy/", () => {
+    expect(REDIRECTS.filter((rule) => rule.to === "/privacy-policy/")).toEqual([
+      { from: "/corporate-personal-data-protection-policy/", to: "/privacy-policy/", status: 301 },
+      { from: "/kvkk/", to: "/privacy-policy/", status: 301 },
     ]);
   });
 
