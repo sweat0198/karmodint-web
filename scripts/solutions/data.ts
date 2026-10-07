@@ -40,7 +40,7 @@ export interface SolutionCopy {
 const COPY_DIR = 'sanity/solutions/copy'
 
 /**
- * The eight Solutions a Legacy URL now redirects to carry its body copy and FAQs word for word
+ * The eight Solutions a Legacy URL now redirects to carry its retained body copy and FAQs word for word
  * (docs/plans/2026-10-06-uk-migration-design.md, "Solution changes"). The other four keep their
  * current content and are never patched.
  *
@@ -62,6 +62,10 @@ export const SOLUTION_COPY: SolutionCopy[] = [
    * (used retail kiosks for sale); the renting half of "Rent or Own?" (its paragraph and the
    * "Financial Flexibility" / "Location Versatility" bullets, which pitch rentals "from … Karmod");
    * the "Quality Assurance" bullet ("even a used retail kiosk … thoroughly inspected").
+   * Client sign-off #32 confirms those eight cuts. Also cut the closing "In this intricate dance …"
+   * sentence, which pitches Karmod guidance on renting and used kiosks, and the "Plus, the ability
+   * to buy or rent …" sentence in the "Is a kiosk a good business?" FAQ, plus the "A brand could
+   * easily buy … rent another …" sentence in "Ease of Expansion".
    * Self-links unlinked: /catering-kiosk-for-food-and-coffee/, /outdoor-and-retail-kiosk/.
    */
   {
@@ -93,7 +97,10 @@ export const SOLUTION_COPY: SolutionCopy[] = [
     faqsPath: `${COPY_DIR}/site-offices.faqs.md`
   },
   /*
-   * https://www.karmodint.co.uk/portable-cabin/portable-toilet-and-shower-cabin/ — No copy cuts.
+   * https://www.karmodint.co.uk/portable-cabin/portable-toilet-and-shower-cabin/ — Client sign-off #32:
+   * cut the Camping, Chemical and Flush toilet product bullets, and the five FAQs about emptying,
+   * indoor use, disadvantages, emptying frequency and operation, whose answers assume chemical
+   * toilets or tanks. General toilet/shower cabin copy and the other three FAQs stay.
    * Self-link unlinked: /chemical-toilet/.
    */
   {

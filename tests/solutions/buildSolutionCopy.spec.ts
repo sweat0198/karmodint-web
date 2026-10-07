@@ -137,13 +137,13 @@ describe('SOLUTION_COPY', () => {
     for (const copy of built()) expect(copy.body.length, copy.slug).toBeGreaterThan(0)
   })
 
-  it('carries FAQs exactly where the Legacy copy had them, questions word for word', () => {
+  it('carries retained Legacy FAQs with questions word for word after client sign-off', () => {
     expect(Object.fromEntries(built().map((copy) => [copy.slug, copy.faqs.length]))).toEqual({
       'retail-and-food-service-kiosks': 17,
       'accommodation-units': 0,
       'security-gatehouses-and-access-control': 0,
       'site-offices': 4,
-      'welfare-and-wc-units': 8,
+      'welfare-and-wc-units': 3,
       'car-park-valet-and-weighbridge-cabins': 0,
       'ticket-information-and-service-kiosks': 0,
       'garden-rooms-and-garden-offices': 0
@@ -154,9 +154,6 @@ describe('SOLUTION_COPY', () => {
       'What size is a site container office?',
       'What are the dimensions of a 20ft site cabin?'
     ])
-    expect(plainText(copyOf('welfare-and-wc-units').faqs[3].answer)).toBe(
-      'A portable toilet typically needs to be emptied every 3-5 days, depending on usage frequency and tank capacity.'
-    )
   })
 
   it('keeps the Legacy heading structure', () => {
@@ -177,7 +174,31 @@ describe('SOLUTION_COPY', () => {
     ])
   })
 
+  it('omits the detailed toilet product claims removed in client sign-off #32', () => {
+    const text = plainText(copyOf('welfare-and-wc-units').body)
+    expect(text).not.toMatch(/camping|chemical|flush/i)
+    expect(text).toContain('Single Portable Toilet for Sale:')
+    expect(text).toContain('Portable Outdoor Toilet for Sale:')
+  })
+
+  it('omits chemical tank and emptying FAQs removed in client sign-off #32', () => {
+    const copy = copyOf('welfare-and-wc-units')
+    expect(copy.faqs.map((faq) => faq.question)).toEqual([
+      'How much do portable toilets cost?',
+      'What is a portable toilet?',
+      'How to use a portable toilet?'
+    ])
+    expect(plainText(copy.faqs.flatMap((faq) => faq.answer))).not.toMatch(/chemical|tank|emptying|emptied/i)
+  })
+
   // Karmod sells new units only (Legacy /site-cabin/: "we do not offer second-hand products or rentals").
+  it('omits remaining kiosk rental and used-sales implications after client sign-off #32', () => {
+    const copy = copyOf('retail-and-food-service-kiosks')
+    expect(plainText(copy.body)).not.toContain('whether it’s to rent, own, or venture into the world of used kiosks')
+    expect(plainText(copy.body)).not.toContain('rent another in a different city')
+    expect(plainText(copy.faqs.flatMap((faq) => faq.answer))).not.toContain('buy or rent a retail kiosk')
+  })
+
   it('cuts the retail kiosk page’s stale claims that Karmod rents kiosks or sells used ones', () => {
     const text = plainText(copyOf('retail-and-food-service-kiosks').body)
     for (const stale of [
