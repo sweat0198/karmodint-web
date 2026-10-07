@@ -4,6 +4,7 @@ import { mockProducts, mockSanityDataset } from '../fixtures/sanityData'
 import {
   PRODUCT_LINE_BY_PATH_QUERY,
   PRODUCT_LINE_PATHS_QUERY,
+  PRODUCT_LINES_NAV_QUERY,
   PRODUCTS_IN_CATEGORIES_QUERY,
   productLineCategoryIds
 } from '~/queries/productLines'
@@ -78,6 +79,21 @@ describe('Product Line GROQ queries', () => {
     it('lists every published Product Line path once, drafts excluded', async () => {
       const paths = await executeGroq<string[]>(PRODUCT_LINE_PATHS_QUERY, {}, dataset)
       expect(paths.sort()).toEqual(['/portable-cabin/', '/portable-cabin/steel-cabin/'])
+    })
+  })
+
+  describe('PRODUCT_LINES_NAV_QUERY', () => {
+    it('lists published Product Lines by display order, with the category and parent the menus match on', async () => {
+      const lines = await executeGroq<any[]>(PRODUCT_LINES_NAV_QUERY, {}, [
+        ...dataset,
+        { ...hub, _id: 'productLine-modular-buildings', name: 'Modular Buildings', path: '/modular-buildings/', displayOrder: 10 }
+      ])
+
+      expect(lines).toEqual([
+        { _id: 'productLine-modular-buildings', name: 'Modular Buildings', path: '/modular-buildings/', categoryId: null, hasParent: false },
+        { _id: 'productLine-portable-cabin', name: 'Portable Cabin', path: '/portable-cabin/', categoryId: null, hasParent: false },
+        { _id: 'productLine-steel-cabin', name: 'Steel Cabin', path: '/portable-cabin/steel-cabin/', categoryId: 'cat_cabins', hasParent: true }
+      ])
     })
   })
 

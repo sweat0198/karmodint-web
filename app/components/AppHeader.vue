@@ -72,7 +72,7 @@
                 <div class="my-1.5 border-t border-slate-100" />
                 <template v-for="cat in productCategories" :key="cat._id">
                   <NuxtLink
-                    :to="`/products/?category=${cat.slug}`"
+                    :to="categoryHref(cat)"
                     class="block pl-3.5 pr-4 py-2 text-sm font-semibold border-l-2 hover:bg-slate-50"
                     :class="
                       isCategoryCurrentPage(cat)
@@ -88,7 +88,7 @@
                   <NuxtLink
                     v-for="sub in cat.children"
                     :key="sub._id"
-                    :to="`/products/?category=${cat.slug}&subcategory=${sub.slug}`"
+                    :to="subcategoryHref(cat, sub)"
                     class="block pl-6.5 pr-4 py-1.5 text-sm border-l-2 hover:bg-slate-50"
                     :class="
                       isSubcategoryActive(cat, sub)
@@ -347,7 +347,7 @@
         >
           <template v-for="cat in productCategories" :key="cat._id">
             <NuxtLink
-              :to="`/products/?category=${cat.slug}`"
+              :to="categoryHref(cat)"
               @click="isMobileMenuOpen = false"
               class="block text-sm hover:text-white"
               :class="
@@ -362,7 +362,7 @@
             <NuxtLink
               v-for="sub in cat.children"
               :key="sub._id"
-              :to="`/products/?category=${cat.slug}&subcategory=${sub.slug}`"
+              :to="subcategoryHref(cat, sub)"
               @click="isMobileMenuOpen = false"
               class="block pl-3 text-sm hover:text-white"
               :class="
@@ -510,7 +510,9 @@ import { useRoute, useRouter } from "vue-router";
 import { useSanityQuery } from "#imports";
 import { useQuickContact } from "~/composables/useQuickContact";
 import { CATEGORY_TREE_QUERY, type CategoryTreeChild, type CategoryTreeNode } from "~/queries/catalog";
+import { PRODUCT_LINES_NAV_QUERY, type ProductLineNavItem } from "~/queries/productLines";
 import { SOLUTIONS_NAV_QUERY, type SolutionNavItem } from "~/queries/solutions";
+import { productLinePathsByCategory } from "~/utils/productLines";
 import { isSameSitePath } from "~~/shared/utils/sitePath";
 
 const route = useRoute();
@@ -543,12 +545,30 @@ function onSolutionsMenuFocusOut(event: FocusEvent) {
 
 const { data: categoryTree } = await useSanityQuery<CategoryTreeNode[]>(CATEGORY_TREE_QUERY);
 const { data: solutionsList } = await useSanityQuery<SolutionNavItem[]>(SOLUTIONS_NAV_QUERY);
+const { data: productLines } = await useSanityQuery<ProductLineNavItem[]>(PRODUCT_LINES_NAV_QUERY);
 
 const productCategories = computed(() => categoryTree.value ?? []);
 const solutionMenuItems = computed(() => solutionsList.value ?? []);
+const productLinePaths = computed(() => productLinePathsByCategory(productLines.value ?? []));
+
+// A catalogue entry links to its Product Line page when one lists that category, else to the
+// catalogue filtered to it.
+function categoryHref(cat: CategoryTreeNode) {
+  return productLinePaths.value.get(cat._id) ?? `/products/?category=${cat.slug}`;
+}
+
+function subcategoryHref(cat: CategoryTreeNode, sub: CategoryTreeChild) {
+  return (
+    productLinePaths.value.get(sub._id) ?? `/products/?category=${cat.slug}&subcategory=${sub.slug}`
+  );
+}
+
+const isOnProductLinePage = computed(() =>
+  (productLines.value ?? []).some((line) => isSameSitePath(route.path, line.path)),
+);
 
 const isProductsActive = computed(() => {
-  return route.path.startsWith("/products");
+  return route.path.startsWith("/products") || isOnProductLinePage.value;
 });
 
 const isSolutionsActive = computed(() => {
@@ -569,16 +589,29 @@ const isProductsShowAllActive = computed(() => {
   return isSameSitePath(route.path, "/products/") && !activeCategorySlug.value;
 });
 
-function isCategoryActive(cat: CategoryTreeNode) {
+function isCategoryFilterActive(cat: CategoryTreeNode) {
   return isSameSitePath(route.path, "/products/") && activeCategorySlug.value === cat.slug;
 }
 
+/** In this category's section: its filter, its own page, or one of its subcategories' pages. */
+function isCategoryActive(cat: CategoryTreeNode) {
+  return (
+    isCategoryFilterActive(cat) ||
+    isCategoryCurrentPage(cat) ||
+    cat.children.some((sub) => isSubcategoryActive(cat, sub))
+  );
+}
+
 function isCategoryCurrentPage(cat: CategoryTreeNode) {
-  return isCategoryActive(cat) && !activeSubcategorySlug.value;
+  const linePath = productLinePaths.value.get(cat._id);
+  if (linePath) return isSameSitePath(route.path, linePath);
+  return isCategoryFilterActive(cat) && !activeSubcategorySlug.value;
 }
 
 function isSubcategoryActive(cat: CategoryTreeNode, sub: CategoryTreeChild) {
-  return isCategoryActive(cat) && activeSubcategorySlug.value === sub.slug;
+  const linePath = productLinePaths.value.get(sub._id);
+  if (linePath) return isSameSitePath(route.path, linePath);
+  return isCategoryFilterActive(cat) && activeSubcategorySlug.value === sub.slug;
 }
 
 const isSolutionsShowAllActive = computed(() => isSameSitePath(route.path, "/solutions/"));
