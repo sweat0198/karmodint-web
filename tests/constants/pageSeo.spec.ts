@@ -20,23 +20,32 @@ describe("page titles and descriptions", () => {
     });
   });
 
+  // Wording approved by the client on 2026-10-07 (#33). The About description drops "since 1986", as Home did (#31).
   it.each([
-    ["solutions", "Modular Building Solutions for Sale UK | Karmod"],
-    ["gallery", "Portable Cabins and Modular Buildings for Sale UK | Karmod"],
-    ["about", "Modular and Prefabricated Buildings for Sale UK | Karmod"],
-    ["contact", "Portable Cabins, Kiosks and Gatehouses for Sale UK | Karmod"],
-  ] as const)("gives %s the commercial title", (page, title) => {
-    expect(PAGE_SEO[page].title).toBe(title);
+    [
+      "solutions",
+      "Modular Building Solutions for Sale UK | Karmod",
+      "Modular building solutions for sale UK: Karmod cabins, kiosks and gatehouses for construction sites, events, schools and more, in the sizes you need.",
+    ],
+    [
+      "gallery",
+      "Portable Cabins and Modular Buildings for Sale UK | Karmod",
+      "Portable cabins and modular buildings for sale UK, as delivered by Karmod: containers, kiosks, gatehouses and bulletproof cabins on real projects.",
+    ],
+    [
+      "about",
+      "Modular and Prefabricated Buildings for Sale UK | Karmod",
+      "Modular and prefabricated buildings for sale UK from Karmod, manufacturer of portable cabins, kiosks and gatehouses. Our story and mission.",
+    ],
+    [
+      "contact",
+      "Portable Cabins, Kiosks and Gatehouses for Sale UK | Karmod",
+      "Portable cabins, kiosks and gatehouses for sale UK. Contact Karmod for prices, specifications and a quote by phone, WhatsApp, email or online form.",
+    ],
+  ] as const)("gives %s the approved commercial title and description", (page, title, description) => {
+    expect(PAGE_SEO[page]).toEqual({ title, description });
+    expect(PAGE_SEO[page].description.length).toBeLessThanOrEqual(160);
   });
-
-  it.each(["solutions", "gallery", "about", "contact"] as const)(
-    "gives %s a commercial description that says what is for sale in the UK",
-    (page) => {
-      const { description } = PAGE_SEO[page];
-      expect(description).toMatch(/ for sale UK/);
-      expect(description.length).toBeLessThanOrEqual(160);
-    },
-  );
 });
 
 describe("privacy policy title and description", () => {
@@ -44,8 +53,9 @@ describe("privacy policy title and description", () => {
   // isn't for sale: it gets a plain title instead of the commercial pattern.
   it("names the page and says what the policy covers", () => {
     expect(PAGE_SEO.privacyPolicy.title).toBe("Privacy Policy | Karmod International");
-    expect(PAGE_SEO.privacyPolicy.description).toMatch(/personal data/);
-    expect(PAGE_SEO.privacyPolicy.description.length).toBeLessThanOrEqual(160);
+    expect(PAGE_SEO.privacyPolicy.description).toBe(
+      "How Karmod International Ltd collects, uses, stores and protects your personal data when you enquire, request a quotation or buy from us.",
+    );
   });
 });
 
@@ -53,9 +63,11 @@ describe("solution page titles and descriptions", () => {
   it("uses the commercial pattern when Studio has no SEO title", () => {
     const seo = solutionPageSeo({ name: "Site Offices" });
 
-    expect(seo.title).toBe("Site Offices for Sale UK | Karmod");
-    expect(seo.description).toMatch(/^Site Offices for sale UK from Karmod\./);
-    expect(seo.description.length).toBeLessThanOrEqual(160);
+    expect(seo).toEqual({
+      title: "Site Offices for Sale UK | Karmod",
+      description:
+        "Site Offices for sale UK from Karmod. Pick the units and sizes you need, configure them online and request a quote.",
+    });
   });
 
   it("keeps the commercial description within 160 characters for long Solution names", () => {

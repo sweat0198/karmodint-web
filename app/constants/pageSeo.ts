@@ -40,7 +40,7 @@ export const PAGE_SEO = {
   about: {
     title: commercialTitle("Modular and Prefabricated Buildings"),
     description:
-      "Modular and prefabricated buildings for sale UK from Karmod, manufacturer of portable cabins, kiosks and gatehouses since 1986. Our story and mission.",
+      "Modular and prefabricated buildings for sale UK from Karmod, manufacturer of portable cabins, kiosks and gatehouses. Our story and mission.",
   },
   contact: {
     title: commercialTitle("Portable Cabins, Kiosks and Gatehouses"),
