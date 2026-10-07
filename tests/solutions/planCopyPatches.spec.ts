@@ -37,8 +37,8 @@ describe('planCopyPatches', () => {
     })
   })
 
-  // Re-running after the Legacy page's FAQs were dropped must clear stale FAQs, not keep them.
-  it('unsets FAQs on a Solution whose Legacy page had none, so a re-run converges', () => {
+  // Re-running after the Legacy copy's FAQs were dropped must clear stale FAQs, not keep them.
+  it('unsets FAQs on a Solution whose Legacy copy had none, so a re-run converges', () => {
     const [patch] = planCopyPatches([ticket], solutions)
     expect(patch).toEqual({ documentId: 'solution-ticket', set: { body: ticket.body }, unset: ['faqs'] })
   })

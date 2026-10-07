@@ -35,7 +35,7 @@ Every public URL ends in `/`, per `docs/ADR-003-Trailing-Slash-URLs.md`. That co
 | `/bulletproof-cabin/` | Product Line → Bulletproof | Legacy copy |
 | `/privacy-policy/` | Hardcoded page | Client-supplied text in `docs/assets/privacy-policy.md`, word for word |
 
-"Legacy copy" means the Legacy page's body copy, `<title>` and meta description, carried over word for word. The only cuts are claims about products, sizes or contact details that are no longer true.
+"Legacy copy" means the body copy, `<title>` and meta description the Legacy Site served at a Legacy URL, carried over word for word. The only cuts are claims about products, sizes or contact details that are no longer true.
 
 ## Product Line pages
 
@@ -65,9 +65,9 @@ Page behaviour:
 ## Solution changes
 
 - Add `body` (`blockContent`) and `faqs` (`faqItem[]`).
-- Port the copy of one primary Legacy page per Solution, word for word:
+- Port the Legacy copy of one primary Legacy URL per Solution, word for word:
 
-| Solution | Primary Legacy page |
+| Solution | Primary Legacy URL |
 |---|---|
 | retail-and-food-service-kiosks | `/outdoor-and-retail-kiosk/` |
 | accommodation-units | `/farm-workers-accommodation/` |

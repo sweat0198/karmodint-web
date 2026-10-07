@@ -5,7 +5,7 @@ import { SOLUTION_COPY, type SolutionCopy } from '../../scripts/solutions/data'
 import type { PageCopyOptions } from '../../scripts/catalogue/lib/pageCopy'
 import type { PortableTextBlock } from '../../scripts/catalogue/lib/portableText'
 import { repoPath } from '../../scripts/catalogue/lib/paths'
-import { loadRedirectSources } from '../../scripts/product-lines/redirectSources'
+import { loadRedirectSources } from '../../scripts/catalogue/lib/redirectSources'
 import { PENDING_REDIRECT_GROUPS, REDIRECT_GROUPS, toRedirects } from '../../shared/migration/redirects'
 
 const files: Record<string, string> = {
@@ -114,7 +114,7 @@ describe('SOLUTION_COPY', () => {
     blocks.filter((block) => block.style === 'h2' || block.style === 'h3').map((block) => plainText([block]))
 
   // docs/plans/2026-10-06-uk-migration-design.md, "Solution changes".
-  it('ports one primary Legacy page per Solution, each page now redirecting to that Solution', () => {
+  it('ports the copy of one primary Legacy URL per Solution, each URL now redirecting to that Solution', () => {
     expect(SOLUTION_COPY.map((entry) => [entry.slug, entry.legacyPath])).toEqual([
       ['retail-and-food-service-kiosks', '/outdoor-and-retail-kiosk/'],
       ['accommodation-units', '/farm-workers-accommodation/'],
@@ -137,7 +137,7 @@ describe('SOLUTION_COPY', () => {
     for (const copy of built()) expect(copy.body.length, copy.slug).toBeGreaterThan(0)
   })
 
-  it('carries FAQs exactly where the Legacy page had them, questions word for word', () => {
+  it('carries FAQs exactly where the Legacy copy had them, questions word for word', () => {
     expect(Object.fromEntries(built().map((copy) => [copy.slug, copy.faqs.length]))).toEqual({
       'retail-and-food-service-kiosks': 17,
       'accommodation-units': 0,

@@ -33,6 +33,8 @@ export interface ProductLinePathContext {
   parentPath?: string | null
   /** Whether another Product Line already uses this path. */
   duplicate?: boolean
+  /** The paths of the Product Lines whose parent this one is. */
+  childPaths?: readonly string[]
 }
 
 function asDirectory(path: string): string {
@@ -43,7 +45,8 @@ function asDirectory(path: string): string {
  * `true`, or the first problem with `path` as a message an editor can act on.
  *
  * Every Product Line path starts and ends with `/` (ADR-003), is lowercase kebab segments, is
- * unique, and sits strictly under its parent's path when there is a parent.
+ * unique, sits strictly under its parent's path when there is a parent, and keeps each of its
+ * children strictly under it.
  */
 export function validateProductLinePath(
   path: string | undefined,
@@ -75,6 +78,11 @@ export function validateProductLinePath(
   }
 
   if (context.duplicate) return `The path "${path}" is already used by another Product Line`
+
+  const orphaned = context.childPaths?.find((child) => !child.startsWith(path) || child === path)
+  if (orphaned !== undefined) {
+    return `Child Product Line "${orphaned}" would no longer sit under this path. Move it under "${path}" first.`
+  }
 
   return true
 }

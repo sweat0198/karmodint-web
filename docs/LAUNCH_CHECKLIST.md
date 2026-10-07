@@ -28,6 +28,10 @@ Nothing here is run against DNS or Cloudflare from the repo. Dashboard steps are
     ```
     Patches only `body` and `faqs` on the eight Solutions with Legacy copy (published and draft). The dry run lists
     the document ids when `.env` holds a token. Re-running overwrites Studio edits to those two fields.
+- [ ] Only Studio administrators can change a Product Line `path`, and only in the Studio form: the lock and the path
+      rules (shape, uniqueness, under the parent, over the children) are Studio validation. API writes and scripts
+      with a write token bypass them, so give write tokens only to the migration scripts, and never patch a `path`
+      outside Studio.
 - [ ] The production build has `NUXT_PUBLIC_SITE_URL=https://www.karmodint.co.uk`. Canonicals and `sitemap.xml` use it.
 - [ ] Trigger the production deploy on Cloudflare Pages (`karmodint-web`, production branch). The build fails if a
       Redirect target isn't a built page, so a green build means every target exists.

@@ -78,3 +78,17 @@ export function findSitemapProblems(publicDir: string, sitemapXml: string): stri
 
   return problems;
 }
+
+/**
+ * Checks every built page's canonical (UK migration design, "Testing"; ADR-003): it must be the page's own address
+ * on `siteUrl`, so it ends in `/`. Covers pages the sitemap leaves out (noindex ones such as `/quote/`) too. The
+ * 404 page is `404.html`, not a `dir/index.html` page, so it is not checked. Returns one message per problem.
+ */
+export function findCanonicalProblems(publicDir: string, siteUrl: string): string[] {
+  const origin = new URL(siteUrl).origin;
+  return builtPagePaths(publicDir).sort().flatMap((pagePath) => {
+    const expected = `${origin}${pagePath}`;
+    const { canonical } = pageHead(publicDir, pagePath);
+    return canonical === expected ? [] : [`${pagePath}: canonical is ${canonical ?? "missing"}, not ${expected}`];
+  });
+}

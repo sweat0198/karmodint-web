@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { CatalogProduct } from '~/queries/catalog'
-import { catalogCardSchemaInput, toCatalogDisplayCards } from '~/utils/catalogCards'
+import { catalogCardSchemaInput, catalogCardSchemaProducts, toCatalogDisplayCards } from '~/utils/catalogCards'
 
 const render = (ref: string) => ({
   _key: 'left-diagonal' as const,
@@ -77,5 +77,27 @@ describe('catalogCardSchemaInput', () => {
       isPoa: true,
       specs: []
     })
+  })
+})
+
+describe('catalogCardSchemaProducts', () => {
+  it('turns a grid of cards into Product entries with absolute CDN image URLs', () => {
+    const cards = toCatalogDisplayCards([grpKiosk, container])
+
+    expect(catalogCardSchemaProducts(cards, { projectId: 'proj', dataset: 'production' })).toEqual([
+      {
+        name: 'K1002 Portable Cabin',
+        image: 'https://cdn.sanity.io/images/proj/production/k1002-900x600.jpg',
+        price: undefined,
+        isPoa: true,
+        specs: []
+      },
+      expect.objectContaining({
+        name: 'GRP Kiosk 5ft × 5ft (1.50m × 1.50m)',
+        image: 'https://cdn.sanity.io/images/proj/production/grp150-900x600.png',
+        price: 2450
+      }),
+      expect.objectContaining({ image: 'https://cdn.sanity.io/images/proj/production/grp390-900x600.png', isPoa: true })
+    ])
   })
 })

@@ -2,7 +2,7 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { findSitemapProblems } from "../../modules/sitemap-check/checkSitemap";
+import { findCanonicalProblems, findSitemapProblems } from "../../modules/sitemap-check/checkSitemap";
 
 const SITE = "https://www.karmodint.co.uk";
 let publicDir: string;
@@ -96,5 +96,35 @@ describe("findSitemapProblems", () => {
     buildPage("studio", {});
 
     expect(findSitemapProblems(publicDir, sitemap(`${SITE}/`))).toEqual([]);
+  });
+});
+
+// Spec "Testing": after `nuxi generate`, every canonical ends in `/`, listed in the sitemap or not.
+describe("findCanonicalProblems", () => {
+  it("flags a noindex page whose canonical is slashless", () => {
+    indexablePage("");
+    buildPage("quote", { canonical: `${SITE}/quote`, robots: "noindex, nofollow" });
+
+    expect(findCanonicalProblems(publicDir, SITE)).toEqual([`/quote/: canonical is ${SITE}/quote, not ${SITE}/quote/`]);
+  });
+
+  it("passes when every built page, indexable or not, is canonical to its own `/` address", () => {
+    indexablePage("");
+    indexablePage("portable-cabin/steel-cabin");
+    buildPage("customize", { canonical: `${SITE}/customize/`, robots: "noindex, nofollow" });
+    buildPage("studio", {});
+    writeFileSync(path.join(publicDir, "404.html"), "<!doctype html><html><head></head></html>");
+
+    expect(findCanonicalProblems(publicDir, `${SITE}/`)).toEqual([]);
+  });
+
+  it("flags a page with no canonical, or one pointing at another address", () => {
+    buildPage("quote", { robots: "noindex, nofollow" });
+    buildPage("panel-cabin", { canonical: `${SITE}/products/`, robots: "index, follow" });
+
+    expect(findCanonicalProblems(publicDir, SITE)).toEqual([
+      `/panel-cabin/: canonical is ${SITE}/products/, not ${SITE}/panel-cabin/`,
+      `/quote/: canonical is missing, not ${SITE}/quote/`,
+    ]);
   });
 });

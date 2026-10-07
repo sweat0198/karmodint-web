@@ -5,6 +5,7 @@
  * - Every other page uses the commercial pattern `{Thing} for Sale UK | Karmod`.
  * - Exception: the Privacy Policy, a Kept URL with no Legacy title, sells nothing and takes a plain title.
  */
+import type { SanitySEO } from "~/types/catalog";
 
 export interface PageSeoText {
   title: string;
@@ -46,7 +47,7 @@ export const PAGE_SEO = {
     description:
       "Portable cabins, kiosks and gatehouses for sale UK. Contact Karmod for prices, specifications and a quote by phone, WhatsApp, email or online form.",
   },
-  // Kept URL without a Legacy title (the Legacy page answers 404), and nothing for sale: a plain title.
+  // Kept URL without a Legacy title (the Legacy URL answers 404), and nothing for sale: a plain title.
   privacyPolicy: {
     title: "Privacy Policy | Karmod International",
     description:
@@ -56,7 +57,7 @@ export const PAGE_SEO = {
 
 interface SolutionSeoInput {
   name: string;
-  seo?: { metaTitle?: string; metaDescription?: string };
+  seo?: SanitySEO;
 }
 
 /** A Solution's own Studio SEO fields win; otherwise the commercial pattern built from its name. */
@@ -72,7 +73,7 @@ export function solutionPageSeo(solution: SolutionSeoInput): PageSeoText {
 interface ProductLineSeoInput {
   name: string;
   description: string;
-  seo?: { metaTitle?: string; metaDescription?: string };
+  seo?: SanitySEO;
 }
 
 /**

@@ -2,10 +2,11 @@
 import { createClient } from "@sanity/client";
 import { PRODUCT_LINE_URLS } from "./shared/migration/keptUrls";
 import { productLinePrerenderRoutes } from "./shared/utils/productLineRoutes";
+import { hasSanityProject, PLACEHOLDER_SANITY_PROJECT_ID } from "./shared/utils/sanityProject";
 import { STATIC_PAGE_PATHS } from "./shared/utils/sitePages";
 import { isSitePath } from "./shared/utils/sitePath";
 
-const sanityProjectId = process.env.SANITY_PROJECT_ID || "dummy_project_id";
+const sanityProjectId = process.env.SANITY_PROJECT_ID || PLACEHOLDER_SANITY_PROJECT_ID;
 const sanityDataset = process.env.SANITY_DATASET || "production";
 
 export default defineNuxtConfig({
@@ -197,7 +198,7 @@ export default defineNuxtConfig({
     // prerender list by path instead of relying on the crawler finding a link to each one.
     async "prerender:routes"(ctx) {
       // A checkout with no Sanity project configured (tests, a fresh clone) has no paths to read.
-      if (sanityProjectId === "dummy_project_id") return;
+      if (!hasSanityProject(sanityProjectId)) return;
 
       const client = createClient({
         projectId: sanityProjectId,

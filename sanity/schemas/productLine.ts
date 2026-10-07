@@ -18,9 +18,10 @@ export interface ProductLinePathValidationContext {
 }
 
 /**
- * The parent's path (its draft wins, since that is what the editor sees) and whether any other
- * Product Line, draft or published, already holds `$path`. The document's own two versions are
- * excluded, or every saved Product Line would collide with itself.
+ * The parent's path (its draft wins, since that is what the editor sees), whether any other
+ * Product Line, draft or published, already holds `$path`, and the paths of this Product Line's
+ * children (a child's draft wins over its published version). The document's own two versions are
+ * excluded from the duplicate count, or every saved Product Line would collide with itself.
  */
 const PATH_CONTEXT_QUERY = `{
   "parentPath": coalesce(
@@ -29,13 +30,20 @@ const PATH_CONTEXT_QUERY = `{
   ),
   "duplicate": count(*[
     _type == "productLine" && path == $path && !(_id in [$id, "drafts." + $id])
-  ]) > 0
+  ]) > 0,
+  "childPaths": *[
+    _type == "productLine" && parent._ref == $id && defined(path) &&
+    (_id in path("drafts.**") || !defined(*[_id == "drafts." + ^._id][0]._id))
+  ].path
 }`
 
 /**
- * Studio's check on `path`: shape first, then the rules that need the dataset (uniqueness and the
- * parent's prefix). The pure rules live in `objects/productLinePath.ts`, which the seed script
- * shares.
+ * Studio's check on `path`: shape first, then the rules that need the dataset (uniqueness, the
+ * parent's prefix, and the children kept under it). The pure rules live in
+ * `objects/productLinePath.ts`, which the seed script shares.
+ *
+ * This and the admin-only `readOnly` lock run in the Studio form only. An API write (a script with
+ * a write token) bypasses both, so nothing stops it moving a Kept URL (docs/LAUNCH_CHECKLIST.md).
  */
 export async function checkProductLinePath(
   path: string | undefined,
@@ -48,10 +56,10 @@ export async function checkProductLinePath(
   const parentId = context.document?.parent?._ref ?? ''
   if (parentId && parentId === id) return 'A Product Line cannot be its own parent'
 
-  const { parentPath, duplicate } = await context
+  const { parentPath, duplicate, childPaths } = await context
     .getClient({ apiVersion: '2025-02-19' })
     .withConfig({ perspective: 'raw' })
-    .fetch<{ parentPath: string | null; duplicate: boolean }>(PATH_CONTEXT_QUERY, {
+    .fetch<{ parentPath: string | null; duplicate: boolean; childPaths: string[] | null }>(PATH_CONTEXT_QUERY, {
       parentId,
       path: path!,
       id
@@ -59,7 +67,7 @@ export async function checkProductLinePath(
 
   if (parentId && !parentPath) return 'Set a path on the parent Product Line first'
 
-  return validateProductLinePath(path, { parentPath, duplicate })
+  return validateProductLinePath(path, { parentPath, duplicate, childPaths: childPaths ?? [] })
 }
 
 /**
@@ -134,7 +142,7 @@ export const productLineType = defineType({
       name: 'body',
       title: 'Page Copy',
       type: 'blockContent',
-      description: 'The Legacy page copy, word for word.',
+      description: 'The Legacy copy, word for word.',
       validation: (Rule) => Rule.required()
     }),
     defineField({

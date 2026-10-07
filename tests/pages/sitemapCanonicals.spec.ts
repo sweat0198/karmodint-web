@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { describe, expect, it, vi } from "vitest";
 import { renderSitemapXml, sitemapEntries } from "~~/server/utils/sitemap";
-import { STATIC_PAGES } from "~~/shared/utils/sitePages";
+import { STATIC_PAGES, solutionPagePath } from "~~/shared/utils/sitePages";
 
 // Every sitemap <loc> must equal the canonical its page emits. The page side is read from source (which
 // expression each page passes as `canonicalPath`) and run through the real useAppSeo; the sitemap side is the
@@ -94,11 +94,10 @@ describe("static pages", () => {
 
 describe("Solution pages", () => {
   it("lists a Solution at the canonical solutions/[slug].vue emits for it", () => {
-    const call = setPageSeoCall("solutions/[slug].vue");
-    const template = call.match(/canonicalPath: `([^`]+)`,/)?.[1];
-    expect(template, "solutions/[slug].vue passes a template-literal canonicalPath").toBeDefined();
+    // Page and sitemap share one path builder.
+    expect(setPageSeoCall("solutions/[slug].vue")).toContain("canonicalPath: solutionPagePath(solution.value.slug),");
 
-    const pagePath = template!.replace("${solution.value.slug}", "site-offices");
+    const pagePath = solutionPagePath("site-offices");
     expect(sitemapLocs({ solutionSlugs: ["site-offices"], productLinePaths: [] })).toContain(canonicalFor(pagePath));
     expect(canonicalFor(pagePath)).toBe("https://www.karmodint.co.uk/solutions/site-offices/");
   });

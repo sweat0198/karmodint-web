@@ -5,7 +5,7 @@
   >
     <div class="max-w-[1184px] w-full flex flex-col gap-10 lg:gap-12">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
-        <!-- Legacy "section-seo": the Legacy page h1, kept as an h2 under the hero's h1 -->
+        <!-- Legacy "section-seo": the Legacy copy's h1, kept as an h2 under the hero's h1 -->
         <div class="lg:col-span-5 flex flex-col gap-4 lg:sticky lg:top-[calc(var(--app-header-h)+2rem)]">
           <h2
             id="home-company-heading"

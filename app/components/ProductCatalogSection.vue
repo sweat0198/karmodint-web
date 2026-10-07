@@ -41,7 +41,7 @@
 
       <!-- Products Grid -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <ProductCard v-for="card in featuredCards" :key="card.cardId" :card="card" />
+        <ProductCard v-for="card in featuredCards" :key="card.cardId" :card="card" catalogue-on-add />
       </div>
     </div>
   </section>

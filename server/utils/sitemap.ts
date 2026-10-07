@@ -32,11 +32,6 @@ export interface SitemapEntry {
 const PRODUCT_LINE_HINTS: SitemapHints = { changefreq: "weekly", priority: "0.8" };
 const SOLUTION_HINTS: SitemapHints = { changefreq: "weekly", priority: "0.7" };
 
-/** No project configured (tests, a fresh clone): the build has no Sanity pages to list either. */
-export function hasSanityProject(projectId: string | undefined): projectId is string {
-  return Boolean(projectId) && projectId !== "dummy_project_id";
-}
-
 /**
  * Reads the Solutions and Product Lines to list. A failed read fails the build: a sitemap missing the
  * Product Line Kept URLs would quietly drop ranking Legacy addresses from Search Console.
