@@ -71,6 +71,18 @@
         </div>
       </section>
 
+      <!-- Long-form copy ported from the Legacy page this Solution replaced, where there was one -->
+      <article v-if="solution.body?.length" class="max-w-3xl">
+        <PortableTextContent :blocks="solution.body" />
+      </article>
+
+      <FaqAccordion
+        v-if="faqs.length > 0"
+        class="max-w-3xl"
+        :heading="`${solution.name} Frequently Asked Questions`"
+        :faqs="faqs"
+      />
+
       <section
         class="mt-2 flex flex-col items-center gap-4 rounded border border-brand-rose-border bg-brand-rose-bg p-8 text-center shadow-sm lg:p-12"
       >
@@ -99,6 +111,8 @@
 import { computed } from "vue";
 import { useRoute } from "vue-router";
 import { createError, useRuntimeConfig, useSanityQuery } from "#imports";
+import FaqAccordion from "~/components/content/FaqAccordion.vue";
+import PortableTextContent from "~/components/content/PortableTextContent.vue";
 import ProductCard from "~/components/ProductCard.vue";
 import { useAppSeo } from "~/composables/useAppSeo";
 import { solutionPageSeo } from "~/constants/pageSeo";
@@ -110,7 +124,7 @@ const SRCSET_WIDTHS = [640, 1024, 1600, 2000];
 
 const route = useRoute();
 const config = useRuntimeConfig();
-const { setPageSeo, getProductSchema, getBreadcrumbSchema } = useAppSeo();
+const { setPageSeo, getProductSchema, getBreadcrumbSchema, getFaqPageSchema } = useAppSeo();
 
 const slug = computed(() => String(route.params.slug));
 
@@ -127,6 +141,7 @@ if (!found) {
 
 const solution = computed(() => (data.value?._id ? data.value : found));
 const cards = computed(() => toSolutionCards(solution.value.products));
+const faqs = computed(() => solution.value.faqs ?? []);
 
 const coverRef = computed(() => solution.value.coverImage?.asset?._ref);
 
@@ -145,6 +160,9 @@ const coverSrcset = computed(() =>
     SRCSET_WIDTHS,
   ),
 );
+
+// Built from the same list the accordion renders, so the markup always matches the visible Q&A.
+const faqPageSchema = getFaqPageSchema(faqs.value);
 
 setPageSeo({
   ...solutionPageSeo(solution.value),
@@ -178,6 +196,7 @@ setPageSeo({
         }),
       })),
     },
+    ...(faqPageSchema ? [faqPageSchema] : []),
   ],
 });
 </script>
