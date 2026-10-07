@@ -481,6 +481,7 @@ describe("AppHeader Products menu links to Product Lines", () => {
       children: [
         { _id: "category-cabin-grp", name: "GRP", slug: "grp", displayOrder: 1 },
         { _id: "category-cabin-panel", name: "Panel", slug: "panel", displayOrder: 2 },
+        { _id: "category-cabin-composite", name: "Composite", slug: "composite", displayOrder: 4 },
       ],
     },
   ];
@@ -490,6 +491,14 @@ describe("AppHeader Products menu links to Product Lines", () => {
     name: "GRP Kiosk Cabin",
     path: "/grp-kiosk-cabin/",
     categoryId: "category-cabin-grp",
+    hasParent: false,
+  };
+
+  const panelCabin: ProductLineNavItem = {
+    _id: "productLine-panel-cabin",
+    name: "Panel Cabin",
+    path: "/panel-cabin/",
+    categoryId: "category-cabin-panel",
     hasParent: false,
   };
 
@@ -511,6 +520,24 @@ describe("AppHeader Products menu links to Product Lines", () => {
     expect(grpLinks).toHaveLength(2);
     expect(grpLinks.map((link) => link.text())).toEqual(["GRP", "GRP"]);
     expect(wrapper.find('a[to="/products/?category=cabin&subcategory=grp"]').exists()).toBe(false);
+
+    wrapper.unmount();
+  });
+
+  it("links Cabin > Panel to its Product Line and leaves Composite on the catalogue", async () => {
+    productLinesNavQuery.data.value = [grpKioskCabin, panelCabin];
+
+    const { wrapper } = await mountHeader("/");
+    await wrapper.get('button[aria-label="Toggle Navigation Menu"]').trigger("click");
+    await wrapper.get('button[aria-label="Toggle Products categories"]').trigger("click");
+
+    const panelLinks = wrapper.findAll('a[to="/panel-cabin/"]');
+    expect(panelLinks).toHaveLength(2);
+    expect(panelLinks.map((link) => link.text())).toEqual(["Panel", "Panel"]);
+
+    const compositeLinks = wrapper.findAll('a[to="/products/?category=cabin&subcategory=composite"]');
+    expect(compositeLinks).toHaveLength(2);
+    expect(compositeLinks.map((link) => link.text())).toEqual(["Composite", "Composite"]);
 
     wrapper.unmount();
   });

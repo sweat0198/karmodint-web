@@ -16,7 +16,7 @@ The header stays data-driven. Its existing category matcher chooses a parentless
 
 With the corrected seed data:
 
-- Cabin › Insulated Panel links to `/panel-cabin/` on desktop and mobile.
+- Cabin › Panel (the Insulated Panel section) links to `/panel-cabin/` on desktop and mobile.
 - Cabin › Composite has no matching Product Line and keeps its filtered `/products/` link.
 
 ## Testing

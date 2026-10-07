@@ -189,7 +189,7 @@ describe('PRODUCT_LINE_SEEDS', () => {
       ['/bulletproof-cabin/', 'Bulletproof Cabin', undefined, 'category-bulletproof'],
       ['/grp-kiosk-cabin/', 'GRP Kiosk Cabin', undefined, 'category-cabin-grp'],
       ['/modular-buildings/', 'Modular Buildings', undefined, undefined],
-      ['/panel-cabin/', 'Panel Cabin', undefined, 'category-cabin-composite'],
+      ['/panel-cabin/', 'Panel Cabin', undefined, 'category-cabin-panel'],
       ['/portable-cabin/', 'Portable Cabin', undefined, 'category-containers'],
       ['/portable-cabin/flat-pack-cabins/', 'Flat Pack Cabin', '/portable-cabin/', 'category-containers'],
       ['/portable-cabin/jackleg-cabin/', 'Jackleg Cabin', '/portable-cabin/', 'category-containers'],

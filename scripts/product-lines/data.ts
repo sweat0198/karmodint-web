@@ -249,7 +249,7 @@ export const PRODUCT_LINE_SEEDS: ProductLineSeed[] = [
     id: 'productLine-panel-cabin',
     name: 'Panel Cabin',
     path: '/panel-cabin/',
-    categoryId: 'category-cabin-composite',
+    categoryId: 'category-cabin-panel',
     description:
       'Versatile panel cabins for security or retail use, offering superior insulation, quick setup, and durability. Available in multiple sizes.',
     cover: {

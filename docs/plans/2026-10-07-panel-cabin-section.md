@@ -2,7 +2,7 @@
 
 > **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
 
-**Goal:** Point `/panel-cabin/` at Cabin › Insulated Panel and prove the header routes Insulated Panel and Composite entries correctly.
+**Goal:** Point `/panel-cabin/` at Cabin › Panel (the Insulated Panel section) and prove the header routes Panel and Composite entries correctly.
 
 **Architecture:** Keep Product Line routing data-driven. Change the Product Line seed's category reference, then cover the resulting header mapping using its existing category-to-Product-Line matcher. Update the migration design to match the recorded client decision.
 
@@ -32,11 +32,11 @@ Expected: FAIL showing the seed still returns `category-cabin-composite`.
 
 **Step 1: Model both cabin sections**
 
-Add Insulated Panel and Composite children to the Cabin fixture. Add the `/panel-cabin/` Product Line fixture with its current Composite category assignment.
+Add Panel (the Insulated Panel section) and Composite children to the Cabin fixture. Add the `/panel-cabin/` Product Line fixture with its current Composite category assignment.
 
 **Step 2: Assert the requested destinations**
 
-Assert desktop and mobile Insulated Panel links target `/panel-cabin/`. Assert Composite retains `/products/?category=cabin&subcategory=composite`.
+Assert desktop and mobile Panel links target `/panel-cabin/`. Assert Composite retains `/products/?category=cabin&subcategory=composite`.
 
 **Step 3: Run test to verify it fails**
 

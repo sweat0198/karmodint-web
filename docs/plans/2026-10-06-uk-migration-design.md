@@ -31,7 +31,7 @@ Every public URL ends in `/`, per `docs/ADR-003-Trailing-Slash-URLs.md`. That co
 | `/portable-cabin/portable-classroom/` | same | Legacy copy |
 | `/portable-cabin/portable-house/` | same | Legacy copy |
 | `/grp-kiosk-cabin/` | Product Line → Cabin › GRP | Legacy copy |
-| `/panel-cabin/` | Product Line → Cabin › Composite | Legacy copy |
+| `/panel-cabin/` | Product Line → Cabin › Insulated Panel | Legacy copy |
 | `/bulletproof-cabin/` | Product Line → Bulletproof | Legacy copy |
 | `/privacy-policy/` | Hardcoded page | Client-supplied text in `docs/assets/privacy-policy.md`, word for word |
 
