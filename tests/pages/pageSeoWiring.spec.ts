@@ -30,4 +30,8 @@ describe("static page SEO wiring", () => {
   it("solutions/[slug].vue uses solutionPageSeo", () => {
     expect(setPageSeoCall("solutions/[slug].vue")).toContain("...solutionPageSeo(solution.value),");
   });
+
+  it("[...path].vue (Product Lines) uses productLinePageSeo", () => {
+    expect(setPageSeoCall("[...path].vue")).toContain("...productLinePageSeo(line.value),");
+  });
 });

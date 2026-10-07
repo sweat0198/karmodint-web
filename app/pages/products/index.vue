@@ -462,8 +462,11 @@ import { useAppSeo } from "~/composables/useAppSeo";
 import { PAGE_SEO } from "~/constants/pageSeo";
 import { useCatalogBrowse } from "~/composables/useCatalogBrowse";
 import { sanityImageUrl } from "~/utils/sanityImageUrl";
-import { toSizeCards } from "~/utils/sizeCards";
-import { isPortableContainerProduct, toPortableContainerCards, type PortableContainerCard } from '~/utils/portableContainerCards'
+import {
+  catalogCardSchemaInput,
+  isPortableContainerCard as isPortableCard,
+  toCatalogDisplayCards,
+} from "~/utils/catalogCards";
 import type { CatalogDisplayCard } from '~/utils/catalogSearch'
 import {
   CATEGORY_TREE_QUERY,
@@ -476,7 +479,7 @@ const router = useRouter();
 const route = useRoute();
 const quoteStore = useQuoteStore();
 const config = useRuntimeConfig();
-const { setPageSeo, getProductSchema, getBreadcrumbSchema } = useAppSeo();
+const { setPageSeo, getBreadcrumbSchema, getProductItemListSchema } = useAppSeo();
 
 const isCategoryDrawerOpen = ref(false);
 // Categories section is expanded by default. Stores explicitly collapsed categories: { [slug]: true }
@@ -489,17 +492,7 @@ function isCategoryExpanded(categorySlug: string): boolean {
 const { data: products } = await useSanityQuery<CatalogProduct[]>(PRODUCTS_WITH_SIZES_QUERY);
 const { data: categoryTree } = await useSanityQuery<CategoryTreeNode[]>(CATEGORY_TREE_QUERY);
 
-const cards = computed<CatalogDisplayCard[]>(() => {
-  const catalogue = products.value ?? []
-  return [
-    ...toPortableContainerCards(catalogue),
-    ...toSizeCards(catalogue.filter((product) => !isPortableContainerProduct(product)))
-  ]
-});
-
-function isPortableCard(card: CatalogDisplayCard): card is PortableContainerCard {
-  return 'isPoaOnly' in card
-}
+const cards = computed<CatalogDisplayCard[]>(() => toCatalogDisplayCards(products.value ?? []));
 
 // The filter lives in the URL (D10: `?category=cabin&subcategory=grp`), not local state, so it
 // survives a reload and is shareable.
@@ -578,26 +571,16 @@ setPageSeo({
       { name: "Home", path: "/" },
       { name: "Modular Products", path: "/products/" },
     ]),
-    {
-      "@context": "https://schema.org",
-      "@type": "ItemList",
+    getProductItemListSchema({
       name: "Portable Cabins, Gatehouses & Kiosks",
-      itemListElement: cards.value.map((card, idx) => ({
-        "@type": "ListItem",
-        position: idx + 1,
-        item: getProductSchema({
-          name: isPortableCard(card) ? card.productName : `${card.productName} ${card.sizeLabel}`,
-          image: sanityImageUrl(
-            isPortableCard(card) ? card.representativeImage?.asset?._ref : card.thumbnail.asset?._ref,
-            config.public.sanityProjectId,
-            config.public.sanityDataset,
-          ),
-          price: isPortableCard(card) ? card.lowestPrice : card.price,
-          isPoa: isPortableCard(card) ? card.isPoaOnly : card.isPoa,
-          specs: isPortableCard(card) ? card.sizes.flatMap((size) => size.specs) : card.specs,
-        }),
-      })),
-    },
+      products: cards.value.map((card) => {
+        const { imageRef, ...input } = catalogCardSchemaInput(card);
+        return {
+          ...input,
+          image: sanityImageUrl(imageRef, config.public.sanityProjectId, config.public.sanityDataset),
+        };
+      }),
+    }),
   ],
 });
 </script>
