@@ -51,7 +51,7 @@ function addButton(wrapper: ReturnType<typeof mount>) {
   return wrapper.findAll("button:not([title])")[1];
 }
 
-async function mountAt(path: string, card: SizeCard = grpCard()) {
+async function mountAt(path: string, card: SizeCard = grpCard(), extraProps: { catalogueOnAdd?: boolean } = {}) {
   const router = createRouter({
     history: createMemoryHistory(),
     routes: [
@@ -61,13 +61,14 @@ async function mountAt(path: string, card: SizeCard = grpCard()) {
       { path: "/solutions", component: { template: "<div />" } },
       { path: "/solutions/:slug", component: { template: "<div />" } },
       { path: "/customize", component: { template: "<div />" } },
+      { path: "/:path(.*)*", component: { template: "<div />" } },
     ],
   });
   await router.push(path);
   await router.isReady();
 
   const wrapper = mount(ProductCard, {
-    props: { card },
+    props: { card, ...extraProps },
     global: { plugins: [createPinia(), router] },
   });
 
@@ -89,8 +90,8 @@ describe("ProductCard", () => {
       expect(store.getItemQuantity("product-grp-cabin-150x150")).toBe(1);
     });
 
-    it("redirects to the catalogue when adding from the homepage", async () => {
-      const { wrapper, router } = await mountAt("/");
+    it("redirects to the catalogue when adding from a home-page showcase card", async () => {
+      const { wrapper, router } = await mountAt("/", grpCard(), { catalogueOnAdd: true });
 
       await addButton(wrapper).trigger("click");
       await flushPromises();
@@ -125,6 +126,16 @@ describe("ProductCard", () => {
       await flushPromises();
 
       expect(router.currentRoute.value.path).toBe("/solutions/construction-site-setup/");
+    });
+
+    // Product Line pages live at Legacy paths and sell their grid in place too.
+    it("does not redirect when adding from a Product Line page", async () => {
+      const { wrapper, router } = await mountAt("/portable-cabin/steel-cabin/");
+
+      await addButton(wrapper).trigger("click");
+      await flushPromises();
+
+      expect(router.currentRoute.value.path).toBe("/portable-cabin/steel-cabin/");
     });
   });
 
