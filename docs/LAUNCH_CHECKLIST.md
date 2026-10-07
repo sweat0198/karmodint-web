@@ -21,8 +21,13 @@ Nothing here is run against DNS or Cloudflare from the repo. Dashboard steps are
     SANITY_DATASET=production pnpm product-lines:seed
     ```
     `createOrReplace` overwrites Studio edits made since the last run. Re-run only to re-apply the seeded copy.
-  - [ ] Solution copy and FAQs (#26): run that ticket's Solutions seed script, `--dry-run` first, then with
-        `SANITY_DATASET=production`.
+  - [ ] Solution copy and FAQs (#26):
+    ```sh
+    SANITY_DATASET=production pnpm solutions:patch-copy --dry-run
+    SANITY_DATASET=production pnpm solutions:patch-copy
+    ```
+    Patches only `body` and `faqs` on the eight Solutions with Legacy copy (published and draft). The dry run lists
+    the document ids when `.env` holds a token. Re-running overwrites Studio edits to those two fields.
 - [ ] The production build has `NUXT_PUBLIC_SITE_URL=https://www.karmodint.co.uk`. Canonicals and `sitemap.xml` use it.
 - [ ] Trigger the production deploy on Cloudflare Pages (`karmodint-web`, production branch). The build fails if a
       Redirect target isn't a built page, so a green build means every target exists.
