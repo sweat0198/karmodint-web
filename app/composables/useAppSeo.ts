@@ -32,18 +32,19 @@ export function useAppSeo() {
   const config = useRuntimeConfig();
   const siteUrl =
     (config.public.siteUrl as string) || "https://www.karmodint.co.uk";
-  const defaultOgImage = `${siteUrl.replace(/\/$/, "")}/images/hero-building-kiosk.png`;
+
+  /** An image as structured data and og:image need it: absolute, on this site unless already on another host. */
+  const toAbsoluteImageUrl = (image: string) =>
+    image.startsWith("http") ? image : toAbsoluteSiteUrl(siteUrl, image);
+
+  const defaultOgImage = toAbsoluteImageUrl("/images/hero-building-kiosk.png");
 
   function setPageSeo(options: PageSeoOptions) {
     const canonicalUrl = options.canonicalPath
       ? toAbsoluteSiteUrl(siteUrl, options.canonicalPath)
       : undefined;
 
-    const imageUrl = options.image
-      ? options.image.startsWith("http")
-        ? options.image
-        : `${siteUrl.replace(/\/$/, "")}${options.image.startsWith("/") ? options.image : `/${options.image}`}`
-      : defaultOgImage;
+    const imageUrl = options.image ? toAbsoluteImageUrl(options.image) : defaultOgImage;
 
     useSeoMeta({
       title: options.title,
@@ -85,7 +86,7 @@ export function useAppSeo() {
       name: "Karmod International",
       legalName: "Karmod International Ltd",
       url: toAbsoluteSiteUrl(siteUrl, "/"),
-      logo: `${siteUrl.replace(/\/$/, "")}/images/karmod-logo.png`,
+      logo: toAbsoluteImageUrl("/images/karmod-logo.png"),
       description:
         "Specialist manufacturer of portable cabins, kiosks, security gatehouses, and modular building solutions across the UK and worldwide.",
       address: getCompanyPostalAddressSchema(),
@@ -118,11 +119,7 @@ export function useAppSeo() {
   }
 
   function getProductSchema(product: ProductSchemaInput) {
-    const imageUrl = product.image
-      ? product.image.startsWith("http")
-        ? product.image
-        : `${siteUrl.replace(/\/$/, "")}${product.image.startsWith("/") ? product.image : `/${product.image}`}`
-      : undefined;
+    const imageUrl = product.image ? toAbsoluteImageUrl(product.image) : undefined;
 
     const offers = hasPublishablePrice(product)
       ? {

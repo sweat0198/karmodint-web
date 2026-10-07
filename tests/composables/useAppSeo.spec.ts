@@ -31,6 +31,25 @@ describe("useAppSeo", () => {
     );
   });
 
+  it("serves og:image, the logo and Product images at absolute URLs", () => {
+    const seo = useAppSeo();
+    const ogImage = (image?: string) => {
+      seoMeta.mockClear();
+      seo.setPageSeo({ title: "t", description: "d", image });
+      return seoMeta.mock.calls[0]![0].ogImage;
+    };
+
+    expect(ogImage()).toBe("https://www.karmodint.co.uk/images/hero-building-kiosk.png");
+    expect(ogImage("/images/cover.jpg")).toBe("https://www.karmodint.co.uk/images/cover.jpg");
+    expect(ogImage("images/cover.jpg")).toBe("https://www.karmodint.co.uk/images/cover.jpg");
+    expect(ogImage("https://cdn.sanity.io/images/p/d/a-1x1.jpg")).toBe("https://cdn.sanity.io/images/p/d/a-1x1.jpg");
+    expect(seo.getOrganizationSchema().logo).toBe("https://www.karmodint.co.uk/images/karmod-logo.png");
+    expect(seo.getProductSchema({ name: "Kiosk", image: "/images/kiosk.png" }).image).toBe(
+      "https://www.karmodint.co.uk/images/kiosk.png",
+    );
+    expect(seo.getProductSchema({ name: "Kiosk" }).image).toBeUndefined();
+  });
+
   it("gives the home page canonical as the origin plus `/`", () => {
     useAppSeo().setPageSeo({ title: "Home", description: "d", canonicalPath: "/" });
 
