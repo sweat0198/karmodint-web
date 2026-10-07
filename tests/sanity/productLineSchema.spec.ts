@@ -2,29 +2,23 @@ import { describe, it, expect } from 'vitest'
 import { schemaTypes } from '../../sanity/schemas'
 import { checkProductLinePath, productLineType } from '../../sanity/schemas/productLine'
 import { faqItem } from '../../sanity/schemas/objects/faqItem'
+import { executeGroq } from '../utils/groqRunner'
 
 function fieldsOf(type: { fields: unknown[] }): Record<string, any> {
   return Object.fromEntries(type.fields.map((field: any) => [field.name, field]))
 }
 
 /**
- * A stand-in for Studio's validation context: one dataset of Product Line documents, read the way
- * the validator reads it.
+ * A stand-in for Studio's validation context: one dataset of Product Line documents (drafts
+ * included), which the validator's own GROQ query runs against.
  */
 function contextFor(document: Record<string, any>, dataset: Array<Record<string, any>>) {
+  const documents = dataset.map((doc) => ({ _type: 'productLine', ...doc }))
   return {
     document,
     getClient: () => ({
       withConfig: () => ({
-        fetch: async (_query: string, params: { parentId?: string; path?: string; id?: string }) => {
-          const parent = dataset.find((doc) => doc._id === params.parentId)
-          const baseId = (params.id ?? '').replace(/^drafts\./, '')
-          const duplicate = dataset.some(
-            (doc) =>
-              doc.path === params.path && doc._id !== baseId && doc._id !== `drafts.${baseId}`
-          )
-          return { parentPath: parent?.path ?? null, duplicate }
-        }
+        fetch: async (query: string, params: Record<string, string>) => executeGroq(query, params, documents)
       })
     })
   }
@@ -142,5 +136,33 @@ describe('checkProductLinePath', () => {
     expect(await checkProductLinePath('/grp-kiosk-cabin/', contextFor(document, [grp]))).toMatch(
       /own parent/
     )
+  })
+
+  // Spec "Product Line pages": a child's path is prefixed by its parent's, so the parent can't move out from under it.
+  it('rejects a parent path change that would leave a child outside it', async () => {
+    const steel = {
+      _id: 'productLine-steel-cabin',
+      path: '/portable-cabin/steel-cabin/',
+      parent: { _type: 'reference', _ref: portableCabin._id }
+    }
+    const document = { _id: `drafts.${portableCabin._id}` }
+
+    expect(await checkProductLinePath('/cabins/', contextFor(document, [portableCabin, steel]))).toBe(
+      'Child Product Line "/portable-cabin/steel-cabin/" would no longer sit under this path. Move it under "/cabins/" first.'
+    )
+    expect(await checkProductLinePath('/portable-cabin/', contextFor(document, [portableCabin, steel]))).toBe(true)
+  })
+
+  it('judges a child by its draft, so a parent and its children can move together', async () => {
+    const parent = { _type: 'reference', _ref: portableCabin._id }
+    const steel = { _id: 'productLine-steel-cabin', path: '/portable-cabin/steel-cabin/', parent }
+    const steelDraft = { ...steel, _id: 'drafts.productLine-steel-cabin', path: '/cabins/steel-cabin/' }
+    const panel = { _id: 'productLine-panel', path: '/portable-cabin/panel/', parent }
+    const panelDraft = { _id: 'drafts.productLine-panel', path: '/panel/' }
+    const document = { _id: `drafts.${portableCabin._id}` }
+
+    expect(
+      await checkProductLinePath('/cabins/', contextFor(document, [portableCabin, steel, steelDraft, panel, panelDraft]))
+    ).toBe(true)
   })
 })
