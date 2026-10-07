@@ -1,4 +1,5 @@
-import { hasSanityProject, readSitemapDocuments, renderSitemapXml, sitemapEntries } from "../utils/sitemap";
+import { hasSanityProject } from "../../shared/utils/sanityProject";
+import { readSitemapDocuments, renderSitemapXml, sitemapEntries } from "../utils/sitemap";
 
 /** Prerendered at build time (`nuxt.config.ts`), so the Sanity read happens once per deploy. */
 export default defineEventHandler(async (event) => {
