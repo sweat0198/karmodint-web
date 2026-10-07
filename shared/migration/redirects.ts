@@ -361,8 +361,6 @@ const toBulletproofCabin: RedirectGroup = {
   ],
 };
 
-// Pending: the target page doesn't exist yet. Each group moves to REDIRECT_GROUPS in the ticket that builds its target.
-
 const toPrivacyPolicy: RedirectGroup = {
   to: "/privacy-policy/",
   status: 301,
@@ -389,6 +387,7 @@ export const REDIRECT_GROUPS: readonly RedirectGroup[] = [
   toGardenRooms,
   toTicketKiosks,
   toSiteOffices,
+  toPrivacyPolicy,
   toGrpKioskCabin,
   toPortableCabin,
   toPortableClassroom,
@@ -396,10 +395,8 @@ export const REDIRECT_GROUPS: readonly RedirectGroup[] = [
   toBulletproofCabin,
 ];
 
-/** TSV rules held back until their target exists. Not written to `_redirects`. */
-export const PENDING_REDIRECT_GROUPS: readonly RedirectGroup[] = [
-  toPrivacyPolicy, // #22
-];
+/** TSV rules held back until their target exists (none left: every target is built). Not written to `_redirects`. */
+export const PENDING_REDIRECT_GROUPS: readonly RedirectGroup[] = [];
 
 export function toRedirects(groups: readonly RedirectGroup[]): Redirect[] {
   return groups.flatMap(({ to, status, from }) => from.map((source) => ({ from: source, to, status })));

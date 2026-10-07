@@ -34,6 +34,8 @@ describe('Solution Schema', () => {
       'description',
       'coverImage',
       'products',
+      'body',
+      'faqs',
       'displayOrder',
       'seo'
     ])
@@ -43,6 +45,17 @@ describe('Solution Schema', () => {
     expect(fields.coverImage.type).toBe('image')
     expect(fields.products.type).toBe('array')
     expect(fields.seo.type).toBe('seo')
+  })
+
+  // Only eight Solutions have Legacy copy; the other four must stay valid without any.
+  it('adds optional Page Copy and FAQs, the FAQs built from the shared faqItem object', () => {
+    const fields = Object.fromEntries(solutionType.fields.map((field: any) => [field.name, field]))
+
+    expect(fields.body).toMatchObject({ type: 'blockContent', title: 'Page Copy' })
+    expect(fields.faqs).toMatchObject({ type: 'array', title: 'FAQs' })
+    expect(fields.faqs.of.map((member: any) => member.type)).toEqual(['faqItem'])
+    expect(fields.body.validation).toBeUndefined()
+    expect(fields.faqs.validation).toBeUndefined()
   })
 
   it('derives the slug from the name, since the slug is the public URL', () => {

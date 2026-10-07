@@ -2,7 +2,7 @@ import { existsSync } from "node:fs";
 import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { defineNuxtModule, useLogger } from "nuxt/kit";
-import { PRODUCT_LINE_URLS } from "../../shared/migration/keptUrls";
+import { KEPT_URLS } from "../../shared/migration/keptUrls";
 import { REDIRECTS } from "../../shared/migration/redirects";
 import { findMissingPages, missingPagesError } from "./builtPages";
 import { withRedirects } from "./redirectsFile";
@@ -11,7 +11,8 @@ import { findWorkerRoutedPaths, type PagesRoutes } from "./workerRoutes";
 /**
  * Writes the redirect map (`shared/migration/redirects.ts`) into Cloudflare Pages' `_redirects` at build time, and fails
  * the build when a redirect would not work: its target isn't a built page, or `_routes.json` sends its source to the
- * Functions worker (Pages skips `_redirects` there). Also fails when a Product Line Kept URL wasn't built. Auto-registered by Nuxt (local `modules/` dir).
+ * Functions worker (Pages skips `_redirects` there). Also fails when a Kept URL wasn't built. Auto-registered by Nuxt
+ * (local `modules/` dir).
  *
  * Runs on Nitro's `compiled` hook, after prerendering and after the cloudflare-pages preset has written
  * `_redirects` (public/_redirects + its own lines) and `_routes.json`.
@@ -26,8 +27,8 @@ export default defineNuxtModule({
       nitro.hooks.hook("compiled", async () => {
         const { dir: outputDir, publicDir } = nitro.options.output;
 
-        // Every redirect target, plus every Product Line Kept URL (nothing may link one yet, but each must be served).
-        const pages = [...new Set([...REDIRECTS.map((redirect) => redirect.to), ...PRODUCT_LINE_URLS])];
+        // Every redirect target, plus every Kept URL: each is a ranking Legacy address the new site must serve.
+        const pages = [...new Set([...REDIRECTS.map((redirect) => redirect.to), ...KEPT_URLS])];
         const missing = findMissingPages(publicDir, pages);
         if (missing.length > 0) throw missingPagesError(missing);
 

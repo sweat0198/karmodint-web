@@ -1,4 +1,6 @@
 import type { CatalogProduct } from "~/queries/catalog";
+import type { PortableTextBlock } from "~/types/portableText";
+import type { FaqItem } from "~/types/productLine";
 
 export interface SolutionCoverImage {
   _type?: "image";
@@ -43,6 +45,9 @@ export interface Solution {
   coverImage: SolutionCoverImage;
   displayOrder?: number;
   products: SolutionProductEntry[];
+  /** Long-form copy; only the Solutions that replaced a Legacy page have it. */
+  body?: PortableTextBlock[] | null;
+  faqs?: FaqItem[] | null;
   seo?: {
     metaTitle?: string;
     metaDescription?: string;

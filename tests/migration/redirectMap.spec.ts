@@ -53,14 +53,14 @@ describe("redirect map", () => {
     expect(mapped).toHaveLength(196);
   });
 
-  it("ships only rules whose targets are built: Solutions, Product Lines, /gallery/, /about/, /contact/, /products/ and /", () => {
-    const existing = /^\/(solutions\/[a-z0-9-]+\/|gallery\/|about\/|contact\/|products\/|)$/;
+  it("ships only rules whose targets are built: Solutions, Product Lines, /gallery/, /about/, /contact/, /products/, /privacy-policy/ and /", () => {
+    const existing = /^\/(solutions\/[a-z0-9-]+\/|gallery\/|about\/|contact\/|products\/|privacy-policy\/|)$/;
     const productLines = new Set<string>(KEPT_URLS.filter((url) => !["/", "/products/", "/privacy-policy/"].includes(url)));
 
     expect(
       REDIRECTS.map((rule) => pathnameOf(rule.to)).filter((target) => !existing.test(target) && !productLines.has(target)),
     ).toEqual([]);
-    expect(REDIRECTS).toHaveLength(194);
+    expect(REDIRECTS).toHaveLength(196);
   });
 
   it("ships every rule targeting a Product Line page", () => {
@@ -88,10 +88,15 @@ describe("redirect map", () => {
     }
   });
 
-  it("holds back only the rules targeting /privacy-policy/", () => {
-    const pendingTargets = new Set(toRedirects(PENDING_REDIRECT_GROUPS).map((rule) => rule.to));
+  it("holds nothing back: every target page is built", () => {
+    expect(PENDING_REDIRECT_GROUPS).toEqual([]);
+  });
 
-    expect([...pendingTargets]).toEqual(["/privacy-policy/"]);
+  it("moves the Legacy policy pages to /privacy-policy/", () => {
+    expect(REDIRECTS.filter((rule) => rule.to === "/privacy-policy/")).toEqual([
+      { from: "/corporate-personal-data-protection-policy/", to: "/privacy-policy/", status: 301 },
+      { from: "/kvkk/", to: "/privacy-policy/", status: 301 },
+    ]);
   });
 
   it("sends the metro-city cabin page to the filtered products list", () => {

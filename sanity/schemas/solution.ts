@@ -143,6 +143,20 @@ export const solutionType = defineType({
           )
     }),
     defineField({
+      name: 'body',
+      title: 'Page Copy',
+      type: 'blockContent',
+      description:
+        'Long-form copy shown below the products. Optional: Solutions that replaced a Legacy page carry its copy, word for word.'
+    }),
+    defineField({
+      name: 'faqs',
+      title: 'FAQs',
+      type: 'array',
+      of: [defineArrayMember({ type: 'faqItem' })],
+      description: 'Shown as an accordion, and as FAQPage structured data, when there is at least one.'
+    }),
+    defineField({
       name: 'displayOrder',
       title: 'Display Order',
       type: 'number',

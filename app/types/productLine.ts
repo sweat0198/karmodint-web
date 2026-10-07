@@ -39,3 +39,13 @@ export interface ProductLine {
   displayOrder?: number;
   seo?: SanitySEO;
 }
+
+/** A Product Line as the header and footer link to it. */
+export interface ProductLineNavItem {
+  _id: string;
+  name: string;
+  path: string;
+  /** The catalogue category it lists; absent for a hub page. */
+  categoryId?: string | null;
+  hasParent: boolean;
+}

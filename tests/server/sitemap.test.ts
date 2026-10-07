@@ -29,4 +29,10 @@ describe("sitemap", () => {
     expect(locs.length).toBeGreaterThan(1);
     for (const loc of locs) expect(loc).toMatch(/\/$/);
   });
+
+  it("lists the Privacy Policy Kept URL", () => {
+    const xml: string = sitemapHandler({} as any);
+
+    expect(xml).toContain("<loc>https://example.com/privacy-policy/</loc>");
+  });
 });

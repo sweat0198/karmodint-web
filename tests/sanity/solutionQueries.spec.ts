@@ -88,6 +88,37 @@ describe('Solution GROQ queries', () => {
       ])
     })
 
+    it('returns the Page Copy and FAQs, and leaves them empty on a Solution without Legacy copy', async () => {
+      const paragraph = (key: string, text: string) => ({
+        _key: key,
+        _type: 'block',
+        style: 'normal',
+        markDefs: [],
+        children: [{ _key: `${key}-s`, _type: 'span', text, marks: [] }]
+      })
+      const withCopy = mockSanityDataset.map((doc: any) =>
+        doc._id === 'solution_site_setup'
+          ? {
+              ...doc,
+              body: [paragraph('b0', 'Site cabins for every project.')],
+              faqs: [
+                { _key: 'faq-0', _type: 'faqItem', question: 'What is a site cabin?', answer: [paragraph('a0', 'A portable building.')] }
+              ]
+            }
+          : doc
+      )
+
+      const withBody = await executeGroq<any>(SOLUTION_BY_SLUG_QUERY, { slug: 'construction-site-setup' }, withCopy)
+      expect(withBody.body.map((block: any) => block.children[0].text)).toEqual(['Site cabins for every project.'])
+      expect(withBody.faqs).toEqual([
+        { _key: 'faq-0', question: 'What is a site cabin?', answer: [expect.objectContaining({ _key: 'a0' })] }
+      ])
+
+      const without = await executeGroq<any>(SOLUTION_BY_SLUG_QUERY, { slug: 'event-infrastructure' }, withCopy)
+      expect(without.body ?? null).toBeNull()
+      expect(without.faqs ?? null).toBeNull()
+    })
+
     it('returns null for an unknown slug, so the page can 404', async () => {
       const solution = await executeGroq<any>(SOLUTION_BY_SLUG_QUERY, { slug: 'does-not-exist' })
       expect(solution).toBeNull()
