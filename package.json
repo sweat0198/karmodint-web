@@ -36,6 +36,8 @@
     "typecheck:manual-products": "tsc -p tsconfig.manual-products.json",
     "solutions:patch-covers": "jiti scripts/solutions/patch-covers.ts",
     "typecheck:solutions": "tsc -p tsconfig.solutions.json",
+    "migration:check-redirects": "jiti scripts/migration/check-redirects.ts",
+    "typecheck:migration": "tsc -p tsconfig.migration.json",
     "test": "vitest run",
     "test:watch": "vitest"
   },
