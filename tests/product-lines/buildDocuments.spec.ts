@@ -1,6 +1,11 @@
 import fs from 'node:fs'
 import { describe, expect, it } from 'vitest'
-import { buildProductLineDocuments, type BuildOptions } from '../../scripts/product-lines/buildDocuments'
+import {
+  buildProductLineDocuments,
+  type BuildOptions,
+  type ProductLineDocument
+} from '../../scripts/product-lines/buildDocuments'
+import type { PortableTextBlock } from '../../scripts/catalogue/lib/portableText'
 import { PRODUCT_LINE_SEEDS, type ProductLineSeed } from '../../scripts/product-lines/data'
 import { loadRedirectSources } from '../../scripts/catalogue/lib/redirectSources'
 import { repoPath } from '../../scripts/catalogue/lib/paths'
@@ -164,6 +169,14 @@ describe('buildProductLineDocuments', () => {
   })
 })
 
+const blockText = (block: PortableTextBlock) => block.children?.map((child) => child.text).join('') ?? ''
+
+/** Every body paragraph and FAQ question and answer paragraph of a document, as plain text. */
+const pageText = (document: ProductLineDocument) => [
+  ...document.body.map(blockText),
+  ...(document.faqs ?? []).flatMap((faq) => [faq.question, ...faq.answer.map(blockText)])
+]
+
 describe('PRODUCT_LINE_SEEDS', () => {
   const realOptions = (): BuildOptions => ({
     readFile: (path) => fs.readFileSync(repoPath(path), 'utf-8'),
@@ -214,19 +227,19 @@ describe('PRODUCT_LINE_SEEDS', () => {
     )
   })
 
-  it('ports the Legacy FAQs, minus the stale USD price answers', () => {
+  it('ports the Legacy FAQs, minus the stale USD price answers and the FAQs the client cut', () => {
     const faqCounts = Object.fromEntries(
       buildProductLineDocuments(PRODUCT_LINE_SEEDS, realOptions()).map((doc) => [doc.path, doc.faqs?.length ?? 0])
     )
 
     expect(faqCounts).toEqual({
-      '/modular-buildings/': 9,
+      '/modular-buildings/': 8,
       '/portable-cabin/': 7,
       '/portable-cabin/steel-cabin/': 0,
       '/portable-cabin/flat-pack-cabins/': 5,
       '/portable-cabin/jackleg-cabin/': 2,
-      '/portable-cabin/portable-classroom/': 14,
-      '/portable-cabin/portable-house/': 8,
+      '/portable-cabin/portable-classroom/': 13,
+      '/portable-cabin/portable-house/': 4,
       '/grp-kiosk-cabin/': 3,
       '/panel-cabin/': 0,
       '/bulletproof-cabin/': 0
@@ -263,5 +276,36 @@ describe('PRODUCT_LINE_SEEDS', () => {
       'What size is a GRP kiosk?',
       'What is a GRP kiosk?'
     ])
+  })
+
+  describe('applies the client sign-off on the Kept URL copy (issue #31)', () => {
+    const byPath = (path: string) =>
+      buildProductLineDocuments(PRODUCT_LINE_SEEDS, realOptions()).find((doc) => doc.path === path)!
+
+    it('/modular-buildings/ names no competitor and ends no sentence mid-word', () => {
+      const document = byPath('/modular-buildings/')
+      const text = pageText(document)
+
+      expect(document.faqs?.map((faq) => faq.question)).not.toContain('Who builds the best portable buildings?')
+      expect(text.join('\n')).not.toMatch(/Portakabin|Mobile Mini|WillScot/)
+      expect(text.join('\n')).not.toMatch(/\befficienc\b/)
+      expect(text).toContain(
+        'The tallest modular building stands as a testament to the heights that this form of construction can reach, both literally and metaphorically.'
+      )
+    })
+
+    it('/portable-cabin/portable-classroom/ offers no hire, rental or used classrooms, since Karmod sells new units only', () => {
+      const document = byPath('/portable-cabin/portable-classroom/')
+
+      expect(document.faqs?.map((faq) => faq.question)).not.toContain(
+        'Which is more advantageous for a mobile classroom, buying or renting?'
+      )
+      expect(document.body.map(blockText)).not.toContain('Buyer\'s Beware: Navigating Disadvantages of Used Portable Classrooms')
+      expect(pageText(document).join('\n')).not.toMatch(/\bhire\b|\brent(ing)?\b|pre-owned|\bused (portable classrooms|options|units)\b|new or used/i)
+    })
+
+    it('/portable-cabin/portable-house/ quotes no general UK house prices', () => {
+      expect(pageText(byPath('/portable-cabin/portable-house/')).join('\n')).not.toContain('£')
+    })
   })
 })

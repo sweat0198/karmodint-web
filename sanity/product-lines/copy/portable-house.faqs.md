@@ -1,19 +1,3 @@
-## How much does a flat pack house cost UK?
-
-In the UK, flat pack houses generally cost between £20,000 and £200,000, depending on size, materials, and level of customization. They offer a cost-effective and flexible housing solution.
-
-## How much does it cost to build a 4 bed house in the UK?
-
-Building a 4-bedroom house in the UK can cost anywhere from £100,000 to £500,000. The final price depends on location, design complexity, and material choices.
-
-## How much are modular homes in the UK?
-
-Modular homes in the UK typically range from £50,000 to £300,000, based on size, layout, and finishes. They provide a modern, sustainable option for homebuyers.
-
-## How much does a small house cost in UK?
-
-The cost of a small house in the UK varies, but prices usually start from around £100,000 and can go up to £250,000, depending on location and design.
-
 ## What is a portable house?
 
 A portable house is a revolution in the housing sector, a modern solution that embodies flexibility, efficiency, and innovation. Unlike traditional homes, a portable house is not rooted in one location; it offers the freedom to move, ensuring your home can be wherever you need it to be. These houses are particularly popular in the UK, offering a solution to the evolving needs of a dynamic population.

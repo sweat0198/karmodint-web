@@ -8,7 +8,8 @@ import HomeAboutSection from "../../app/components/home/HomeAboutSection.vue";
 import HomeCategoriesSection from "../../app/components/home/HomeCategoriesSection.vue";
 import HomeCompanySection from "../../app/components/home/HomeCompanySection.vue";
 
-// Legacy home copy (www.karmodint.co.uk/, fetched 2026-10-06), ported word for word.
+// Legacy home copy (www.karmodint.co.uk/, fetched 2026-10-06), ported word for word, minus the
+// founding year and country count the client cut (issue #31).
 const NuxtLinkStub = {
   props: ["to"],
   template: '<a :href="to"><slot /></a>',
@@ -111,16 +112,16 @@ describe("HomeCompanySection", () => {
     );
   });
 
-  it("shows the Legacy introduction and closing paragraphs", () => {
+  it("shows the Legacy introduction and closing paragraphs, without the founding year", () => {
     const paragraphs = wrapper.findAll("[data-company-paragraph]").map((p) => text(p.text()));
 
     expect(paragraphs).toEqual([
-      "Karmod International stands as a distinguished leader in the field of modular and prefabricated construction. Established in 1986, the company has continuously pushed the boundaries of construction innovation. Here's an in-depth look at this influential organization:",
+      "Karmod International stands as a distinguished leader in the field of modular and prefabricated construction. The company has continuously pushed the boundaries of construction innovation. Here's an in-depth look at this influential organization:",
       "Karmod International's unwavering commitment to excellence, sustainability, and innovation has firmly established its position as a leader in the modular and prefabricated construction industry. As the demand for efficient and sustainable building solutions continues to rise, Karmod International remains a dependable partner for businesses and organizations seeking top-tier modular and prefabricated structures.",
     ]);
   });
 
-  it("shows the seven Legacy strengths, label and text", () => {
+  it("shows the seven Legacy strengths, label and text, without a country count", () => {
     const items = wrapper.findAll("[data-company-strength]");
 
     expect(items.map((item) => item.get("h3").text())).toEqual([
@@ -133,10 +134,11 @@ describe("HomeCompanySection", () => {
       "Quality Assurance:",
     ]);
     expect(text(items[0]!.get("p").text())).toBe(
-      "Karmod International boasts a global presence, serving clients across 135 countries. This extensive network highlights the company's unwavering commitment to delivering top-notch modular and prefabricated structures on a worldwide scale.",
+      "Karmod International boasts a global presence. This extensive network highlights the company's unwavering commitment to delivering top-notch modular and prefabricated structures on a worldwide scale.",
     );
     expect(text(items[6]!.get("p").text())).toBe(
       "Karmod International places a high priority on quality assurance, adhering to international standards and certifications. Clients can have complete confidence that their structures are built to endure.",
     );
+    expect(wrapper.text()).not.toMatch(/1986|\d+ countries/);
   });
 });

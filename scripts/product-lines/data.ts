@@ -34,8 +34,9 @@ export const PRODUCT_LINE_SEEDS: ProductLineSeed[] = [
   /*
    * https://www.karmodint.co.uk/modular-buildings/ — Cuts: body photos, two video thumbnails linking
    * to YouTube and two galleries (not copy). The `/modular-buildings/modular-school-buildings/` link
-   * is relinked to its redirect target. The source paragraph ending "economic efficienc" is
-   * truncated in the Legacy copy itself and kept as is.
+   * is relinked to its redirect target. Cut at the client's sign-off (issue #31): the sentence
+   * ending "economic efficienc", truncated in the Legacy copy itself, and the FAQ "Who builds the best
+   * portable buildings?", which names competitors (kept in docs/plans/2026-10-07-kept-url-copy-sign-off.md).
    */
   {
     id: 'productLine-modular-buildings',
@@ -165,7 +166,10 @@ export const PRODUCT_LINE_SEEDS: ProductLineSeed[] = [
    * https://www.karmodint.co.uk/portable-cabin/portable-classroom/ — Cuts: photos, video thumbnails,
    * galleries and the related-projects widget (not copy); the FAQ "How much does it cost for a
    * portable classroom?" (a USD range, "$20,000 to $100,000", no longer true). `/container/` is
-   * relinked to its redirect target.
+   * relinked to its redirect target. Cut at the client's sign-off (issue #31), since Karmod sells new
+   * units only: every sentence about hiring, renting or buying used classrooms, the section "Buyer's
+   * Beware: Navigating Disadvantages of Used Portable Classrooms" and the FAQ "Which is more
+   * advantageous for a mobile classroom, buying or renting?".
    */
   {
     id: 'productLine-portable-classroom',
@@ -191,6 +195,7 @@ export const PRODUCT_LINE_SEEDS: ProductLineSeed[] = [
   /*
    * https://www.karmodint.co.uk/portable-cabin/portable-house/ — Cuts: photos, video thumbnails and
    * galleries (not copy), and one empty list item. `/container/` is relinked to its redirect target.
+   * Cut at the client's sign-off (issue #31): the four FAQs quoting general UK house prices in £.
    */
   {
     id: 'productLine-portable-house',

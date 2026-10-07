@@ -46,10 +46,6 @@ A mobile classroom is a type of portable classroom designed for easy relocation.
 
 While marine containers can be modified into classrooms, challenges may include ensuring adequate insulation, ventilation, and natural lighting. Compliance with safety and educational standards and regulations is also a critical consideration.
 
-## Which is more advantageous for a mobile classroom, buying or renting?
-
-The choice between buying or renting a mobile classroom depends on the duration of need, budget, and specific requirements of the educational institution. Renting may be more cost-effective for short-term needs, while buying could be a better investment for long-term use.
-
 ## What does the mobile classroom complex promise?
 
 A mobile classroom complex promises a flexible, adaptive, and cost-effective solution for expanding educational spaces. It offers the advantage of quick installation, minimal site disruption, and the ability to relocate or reconfigure the units as the needs of the school evolve.

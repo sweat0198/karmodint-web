@@ -20,7 +20,7 @@
             Leading the Innovation in Modular and Prefabricated Solutions
           </p>
           <p data-company-paragraph class="text-brand-slate-muted text-base leading-relaxed text-pretty">
-            Karmod International stands as a distinguished leader in the field of modular and prefabricated construction. Established in 1986, the company has continuously pushed the boundaries of construction innovation. <em>Here's an in-depth look at this influential organization:</em>
+            Karmod International stands as a distinguished leader in the field of modular and prefabricated construction. The company has continuously pushed the boundaries of construction innovation. <em>Here's an in-depth look at this influential organization:</em>
           </p>
         </div>
 
@@ -58,7 +58,7 @@
 const strengths = [
   {
     label: "Global Reach:",
-    text: "Karmod International boasts a global presence, serving clients across 135 countries. This extensive network highlights the company's unwavering commitment to delivering top-notch modular and prefabricated structures on a worldwide scale.",
+    text: "Karmod International boasts a global presence. This extensive network highlights the company's unwavering commitment to delivering top-notch modular and prefabricated structures on a worldwide scale.",
   },
   {
     label: "Diverse Product Portfolio:",
