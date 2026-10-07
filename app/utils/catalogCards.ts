@@ -1,3 +1,4 @@
+import type { ProductSchemaInput } from "~/composables/useAppSeo";
 import type { CatalogProduct } from "~/queries/catalog";
 import type { CatalogDisplayCard } from "~/utils/catalogSearch";
 import {
@@ -5,6 +6,7 @@ import {
   toPortableContainerCards,
   type PortableContainerCard,
 } from "~/utils/portableContainerCards";
+import { sanityImageUrl } from "~/utils/sanityImageUrl";
 import { toSizeCards } from "~/utils/sizeCards";
 
 /**
@@ -51,4 +53,15 @@ export function catalogCardSchemaInput(card: CatalogDisplayCard): CatalogCardSch
     isPoa: card.isPoa,
     specs: card.specs,
   };
+}
+
+/** A card grid's Product structured-data entries, images resolved to their Sanity CDN URLs. */
+export function catalogCardSchemaProducts(
+  cards: CatalogDisplayCard[],
+  sanity: { projectId: string; dataset: string },
+): ProductSchemaInput[] {
+  return cards.map((card) => {
+    const { imageRef, ...input } = catalogCardSchemaInput(card);
+    return { ...input, image: sanityImageUrl(imageRef, sanity.projectId, sanity.dataset) };
+  });
 }

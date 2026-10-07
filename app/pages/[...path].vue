@@ -151,7 +151,7 @@ import {
   type ProductLine,
 } from "~/queries/productLines";
 import {
-  catalogCardSchemaInput,
+  catalogCardSchemaProducts,
   isPortableContainerCard,
   toCatalogDisplayCards,
 } from "~/utils/catalogCards";
@@ -221,12 +221,9 @@ setPageSeo({
           getProductItemListSchema({
             name: line.value.name,
             description: line.value.description,
-            products: cards.value.map((card) => {
-              const { imageRef, ...input } = catalogCardSchemaInput(card);
-              return {
-                ...input,
-                image: sanityImageUrl(imageRef, config.public.sanityProjectId, config.public.sanityDataset),
-              };
+            products: catalogCardSchemaProducts(cards.value, {
+              projectId: config.public.sanityProjectId,
+              dataset: config.public.sanityDataset,
             }),
           }),
         ]

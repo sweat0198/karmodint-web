@@ -462,9 +462,8 @@ import { useAppSeo } from "~/composables/useAppSeo";
 import { STATIC_PAGES } from "~~/shared/utils/sitePages";
 import { PAGE_SEO } from "~/constants/pageSeo";
 import { useCatalogBrowse } from "~/composables/useCatalogBrowse";
-import { sanityImageUrl } from "~/utils/sanityImageUrl";
 import {
-  catalogCardSchemaInput,
+  catalogCardSchemaProducts,
   isPortableContainerCard as isPortableCard,
   toCatalogDisplayCards,
 } from "~/utils/catalogCards";
@@ -574,12 +573,9 @@ setPageSeo({
     ]),
     getProductItemListSchema({
       name: "Portable Cabins, Gatehouses & Kiosks",
-      products: cards.value.map((card) => {
-        const { imageRef, ...input } = catalogCardSchemaInput(card);
-        return {
-          ...input,
-          image: sanityImageUrl(imageRef, config.public.sanityProjectId, config.public.sanityDataset),
-        };
+      products: catalogCardSchemaProducts(cards.value, {
+        projectId: config.public.sanityProjectId,
+        dataset: config.public.sanityDataset,
       }),
     }),
   ],
