@@ -1,12 +1,6 @@
 import type { SanityImage, SanitySEO } from "~/types/catalog";
-import type { PortableTextBlock, PortableTextTextBlock } from "~/types/portableText";
-
-/** One question and its answer (the shared `faqItem` object). */
-export interface FaqItem {
-  _key?: string;
-  question: string;
-  answer: PortableTextTextBlock[];
-}
+import type { FaqItem } from "~/types/faq";
+import type { PortableTextBlock } from "~/types/portableText";
 
 /** A Product Line's ancestor, as far as breadcrumbs need it. */
 export interface ProductLineAncestor {

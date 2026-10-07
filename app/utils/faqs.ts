@@ -1,4 +1,4 @@
-import type { FaqItem } from "~/types/productLine";
+import type { FaqItem } from "~/types/faq";
 import { portableTextToPlainText } from "~/utils/portableText";
 
 /**

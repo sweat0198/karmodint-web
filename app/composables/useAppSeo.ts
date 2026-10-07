@@ -6,7 +6,7 @@ import {
 } from "~/constants/company";
 import { hasPublishablePrice } from "~~/shared/utils/priceLabel";
 import { toAbsoluteSiteUrl } from "~~/shared/utils/sitePath";
-import type { FaqItem } from "~/types/productLine";
+import type { FaqItem } from "~/types/faq";
 import { portableTextToPlainText } from "~/utils/portableText";
 
 export interface PageSeoOptions {

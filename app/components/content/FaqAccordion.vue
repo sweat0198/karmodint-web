@@ -34,7 +34,7 @@
 
 <script setup lang="ts">
 import PortableTextContent from "~/components/content/PortableTextContent.vue";
-import type { FaqItem } from "~/types/productLine";
+import type { FaqItem } from "~/types/faq";
 
 /**
  * The visible half of a page's FAQs. Pass it the `publishableFaqs` list the page also gives

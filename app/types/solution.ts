@@ -1,6 +1,6 @@
 import type { CatalogProduct } from "~/queries/catalog";
 import type { PortableTextBlock } from "~/types/portableText";
-import type { FaqItem } from "~/types/productLine";
+import type { FaqItem } from "~/types/faq";
 
 export interface SolutionCoverImage {
   _type?: "image";

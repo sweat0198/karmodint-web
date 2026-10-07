@@ -9,8 +9,8 @@
 <script setup lang="ts">
 import FaqAccordion from "~/components/content/FaqAccordion.vue";
 import PortableTextContent from "~/components/content/PortableTextContent.vue";
+import type { FaqItem } from "~/types/faq";
 import type { PortableTextBlock } from "~/types/portableText";
-import type { FaqItem } from "~/types/productLine";
 
 /**
  * A page's long-form copy and its FAQ accordion, as Product Line and Solution pages show them.
