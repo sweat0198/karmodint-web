@@ -191,6 +191,61 @@ describe('PRODUCT_LINE_SEEDS', () => {
     }
   })
 
+  it('seeds every Product Line Kept URL, with its Legacy name, title and description, parent and catalogue section', () => {
+    const documents = buildProductLineDocuments(PRODUCT_LINE_SEEDS, realOptions())
+    const byId = new Map(documents.map((doc) => [doc._id, doc]))
+    const rows = documents
+      .map((doc) => [doc.path, doc.name, doc.parent ? byId.get(doc.parent._ref)?.path : undefined, doc.category?._ref])
+      .sort(([a], [b]) => String(a).localeCompare(String(b)))
+
+    expect(rows).toEqual([
+      ['/bulletproof-cabin/', 'Bulletproof Cabin', undefined, 'category-bulletproof'],
+      ['/grp-kiosk-cabin/', 'GRP Kiosk Cabin', undefined, 'category-cabin-grp'],
+      ['/modular-buildings/', 'Modular Buildings', undefined, undefined],
+      ['/panel-cabin/', 'Panel Cabin', undefined, 'category-cabin-composite'],
+      ['/portable-cabin/', 'Portable Cabin', undefined, 'category-containers'],
+      ['/portable-cabin/flat-pack-cabins/', 'Flat Pack Cabin', '/portable-cabin/', 'category-containers'],
+      ['/portable-cabin/jackleg-cabin/', 'Jackleg Cabin', '/portable-cabin/', 'category-containers'],
+      ['/portable-cabin/portable-classroom/', 'Portable Classroom', '/portable-cabin/', 'category-containers'],
+      ['/portable-cabin/portable-house/', 'Portable House', '/portable-cabin/', 'category-containers'],
+      ['/portable-cabin/steel-cabin/', 'Steel Cabin', '/portable-cabin/', 'category-containers']
+    ])
+
+    expect(Object.fromEntries(documents.map((doc) => [doc.path, doc.seo.metaTitle]))).toMatchObject({
+      '/modular-buildings/': 'Modular Building for Sale UK from Manufacturer Company',
+      '/portable-cabin/': 'Portable Cabin for Sale | Affordable Prices and Big Projects',
+      '/portable-cabin/steel-cabin/': 'Best Steel Cabin Prices for Sale UK from Manufacturer',
+      '/portable-cabin/flat-pack-cabins/': 'Best Flat Pack Cabin for Sale UK | Prices and Sizes',
+      '/portable-cabin/jackleg-cabin/': 'Best Jackleg Cabin Prices for Sale UK from Manufacturer',
+      '/portable-cabin/portable-classroom/': 'Portable Classroom for Sale | Mobile Nursery Building Cost',
+      '/portable-cabin/portable-house/': 'Portable House Cabin for Sale | Projects and Prices',
+      '/panel-cabin/': 'Panel Cabin for Sale | Security or Retail',
+      '/bulletproof-cabin/': 'Bulletproof Cabin Prices for Sale | Armoured Security Cabin'
+    })
+    expect(byId.get('productLine-panel-cabin')?.seo.metaDescription).toBe(
+      'Versatile panel cabins for security or retail use, offering superior insulation, quick setup, and durability. Available in multiple sizes.'
+    )
+  })
+
+  it('ports the Legacy FAQs, minus the stale USD price answers', () => {
+    const faqCounts = Object.fromEntries(
+      buildProductLineDocuments(PRODUCT_LINE_SEEDS, realOptions()).map((doc) => [doc.path, doc.faqs?.length ?? 0])
+    )
+
+    expect(faqCounts).toEqual({
+      '/modular-buildings/': 9,
+      '/portable-cabin/': 7,
+      '/portable-cabin/steel-cabin/': 0,
+      '/portable-cabin/flat-pack-cabins/': 5,
+      '/portable-cabin/jackleg-cabin/': 2,
+      '/portable-cabin/portable-classroom/': 14,
+      '/portable-cabin/portable-house/': 8,
+      '/grp-kiosk-cabin/': 3,
+      '/panel-cabin/': 0,
+      '/bulletproof-cabin/': 0
+    })
+  })
+
   it('ports /grp-kiosk-cabin/ with its Legacy title, description, copy and FAQs, listing Cabin › GRP', () => {
     const document = buildProductLineDocuments(PRODUCT_LINE_SEEDS, realOptions()).find(
       (doc) => doc.path === '/grp-kiosk-cabin/'
