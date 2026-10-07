@@ -1,7 +1,12 @@
 <script lang="ts">
 import { defineComponent, h, resolveComponent, type PropType, type VNodeChild } from "vue";
 import type { PortableTextBlock } from "~/types/portableText";
-import { toPortableTextNodes, type PortableTextNode, type PortableTextSegment } from "~/utils/portableText";
+import {
+  toPortableTextNodes,
+  type PortableTextList,
+  type PortableTextNode,
+  type PortableTextSegment,
+} from "~/utils/portableText";
 import { resolveSanityImageConfig } from "~/utils/sanityImageConfig";
 import { sanityImageUrl } from "~/utils/sanityImageUrl";
 
@@ -49,16 +54,20 @@ export default defineComponent({
         : h("a", { href: segment.href, class: LINK_CLASS, rel: "noopener" }, [content]);
     }
 
+    function renderList(list: PortableTextList, nested = false): VNodeChild {
+      return h(
+        list.listItem === "number" ? "ol" : "ul",
+        {
+          class: `${list.listItem === "number" ? "list-decimal" : "list-disc"} flex flex-col gap-2 pl-6 text-base leading-relaxed text-slate-600 marker:text-brand-red${nested ? " mt-2" : ""}`,
+        },
+        list.items.map((item) =>
+          h("li", null, [...item.spans.map(renderSegment), item.nested ? renderList(item.nested, true) : null]),
+        ),
+      );
+    }
+
     function renderNode(node: PortableTextNode): VNodeChild {
-      if (node.kind === "list") {
-        return h(
-          node.listItem === "number" ? "ol" : "ul",
-          {
-            class: `${node.listItem === "number" ? "list-decimal" : "list-disc"} flex flex-col gap-2 pl-6 text-base leading-relaxed text-slate-600 marker:text-brand-red`,
-          },
-          node.items.map((segments) => h("li", null, segments.map(renderSegment))),
-        );
-      }
+      if (node.kind === "list") return renderList(node);
 
       if (node.kind === "image") {
         const { projectId, dataset } = resolveSanityImageConfig();

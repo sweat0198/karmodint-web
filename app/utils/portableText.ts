@@ -10,9 +10,21 @@ export interface PortableTextSegment {
   href?: string;
 }
 
+/** A list item's text, and the deeper list (`level` + 1) that follows it, if any. */
+export interface PortableTextListItem {
+  spans: PortableTextSegment[];
+  nested?: PortableTextList;
+}
+
+export interface PortableTextList {
+  kind: "list";
+  listItem: string;
+  items: PortableTextListItem[];
+}
+
 export type PortableTextNode =
   | { kind: "block"; style: string; spans: PortableTextSegment[] }
-  | { kind: "list"; listItem: string; items: PortableTextSegment[][] }
+  | PortableTextList
   | { kind: "image"; assetRef: string | undefined; alt: string | undefined; caption: string | undefined };
 
 function segmentsOf(block: PortableTextTextBlock): PortableTextSegment[] {
@@ -30,7 +42,7 @@ function segmentsOf(block: PortableTextTextBlock): PortableTextSegment[] {
 
 /**
  * Flattens Portable Text into what a template renders: text blocks, lists (consecutive list items
- * of one kind grouped, nesting flattened, which no ported copy uses) and images.
+ * of one kind grouped; an item one `level` deeper nests under the item before it) and images.
  *
  * Kept separate from the component so the shape is testable without a DOM, and so the FAQ
  * accordion and any body field render through the same rules.
@@ -39,8 +51,12 @@ export function toPortableTextNodes(
   blocks: PortableTextBlock[] | null | undefined,
 ): PortableTextNode[] {
   const nodes: PortableTextNode[] = [];
+  /** The lists of the current run, outermost first: `open[level - 1]`. */
+  let open: PortableTextList[] = [];
 
   for (const block of blocks ?? []) {
+    if (!(block._type === "block" && block.listItem)) open = [];
+
     if (block._type === "image") {
       nodes.push({
         kind: "image",
@@ -54,12 +70,18 @@ export function toPortableTextNodes(
 
     const spans = segmentsOf(block);
     if (block.listItem) {
-      const previous = nodes[nodes.length - 1];
-      if (previous?.kind === "list" && previous.listItem === block.listItem) {
-        previous.items.push(spans);
-      } else {
-        nodes.push({ kind: "list", listItem: block.listItem, items: [spans] });
+      // A level with no open parent item (e.g. the first item is level 2) nests as deep as it can.
+      const depth = Math.min(Math.max((block.level ?? 1) - 1, 0), open.length);
+      open = open.slice(0, depth + 1);
+      let list = open[depth];
+      if (!list || list.listItem !== block.listItem) {
+        list = { kind: "list", listItem: block.listItem, items: [] };
+        const parentItem = depth > 0 ? open[depth - 1]!.items.at(-1) : undefined;
+        if (parentItem) parentItem.nested = list;
+        else nodes.push(list);
+        open = [...open.slice(0, depth), list];
       }
+      list.items.push({ spans });
       continue;
     }
 

@@ -41,6 +41,25 @@ describe("PortableTextContent", () => {
     expect(wrapper.get("p em").text()).toBe("emphasis");
   });
 
+  it("nests a deeper list item inside the item before it", () => {
+    const wrapper = mount(PortableTextContent, {
+      props: {
+        blocks: [
+          block([span("3 bedroom portable house:")], { listItem: "bullet", level: 1 }),
+          block([span("A master suite.")], { listItem: "bullet", level: 2 }),
+          block([span("Two secondary bedrooms.")], { listItem: "bullet", level: 2 }),
+          block([span("2 bedroom portable house:")], { listItem: "bullet", level: 1 }),
+        ],
+      },
+      global: { stubs },
+    });
+
+    const outer = wrapper.findAll(":scope > ul > li");
+    expect(outer).toHaveLength(2);
+    expect(outer[0]!.findAll("ul > li").map((li) => li.text())).toEqual(["A master suite.", "Two secondary bedrooms."]);
+    expect(outer[1]!.find("ul").exists()).toBe(false);
+  });
+
   it("routes internal links through NuxtLink and leaves external links as anchors", () => {
     const wrapper = mount(PortableTextContent, {
       props: {
