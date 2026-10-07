@@ -84,8 +84,8 @@ export const PRODUCT_LINE_SEEDS: ProductLineSeed[] = [
     description:
       'Affordable portable cabin for sale, perfect for big and small project. Discover customizable solutions with top-quality designs at competitive prices.',
     cover: {
-      imagePath: 'public/images/hero/hero-container-3x7-uk.webp',
-      alt: 'White portable cabin with a tan steel frame, a door and two windows on concrete pads beside a construction site'
+      imagePath: 'public/images/product-lines/portable-cabin-hero-v2.webp',
+      alt: 'Concept of a white portable office cabin with a taupe steel frame and entrance steps at a tidy construction site'
     },
     copyPath: `${COPY_DIR}/portable-cabin.md`,
     faqsPath: `${COPY_DIR}/portable-cabin.faqs.md`,
@@ -162,8 +162,8 @@ export const PRODUCT_LINE_SEEDS: ProductLineSeed[] = [
     description:
       'When it comes to providing quality, innovative solutions for a wide range of applications the UK is home to some of the finest GRP kiosks.',
     cover: {
-      imagePath: 'public/images/hero/hero-grp-cabin-uk.jpg',
-      alt: 'White GRP kiosk cabin with a staffed service window beside a barrier at a UK office entrance'
+      imagePath: 'public/images/product-lines/grp-kiosk-cabin-hero-v2.webp',
+      alt: 'Concept of a white moulded GRP kiosk with sliding service windows at a landscaped business park entrance'
     },
     copyPath: `${COPY_DIR}/grp-kiosk-cabin.md`,
     faqsPath: `${COPY_DIR}/grp-kiosk-cabin.faqs.md`,
@@ -212,8 +212,8 @@ export const PRODUCT_LINE_SEEDS: ProductLineSeed[] = [
     description:
       'Discover bulletproof cabin prices and top-notch armoured security cabins for sale. Prioritize safety with our reliable solutions.',
     cover: {
-      imagePath: 'public/images/hero/hero-bulletproof-cabin-uk.jpg',
-      alt: 'Armoured security checkpoint cabin with floodlights and a barrier arm at dusk'
+      imagePath: 'public/images/product-lines/bulletproof-cabin-hero-v2.webp',
+      alt: 'Concept of a charcoal armoured gatehouse with reinforced glazing and floodlights beside a secure vehicle barrier'
     },
     copyPath: `${COPY_DIR}/bulletproof-cabin.md`,
     displayOrder: 100,
