@@ -382,11 +382,11 @@ export const REDIRECT_GROUPS: readonly RedirectGroup[] = [
   toGardenRooms,
   toTicketKiosks,
   toSiteOffices,
+  toPrivacyPolicy,
 ];
 
 /** TSV rules held back until their target exists. Not written to `_redirects`. */
 export const PENDING_REDIRECT_GROUPS: readonly RedirectGroup[] = [
-  toPrivacyPolicy, // #22
   toGrpKioskCabin, // #23
   toPortableCabin, // #24
   toPortableClassroom, // #24

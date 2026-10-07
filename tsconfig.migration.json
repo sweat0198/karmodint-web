@@ -1,0 +1,18 @@
+{
+  "//": "Typechecks the UK migration redirect check. Same reasoning as tsconfig.catalogue.json: the root tsconfig extends Nuxt's, which includes only app/, so scripts/ and tests/ need their own strict config.",
+  "compilerOptions": {
+    "strict": true,
+    "noEmit": true,
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "skipLibCheck": true,
+    "types": ["node"],
+    "esModuleInterop": true
+  },
+  "include": [
+    "scripts/migration/**/*.ts",
+    "shared/migration/**/*.ts",
+    "tests/migration/checkRedirects*.spec.ts"
+  ]
+}

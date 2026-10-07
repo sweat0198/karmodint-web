@@ -174,6 +174,7 @@ export default defineNuxtConfig({
         "/solutions/",
         "/contact/",
         "/about/",
+        "/privacy-policy/",
         "/sitemap.xml",
         // With no worker fallback, Pages answers unknown paths with the top-level 404.html and a 404 status
         // (without one it serves `/` with a 200). `nuxi generate` adds it on its own; `nuxi build` doesn't.

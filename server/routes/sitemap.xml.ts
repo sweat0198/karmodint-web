@@ -42,6 +42,12 @@ export default defineEventHandler((event) => {
       changefreq: "monthly",
       priority: "0.8",
     },
+    {
+      loc: "/privacy-policy/",
+      lastmod: now,
+      changefreq: "yearly",
+      priority: "0.3",
+    },
   ];
 
   const sitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
