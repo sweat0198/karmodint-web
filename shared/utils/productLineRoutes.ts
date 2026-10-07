@@ -1,13 +1,13 @@
 import { PRODUCT_LINE_SEED_HINT } from "../migration/keptUrls";
 import { toSitePath } from "./sitePath";
 
+/** A published Product Line with a page: the filter behind both the prerender list and the sitemap. */
+export const PUBLISHED_PRODUCT_LINE_FILTER = `_type == "productLine" && defined(path) && !(_id in path("drafts.**"))`;
+
 /**
  * Every published Product Line path. Lives here rather than in `app/queries/` because
  * `nuxt.config.ts` reads it at build time, where the app's `~` alias does not resolve.
  */
-/** A published Product Line with a page: the filter behind both the prerender list and the sitemap. */
-export const PUBLISHED_PRODUCT_LINE_FILTER = `_type == "productLine" && defined(path) && !(_id in path("drafts.**"))`;
-
 export const PRODUCT_LINE_PATHS_QUERY = `*[${PUBLISHED_PRODUCT_LINE_FILTER}].path`;
 
 /**
