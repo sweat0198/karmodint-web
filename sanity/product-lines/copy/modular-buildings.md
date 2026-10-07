@@ -92,7 +92,7 @@ Here are some visionary concepts unveiled through modular construction:
 - **Customization:** One of the stellar attributes of modular construction is the extent of customization it offers. From small extensions to large commercial spaces, the modular design can be tailored to meet specific requirements and tastes.
 - **Sustainability:** The construction process is designed to minimize waste and promote energy efficiency, making modular buildings a greener alternative.
 - **Economic Efficiency:** With a reduction in construction time, labor costs, and material wastage, the economic efficiency of modular construction is unparalleled. The appealing modular building prices further underscore this advantage.
-- **Technological Integration:**Modern modular buildings are often equipped with smart technology, providing a platform for integrating modern amenities and features which are vital in the contemporary world.
+- <strong>Technological Integration:</strong>Modern modular buildings are often equipped with smart technology, providing a platform for integrating modern amenities and features which are vital in the contemporary world.
 - **Scalability:** The ability to easily add or remove modular building units provides a scalable solution, catering to evolving space requirements.
 - **Architectural Elegance:** The modern designs and architectural styles exhibited in modular buildings blend elegance with modernity, offering a visually appealing yet functional space.
 

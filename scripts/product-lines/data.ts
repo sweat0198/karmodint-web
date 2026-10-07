@@ -32,9 +32,10 @@ const COPY_DIR = 'sanity/product-lines/copy'
 
 export const PRODUCT_LINE_SEEDS: ProductLineSeed[] = [
   /*
-   * https://www.karmodint.co.uk/modular-buildings/ — Cuts: body photos, two video thumbnails linking to YouTube and two galleries (not copy). The
-   * `/modular-buildings/modular-school-buildings/` link is relinked to its redirect target. The source
-   * paragraph ending "economic efficienc" is truncated on the Legacy page itself and kept as is.
+   * https://www.karmodint.co.uk/modular-buildings/ — Cuts: body photos, two video thumbnails linking
+   * to YouTube and two galleries (not copy). The `/modular-buildings/modular-school-buildings/` link
+   * is relinked to its redirect target. The source paragraph ending "economic efficienc" is
+   * truncated on the Legacy page itself and kept as is.
    */
   {
     id: 'productLine-modular-buildings',
@@ -56,9 +57,10 @@ export const PRODUCT_LINE_SEEDS: ProductLineSeed[] = [
     }
   },
   /*
-   * https://www.karmodint.co.uk/portable-cabin/ — Cuts: photos, two video thumbnails, galleries and the related-projects widget (not copy); the
-   * list of 52 `/blog/{city}-portable-cabin-and-container/` links, which all redirect back to this page;
-   * the FAQ "What is the cost of a cabin?" (a USD range, "$10,000 to $5,000", no longer true). The
+   * https://www.karmodint.co.uk/portable-cabin/ — Cuts: photos, two video thumbnails, galleries and
+   * the related-projects widget (not copy); the list of 52
+   * `/blog/{city}-portable-cabin-and-container/` links, which all redirect back to this page; the
+   * FAQ "What is the cost of a cabin?" (a USD range, "$10,000 to $5,000", no longer true). The
    * `/container/` link, which redirects here, is unlinked; the other Legacy links point at their
    * redirect targets.
    */
@@ -83,9 +85,9 @@ export const PRODUCT_LINE_SEEDS: ProductLineSeed[] = [
     }
   },
   /*
-   * https://www.karmodint.co.uk/portable-cabin/steel-cabin/ — Cuts: photos, video thumbnails, galleries and the embedded K1002/K2004/K2005 product cards
-   * (not copy). An empty link around one sentence (a scrape artefact) is dropped; `/container/` is
-   * relinked to its redirect target.
+   * https://www.karmodint.co.uk/portable-cabin/steel-cabin/ — Cuts: photos, video thumbnails,
+   * galleries and the embedded K1002/K2004/K2005 product cards (not copy). An empty link around one
+   * sentence (a scrape artefact) is dropped; `/container/` is relinked to its redirect target.
    */
   {
     id: 'productLine-steel-cabin',
@@ -108,8 +110,9 @@ export const PRODUCT_LINE_SEEDS: ProductLineSeed[] = [
     }
   },
   /*
-   * https://www.karmodint.co.uk/portable-cabin/flat-pack-cabins/ — Cuts: photos, video thumbnails, galleries and the embedded K1002/K2004/K2005 product cards
-   * (not copy). `/container/` is relinked to its redirect target.
+   * https://www.karmodint.co.uk/portable-cabin/flat-pack-cabins/ — Cuts: photos, video thumbnails,
+   * galleries and the embedded K1002/K2004/K2005 product cards (not copy). `/container/` is relinked
+   * to its redirect target.
    */
   {
     id: 'productLine-flat-pack-cabins',
@@ -133,8 +136,9 @@ export const PRODUCT_LINE_SEEDS: ProductLineSeed[] = [
     }
   },
   /*
-   * https://www.karmodint.co.uk/portable-cabin/jackleg-cabin/ — Cuts: photos, video thumbnails, galleries and the embedded K1002/K2004/K2005 product cards
-   * (not copy). `/container/` is relinked to its redirect target.
+   * https://www.karmodint.co.uk/portable-cabin/jackleg-cabin/ — Cuts: photos, video thumbnails,
+   * galleries and the embedded K1002/K2004/K2005 product cards (not copy). `/container/` is relinked
+   * to its redirect target.
    */
   {
     id: 'productLine-jackleg-cabin',
@@ -158,9 +162,10 @@ export const PRODUCT_LINE_SEEDS: ProductLineSeed[] = [
     }
   },
   /*
-   * https://www.karmodint.co.uk/portable-cabin/portable-classroom/ — Cuts: photos, video thumbnails, galleries and the related-projects widget (not copy); the FAQ
-   * "How much does it cost for a portable classroom?" (a USD range, "$20,000 to $100,000", no longer
-   * true). `/container/` is relinked to its redirect target.
+   * https://www.karmodint.co.uk/portable-cabin/portable-classroom/ — Cuts: photos, video thumbnails,
+   * galleries and the related-projects widget (not copy); the FAQ "How much does it cost for a
+   * portable classroom?" (a USD range, "$20,000 to $100,000", no longer true). `/container/` is
+   * relinked to its redirect target.
    */
   {
     id: 'productLine-portable-classroom',
@@ -184,8 +189,8 @@ export const PRODUCT_LINE_SEEDS: ProductLineSeed[] = [
     }
   },
   /*
-   * https://www.karmodint.co.uk/portable-cabin/portable-house/ — Cuts: photos, video thumbnails and galleries (not copy), and one empty list item. `/container/`
-   * is relinked to its redirect target.
+   * https://www.karmodint.co.uk/portable-cabin/portable-house/ — Cuts: photos, video thumbnails and
+   * galleries (not copy), and one empty list item. `/container/` is relinked to its redirect target.
    */
   {
     id: 'productLine-portable-house',
@@ -235,10 +240,10 @@ export const PRODUCT_LINE_SEEDS: ProductLineSeed[] = [
     }
   },
   /*
-   * https://www.karmodint.co.uk/panel-cabin/ — Cuts: the gallery (not copy) and the sentence "With options ranging from 2m² to 10m², our
-   * cabins are available in a range of sizes, ensuring versatility for any requirement." (no cabin in
-   * the range reaches 10m²). `/guard-booths/` and `/outdoor-and-retail-kiosk/` are relinked to their
-   * redirect targets.
+   * https://www.karmodint.co.uk/panel-cabin/ — Cuts: the gallery (not copy) and the sentence "With
+   * options ranging from 2m² to 10m², our cabins are available in a range of sizes, ensuring
+   * versatility for any requirement." (no cabin in the range reaches 10m²). `/guard-booths/` and
+   * `/outdoor-and-retail-kiosk/` are relinked to their redirect targets.
    */
   {
     id: 'productLine-panel-cabin',
@@ -260,9 +265,9 @@ export const PRODUCT_LINE_SEEDS: ProductLineSeed[] = [
     }
   },
   /*
-   * https://www.karmodint.co.uk/bulletproof-cabin/ — Cuts: the photo, the gallery and its heading "Bulletproof Cabin Pictures" (nothing left under
-   * it). Hard line breaks become paragraph breaks. `/outdoor-and-retail-kiosk/` is relinked to its
-   * redirect target.
+   * https://www.karmodint.co.uk/bulletproof-cabin/ — Cuts: the photo, the gallery and its heading
+   * "Bulletproof Cabin Pictures" (nothing left under it). Hard line breaks become paragraph breaks.
+   * `/outdoor-and-retail-kiosk/` is relinked to its redirect target.
    */
   {
     id: 'productLine-bulletproof-cabin',
