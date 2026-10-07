@@ -1,5 +1,10 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import { createClient } from "@sanity/client";
+import { productLinePrerenderRoutes } from "./shared/utils/productLineRoutes";
 import { isSitePath } from "./shared/utils/sitePath";
+
+const sanityProjectId = process.env.SANITY_PROJECT_ID || "dummy_project_id";
+const sanityDataset = process.env.SANITY_DATASET || "production";
 
 export default defineNuxtConfig({
   compatibilityDate: "2024-11-01",
@@ -52,8 +57,8 @@ export default defineNuxtConfig({
   },
 
   sanity: {
-    projectId: process.env.SANITY_PROJECT_ID || "dummy_project_id",
-    dataset: process.env.SANITY_DATASET || "production",
+    projectId: sanityProjectId,
+    dataset: sanityDataset,
   },
 
   app: {
@@ -130,8 +135,8 @@ export default defineNuxtConfig({
     public: {
       siteUrl:
         process.env.NUXT_PUBLIC_SITE_URL || "https://www.karmodint.co.uk",
-      sanityProjectId: process.env.SANITY_PROJECT_ID || "dummy_project_id",
-      sanityDataset: process.env.SANITY_DATASET || "production",
+      sanityProjectId: sanityProjectId,
+      sanityDataset: sanityDataset,
       googleMapsApiKey: process.env.NUXT_PUBLIC_GOOGLE_MAPS_API_KEY || "",
     },
   },
@@ -190,5 +195,24 @@ export default defineNuxtConfig({
     "/**": { prerender: true },
     // Ensure API endpoints remain runtime/dynamic functions
     "/api/**": { prerender: false },
+  },
+
+  hooks: {
+    // Product Line pages (ADR-004) live at Kept URLs read from Sanity, so they are added to the
+    // prerender list by path instead of relying on the crawler finding a link to each one.
+    async "prerender:routes"(ctx) {
+      // A checkout with no Sanity project configured (tests, a fresh clone) has no paths to read.
+      if (sanityProjectId === "dummy_project_id") return;
+
+      const client = createClient({
+        projectId: sanityProjectId,
+        dataset: sanityDataset,
+        apiVersion: "2025-02-19",
+        useCdn: false,
+      });
+      for (const route of await productLinePrerenderRoutes((query) => client.fetch(query))) {
+        ctx.routes.add(route);
+      }
+    },
   },
 });

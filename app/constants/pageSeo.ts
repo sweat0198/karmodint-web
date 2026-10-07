@@ -68,3 +68,20 @@ export function solutionPageSeo(solution: SolutionSeoInput): PageSeoText {
       `${solution.name} for sale UK from Karmod. Pick the units and sizes you need, configure them online and request a quote.`,
   };
 }
+
+interface ProductLineSeoInput {
+  name: string;
+  description: string;
+  seo?: { metaTitle?: string; metaDescription?: string };
+}
+
+/**
+ * A Product Line is a Kept URL: its Studio SEO fields hold the Legacy title and description word
+ * for word. The commercial pattern and its short description are only a fallback for a blank field.
+ */
+export function productLinePageSeo(line: ProductLineSeoInput): PageSeoText {
+  return {
+    title: line.seo?.metaTitle?.trim() || commercialTitle(line.name),
+    description: line.seo?.metaDescription?.trim() || line.description,
+  };
+}

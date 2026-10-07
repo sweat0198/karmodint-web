@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { PAGE_SEO, solutionPageSeo } from "~/constants/pageSeo";
+import { PAGE_SEO, productLinePageSeo, solutionPageSeo } from "~/constants/pageSeo";
 
 // UK migration design, "Titles and descriptions": Kept URLs carry the Legacy Site's <title> and
 // meta description word for word; every other page uses `{Thing} for Sale UK | Karmod`.
@@ -86,5 +86,30 @@ describe("solution page titles and descriptions", () => {
     expect(solutionPageSeo({ name: "Site Offices", seo: { metaTitle: "  " } }).title).toBe(
       "Site Offices for Sale UK | Karmod",
     );
+  });
+});
+
+describe("productLinePageSeo", () => {
+  it("uses the Legacy title and description a Kept URL carries in Studio, word for word", () => {
+    expect(
+      productLinePageSeo({
+        name: "GRP Kiosk Cabin",
+        description: "Short description.",
+        seo: {
+          metaTitle: "GRP Kiosk Cabin for Sale UK from Manufacturer | Karmod Int",
+          metaDescription: "Legacy meta description.",
+        },
+      }),
+    ).toEqual({
+      title: "GRP Kiosk Cabin for Sale UK from Manufacturer | Karmod Int",
+      description: "Legacy meta description.",
+    });
+  });
+
+  it("falls back to the commercial title and the page's own description", () => {
+    expect(productLinePageSeo({ name: "Steel Cabin", description: "Steel cabins.", seo: { metaTitle: " " } })).toEqual({
+      title: "Steel Cabin for Sale UK | Karmod",
+      description: "Steel cabins.",
+    });
   });
 });
