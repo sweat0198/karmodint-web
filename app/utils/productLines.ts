@@ -18,14 +18,22 @@ export function productLineBreadcrumbs(line: ProductLineAncestor): BreadcrumbIte
   return [{ name: "Home", path: "/" }, ...chain];
 }
 
+/**
+ * The catalogue filtered to one category. A subcategory only resolves nested under its parent's
+ * `category=`, so it needs the parent's slug too.
+ */
+export function catalogueFilterPath(slug: string, parentSlug?: string | null): string {
+  return parentSlug
+    ? `/products/?category=${parentSlug}&subcategory=${slug}`
+    : `/products/?category=${slug}`;
+}
+
 /** The catalogue filtered to a Product Line's category, or nothing for a hub page. */
 export function productLineCatalogueLink(
   category: ProductLineCategory | null | undefined,
 ): string | undefined {
   if (!category) return undefined;
-  return category.parentSlug
-    ? `/products/?category=${category.parentSlug}&subcategory=${category.slug}`
-    : `/products/?category=${category.slug}`;
+  return catalogueFilterPath(category.slug, category.parentSlug);
 }
 
 /**
