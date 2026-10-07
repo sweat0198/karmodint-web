@@ -44,6 +44,8 @@ export const SOLUTION_BY_SLUG_QUERY = `*[
   coverImage,
   displayOrder,
   seo,
+  body,
+  faqs[]{ _key, question, answer },
   products[]{
     _key,
     sizeOptionKey,
