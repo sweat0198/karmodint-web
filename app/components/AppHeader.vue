@@ -151,7 +151,7 @@
                 <NuxtLink
                   v-for="sol in solutionMenuItems"
                   :key="sol._id"
-                  :to="`/solutions/${sol.slug}/`"
+                  :to="solutionPagePath(sol.slug)"
                   class="block pl-3.5 pr-4 py-2 text-sm border-l-2 hover:bg-slate-50"
                   :class="
                     isSolutionActive(sol)
@@ -412,7 +412,7 @@
           <NuxtLink
             v-for="sol in solutionMenuItems"
             :key="sol._id"
-            :to="`/solutions/${sol.slug}/`"
+            :to="solutionPagePath(sol.slug)"
             @click="isMobileMenuOpen = false"
             class="block text-sm hover:text-white"
             :class="isSolutionActive(sol) ? 'text-white font-semibold' : 'text-brand-slate-light/80'"
@@ -513,6 +513,7 @@ import { CATEGORY_TREE_QUERY, type CategoryTreeChild, type CategoryTreeNode } fr
 import { PRODUCT_LINES_NAV_QUERY, type ProductLineNavItem } from "~/queries/productLines";
 import { SOLUTIONS_NAV_QUERY, type SolutionNavItem } from "~/queries/solutions";
 import { productLinePathsByCategory } from "~/utils/productLines";
+import { solutionPagePath } from "~~/shared/utils/sitePages";
 import { isSameSitePath } from "~~/shared/utils/sitePath";
 
 const route = useRoute();
@@ -617,7 +618,7 @@ function isSubcategoryActive(cat: CategoryTreeNode, sub: CategoryTreeChild) {
 const isSolutionsShowAllActive = computed(() => isSameSitePath(route.path, "/solutions/"));
 
 function isSolutionActive(sol: SolutionNavItem) {
-  return isSameSitePath(route.path, `/solutions/${sol.slug}/`);
+  return isSameSitePath(route.path, solutionPagePath(sol.slug));
 }
 
 function scrollToLocation() {

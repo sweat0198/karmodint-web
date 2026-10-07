@@ -119,6 +119,7 @@ import { solutionPageSeo } from "~/constants/pageSeo";
 import { SOLUTION_BY_SLUG_QUERY, type Solution } from "~/queries/solutions";
 import { sanityImageSrcset, sanityImageUrl } from "~/utils/sanityImageUrl";
 import { toSolutionCards } from "~/utils/solutionCards";
+import { solutionPagePath } from "~~/shared/utils/sitePages";
 
 const SRCSET_WIDTHS = [640, 1024, 1600, 2000];
 
@@ -166,14 +167,14 @@ const faqPageSchema = getFaqPageSchema(faqs.value);
 
 setPageSeo({
   ...solutionPageSeo(solution.value),
-  canonicalPath: `/solutions/${solution.value.slug}/`,
+  canonicalPath: solutionPagePath(solution.value.slug),
   image: coverSrc.value,
   noindex: solution.value.seo?.noIndex,
   jsonLd: [
     getBreadcrumbSchema([
       { name: "Home", path: "/" },
       { name: "Solutions", path: "/solutions/" },
-      { name: solution.value.name, path: `/solutions/${solution.value.slug}/` },
+      { name: solution.value.name, path: solutionPagePath(solution.value.slug) },
     ]),
     {
       "@context": "https://schema.org",
