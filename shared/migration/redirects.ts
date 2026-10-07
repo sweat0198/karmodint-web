@@ -256,6 +256,7 @@ const toGrpKioskCabin: RedirectGroup = {
   ],
 };
 
+/** Includes the Retired Product Lines (#34), Kept URLs until the client dropped them. */
 const toPortableCabin: RedirectGroup = {
   to: "/portable-cabin/",
   status: 301,
@@ -318,15 +319,11 @@ const toPortableCabin: RedirectGroup = {
     "/flat-pack-container-k-2004/",
     "/flat-pack-container-k-2005/",
     "/flat-pack-container-k-3005/",
-    "/portable-cabin-technical-specifications/",
-  ],
-};
-
-const toPortableClassroom: RedirectGroup = {
-  to: "/portable-cabin/portable-classroom/",
-  status: 301,
-  from: [
     "/modular-buildings/modular-school-buildings/",
+    "/portable-cabin-technical-specifications/",
+    "/portable-cabin/flat-pack-cabins/",
+    "/portable-cabin/jackleg-cabin/",
+    "/portable-cabin/portable-classroom/",
   ],
 };
 
@@ -390,7 +387,6 @@ export const REDIRECT_GROUPS: readonly RedirectGroup[] = [
   toPrivacyPolicy,
   toGrpKioskCabin,
   toPortableCabin,
-  toPortableClassroom,
   toPanelCabin,
   toBulletproofCabin,
 ];

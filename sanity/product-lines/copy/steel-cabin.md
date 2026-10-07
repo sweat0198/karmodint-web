@@ -4,7 +4,7 @@ While wooden or plastic [**portable cabins**](/portable-cabin/) have their own s
 
 But what about design? One might think that a steel cabin would have an industrial, monotonous look. However, modern steel cabins defy this stereotype. The design possibilities are almost endless, with options ranging from minimalist to intricate architectural styles. This design flexibility makes steel cabins a popular choice across various applications, from residential spaces to [**portable buildings**](/modular-buildings/) used for business.
 
-Of course, for those seeking the utmost flexibility in placement and relocation, the [**jackleg cabin**](/portable-cabin/jackleg-cabin/) made from steel offers a compelling option. These cabins come with adjustable legs that allow for easy installation on uneven terrains, making them ideal for challenging landscapes or temporary setups.
+Of course, for those seeking the utmost flexibility in placement and relocation, the [**jackleg cabin**](/portable-cabin/) made from steel offers a compelling option. These cabins come with adjustable legs that allow for easy installation on uneven terrains, making them ideal for challenging landscapes or temporary setups.
 
 Additionally, a steel cabin can be a sensible alternative to traditional [**container**](/portable-cabin/) options for storage or transport. Not only do they provide a secure and robust environment, but they also offer better customization options. For instance, they can be outfitted with advanced security features or temperature controls, depending on the intended use.
 

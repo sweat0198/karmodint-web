@@ -11,7 +11,7 @@ Nothing here is run against DNS or Cloudflare from the repo. Dashboard steps are
 ## 0. Before launch day: content and build
 
 - [ ] Every redirect ticket has landed (#21, #22, #23, #24): `PENDING_REDIRECT_GROUPS` in
-      `shared/migration/redirects.ts` is empty, and all 196 rules are in `REDIRECT_GROUPS`.
+      `shared/migration/redirects.ts` is empty, and all 199 rules are in `REDIRECT_GROUPS`.
 - [ ] Apply the seeded content to the **production** Sanity dataset before the launch build. Every page is prerendered
       from Sanity (ADR-002): a Kept URL whose document is missing is not built, and the build fails if a Redirect
       targets it. Dry-run each script first and read the summary:
@@ -21,6 +21,8 @@ Nothing here is run against DNS or Cloudflare from the repo. Dashboard steps are
     SANITY_DATASET=production pnpm product-lines:seed
     ```
     `createOrReplace` overwrites Studio edits made since the last run. Re-run only to re-apply the seeded copy.
+    It also deletes the retired Product Lines (#34); the build fails while the dataset still has one, since its
+    path is now a redirect source.
   - [ ] Solution copy and FAQs (#26):
     ```sh
     SANITY_DATASET=production pnpm solutions:patch-copy --dry-run
@@ -116,7 +118,7 @@ What the script (`scripts/migration/check-redirects.ts`) does:
 - Checks that every Kept URL answers 200.
 - Exits 1 and lists each failing path with what it got. GET requests only, 8 at a time.
 
-- [ ] The first line reads `Checking 196 Redirect sources ...`, and the last reads `All ... requests passed`.
+- [ ] The first line reads `Checking 199 Redirect sources ...`, and the last reads `All ... requests passed`.
 - [ ] Spot-check by hand:
   ```sh
   curl -sI https://www.karmodint.co.uk/container/ | grep -iE '^(HTTP|location)'   # 301 → /portable-cabin/

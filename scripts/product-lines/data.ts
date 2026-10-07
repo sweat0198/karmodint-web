@@ -7,9 +7,9 @@
  * listed per entry.
  *
  * `displayOrder` follows the Kept URL table in docs/plans/2026-10-06-uk-migration-design.md in
- * steps of ten: modular-buildings 10, portable-cabin 20, steel-cabin 30, flat-pack-cabins 40,
- * jackleg-cabin 50, portable-classroom 60, portable-house 70, grp-kiosk-cabin 80, panel-cabin 90,
- * bulletproof-cabin 100.
+ * steps of ten: modular-buildings 10, portable-cabin 20, steel-cabin 30, portable-house 70,
+ * grp-kiosk-cabin 80, panel-cabin 90, bulletproof-cabin 100. 40–60 were the Product Lines in
+ * `RETIRED_PRODUCT_LINES`.
  */
 export interface ProductLineSeed {
   /** Published document id, `productLine-<last path segment>`. */
@@ -29,6 +29,17 @@ export interface ProductLineSeed {
 }
 
 const COPY_DIR = 'sanity/product-lines/copy'
+
+/**
+ * Retired Product Lines (#34): no longer seeded, their paths 301 to `/portable-cabin/`
+ * (`shared/migration/redirects.ts`). The seed deletes their documents, so a dataset seeded before
+ * the retirement stops building pages at redirect sources.
+ */
+export const RETIRED_PRODUCT_LINES: readonly Pick<ProductLineSeed, 'id' | 'path'>[] = [
+  { id: 'productLine-flat-pack-cabins', path: '/portable-cabin/flat-pack-cabins/' },
+  { id: 'productLine-jackleg-cabin', path: '/portable-cabin/jackleg-cabin/' },
+  { id: 'productLine-portable-classroom', path: '/portable-cabin/portable-classroom/' }
+]
 
 export const PRODUCT_LINE_SEEDS: ProductLineSeed[] = [
   /*
@@ -88,7 +99,8 @@ export const PRODUCT_LINE_SEEDS: ProductLineSeed[] = [
   /*
    * https://www.karmodint.co.uk/portable-cabin/steel-cabin/ — Cuts: photos, video thumbnails,
    * galleries and the embedded K1002/K2004/K2005 product cards (not copy). An empty link around one
-   * sentence (a scrape artefact) is dropped; `/container/` is relinked to its redirect target.
+   * sentence (a scrape artefact) is dropped; `/container/` and `/portable-cabin/jackleg-cabin/` are
+   * relinked to their redirect target.
    */
   {
     id: 'productLine-steel-cabin',
@@ -108,89 +120,6 @@ export const PRODUCT_LINE_SEEDS: ProductLineSeed[] = [
       metaTitle: 'Best Steel Cabin Prices for Sale UK from Manufacturer',
       metaDescription:
         'Discover the best steel cabins for sale in the UK. Explore steel cabin prices and sizes for your perfect space solution.'
-    }
-  },
-  /*
-   * https://www.karmodint.co.uk/portable-cabin/flat-pack-cabins/ — Cuts: photos, video thumbnails,
-   * galleries and the embedded K1002/K2004/K2005 product cards (not copy). `/container/` is relinked
-   * to its redirect target.
-   */
-  {
-    id: 'productLine-flat-pack-cabins',
-    name: 'Flat Pack Cabin',
-    path: '/portable-cabin/flat-pack-cabins/',
-    parentId: 'productLine-portable-cabin',
-    categoryId: 'category-containers',
-    description:
-      'Find the best flat pack cabin for sale in the UK. Explore prices and sizes for your ideal space solution.',
-    cover: {
-      imagePath: 'public/images/products/K3005/left-diagonal.png',
-      alt: 'Flat pack cabin with white insulated panels, a tan steel frame, a central door and two windows'
-    },
-    copyPath: `${COPY_DIR}/flat-pack-cabins.md`,
-    faqsPath: `${COPY_DIR}/flat-pack-cabins.faqs.md`,
-    displayOrder: 40,
-    seo: {
-      metaTitle: 'Best Flat Pack Cabin for Sale UK | Prices and Sizes',
-      metaDescription:
-        'Find the best flat pack cabin for sale in the UK. Explore prices and sizes for your ideal space solution.'
-    }
-  },
-  /*
-   * https://www.karmodint.co.uk/portable-cabin/jackleg-cabin/ — Cuts: photos, video thumbnails,
-   * galleries and the embedded K1002/K2004/K2005 product cards (not copy). `/container/` is relinked
-   * to its redirect target.
-   */
-  {
-    id: 'productLine-jackleg-cabin',
-    name: 'Jackleg Cabin',
-    path: '/portable-cabin/jackleg-cabin/',
-    parentId: 'productLine-portable-cabin',
-    categoryId: 'category-containers',
-    description:
-      'Explore competitive jackleg cabin prices for sale and elevate your workspace with versatile solutions. Find the perfect cabin for your needs today.',
-    cover: {
-      imagePath: 'public/images/solutions/site-offices.png',
-      alt: 'Portable site office cabin on concrete pads beside a UK construction site with a tower crane'
-    },
-    copyPath: `${COPY_DIR}/jackleg-cabin.md`,
-    faqsPath: `${COPY_DIR}/jackleg-cabin.faqs.md`,
-    displayOrder: 50,
-    seo: {
-      metaTitle: 'Best Jackleg Cabin Prices for Sale UK from Manufacturer',
-      metaDescription:
-        'Explore competitive jackleg cabin prices for sale and elevate your workspace with versatile solutions. Find the perfect cabin for your needs today.'
-    }
-  },
-  /*
-   * https://www.karmodint.co.uk/portable-cabin/portable-classroom/ — Cuts: photos, video thumbnails,
-   * galleries and the related-projects widget (not copy); the FAQ "How much does it cost for a
-   * portable classroom?" (a USD range, "$20,000 to $100,000", no longer true). `/container/` is
-   * relinked to its redirect target. Cut at the client's sign-off (issue #31), since Karmod sells new
-   * units only: every sentence about hiring, renting or buying used classrooms (and "The process of
-   * buying a portable classroom is also simplified.", which led into one), the section "Buyer's
-   * Beware: Navigating Disadvantages of Used Portable Classrooms" and the FAQ "Which is more
-   * advantageous for a mobile classroom, buying or renting?".
-   */
-  {
-    id: 'productLine-portable-classroom',
-    name: 'Portable Classroom',
-    path: '/portable-cabin/portable-classroom/',
-    parentId: 'productLine-portable-cabin',
-    categoryId: 'category-containers',
-    description:
-      'Discover our Portable Classroom: flexible, cost-effective, and ideal for expanding educational spaces.',
-    cover: {
-      imagePath: 'public/images/products/K8001/left-diagonal.png',
-      alt: 'Portable cabin with white insulated panels, a tan steel frame, a door and two windows'
-    },
-    copyPath: `${COPY_DIR}/portable-classroom.md`,
-    faqsPath: `${COPY_DIR}/portable-classroom.faqs.md`,
-    displayOrder: 60,
-    seo: {
-      metaTitle: 'Portable Classroom for Sale | Mobile Nursery Building Cost',
-      metaDescription:
-        'Discover our Portable Classroom: flexible, cost-effective, and ideal for expanding educational spaces.'
     }
   },
   /*

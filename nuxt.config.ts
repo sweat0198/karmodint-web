@@ -1,6 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import { createClient } from "@sanity/client";
 import { PRODUCT_LINE_URLS } from "./shared/migration/keptUrls";
+import { REDIRECTS } from "./shared/migration/redirects";
 import { productLinePrerenderRoutes } from "./shared/utils/productLineRoutes";
 import { hasSanityProject, PLACEHOLDER_SANITY_PROJECT_ID } from "./shared/utils/sanityProject";
 import { STATIC_PAGE_PATHS } from "./shared/utils/sitePages";
@@ -206,7 +207,10 @@ export default defineNuxtConfig({
         apiVersion: "2025-02-19",
         useCdn: false,
       });
-      const routes = await productLinePrerenderRoutes((query) => client.fetch(query), { required: PRODUCT_LINE_URLS });
+      const routes = await productLinePrerenderRoutes((query) => client.fetch(query), {
+        required: PRODUCT_LINE_URLS,
+        redirectSources: REDIRECTS.map((redirect) => redirect.from),
+      });
       for (const route of routes) {
         ctx.routes.add(route);
       }

@@ -35,6 +35,16 @@ describe('productLinePrerenderRoutes', () => {
     await expect(run).rejects.toThrow(/pnpm product-lines:seed/)
   })
 
+  it('fails the build naming the seed when the dataset still has a Product Line at a redirect source', async () => {
+    const fetch = async () => ['/portable-cabin/', '/portable-cabin/jackleg-cabin/']
+    const run = productLinePrerenderRoutes(fetch, {
+      redirectSources: ['/portable-cabin/jackleg-cabin/', '/container/']
+    })
+
+    await expect(run).rejects.toThrow(/at redirect sources: \/portable-cabin\/jackleg-cabin\/\./)
+    await expect(run).rejects.toThrow(/pnpm product-lines:seed/)
+  })
+
   it('passes when every required Product Line is in the dataset', async () => {
     const fetch = async () => ['/portable-cabin/', '/grp-kiosk-cabin/']
     expect(await productLinePrerenderRoutes(fetch, { required: ['/grp-kiosk-cabin/', '/portable-cabin/'] })).toEqual([

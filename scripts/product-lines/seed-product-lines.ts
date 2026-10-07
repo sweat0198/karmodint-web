@@ -1,5 +1,6 @@
 /**
- * Upload each Product Line's cover and createOrReplace its `productLine` document (ADR-004).
+ * Upload each Product Line's cover and createOrReplace its `productLine` document (ADR-004), and
+ * delete the documents of retired Product Lines (`RETIRED_PRODUCT_LINES`), drafts included.
  *
  *   pnpm product-lines:seed --dry-run           # offline: validate and summarise, no token needed
  *   pnpm product-lines:seed --dry-run --print   # also print every document as JSON
@@ -11,7 +12,7 @@
  */
 import fs from 'node:fs'
 import path from 'node:path'
-import { PRODUCT_LINE_SEEDS } from './data'
+import { PRODUCT_LINE_SEEDS, RETIRED_PRODUCT_LINES } from './data'
 import { buildProductLineDocuments, type ProductLineDocument } from './buildDocuments'
 import { loadRedirectSources } from '../catalogue/lib/redirectSources'
 import { repoPath } from '../catalogue/lib/paths'
@@ -50,6 +51,7 @@ async function main(): Promise<void> {
     const documents = buildProductLineDocuments(PRODUCT_LINE_SEEDS, { ...options, assetIds: placeholders })
     console.log(`product-lines:seed target: dataset "${readDataset()}" (dry run — no network write)`)
     for (const document of documents) console.log(`would write ${summarise(document)}`)
+    for (const line of RETIRED_PRODUCT_LINES) console.log(`would delete ${line.id} (retired ${line.path})`)
     if (print) console.log(JSON.stringify(documents, null, 2))
     return
   }
@@ -75,9 +77,11 @@ async function main(): Promise<void> {
   const documents = buildProductLineDocuments(PRODUCT_LINE_SEEDS, { ...options, assetIds })
   let transaction = client.transaction()
   for (const document of documents) transaction = transaction.createOrReplace(document)
+  for (const { id } of RETIRED_PRODUCT_LINES) transaction = transaction.delete(id).delete(`drafts.${id}`)
   await transaction.commit()
 
   for (const document of documents) console.log(`wrote     ${summarise(document)}`)
+  for (const line of RETIRED_PRODUCT_LINES) console.log(`deleted   ${line.id} (retired ${line.path})`)
   console.log(`${documents.length} Product Line documents written to "${target.dataset}"`)
 }
 

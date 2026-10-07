@@ -6,8 +6,9 @@ import {
   type ProductLineDocument
 } from '../../scripts/product-lines/buildDocuments'
 import type { PortableTextBlock } from '../../scripts/catalogue/lib/portableText'
-import { PRODUCT_LINE_SEEDS, type ProductLineSeed } from '../../scripts/product-lines/data'
+import { PRODUCT_LINE_SEEDS, RETIRED_PRODUCT_LINES, type ProductLineSeed } from '../../scripts/product-lines/data'
 import { loadRedirectSources } from '../../scripts/catalogue/lib/redirectSources'
+import { REDIRECTS } from '../../shared/migration/redirects'
 import { repoPath } from '../../scripts/catalogue/lib/paths'
 
 const files: Record<string, string> = {
@@ -204,9 +205,6 @@ describe('PRODUCT_LINE_SEEDS', () => {
       ['/modular-buildings/', 'Modular Buildings', undefined, undefined],
       ['/panel-cabin/', 'Panel Cabin', undefined, 'category-cabin-panel'],
       ['/portable-cabin/', 'Portable Cabin', undefined, 'category-containers'],
-      ['/portable-cabin/flat-pack-cabins/', 'Flat Pack Cabin', '/portable-cabin/', 'category-containers'],
-      ['/portable-cabin/jackleg-cabin/', 'Jackleg Cabin', '/portable-cabin/', 'category-containers'],
-      ['/portable-cabin/portable-classroom/', 'Portable Classroom', '/portable-cabin/', 'category-containers'],
       ['/portable-cabin/portable-house/', 'Portable House', '/portable-cabin/', 'category-containers'],
       ['/portable-cabin/steel-cabin/', 'Steel Cabin', '/portable-cabin/', 'category-containers']
     ])
@@ -215,9 +213,6 @@ describe('PRODUCT_LINE_SEEDS', () => {
       '/modular-buildings/': 'Modular Building for Sale UK from Manufacturer Company',
       '/portable-cabin/': 'Portable Cabin for Sale | Affordable Prices and Big Projects',
       '/portable-cabin/steel-cabin/': 'Best Steel Cabin Prices for Sale UK from Manufacturer',
-      '/portable-cabin/flat-pack-cabins/': 'Best Flat Pack Cabin for Sale UK | Prices and Sizes',
-      '/portable-cabin/jackleg-cabin/': 'Best Jackleg Cabin Prices for Sale UK from Manufacturer',
-      '/portable-cabin/portable-classroom/': 'Portable Classroom for Sale | Mobile Nursery Building Cost',
       '/portable-cabin/portable-house/': 'Portable House Cabin for Sale | Projects and Prices',
       '/panel-cabin/': 'Panel Cabin for Sale | Security or Retail',
       '/bulletproof-cabin/': 'Bulletproof Cabin Prices for Sale | Armoured Security Cabin'
@@ -236,9 +231,6 @@ describe('PRODUCT_LINE_SEEDS', () => {
       '/modular-buildings/': 8,
       '/portable-cabin/': 7,
       '/portable-cabin/steel-cabin/': 0,
-      '/portable-cabin/flat-pack-cabins/': 5,
-      '/portable-cabin/jackleg-cabin/': 2,
-      '/portable-cabin/portable-classroom/': 13,
       '/portable-cabin/portable-house/': 4,
       '/grp-kiosk-cabin/': 3,
       '/panel-cabin/': 0,
@@ -278,6 +270,23 @@ describe('PRODUCT_LINE_SEEDS', () => {
     ])
   })
 
+  it('retires the flat pack, jackleg and classroom Product Lines: unseeded, and each path redirects to a seeded page (#34)', () => {
+    const seededPaths = new Set(PRODUCT_LINE_SEEDS.map((seed) => seed.path))
+    const seededIds = new Set(PRODUCT_LINE_SEEDS.map((seed) => seed.id))
+    const redirectTo = new Map(REDIRECTS.map((rule) => [rule.from, rule.to]))
+
+    expect(RETIRED_PRODUCT_LINES.map((line) => [line.id, redirectTo.get(line.path)])).toEqual([
+      ['productLine-flat-pack-cabins', '/portable-cabin/'],
+      ['productLine-jackleg-cabin', '/portable-cabin/'],
+      ['productLine-portable-classroom', '/portable-cabin/']
+    ])
+    for (const line of RETIRED_PRODUCT_LINES) {
+      expect(seededIds.has(line.id), line.id).toBe(false)
+      expect(seededPaths.has(line.path), line.path).toBe(false)
+      expect(seededPaths.has(redirectTo.get(line.path)!), line.path).toBe(true)
+    }
+  })
+
   describe('applies the client sign-off on the Kept URL copy (issue #31)', () => {
     const byPath = (path: string) =>
       buildProductLineDocuments(PRODUCT_LINE_SEEDS, realOptions()).find((doc) => doc.path === path)!
@@ -291,18 +300,6 @@ describe('PRODUCT_LINE_SEEDS', () => {
       expect(text.join('\n')).not.toMatch(/\befficienc\b/)
       expect(text).toContain(
         'The tallest modular building stands as a testament to the heights that this form of construction can reach, both literally and metaphorically.'
-      )
-    })
-
-    it('/portable-cabin/portable-classroom/ offers no hire, rental or used classrooms, since Karmod sells new units only', () => {
-      const document = byPath('/portable-cabin/portable-classroom/')
-
-      expect(document.faqs?.map((faq) => faq.question)).not.toContain(
-        'Which is more advantageous for a mobile classroom, buying or renting?'
-      )
-      expect(document.body.map(blockText)).not.toContain('Buyer\'s Beware: Navigating Disadvantages of Used Portable Classrooms')
-      expect(pageText(document).join('\n')).not.toMatch(
-        /\bhir(e|ing)\b|\brent(al|ing)?\b|pre-owned|second-hand|\bused (portable |mobile )?(classrooms?|options|units)\b|new or used/i
       )
     })
 

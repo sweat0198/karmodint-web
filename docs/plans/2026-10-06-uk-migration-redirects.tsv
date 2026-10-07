@@ -155,7 +155,7 @@
 /kvkk/	/privacy-policy/	301	sheet
 /merchant-center/	/products/	301	sheet
 /metrocity-cabin/	/products/?category=cabin&subcategory=metro-city	301	sheet
-/modular-buildings/modular-school-buildings/	/portable-cabin/portable-classroom/	301	sheet
+/modular-buildings/modular-school-buildings/	/portable-cabin/	301	sheet, retargeted (#34)
 /modular-kiosk-technical-details/	/solutions/ticket-information-and-service-kiosks/	301	sheet
 /outdoor-and-retail-kiosk/	/solutions/retail-and-food-service-kiosks/	301	sheet
 /panel-cabin-110x110/	/panel-cabin/	301	sheet
@@ -166,6 +166,9 @@
 /panel-cabin-210x260/	/panel-cabin/	301	sheet
 /panel-cabin-260x260/	/panel-cabin/	301	sheet
 /portable-cabin-technical-specifications/	/portable-cabin/	301	sheet
+/portable-cabin/flat-pack-cabins/	/portable-cabin/	301	retired Product Line (#34)
+/portable-cabin/jackleg-cabin/	/portable-cabin/	301	retired Product Line (#34)
+/portable-cabin/portable-classroom/	/portable-cabin/	301	retired Product Line (#34)
 /portable-cabin/portable-office-cabin/	/solutions/site-offices/	301	sheet
 /portable-cabin/portable-toilet-and-shower-cabin/	/solutions/welfare-and-wc-units/	301	sheet
 /prefabricated-shelter-140-140/	/panel-cabin/	301	sheet

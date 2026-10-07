@@ -26,14 +26,13 @@ Every public URL ends in `/`, per `docs/ADR-003-Trailing-Slash-URLs.md`. That co
 | `/modular-buildings/` | Product Line (hub, no product grid) | Legacy copy |
 | `/portable-cabin/` | Product Line → Containers | Legacy copy |
 | `/portable-cabin/steel-cabin/` | Product Line → Containers, parent `/portable-cabin/` | Legacy copy |
-| `/portable-cabin/flat-pack-cabins/` | same | Legacy copy |
-| `/portable-cabin/jackleg-cabin/` | same | Legacy copy |
-| `/portable-cabin/portable-classroom/` | same | Legacy copy |
 | `/portable-cabin/portable-house/` | same | Legacy copy |
 | `/grp-kiosk-cabin/` | Product Line → Cabin › GRP | Legacy copy |
 | `/panel-cabin/` | Product Line → Cabin › Insulated Panel | Legacy copy |
 | `/bulletproof-cabin/` | Product Line → Bulletproof | Legacy copy |
 | `/privacy-policy/` | Hardcoded page | Client-supplied text in `docs/assets/privacy-policy.md`, word for word |
+
+`/portable-cabin/flat-pack-cabins/`, `/portable-cabin/jackleg-cabin/` and `/portable-cabin/portable-classroom/` were Kept URLs until the client retired them (#34). They now 301 to `/portable-cabin/` (see Redirects).
 
 "Legacy copy" means the body copy, `<title>` and meta description the Legacy Site served at a Legacy URL, carried over word for word. The only cuts are claims about products, sizes or contact details that are no longer true.
 
@@ -98,7 +97,7 @@ The other four Solutions keep their current content.
 
 ## Redirects
 
-Cloudflare Pages' `_redirects` is generated at build time from one typed redirect map, `shared/migration/redirects.ts` (written into `dist/_redirects` ahead of the hand-written Studio rewrites in `public/_redirects`, by `modules/legacy-redirects/`). A group of rules ships once its target page exists; the rest wait in `PENDING_REDIRECT_GROUPS`. The full map is in `docs/plans/2026-10-06-uk-migration-redirects.tsv`: 196 rules: 135 from the sheet, 59 from the Legacy sitemap that the sheet missed, and 2 interim 302s.
+Cloudflare Pages' `_redirects` is generated at build time from one typed redirect map, `shared/migration/redirects.ts` (written into `dist/_redirects` ahead of the hand-written Studio rewrites in `public/_redirects`, by `modules/legacy-redirects/`). A group of rules ships once its target page exists; the rest wait in `PENDING_REDIRECT_GROUPS`. The full map is in `docs/plans/2026-10-06-uk-migration-redirects.tsv`: 199 rules: 135 from the sheet, 59 from the Legacy sitemap that the sheet missed, 3 retired Product Lines (#34), and 2 interim 302s.
 
 | Source group | Target | Code |
 |---|---|---|
@@ -109,6 +108,8 @@ Cloudflare Pages' `_redirects` is generated at build time from one typed redirec
 | `/ticket-booths/` | `/solutions/ticket-information-and-service-kiosks/` | 301 |
 | `/security-gatehouse-security-guardhouse/` | `/solutions/security-gatehouses-and-access-control/` | 301 |
 | `/prefabricated-shelter/` | `/panel-cabin/` | 301 |
+| `/portable-cabin/flat-pack-cabins/`, `/portable-cabin/jackleg-cabin/`, `/portable-cabin/portable-classroom/` (retired Product Lines, #34) | `/portable-cabin/` | 301 |
+| `/modular-buildings/modular-school-buildings/` (sheet target was `/portable-cabin/portable-classroom/`; retargeted to avoid a chain, #34) | `/portable-cabin/` | 301 |
 | `/faq/`, `/cookies-policy/` | `/contact/` | **302**, interim until #18 |
 
 Test invariants:

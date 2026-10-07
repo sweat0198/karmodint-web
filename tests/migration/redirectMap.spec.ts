@@ -50,7 +50,7 @@ describe("redirect map", () => {
     const mapped = toRedirects([...REDIRECT_GROUPS, ...PENDING_REDIRECT_GROUPS]).map(asLine);
 
     expect([...mapped].sort()).toEqual(readTsvRules().sort());
-    expect(mapped).toHaveLength(196);
+    expect(mapped).toHaveLength(199);
   });
 
   it("ships only rules whose targets are built: Solutions, Product Lines, /gallery/, /about/, /contact/, /products/, /privacy-policy/ and /", () => {
@@ -60,7 +60,7 @@ describe("redirect map", () => {
     expect(
       REDIRECTS.map((rule) => pathnameOf(rule.to)).filter((target) => !existing.test(target) && !productLines.has(target)),
     ).toEqual([]);
-    expect(REDIRECTS).toHaveLength(196);
+    expect(REDIRECTS).toHaveLength(199);
   });
 
   it("ships every rule targeting a Product Line page", () => {
@@ -70,12 +70,22 @@ describe("redirect map", () => {
       [
         "/grp-kiosk-cabin/",
         "/portable-cabin/",
-        "/portable-cabin/portable-classroom/",
         "/panel-cabin/",
         "/bulletproof-cabin/",
       ].filter((target) => !shippedTargets.has(target)),
     ).toEqual([]);
-    expect(REDIRECTS.filter((rule) => rule.to === "/portable-cabin/")).toHaveLength(59);
+    expect(REDIRECTS.filter((rule) => rule.to === "/portable-cabin/")).toHaveLength(63);
+  });
+
+  it("sends the retired Product Lines, and the school-buildings page that pointed at one, to /portable-cabin/ (#34)", () => {
+    for (const from of [
+      "/portable-cabin/flat-pack-cabins/",
+      "/portable-cabin/jackleg-cabin/",
+      "/portable-cabin/portable-classroom/",
+      "/modular-buildings/modular-school-buildings/",
+    ]) {
+      expect(REDIRECTS).toContainEqual({ from, to: "/portable-cabin/", status: 301 });
+    }
   });
 
   it("sends the four city posts the sheet missed to /portable-cabin/", () => {

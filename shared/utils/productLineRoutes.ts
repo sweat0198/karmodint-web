@@ -14,11 +14,13 @@ export const PRODUCT_LINE_PATHS_QUERY = `*[${PUBLISHED_PRODUCT_LINE_FILTER}].pat
  * The Product Line pages to prerender. Nothing links to a Product Line until the header and footer
  * do, so the crawler alone cannot be trusted to find them: each is a Kept URL, and a missing one
  * is a 404 on a ranking Legacy address. A failed read therefore fails the build, and so does a
- * `required` path (`PRODUCT_LINE_URLS`) the dataset doesn't have.
+ * `required` path (`PRODUCT_LINE_URLS`) the dataset doesn't have, or a path that is one of the
+ * `redirectSources`: a retired Product Line the seed hasn't deleted yet, whose page would be listed in
+ * the sitemap and footer while `_redirects` moves it away.
  */
 export async function productLinePrerenderRoutes(
   fetch: (query: string) => Promise<unknown>,
-  { required = [] }: { required?: readonly string[] } = {},
+  { required = [], redirectSources = [] }: { required?: readonly string[]; redirectSources?: readonly string[] } = {},
 ): Promise<string[]> {
   let paths: unknown;
   try {
@@ -35,6 +37,14 @@ export async function productLinePrerenderRoutes(
   const missing = required.filter((path) => !routes.includes(path));
   if (missing.length > 0) {
     throw new Error(`Product Line pages missing from the Sanity dataset: ${missing.join(", ")}. ${PRODUCT_LINE_SEED_HINT}`);
+  }
+
+  const redirected = routes.filter((path) => redirectSources.includes(path));
+  if (redirected.length > 0) {
+    throw new Error(
+      `Product Line pages at redirect sources: ${redirected.join(", ")}. Delete them in Studio, or for a Retired ` +
+        "Product Line apply the seed (`pnpm product-lines:seed`, which deletes `RETIRED_PRODUCT_LINES`), then rebuild.",
+    );
   }
 
   return [...new Set(routes)].sort();
