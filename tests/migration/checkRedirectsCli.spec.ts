@@ -68,10 +68,12 @@ describe("pnpm migration:check-redirects", () => {
 
   it("exits non-zero and lists each failure", async () => {
     const [first, second] = REDIRECTS;
+    // A Kept URL no shipped redirect targets, so its 404 is one failure, not one per redirect into it.
+    const kept = KEPT_URLS.find((url) => !REDIRECTS.some(({ to }) => to === url))!;
     const host = await stubDeploy({
       [first!.from]: { status: 302, location: first!.to },
       [second!.from.replace(/\/$/, "")]: { status: 404 },
-      "/privacy-policy/": { status: 404 },
+      [kept]: { status: 404 },
     });
 
     const result = await checkRedirectsCli("--host", host.origin);
@@ -79,7 +81,7 @@ describe("pnpm migration:check-redirects", () => {
     expect(result.code).toBe(1);
     expect(result.stdout).toContain(`${first!.from}  expected 301 → ${first!.to}, got 302 → ${first!.to}`);
     expect(result.stdout).toContain(`${second!.from.replace(/\/$/, "")}  expected 301 → ${second!.to}, got 404`);
-    expect(result.stdout).toContain("/privacy-policy/  Kept URL: expected 200, got 404");
+    expect(result.stdout).toContain(`${kept}  Kept URL: expected 200, got 404`);
     expect(result.stdout).toContain("3 failures");
   });
 
