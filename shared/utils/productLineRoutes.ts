@@ -4,7 +4,10 @@ import { toSitePath } from "./sitePath";
  * Every published Product Line path. Lives here rather than in `app/queries/` because
  * `nuxt.config.ts` reads it at build time, where the app's `~` alias does not resolve.
  */
-export const PRODUCT_LINE_PATHS_QUERY = `*[_type == "productLine" && defined(path) && !(_id in path("drafts.**"))].path`;
+/** A published Product Line with a page: the filter behind both the prerender list and the sitemap. */
+export const PUBLISHED_PRODUCT_LINE_FILTER = `_type == "productLine" && defined(path) && !(_id in path("drafts.**"))`;
+
+export const PRODUCT_LINE_PATHS_QUERY = `*[${PUBLISHED_PRODUCT_LINE_FILTER}].path`;
 
 /**
  * The Product Line pages to prerender. Nothing links to a Product Line until the header and footer

@@ -291,6 +291,7 @@
 <script setup lang="ts">
 import { useQuoteStore } from '~/stores/quote'
 import { useAppSeo } from '~/composables/useAppSeo'
+import { STATIC_PAGES } from '~~/shared/utils/sitePages'
 import type { ParsedUkAddress } from '~/composables/useGooglePlacesAutocomplete'
 import { getQuoteLineFinancials, requiresSizeSelection } from '~~/shared/utils/quoteLine'
 import { getPriceLabel, getTotalLabel } from '~~/shared/utils/priceLabel'
@@ -318,7 +319,7 @@ const { setPageSeo } = useAppSeo()
 setPageSeo({
   title: 'Review Quote & Request Pricing | Karmod International',
   description: 'Review chosen modular building specifications and submit for official direct quotation.',
-  canonicalPath: '/quote/',
+  canonicalPath: STATIC_PAGES.quote.path,
   noindex: true
 })
 

@@ -1,6 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import { createClient } from "@sanity/client";
 import { productLinePrerenderRoutes } from "./shared/utils/productLineRoutes";
+import { STATIC_PAGE_PATHS } from "./shared/utils/sitePages";
 import { isSitePath } from "./shared/utils/sitePath";
 
 const sanityProjectId = process.env.SANITY_PROJECT_ID || "dummy_project_id";
@@ -166,15 +167,8 @@ export default defineNuxtConfig({
     prerender: {
       crawlLinks: true,
       routes: [
-        "/",
-        "/products/",
-        "/customize/",
-        "/quote/",
-        "/gallery/",
-        "/solutions/",
-        "/contact/",
-        "/about/",
-        "/privacy-policy/",
+        // Every static page, noindex ones included (shared/utils/sitePages.ts: the sitemap reads the same list).
+        ...STATIC_PAGE_PATHS,
         "/sitemap.xml",
         // With no worker fallback, Pages answers unknown paths with the top-level 404.html and a 404 status
         // (without one it serves `/` with a 200). `nuxi generate` adds it on its own; `nuxi build` doesn't.

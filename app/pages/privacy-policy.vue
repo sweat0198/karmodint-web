@@ -20,6 +20,7 @@
 <script setup lang="ts">
 import PrivacyPolicyArticle from "~/components/legal/PrivacyPolicyArticle.vue";
 import { useAppSeo } from "~/composables/useAppSeo";
+import { STATIC_PAGES } from "~~/shared/utils/sitePages";
 import { PAGE_SEO } from "~/constants/pageSeo";
 
 // Kept URL (UK migration design, "Kept URLs"): the client-supplied policy, hardcoded rather than Sanity content.
@@ -27,7 +28,7 @@ const { setPageSeo, getBreadcrumbSchema } = useAppSeo();
 
 setPageSeo({
   ...PAGE_SEO.privacyPolicy,
-  canonicalPath: "/privacy-policy/",
+  canonicalPath: STATIC_PAGES.privacyPolicy.path,
   jsonLd: [
     getBreadcrumbSchema([
       { name: "Home", path: "/" },
