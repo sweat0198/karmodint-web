@@ -1,4 +1,4 @@
-import type { Redirect } from "../../shared/migration/redirects";
+import { redirectSourceForms, type Redirect } from "../../shared/migration/redirects";
 
 const BEGIN = "# --- Legacy Site redirects: generated from shared/migration/redirects.ts, do not edit ---";
 const END = "# --- end Legacy Site redirects ---";
@@ -13,9 +13,8 @@ const END = "# --- end Legacy Site redirects ---";
  * - The status is always written: Cloudflare defaults to 302.
  */
 export function withRedirects(existing: string, redirects: readonly Redirect[]): string {
-  const lines = redirects.flatMap(({ from, to, status }) => [
-    `${from} ${to} ${status}`,
-    `${from.replace(/\/$/, "")} ${to} ${status}`,
-  ]);
+  const lines = redirects.flatMap(({ from, to, status }) =>
+    redirectSourceForms(from).map((source) => `${source} ${to} ${status}`),
+  );
   return [BEGIN, ...lines, END, "", existing].join("\n");
 }

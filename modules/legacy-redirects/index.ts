@@ -3,7 +3,7 @@ import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { defineNuxtModule, useLogger } from "nuxt/kit";
 import { KEPT_URLS } from "../../shared/migration/keptUrls";
-import { REDIRECTS } from "../../shared/migration/redirects";
+import { REDIRECTS, redirectSourceForms } from "../../shared/migration/redirects";
 import { findMissingPages, missingPagesError } from "./builtPages";
 import { withRedirects } from "./redirectsFile";
 import { findWorkerRoutedPaths, type PagesRoutes } from "./workerRoutes";
@@ -35,7 +35,7 @@ export default defineNuxtModule({
         const routesPath = path.join(outputDir, "_routes.json");
         if (existsSync(routesPath)) {
           const routes = JSON.parse(await readFile(routesPath, "utf8")) as PagesRoutes;
-          const sources = REDIRECTS.flatMap((redirect) => [redirect.from, redirect.from.replace(/\/$/, "")]);
+          const sources = REDIRECTS.flatMap((redirect) => redirectSourceForms(redirect.from));
           const routed = findWorkerRoutedPaths(routes, sources);
           if (routed.length > 0) {
             throw new Error(

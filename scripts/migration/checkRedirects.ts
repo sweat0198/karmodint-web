@@ -3,7 +3,7 @@
  * `Location` in one hop, and every Kept URL answers 200. `_redirects` matches the trailing slash exactly, so each
  * source is requested in both forms, `/x/` and `/x` (docs/research/cloudflare-pages-redirects.md).
  */
-import type { Redirect } from "../../shared/migration/redirects";
+import { redirectSourceForms, type Redirect } from "../../shared/migration/redirects";
 
 export interface CheckOptions {
   /** Scheme and host to check, e.g. `https://karmodint-web.pages.dev`. */
@@ -102,7 +102,7 @@ export async function checkRedirects({
 
   const checks = [
     ...redirects.flatMap((redirect) =>
-      [redirect.from, redirect.from.replace(/\/$/, "")].map((path) => sourceCheck(path, redirect)),
+      redirectSourceForms(redirect.from).map((path) => sourceCheck(path, redirect)),
     ),
     ...keptUrls.map(keptCheck),
   ];

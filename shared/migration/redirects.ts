@@ -404,3 +404,11 @@ export function toRedirects(groups: readonly RedirectGroup[]): Redirect[] {
 
 /** Every shipped rule, one per source. */
 export const REDIRECTS: readonly Redirect[] = toRedirects(REDIRECT_GROUPS);
+
+/**
+ * A source as `_redirects` must list it: its `/` form and its slashless twin, since Cloudflare Pages
+ * matches sources exactly (`/container/` doesn't catch `/container`).
+ */
+export function redirectSourceForms(source: string): [string, string] {
+  return [source, source.replace(/\/$/, "")];
+}
