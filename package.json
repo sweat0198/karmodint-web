@@ -35,6 +35,7 @@
     "manual-products:containers": "jiti scripts/manual-products/add-container-products.ts",
     "typecheck:manual-products": "tsc -p tsconfig.manual-products.json",
     "solutions:patch-covers": "jiti scripts/solutions/patch-covers.ts",
+    "solutions:patch-copy": "jiti scripts/solutions/patch-copy.ts",
     "typecheck:solutions": "tsc -p tsconfig.solutions.json",
     "product-lines:seed": "jiti scripts/product-lines/seed-product-lines.ts",
     "typecheck:product-lines": "tsc -p tsconfig.product-lines.json",

@@ -1,5 +1,5 @@
 {
-  "//": "Typechecks the Solution cover migration. Same reasoning as tsconfig.catalogue.json: the root tsconfig extends Nuxt's, which includes only app/, so scripts/ and tests/ need their own strict config.",
+  "//": "Typechecks the Solution cover and copy migrations. Same reasoning as tsconfig.catalogue.json: the root tsconfig extends Nuxt's, which includes only app/, so scripts/ and tests/ need their own strict config.",
   "compilerOptions": {
     "strict": true,
     "noEmit": true,
@@ -16,6 +16,8 @@
     "tests/solutions/**/*.ts",
     "scripts/catalogue/lib/paths.ts",
     "scripts/catalogue/lib/runScript.ts",
-    "scripts/catalogue/lib/sanityEnv.ts"
+    "scripts/catalogue/lib/sanityEnv.ts",
+    "scripts/catalogue/lib/pageCopy.ts",
+    "scripts/product-lines/redirectSources.ts"
   ]
 }
