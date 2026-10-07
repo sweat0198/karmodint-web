@@ -24,4 +24,22 @@ describe('productLinePrerenderRoutes', () => {
     }
     await expect(productLinePrerenderRoutes(fetch)).rejects.toThrow(/Product Line paths.*network down/)
   })
+
+  it('fails the build naming the seed when a required Product Line is not in the dataset', async () => {
+    const fetch = async () => ['/grp-kiosk-cabin/']
+    const run = productLinePrerenderRoutes(fetch, {
+      required: ['/grp-kiosk-cabin/', '/portable-cabin/', '/panel-cabin/']
+    })
+
+    await expect(run).rejects.toThrow(/\/portable-cabin\/, \/panel-cabin\//)
+    await expect(run).rejects.toThrow(/pnpm product-lines:seed/)
+  })
+
+  it('passes when every required Product Line is in the dataset', async () => {
+    const fetch = async () => ['/portable-cabin/', '/grp-kiosk-cabin/']
+    expect(await productLinePrerenderRoutes(fetch, { required: ['/grp-kiosk-cabin/', '/portable-cabin/'] })).toEqual([
+      '/grp-kiosk-cabin/',
+      '/portable-cabin/'
+    ])
+  })
 })

@@ -6,8 +6,8 @@ map in `shared/migration/redirects.ts`).
 ## Does a source match its slashless (or slashed) twin?
 
 **No. Matching is exact, trailing slash included.** `/container/` does not catch a request for `/container`, and
-`/container` does not catch `/container/`. So the build writes every source in both forms (192 sources at most →
-384 static rules, well under the 2,000 limit).
+`/container` does not catch `/container/`. So the build writes every source in both forms (196 sources at most →
+392 static rules, well under the 2,000 limit).
 
 Evidence:
 

@@ -2,7 +2,7 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { findMissingPages } from "../../modules/legacy-redirects/builtPages";
+import { findMissingPages, missingPagesError } from "../../modules/legacy-redirects/builtPages";
 
 let outputDir: string;
 
@@ -49,5 +49,22 @@ describe("findMissingPages", () => {
     mkdirSync(path.join(outputDir, "gallery"));
 
     expect(findMissingPages(outputDir, ["/gallery/"])).toEqual(["/gallery/"]);
+  });
+});
+
+describe("missingPagesError", () => {
+  it("tells the builder to apply the Product Line seed when a Product Line page is missing", () => {
+    const message = missingPagesError(["/contact/", "/portable-cabin/"]).message;
+
+    expect(message).toContain("/contact/, /portable-cabin/");
+    expect(message).toMatch(/Product Line pages missing: \/portable-cabin\/.*pnpm product-lines:seed/s);
+  });
+
+  it("points at the redirect map when only non-Product-Line targets are missing", () => {
+    const message = missingPagesError(["/privacy-policy/"]).message;
+
+    expect(message).toContain("/privacy-policy/");
+    expect(message).toContain("shared/migration/redirects.ts");
+    expect(message).not.toContain("product-lines:seed");
   });
 });

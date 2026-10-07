@@ -21,6 +21,15 @@ export const KEPT_URLS = [
 
 export type KeptUrl = (typeof KEPT_URLS)[number];
 
+/** The Kept URLs served by Product Line pages (ADR-004), built from Sanity content (`pnpm product-lines:seed`). */
+export const PRODUCT_LINE_URLS: readonly KeptUrl[] = KEPT_URLS.filter(
+  (url) => url !== "/" && url !== "/products/" && url !== "/privacy-policy/",
+);
+
+/** How a build tells its runner to put missing Product Line pages in the dataset it reads. */
+export const PRODUCT_LINE_SEED_HINT =
+  "Apply the Product Line seed (`pnpm product-lines:seed`, scripts/product-lines/) to the Sanity dataset this build reads, then rebuild.";
+
 export function isKeptUrl(path: string): path is KeptUrl {
   return (KEPT_URLS as readonly string[]).includes(path);
 }

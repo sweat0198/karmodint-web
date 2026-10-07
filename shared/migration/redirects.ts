@@ -245,16 +245,8 @@ const toSiteOffices: RedirectGroup = {
   ],
 };
 
-// Pending: the target page doesn't exist yet. Each group moves to REDIRECT_GROUPS in the ticket that builds its target.
-
-const toPrivacyPolicy: RedirectGroup = {
-  to: "/privacy-policy/",
-  status: 301,
-  from: [
-    "/corporate-personal-data-protection-policy/",
-    "/kvkk/",
-  ],
-};
+// Product Line pages (ADR-004) are built from Sanity content: their targets exist once `pnpm product-lines:seed` has
+// been applied to the dataset the build reads.
 
 const toGrpKioskCabin: RedirectGroup = {
   to: "/grp-kiosk-cabin/",
@@ -278,11 +270,13 @@ const toPortableCabin: RedirectGroup = {
     "/blog/carlisle-portable-cabin-and-container/",
     "/blog/chester-portable-cabin-and-container/",
     "/blog/chichester-portable-cabin-and-container/",
+    "/blog/coventry-portable-cabin-and-container/",
     "/blog/derby-portable-cabin-and-container/",
     "/blog/derry-portable-cabin-and-container/",
     "/blog/dundee-portable-cabin-and-container/",
     "/blog/durham-portable-cabin-and-container/",
     "/blog/edinburgh-portable-cabin-and-container/",
+    "/blog/ely-portable-cabin-and-container/",
     "/blog/exeter-portable-cabin-and-container/",
     "/blog/glasgow-portable-cabin-and-container/",
     "/blog/gloucester-portable-cabin-and-container/",
@@ -293,6 +287,7 @@ const toPortableCabin: RedirectGroup = {
     "/blog/leeds-portable-cabin-and-container/",
     "/blog/leicester-portable-cabin-and-container/",
     "/blog/lincoln-portable-cabin-and-container/",
+    "/blog/lisburn-portable-cabin-and-container/",
     "/blog/liverpool-portable-cabin-and-container/",
     "/blog/london-portable-cabin-and-container/",
     "/blog/manchester-portable-cabin-and-container/",
@@ -312,6 +307,7 @@ const toPortableCabin: RedirectGroup = {
     "/blog/stoke-on-trent-portable-cabin-and-container/",
     "/blog/sunderland-portable-cabin-and-container/",
     "/blog/swansea-portable-cabin-and-container/",
+    "/blog/truro-portable-cabin-and-container/",
     "/blog/wakefield-portable-cabin-and-container/",
     "/blog/winchester-portable-cabin-and-container/",
     "/blog/wolverhampton-portable-cabin-and-container/",
@@ -365,6 +361,17 @@ const toBulletproofCabin: RedirectGroup = {
   ],
 };
 
+// Pending: the target page doesn't exist yet. Each group moves to REDIRECT_GROUPS in the ticket that builds its target.
+
+const toPrivacyPolicy: RedirectGroup = {
+  to: "/privacy-policy/",
+  status: 301,
+  from: [
+    "/corporate-personal-data-protection-policy/",
+    "/kvkk/",
+  ],
+};
+
 /** Groups whose target page is built today. Shipping a pending group = moving it here from PENDING_REDIRECT_GROUPS. */
 export const REDIRECT_GROUPS: readonly RedirectGroup[] = [
   toHome,
@@ -382,16 +389,16 @@ export const REDIRECT_GROUPS: readonly RedirectGroup[] = [
   toGardenRooms,
   toTicketKiosks,
   toSiteOffices,
+  toGrpKioskCabin,
+  toPortableCabin,
+  toPortableClassroom,
+  toPanelCabin,
+  toBulletproofCabin,
 ];
 
 /** TSV rules held back until their target exists. Not written to `_redirects`. */
 export const PENDING_REDIRECT_GROUPS: readonly RedirectGroup[] = [
   toPrivacyPolicy, // #22
-  toGrpKioskCabin, // #23
-  toPortableCabin, // #24
-  toPortableClassroom, // #24
-  toPanelCabin, // #24
-  toBulletproofCabin, // #24
 ];
 
 export function toRedirects(groups: readonly RedirectGroup[]): Redirect[] {

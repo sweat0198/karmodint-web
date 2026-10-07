@@ -50,27 +50,48 @@ describe("redirect map", () => {
     const mapped = toRedirects([...REDIRECT_GROUPS, ...PENDING_REDIRECT_GROUPS]).map(asLine);
 
     expect([...mapped].sort()).toEqual(readTsvRules().sort());
-    expect(mapped).toHaveLength(192);
+    expect(mapped).toHaveLength(196);
   });
 
-  it("ships only rules whose targets exist today: Solutions, /gallery/, /about/, /contact/, /products/ and /", () => {
+  it("ships only rules whose targets are built: Solutions, Product Lines, /gallery/, /about/, /contact/, /products/ and /", () => {
     const existing = /^\/(solutions\/[a-z0-9-]+\/|gallery\/|about\/|contact\/|products\/|)$/;
+    const productLines = new Set<string>(KEPT_URLS.filter((url) => !["/", "/products/", "/privacy-policy/"].includes(url)));
 
-    expect(REDIRECTS.map((rule) => pathnameOf(rule.to)).filter((target) => !existing.test(target))).toEqual([]);
-    expect(REDIRECTS).toHaveLength(116);
+    expect(
+      REDIRECTS.map((rule) => pathnameOf(rule.to)).filter((target) => !existing.test(target) && !productLines.has(target)),
+    ).toEqual([]);
+    expect(REDIRECTS).toHaveLength(194);
   });
 
-  it("holds back the rules targeting /privacy-policy/ and Product Line pages", () => {
+  it("ships every rule targeting a Product Line page", () => {
+    const shippedTargets = new Set(REDIRECTS.map((rule) => rule.to));
+
+    expect(
+      [
+        "/grp-kiosk-cabin/",
+        "/portable-cabin/",
+        "/portable-cabin/portable-classroom/",
+        "/panel-cabin/",
+        "/bulletproof-cabin/",
+      ].filter((target) => !shippedTargets.has(target)),
+    ).toEqual([]);
+    expect(REDIRECTS.filter((rule) => rule.to === "/portable-cabin/")).toHaveLength(59);
+  });
+
+  it("sends the four city posts the sheet missed to /portable-cabin/", () => {
+    for (const city of ["coventry", "ely", "lisburn", "truro"]) {
+      expect(REDIRECTS).toContainEqual({
+        from: `/blog/${city}-portable-cabin-and-container/`,
+        to: "/portable-cabin/",
+        status: 301,
+      });
+    }
+  });
+
+  it("holds back only the rules targeting /privacy-policy/", () => {
     const pendingTargets = new Set(toRedirects(PENDING_REDIRECT_GROUPS).map((rule) => rule.to));
 
-    expect([...pendingTargets].sort()).toEqual([
-      "/bulletproof-cabin/",
-      "/grp-kiosk-cabin/",
-      "/panel-cabin/",
-      "/portable-cabin/",
-      "/portable-cabin/portable-classroom/",
-      "/privacy-policy/",
-    ]);
+    expect([...pendingTargets]).toEqual(["/privacy-policy/"]);
   });
 
   it("sends the metro-city cabin page to the filtered products list", () => {
