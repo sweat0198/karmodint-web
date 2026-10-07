@@ -19,25 +19,23 @@ vi.mock("#imports", () => ({
 
 const AppFooter = (await import("~/components/AppFooter.vue")).default;
 
+const NuxtLinkStub = {
+  props: ["to"],
+  template: '<a :href="to"><slot /></a>',
+};
+
 async function mountFooter(props: { hasPriceBar?: boolean } = {}) {
   const Harness = defineComponent({
     render: () => h(Suspense, null, { default: () => h(AppFooter, props) }),
   });
   const wrapper = mount(Harness, {
     global: {
-      stubs: {
-        NuxtLink: { props: ["to"], template: '<a :to="to"><slot /></a>' },
-      },
+      stubs: { NuxtLink: NuxtLinkStub },
     },
   });
   await flushPromises();
   return wrapper;
 }
-
-const NuxtLinkStub = {
-  props: ["to"],
-  template: '<a :href="to"><slot /></a>',
-};
 
 describe("AppFooter", () => {
   beforeEach(() => {
@@ -59,8 +57,8 @@ describe("AppFooter", () => {
     expect(wrapper.get("footer").classes()).not.toContain("sm:pb-24");
   });
 
-  it("links to the Privacy Policy page", () => {
-    const wrapper = mount(AppFooter, { global: { stubs: { NuxtLink: NuxtLinkStub } } });
+  it("links to the Privacy Policy page", async () => {
+    const wrapper = await mountFooter();
     const link = wrapper.findAll("a").find((a) => a.text() === "Privacy Policy");
 
     expect(link?.attributes("href")).toBe("/privacy-policy/");
@@ -85,7 +83,7 @@ describe("AppFooter Product Lines", () => {
 
     expect(productLinesNavQuery.queries.some((query) => query.includes("order(displayOrder asc"))).toBe(true);
     const nav = wrapper.get('nav[aria-label="Product lines"]');
-    expect(nav.findAll("a").map((link) => [link.text(), link.attributes("to")])).toEqual([
+    expect(nav.findAll("a").map((link) => [link.text(), link.attributes("href")])).toEqual([
       ["Modular Buildings", "/modular-buildings/"],
       ["Portable Cabin", "/portable-cabin/"],
       ["Steel Cabin", "/portable-cabin/steel-cabin/"],
