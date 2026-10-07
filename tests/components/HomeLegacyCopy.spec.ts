@@ -119,6 +119,7 @@ describe("HomeCompanySection", () => {
       "Karmod International stands as a distinguished leader in the field of modular and prefabricated construction. The company has continuously pushed the boundaries of construction innovation. Here's an in-depth look at this influential organization:",
       "Karmod International's unwavering commitment to excellence, sustainability, and innovation has firmly established its position as a leader in the modular and prefabricated construction industry. As the demand for efficient and sustainable building solutions continues to rise, Karmod International remains a dependable partner for businesses and organizations seeking top-tier modular and prefabricated structures.",
     ]);
+    expect(wrapper.text()).not.toContain("1986");
   });
 
   it("shows the seven Legacy strengths, label and text, without a country count", () => {
@@ -139,6 +140,6 @@ describe("HomeCompanySection", () => {
     expect(text(items[6]!.get("p").text())).toBe(
       "Karmod International places a high priority on quality assurance, adhering to international standards and certifications. Clients can have complete confidence that their structures are built to endure.",
     );
-    expect(wrapper.text()).not.toMatch(/1986|\d+ countries/);
+    expect(wrapper.text()).not.toMatch(/\d+ countries/);
   });
 });

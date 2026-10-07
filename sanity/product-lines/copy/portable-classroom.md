@@ -24,7 +24,7 @@ Mobile classroom buildings are renowned for their adaptability. They can be cust
 
 Moreover, the integration of amenities, like bathrooms, ensures that these mobile units are self-sufficient. With portable classroom foundations engineered for stability and safety, the units combine convenience with security. Temporary classrooms, therefore, become integral components of the school’s infrastructure.
 
-The process of buying a portable classroom is also simplified. The average size of a portable classroom is designed to balance spaciousness with compactness, ensuring ease of installation and relocation.
+The average size of a portable classroom is designed to balance spaciousness with compactness, ensuring ease of installation and relocation.
 
 ## Classroom Magic: Creative Portable Classroom Design Ideas
 

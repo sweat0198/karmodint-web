@@ -32,6 +32,6 @@ This document defines the key domain terminology for Karmod International's web 
 
 - **Legacy Site**: The previous website served at www.karmodint.co.uk, which the new site replaces at launch.
 - **Legacy URL**: Any URL the Legacy Site served that search engines or visitors may still request. The known set is the migration sheet plus the Legacy Site's sitemap.
-- **Kept URL**: A Legacy URL the new site serves at the exact same address. By default it carries over the Legacy Site's title, description and body copy word for word; the Privacy Policy is the exception, replaced with new text from the client. _Avoid_: preserved page, legacy page.
+- **Kept URL**: A Legacy URL the new site serves at the exact same address. By default it carries over the Legacy Site's title, description and body copy word for word, minus cuts the client asked for (listed per page); the Privacy Policy is the exception, replaced with new text from the client. _Avoid_: preserved page, legacy page.
 - **Redirect**: A permanent (301), single-hop move from a Legacy URL that isn't kept to the new page that best replaces it. Never a chain, never pointing at another Redirect.
 - **Product Line page**: A Kept URL presenting one construction type of unit (e.g. GRP Kiosk Cabin, Bulletproof Cabin, Steel Cabin), tied to one catalogue category or subcategory. Distinct from a **Solution**, which groups units by use. Several Product Line pages can share one category and differ only in copy. _Avoid_: category page, legacy landing page.

@@ -167,7 +167,8 @@ export const PRODUCT_LINE_SEEDS: ProductLineSeed[] = [
    * galleries and the related-projects widget (not copy); the FAQ "How much does it cost for a
    * portable classroom?" (a USD range, "$20,000 to $100,000", no longer true). `/container/` is
    * relinked to its redirect target. Cut at the client's sign-off (issue #31), since Karmod sells new
-   * units only: every sentence about hiring, renting or buying used classrooms, the section "Buyer's
+   * units only: every sentence about hiring, renting or buying used classrooms (and "The process of
+   * buying a portable classroom is also simplified.", which led into one), the section "Buyer's
    * Beware: Navigating Disadvantages of Used Portable Classrooms" and the FAQ "Which is more
    * advantageous for a mobile classroom, buying or renting?".
    */

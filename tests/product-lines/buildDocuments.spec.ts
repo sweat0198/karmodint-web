@@ -264,7 +264,7 @@ describe('PRODUCT_LINE_SEEDS', () => {
     expect(document).not.toHaveProperty('parent')
 
     const headings = document!.body.filter((block) => block.style === 'h2' || block.style === 'h3')
-    expect(headings.map((block) => block.children?.map((child) => child.text).join(''))).toEqual([
+    expect(headings.map(blockText)).toEqual([
       'Transparent Quality: GRP Kiosk Prices in the UK',
       'Discover Value: GRP Kiosk Price List for Your Budget',
       'Unmatched Craftsmanship: Leading GRP Kiosk Manufacturer in the UK',
@@ -301,7 +301,9 @@ describe('PRODUCT_LINE_SEEDS', () => {
         'Which is more advantageous for a mobile classroom, buying or renting?'
       )
       expect(document.body.map(blockText)).not.toContain('Buyer\'s Beware: Navigating Disadvantages of Used Portable Classrooms')
-      expect(pageText(document).join('\n')).not.toMatch(/\bhire\b|\brent(ing)?\b|pre-owned|\bused (portable classrooms|options|units)\b|new or used/i)
+      expect(pageText(document).join('\n')).not.toMatch(
+        /\bhir(e|ing)\b|\brent(al|ing)?\b|pre-owned|second-hand|\bused (portable |mobile )?(classrooms?|options|units)\b|new or used/i
+      )
     })
 
     it('/portable-cabin/portable-house/ quotes no general UK house prices', () => {
