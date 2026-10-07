@@ -46,7 +46,7 @@ export const PAGE_SEO = {
     description:
       "Portable cabins, kiosks and gatehouses for sale UK. Contact Karmod for prices, specifications and a quote by phone, WhatsApp, email or online form.",
   },
-  // Kept URL without a Legacy title (the Legacy page answers 404), and nothing for sale: a plain title.
+  // Kept URL without a Legacy title (the Legacy URL answers 404), and nothing for sale: a plain title.
   privacyPolicy: {
     title: "Privacy Policy | Karmod International",
     description:

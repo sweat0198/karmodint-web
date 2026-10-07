@@ -35,7 +35,7 @@ export const PRODUCT_LINE_SEEDS: ProductLineSeed[] = [
    * https://www.karmodint.co.uk/modular-buildings/ — Cuts: body photos, two video thumbnails linking
    * to YouTube and two galleries (not copy). The `/modular-buildings/modular-school-buildings/` link
    * is relinked to its redirect target. The source paragraph ending "economic efficienc" is
-   * truncated on the Legacy page itself and kept as is.
+   * truncated in the Legacy copy itself and kept as is.
    */
   {
     id: 'productLine-modular-buildings',

@@ -147,7 +147,7 @@ export const solutionType = defineType({
       title: 'Page Copy',
       type: 'blockContent',
       description:
-        'Long-form copy shown below the products. Optional: Solutions that replaced a Legacy page carry its copy, word for word.'
+        'Long-form copy shown below the products. Optional: Solutions a Legacy URL now redirects to carry its Legacy copy, word for word.'
     }),
     defineField({
       name: 'faqs',

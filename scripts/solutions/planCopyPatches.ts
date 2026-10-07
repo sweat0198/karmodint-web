@@ -12,7 +12,7 @@ const isDraft = (id: string): boolean => id.startsWith('drafts.')
 /**
  * One patch per Solution document (published and draft alike) that has Legacy copy.
  *
- * `body` is replaced whole. `faqs` is set when the Legacy page had any and unset otherwise, so a
+ * `body` is replaced whole. `faqs` is set when the Legacy copy had any and unset otherwise, so a
  * re-run always converges on the committed copy files. A pending draft is patched too, or
  * publishing it later would bring back its stale copy. Solutions without Legacy copy are never
  * touched; a Solution with copy but no document fails the run instead of silently skipping it.

@@ -1,5 +1,5 @@
 /**
- * Set `body` and `faqs` on the eight Solutions that replaced a Legacy page (issue #26), from the
+ * Set `body` and `faqs` on the eight Solutions a Legacy URL now redirects to (issue #26), from the
  * copy files listed in `SOLUTION_COPY` (`scripts/solutions/data.ts`).
  *
  *   pnpm solutions:patch-copy --dry-run           # validate the copy; list patches when .env has a token
@@ -7,7 +7,7 @@
  *   pnpm solutions:patch-copy                     # write to $SANITY_DATASET
  *   SANITY_DATASET=production pnpm solutions:patch-copy
  *
- * Only `body` and `faqs` are written (`faqs` is unset where the Legacy page had none); every other
+ * Only `body` and `faqs` are written (`faqs` is unset where the Legacy copy had none); every other
  * field, and every other Solution, is left alone. Re-running converges on the committed copy, and
  * discards Studio edits made to those two fields since the last run.
  */

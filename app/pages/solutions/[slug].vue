@@ -71,7 +71,7 @@
         </div>
       </section>
 
-      <!-- Long-form copy ported from the Legacy page this Solution replaced, where there was one -->
+      <!-- Legacy copy of the Legacy URL that now redirects to this Solution, where there was one -->
       <article v-if="solution.body?.length" class="max-w-3xl">
         <PortableTextContent :blocks="solution.body" />
       </article>

@@ -26,21 +26,21 @@ export const SOLUTION_COVERS: SolutionCover[] = [
   { slug: 'accommodation-units', imagePath: `${COVERS_DIR}/accommodation-units.png`, alt: 'Row of portable accommodation cabins on a gravel site with wind turbines on the hills behind' }
 ]
 
-/** One Solution's ported Legacy copy (issue #26): the page it replaced and the copy files. */
+/** One Solution's ported Legacy copy (issue #26): the Legacy URL it replaced and the copy files. */
 export interface SolutionCopy {
   slug: string
-  /** The Legacy page whose copy this is; it now 301s to the Solution. */
+  /** The Legacy URL whose copy this is; it now 301s to the Solution. */
   legacyPath: string
   /** Body markdown, repo-relative. */
   copyPath: string
-  /** One `## question` section per FAQ; left out when the Legacy page had none. */
+  /** One `## question` section per FAQ; left out when the Legacy copy had none. */
   faqsPath?: string
 }
 
 const COPY_DIR = 'sanity/solutions/copy'
 
 /**
- * The eight Solutions that replaced a Legacy page carry its body copy and FAQs word for word
+ * The eight Solutions a Legacy URL now redirects to carry its body copy and FAQs word for word
  * (docs/plans/2026-10-06-uk-migration-design.md, "Solution changes"). The other four keep their
  * current content and are never patched.
  *

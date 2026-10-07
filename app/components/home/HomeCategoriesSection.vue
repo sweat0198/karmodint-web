@@ -68,7 +68,7 @@
 
 <script setup lang="ts">
 // Legacy home "section-cats" tiles. Links go to the Kept URL (Product Line page) for each
-// category, or to the redirect-map target when the Legacy page is gone (/metrocity-cabin/).
+// category, or to the redirect-map target when the Legacy URL is a Redirect (/metrocity-cabin/).
 const tiles = [
   {
     name: "Portable Cabin",

@@ -2,7 +2,7 @@ import { isSitePath } from '../../../shared/utils/sitePath'
 import { markdownToPortableText, validatePortableText, type PortableTextBlock } from './portableText'
 
 /**
- * Ported Legacy page copy: a body markdown file and an optional FAQ markdown file, turned into the
+ * Ported Legacy copy: a body markdown file and an optional FAQ markdown file, turned into the
  * `body` (blockContent) and `faqs` (faqItem[]) fields Product Lines and Solutions share.
  *
  * Body: h2/h3, lists, bold/italic and links; no images, no H1. FAQs: one `## question` section per

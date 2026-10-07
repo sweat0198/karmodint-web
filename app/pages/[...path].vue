@@ -97,7 +97,7 @@
         </div>
       </section>
 
-      <!-- The Legacy page copy, word for word -->
+      <!-- Legacy copy, word for word -->
       <article v-if="line.body?.length" class="max-w-3xl">
         <PortableTextContent :blocks="line.body" />
       </article>

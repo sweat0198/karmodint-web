@@ -45,7 +45,7 @@ export interface Solution {
   coverImage: SolutionCoverImage;
   displayOrder?: number;
   products: SolutionProductEntry[];
-  /** Long-form copy; only the Solutions that replaced a Legacy page have it. */
+  /** Long-form copy; only the Solutions a Legacy URL now redirects to have it, as that URL's Legacy copy. */
   body?: PortableTextBlock[] | null;
   faqs?: FaqItem[] | null;
   seo?: {

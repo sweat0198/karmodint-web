@@ -134,7 +134,7 @@ export const productLineType = defineType({
       name: 'body',
       title: 'Page Copy',
       type: 'blockContent',
-      description: 'The Legacy page copy, word for word.',
+      description: 'The Legacy copy, word for word.',
       validation: (Rule) => Rule.required()
     }),
     defineField({
