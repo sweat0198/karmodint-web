@@ -1,4 +1,8 @@
-import type { ProductLineAncestor, ProductLineCategory } from "~/types/productLine";
+import type {
+  ProductLineAncestor,
+  ProductLineCategory,
+  ProductLineNavItem,
+} from "~/types/productLine";
 
 export interface BreadcrumbItem {
   name: string;
@@ -22,4 +26,21 @@ export function productLineCatalogueLink(
   return category.parentSlug
     ? `/products/?category=${category.parentSlug}&subcategory=${category.slug}`
     : `/products/?category=${category.slug}`;
+}
+
+/**
+ * Each catalogue category's Product Line page, keyed by category id, for the header's Products
+ * menu. When several Product Lines share a category the parentless one wins (Containers →
+ * `/portable-cabin/`, not one of its children); otherwise the first in display order does.
+ */
+export function productLinePathsByCategory(
+  lines: readonly ProductLineNavItem[],
+): Map<string, string> {
+  const winners = new Map<string, ProductLineNavItem>();
+  for (const line of lines) {
+    if (!line.categoryId) continue;
+    const current = winners.get(line.categoryId);
+    if (!current || (current.hasParent && !line.hasParent)) winners.set(line.categoryId, line);
+  }
+  return new Map([...winners].map(([categoryId, line]) => [categoryId, line.path]));
 }

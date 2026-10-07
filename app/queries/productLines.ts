@@ -1,7 +1,7 @@
 import { PRODUCT_CARD_PROJECTION } from "~/queries/catalog";
-import type { ProductLine } from "~/types/productLine";
+import type { ProductLine, ProductLineNavItem } from "~/types/productLine";
 
-export type { ProductLine };
+export type { ProductLine, ProductLineNavItem };
 /** Every published Product Line path: the prerender list (and, later, the sitemap). */
 export { PRODUCT_LINE_PATHS_QUERY } from "~~/shared/utils/productLineRoutes";
 
@@ -37,6 +37,18 @@ export const PRODUCT_LINE_BY_PATH_QUERY = `*[${PUBLISHED_PRODUCT_LINES} && path 
   faqs[]{ _key, question, answer },
   displayOrder,
   seo
+}`;
+
+/**
+ * Every published Product Line in display order, as the header and footer link to them: the footer
+ * lists them all; the header's Products menu matches catalogue entries on `categoryId`.
+ */
+export const PRODUCT_LINES_NAV_QUERY = `*[${PUBLISHED_PRODUCT_LINES}] | order(displayOrder asc, name asc) {
+  _id,
+  name,
+  path,
+  "categoryId": category._ref,
+  "hasParent": defined(parent)
 }`;
 
 /** Published products in any of `$categoryIds`, in the catalogue card shape. */
