@@ -1,10 +1,6 @@
 import fs from 'node:fs'
 import { describe, expect, it } from 'vitest'
-import {
-  buildProductLineDocuments,
-  parseFaqMarkdown,
-  type BuildOptions
-} from '../../scripts/product-lines/buildDocuments'
+import { buildProductLineDocuments, type BuildOptions } from '../../scripts/product-lines/buildDocuments'
 import { PRODUCT_LINE_SEEDS, type ProductLineSeed } from '../../scripts/product-lines/data'
 import { loadRedirectSources } from '../../scripts/catalogue/lib/redirectSources'
 import { repoPath } from '../../scripts/catalogue/lib/paths'
@@ -68,15 +64,6 @@ function options(overrides: Partial<BuildOptions> = {}): BuildOptions {
     ...overrides
   }
 }
-
-describe('parseFaqMarkdown', () => {
-  it('splits `## question` sections into questions and their answer markdown', () => {
-    expect(parseFaqMarkdown(files['copy/steel.faqs.md'])).toEqual([
-      { question: 'How big is it?', answer: 'Sizes vary:\n\n- **Small:** one desk.\n- **Large:** a team.' },
-      { question: 'Is it insulated?', answer: 'Yes.' }
-    ])
-  })
-})
 
 describe('buildProductLineDocuments', () => {
   it('builds one productLine document per seed, with references, cover, copy, FAQs and SEO', () => {

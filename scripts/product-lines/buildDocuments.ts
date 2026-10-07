@@ -4,8 +4,6 @@ import { buildPageCopy, type FaqItemDocument, type PageCopyOptions } from '../ca
 import type { PortableTextBlock } from '../catalogue/lib/portableText'
 import type { ProductLineSeed } from './data'
 
-export { parseFaqMarkdown, type FaqItemDocument } from '../catalogue/lib/pageCopy'
-
 export interface BuildOptions extends PageCopyOptions {
   /** Uploaded image asset id per cover `imagePath`. A dry run passes placeholders. */
   assetIds: Record<string, string>
