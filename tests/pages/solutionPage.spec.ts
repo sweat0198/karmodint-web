@@ -110,6 +110,26 @@ describe("Solution page", () => {
     ]);
   });
 
+  // Studio can save a half-filled FAQ; the accordion and FAQPage must still list the same questions.
+  it("leaves a FAQ without question or answer text out of both the accordion and FAQPage", async () => {
+    const wrapper = await mountWith({
+      ...siteOffices,
+      faqs: [
+        { _key: "blank-q", question: "  ", answer: [text("An answer with no question.")] },
+        siteOffices.faqs[0],
+        { _key: "blank-a", question: "A question with no answer?", answer: [text("  ")] },
+        { _key: "no-a", question: "Another unanswered question?", answer: null },
+      ],
+    });
+
+    const shown = wrapper.findAll("details").map((item) => item.get("summary").text());
+    const declared = jsonLdTypes()
+      .find((schema) => schema["@type"] === "FAQPage")
+      ?.mainEntity.map((entry: { name: string }) => entry.name);
+    expect(shown).toEqual(["What is a site cabin?"]);
+    expect(declared).toEqual(shown);
+  });
+
   it("renders a Solution without Legacy copy as before: no copy, no accordion, no FAQPage", async () => {
     const wrapper = await mountWith({ ...siteOffices, body: null, faqs: null });
 

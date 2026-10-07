@@ -155,6 +155,7 @@ import {
   isPortableContainerCard,
   toCatalogDisplayCards,
 } from "~/utils/catalogCards";
+import { publishableFaqs } from "~/utils/faqs";
 import { productLineBreadcrumbs, productLineCatalogueLink } from "~/utils/productLines";
 import { sanityImageSrcset, sanityImageUrl } from "~/utils/sanityImageUrl";
 import { toSitePath } from "~~/shared/utils/sitePath";
@@ -192,7 +193,7 @@ const { data: products } =
     : { data: computed<CatalogProduct[]>(() => []) };
 
 const cards = computed(() => (line.value.category ? toCatalogDisplayCards(products.value ?? []) : []));
-const faqs = computed(() => line.value.faqs ?? []);
+const faqs = computed(() => publishableFaqs(line.value.faqs));
 const breadcrumbs = computed(() => productLineBreadcrumbs(line.value));
 const catalogueLink = computed(() => productLineCatalogueLink(line.value.category));
 

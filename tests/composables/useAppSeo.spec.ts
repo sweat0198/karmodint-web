@@ -138,14 +138,5 @@ describe("getFaqPageSchema", () => {
 
   it("is absent when there are no FAQs", () => {
     expect(useAppSeo().getFaqPageSchema([])).toBeUndefined();
-    expect(useAppSeo().getFaqPageSchema(undefined)).toBeUndefined();
-  });
-
-  it("skips an entry with no question or no answer text", () => {
-    const schema = useAppSeo().getFaqPageSchema([
-      { question: "", answer: [block("Orphan answer.")] },
-      { question: "Unanswered?", answer: [] },
-    ]);
-    expect(schema).toBeUndefined();
   });
 });

@@ -37,8 +37,8 @@ import PortableTextContent from "~/components/content/PortableTextContent.vue";
 import type { FaqItem } from "~/types/productLine";
 
 /**
- * The visible half of a page's FAQs. Pass the same list to `useAppSeo().getFaqPageSchema` so the
- * markup and the structured data cannot drift apart.
+ * The visible half of a page's FAQs. Pass it the `publishableFaqs` list the page also gives
+ * `useAppSeo().getFaqPageSchema`, so the markup and the structured data cannot drift apart.
  */
 defineProps<{
   heading: string;

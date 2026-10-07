@@ -117,6 +117,7 @@ import ProductCard from "~/components/ProductCard.vue";
 import { useAppSeo } from "~/composables/useAppSeo";
 import { solutionPageSeo } from "~/constants/pageSeo";
 import { SOLUTION_BY_SLUG_QUERY, type Solution } from "~/queries/solutions";
+import { publishableFaqs } from "~/utils/faqs";
 import { sanityImageSrcset, sanityImageUrl } from "~/utils/sanityImageUrl";
 import { toSolutionCards } from "~/utils/solutionCards";
 import { solutionPagePath } from "~~/shared/utils/sitePages";
@@ -142,7 +143,7 @@ if (!found) {
 
 const solution = computed(() => (data.value?._id ? data.value : found));
 const cards = computed(() => toSolutionCards(solution.value.products));
-const faqs = computed(() => solution.value.faqs ?? []);
+const faqs = computed(() => publishableFaqs(solution.value.faqs));
 
 const coverRef = computed(() => solution.value.coverImage?.asset?._ref);
 
