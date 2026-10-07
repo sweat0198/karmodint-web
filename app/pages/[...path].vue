@@ -98,16 +98,7 @@
       </section>
 
       <!-- Legacy copy, word for word -->
-      <article v-if="line.body?.length" class="max-w-3xl">
-        <PortableTextContent :blocks="line.body" />
-      </article>
-
-      <FaqAccordion
-        v-if="faqs.length > 0"
-        class="max-w-3xl"
-        :heading="`${line.name} Frequently Asked Questions`"
-        :faqs="faqs"
-      />
+      <PageCopy :body="line.body" :faqs="faqs" :faq-heading="`${line.name} Frequently Asked Questions`" />
 
       <section
         class="mt-2 flex flex-col items-center gap-4 rounded border border-brand-rose-border bg-brand-rose-bg p-8 text-center shadow-sm lg:p-12"
@@ -137,8 +128,7 @@
 import { computed } from "vue";
 import { useRoute } from "vue-router";
 import { createError, useRuntimeConfig, useSanityQuery } from "#imports";
-import FaqAccordion from "~/components/content/FaqAccordion.vue";
-import PortableTextContent from "~/components/content/PortableTextContent.vue";
+import PageCopy from "~/components/content/PageCopy.vue";
 import PortableContainerCard from "~/components/PortableContainerCard.vue";
 import ProductCard from "~/components/ProductCard.vue";
 import { useAppSeo } from "~/composables/useAppSeo";

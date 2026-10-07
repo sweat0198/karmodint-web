@@ -72,15 +72,10 @@
       </section>
 
       <!-- Legacy copy of the Legacy URL that now redirects to this Solution, where there was one -->
-      <article v-if="solution.body?.length" class="max-w-3xl">
-        <PortableTextContent :blocks="solution.body" />
-      </article>
-
-      <FaqAccordion
-        v-if="faqs.length > 0"
-        class="max-w-3xl"
-        :heading="`${solution.name} Frequently Asked Questions`"
+      <PageCopy
+        :body="solution.body"
         :faqs="faqs"
+        :faq-heading="`${solution.name} Frequently Asked Questions`"
       />
 
       <section
@@ -111,8 +106,7 @@
 import { computed } from "vue";
 import { useRoute } from "vue-router";
 import { createError, useRuntimeConfig, useSanityQuery } from "#imports";
-import FaqAccordion from "~/components/content/FaqAccordion.vue";
-import PortableTextContent from "~/components/content/PortableTextContent.vue";
+import PageCopy from "~/components/content/PageCopy.vue";
 import ProductCard from "~/components/ProductCard.vue";
 import { useAppSeo } from "~/composables/useAppSeo";
 import { solutionPageSeo } from "~/constants/pageSeo";
