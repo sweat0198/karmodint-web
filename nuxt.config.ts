@@ -1,5 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import { createClient } from "@sanity/client";
+import { PRODUCT_LINE_URLS } from "./shared/migration/keptUrls";
 import { productLinePrerenderRoutes } from "./shared/utils/productLineRoutes";
 import { STATIC_PAGE_PATHS } from "./shared/utils/sitePages";
 import { isSitePath } from "./shared/utils/sitePath";
@@ -204,7 +205,8 @@ export default defineNuxtConfig({
         apiVersion: "2025-02-19",
         useCdn: false,
       });
-      for (const route of await productLinePrerenderRoutes((query) => client.fetch(query))) {
+      const routes = await productLinePrerenderRoutes((query) => client.fetch(query), { required: PRODUCT_LINE_URLS });
+      for (const route of routes) {
         ctx.routes.add(route);
       }
     },

@@ -1,3 +1,4 @@
+import { PRODUCT_LINE_SEED_HINT } from "../migration/keptUrls";
 import { toSitePath } from "./sitePath";
 
 /**
@@ -12,10 +13,12 @@ export const PRODUCT_LINE_PATHS_QUERY = `*[${PUBLISHED_PRODUCT_LINE_FILTER}].pat
 /**
  * The Product Line pages to prerender. Nothing links to a Product Line until the header and footer
  * do, so the crawler alone cannot be trusted to find them: each is a Kept URL, and a missing one
- * is a 404 on a ranking Legacy address. A failed read therefore fails the build.
+ * is a 404 on a ranking Legacy address. A failed read therefore fails the build, and so does a
+ * `required` path (`PRODUCT_LINE_URLS`) the dataset doesn't have.
  */
 export async function productLinePrerenderRoutes(
   fetch: (query: string) => Promise<unknown>,
+  { required = [] }: { required?: readonly string[] } = {},
 ): Promise<string[]> {
   let paths: unknown;
   try {
@@ -28,6 +31,11 @@ export async function productLinePrerenderRoutes(
   const routes = (Array.isArray(paths) ? paths : [])
     .filter((path): path is string => typeof path === "string" && path.length > 0)
     .map(toSitePath);
+
+  const missing = required.filter((path) => !routes.includes(path));
+  if (missing.length > 0) {
+    throw new Error(`Product Line pages missing from the Sanity dataset: ${missing.join(", ")}. ${PRODUCT_LINE_SEED_HINT}`);
+  }
 
   return [...new Set(routes)].sort();
 }

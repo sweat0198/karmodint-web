@@ -98,12 +98,12 @@ The other four Solutions keep their current content.
 
 ## Redirects
 
-Cloudflare Pages' `_redirects` is generated at build time from one typed redirect map, `shared/migration/redirects.ts` (written into `dist/_redirects` ahead of the hand-written Studio rewrites in `public/_redirects`, by `modules/legacy-redirects/`). A group of rules ships once its target page exists; the rest wait in `PENDING_REDIRECT_GROUPS`. The full map is in `docs/plans/2026-10-06-uk-migration-redirects.tsv`: 192 rules: 135 from the sheet, 55 from the Legacy sitemap that the sheet missed, and 2 interim 302s.
+Cloudflare Pages' `_redirects` is generated at build time from one typed redirect map, `shared/migration/redirects.ts` (written into `dist/_redirects` ahead of the hand-written Studio rewrites in `public/_redirects`, by `modules/legacy-redirects/`). A group of rules ships once its target page exists; the rest wait in `PENDING_REDIRECT_GROUPS`. The full map is in `docs/plans/2026-10-06-uk-migration-redirects.tsv`: 196 rules: 135 from the sheet, 59 from the Legacy sitemap that the sheet missed, and 2 interim 302s.
 
 | Source group | Target | Code |
 |---|---|---|
 | Legacy sheet rows | Targets as given in the sheet, plus the `/prefabricated-shelter-*` rows confirmed to `/panel-cabin/` and `/metrocity-cabin/` confirmed to `/products/?category=cabin&subcategory=metro-city` | 301 |
-| `/blog/{city}-portable-cabin-and-container/` (48) | `/portable-cabin/` | 301 |
+| `/blog/{city}-portable-cabin-and-container/` (52) | `/portable-cabin/` | 301 |
 | `/galleries/{3 entries}/` | `/gallery/` | 301 |
 | `/garden-office/` | `/solutions/garden-rooms-and-garden-offices/` | 301 |
 | `/ticket-booths/` | `/solutions/ticket-information-and-service-kiosks/` | 301 |

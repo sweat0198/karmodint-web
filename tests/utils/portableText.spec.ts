@@ -66,7 +66,7 @@ describe('toPortableTextNodes', () => {
     expect(nodes[1]).toEqual({
       kind: 'list',
       listItem: 'bullet',
-      items: [[{ text: 'One', decorators: [] }], [{ text: 'Two', decorators: [] }]]
+      items: [{ spans: [{ text: 'One', decorators: [] }] }, { spans: [{ text: 'Two', decorators: [] }] }]
     })
     expect(nodes[2]).toMatchObject({ kind: 'list', listItem: 'number' })
   })

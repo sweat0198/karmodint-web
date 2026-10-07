@@ -1,0 +1,3 @@
+## Insulated Sandwich Panel Cabins
+
+Our insulated Sandwich Panel Cabins offer an affordable, ready-to-use solution ideal for various applications, including [**security booths**](/solutions/security-gatehouses-and-access-control/), [**retail kiosks**](/solutions/retail-and-food-service-kiosks/), and public services. Constructed with high-quality sandwich panel walls and roofing, these cabins provide superior insulation, making them energy-efficient for all-season use. Produced to UK standards with environmental considerations, they feature robust PVC doors, tempered glass windows, and pre-installed electrical and plumbing systems for quick, hassle-free setup.
