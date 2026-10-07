@@ -34,6 +34,11 @@ async function mountFooter(props: { hasPriceBar?: boolean } = {}) {
   return wrapper;
 }
 
+const NuxtLinkStub = {
+  props: ["to"],
+  template: '<a :href="to"><slot /></a>',
+};
+
 describe("AppFooter", () => {
   beforeEach(() => {
     productLinesNavQuery.data.value = [];
@@ -52,6 +57,13 @@ describe("AppFooter", () => {
 
     expect(wrapper.get("footer").classes()).not.toContain("pb-36");
     expect(wrapper.get("footer").classes()).not.toContain("sm:pb-24");
+  });
+
+  it("links to the Privacy Policy page", () => {
+    const wrapper = mount(AppFooter, { global: { stubs: { NuxtLink: NuxtLinkStub } } });
+    const link = wrapper.findAll("a").find((a) => a.text() === "Privacy Policy");
+
+    expect(link?.attributes("href")).toBe("/privacy-policy/");
   });
 });
 

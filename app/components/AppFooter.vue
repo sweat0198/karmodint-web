@@ -176,7 +176,7 @@
             </li>
             <li>
               <NuxtLink
-                to="/about/"
+                to="/privacy-policy/"
                 class="text-brand-slate-light hover:text-white transition-colors text-base leading-6"
               >
                 Privacy Policy

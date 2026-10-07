@@ -3,6 +3,7 @@
  *
  * - Kept URLs (`/`, `/products/`) carry the Legacy Site's `<title>` and meta description word for word.
  * - Every other page uses the commercial pattern `{Thing} for Sale UK | Karmod`.
+ * - Exception: the Privacy Policy, a Kept URL with no Legacy title, sells nothing and takes a plain title.
  */
 
 export interface PageSeoText {
@@ -44,6 +45,12 @@ export const PAGE_SEO = {
     title: commercialTitle("Portable Cabins, Kiosks and Gatehouses"),
     description:
       "Portable cabins, kiosks and gatehouses for sale UK. Contact Karmod for prices, specifications and a quote by phone, WhatsApp, email or online form.",
+  },
+  // Kept URL without a Legacy title (the Legacy page answers 404), and nothing for sale: a plain title.
+  privacyPolicy: {
+    title: "Privacy Policy | Karmod International",
+    description:
+      "How Karmod International Ltd collects, uses, stores and protects your personal data when you enquire, request a quotation or buy from us.",
   },
 } as const satisfies Record<string, PageSeoText>;
 
